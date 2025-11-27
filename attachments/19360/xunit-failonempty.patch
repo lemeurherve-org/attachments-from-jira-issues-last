@@ -1,0 +1,16 @@
+Index: src/main/java/com/thalesgroup/hudson/plugins/xunit/transformer/XUnitTransformer.java
+===================================================================
+--- src/main/java/com/thalesgroup/hudson/plugins/xunit/transformer/XUnitTransformer.java	(revision 30302)
++++ src/main/java/com/thalesgroup/hudson/plugins/xunit/transformer/XUnitTransformer.java	(working copy)
+@@ -285,9 +285,9 @@
+ 
+             if (resultFilePathFile.length() == 0) {
+                 //Ignore the empty result file (some reason)
+-                String msg = "[WARNING] - The file '" + resultFilePathFile.getPath() + "' is empty. This file has been ignored.";
++                String msg = "[ERROR] - The file '" + resultFilePathFile.getPath() + "' is empty.";
+                 XUnitLog.log(listener, msg);
+-                continue;
++                return false;
+             }
+ 
+ 

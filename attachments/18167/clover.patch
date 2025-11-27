@@ -1,0 +1,265 @@
+Index: src/main/java/hudson/plugins/clover/CloverBuildAction.java
+===================================================================
+--- src/main/java/hudson/plugins/clover/CloverBuildAction.java	(revision 9030)
++++ src/main/java/hudson/plugins/clover/CloverBuildAction.java	(working copy)
+@@ -1,10 +1,14 @@
+ package hudson.plugins.clover;
+ 
+-import hudson.model.Build;
++import hudson.model.AbstractBuild;
+ import hudson.model.HealthReport;
+ import hudson.model.HealthReportingAction;
+ import hudson.model.Result;
+-import hudson.plugins.clover.results.*;
++import hudson.plugins.clover.results.AbstractPackageAggregatedMetrics;
++import hudson.plugins.clover.results.ClassCoverage;
++import hudson.plugins.clover.results.FileCoverage;
++import hudson.plugins.clover.results.PackageCoverage;
++import hudson.plugins.clover.results.ProjectCoverage;
+ import hudson.plugins.clover.targets.CoverageMetric;
+ import hudson.plugins.clover.targets.CoverageTarget;
+ import org.kohsuke.stapler.StaplerProxy;
+@@ -16,6 +20,8 @@
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
++import org.kohsuke.stapler.StaplerProxy;
++
+ /**
+  * Created by IntelliJ IDEA.
+  *
+@@ -23,7 +29,7 @@
+  * @since 03-Jul-2007 08:43:08
+  */
+ public class CloverBuildAction extends AbstractPackageAggregatedMetrics implements HealthReportingAction, StaplerProxy {
+-    public final Build owner;
++    public final AbstractBuild owner;
+     private String buildBaseDir;
+     private CoverageTarget healthyTarget;
+     private CoverageTarget unhealthyTarget;
+@@ -102,8 +108,8 @@
+ 
+     /** Gets the previous {@link CloverBuildAction} of the given build. */
+     /*package*/
+-    static CloverBuildAction getPreviousResult(Build start) {
+-        Build<?, ?> b = start;
++    static CloverBuildAction getPreviousResult(AbstractBuild start) {
++        AbstractBuild<?, ?> b = start;
+         while (true) {
+             b = b.getPreviousBuild();
+             if (b == null)
+@@ -116,7 +122,7 @@
+         }
+     }
+ 
+-    CloverBuildAction(Build owner, String workspacePath, ProjectCoverage r, CoverageTarget healthyTarget,
++    CloverBuildAction(AbstractBuild owner, String workspacePath, ProjectCoverage r, CoverageTarget healthyTarget,
+                       CoverageTarget unhealthyTarget) {
+         this.owner = owner;
+         this.report = new WeakReference<ProjectCoverage>(r);
+@@ -258,7 +264,7 @@
+ 
+     private static final Logger logger = Logger.getLogger(CloverBuildAction.class.getName());
+ 
+-    public static CloverBuildAction load(Build<?, ?> build, String workspacePath, ProjectCoverage result,
++    public static CloverBuildAction load(AbstractBuild<?, ?> build, String workspacePath, ProjectCoverage result,
+                                          CoverageTarget healthyTarget, CoverageTarget unhealthyTarget) {
+         return new CloverBuildAction(build, workspacePath, result, healthyTarget, unhealthyTarget);
+     }
+Index: src/main/java/hudson/plugins/clover/CloverPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/clover/CloverPublisher.java	(revision 9030)
++++ src/main/java/hudson/plugins/clover/CloverPublisher.java	(working copy)
+@@ -104,7 +104,7 @@
+ 
+     /** Gets the directory where the Clover Report is stored for the given project. */
+     /*package*/
+-    static File getCloverReport(Build build) {
++    static File getCloverReport(AbstractBuild<?, ?> build) {
+         return new File(build.getRootDir(), "clover.xml");
+     }
+ 
+@@ -109,7 +109,7 @@
+     }
+ 
+ 
+-    public boolean perform(Build<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException {
++    public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException {
+         listener.getLogger().println("Publishing Clover coverage report...");
+         FilePath coverageReport = build.getParent().getWorkspace().child(cloverReportDir);
+ 
+@@ -182,7 +182,7 @@
+         return true;
+     }
+ 
+-    private void flagMissingCloverXml(BuildListener listener, Build<?, ?> build) {
++    private void flagMissingCloverXml(BuildListener listener, AbstractBuild<?, ?> build) {
+         listener.getLogger().println("Could not find '" + cloverReportDir + "/clover.xml'.  Did you generate " +
+                 "the XML report for Clover?");
+         build.setResult(Result.FAILURE);
+Index: src/main/java/hudson/plugins/clover/results/AbstractCloverMetrics.java
+===================================================================
+--- src/main/java/hudson/plugins/clover/results/AbstractCloverMetrics.java	(revision 9030)
++++ src/main/java/hudson/plugins/clover/results/AbstractCloverMetrics.java	(working copy)
+@@ -1,30 +1,32 @@
+ package hudson.plugins.clover.results;
+ 
++import hudson.model.AbstractBuild;
++import hudson.model.Build;
+ import hudson.plugins.clover.Ratio;
+-import hudson.model.Build;
+ import hudson.util.ChartUtil;
++import hudson.util.ColorPalette;
+ import hudson.util.DataSetBuilder;
+ import hudson.util.ShiftedCategoryAxis;
+-import hudson.util.ColorPalette;
+ 
++import java.awt.BasicStroke;
++import java.awt.Color;
+ import java.io.IOException;
+ import java.util.Calendar;
+-import java.awt.*;
+ 
+-import org.jfree.chart.JFreeChart;
+ import org.jfree.chart.ChartFactory;
+-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
++import org.jfree.chart.JFreeChart;
+ import org.jfree.chart.axis.CategoryAxis;
+ import org.jfree.chart.axis.CategoryLabelPositions;
+ import org.jfree.chart.axis.NumberAxis;
+-import org.jfree.chart.title.LegendTitle;
++import org.jfree.chart.plot.CategoryPlot;
+ import org.jfree.chart.plot.PlotOrientation;
+-import org.jfree.chart.plot.CategoryPlot;
++import org.jfree.chart.renderer.category.LineAndShapeRenderer;
++import org.jfree.chart.title.LegendTitle;
+ import org.jfree.data.category.CategoryDataset;
+ import org.jfree.ui.RectangleEdge;
+ import org.jfree.ui.RectangleInsets;
+-import org.kohsuke.stapler.StaplerResponse;
+ import org.kohsuke.stapler.StaplerRequest;
++import org.kohsuke.stapler.StaplerResponse;
+ 
+ /**
+  * Abstract Clover Coverage results.
+@@ -46,7 +48,7 @@
+ 
+     private int elements;
+     private int coveredelements;
+-    public Build owner = null;
++    public AbstractBuild owner = null;
+ 
+     public Ratio getMethodCoverage() {
+         return Ratio.create(coveredmethods, methods);
+@@ -226,11 +228,11 @@
+         this.name = name;
+     }
+ 
+-    public Build getOwner() {
++    public AbstractBuild getOwner() {
+         return owner;
+     }
+ 
+-    public void setOwner(Build owner) {
++    public void setOwner(AbstractBuild owner) {
+         this.owner = owner;
+     }
+ 
+@@ -244,7 +246,7 @@
+             return;
+         }
+ 
+-        Build build = getOwner();
++        AbstractBuild build = getOwner();
+         Calendar t = build.getTimestamp();
+ 
+         if (req.checkIfModified(t, rsp))
+Index: src/main/java/hudson/plugins/clover/results/FileCoverage.java
+===================================================================
+--- src/main/java/hudson/plugins/clover/results/FileCoverage.java	(revision 9030)
++++ src/main/java/hudson/plugins/clover/results/FileCoverage.java	(working copy)
+@@ -1,12 +1,12 @@
+ package hudson.plugins.clover.results;
+ 
+-import hudson.model.Build;
++import hudson.model.AbstractBuild;
+ import hudson.model.Run;
+ import hudson.plugins.clover.CloverBuildAction;
+ 
++import java.io.IOException;
++import java.util.ArrayList;
+ import java.util.List;
+-import java.util.ArrayList;
+-import java.io.IOException;
+ 
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
+@@ -51,8 +51,7 @@
+         return action.findFileCoverage(getName());
+     }
+ 
+-    @Override
+-    public void setOwner(Build owner) {
++    public void setOwner(AbstractBuild owner) {
+         super.setOwner(owner);    //To change body of overridden methods use File | Settings | File Templates.
+         for (ClassCoverage classCoverage : classCoverages) {
+             classCoverage.setOwner(owner);
+Index: src/main/java/hudson/plugins/clover/results/PackageCoverage.java
+===================================================================
+--- src/main/java/hudson/plugins/clover/results/PackageCoverage.java	(revision 9030)
++++ src/main/java/hudson/plugins/clover/results/PackageCoverage.java	(working copy)
+@@ -1,12 +1,12 @@
+ package hudson.plugins.clover.results;
+ 
+-import hudson.model.Build;
++import hudson.model.AbstractBuild;
+ import hudson.model.Run;
+ import hudson.plugins.clover.CloverBuildAction;
+ 
++import java.io.IOException;
++import java.util.ArrayList;
+ import java.util.List;
+-import java.util.ArrayList;
+-import java.io.IOException;
+ 
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
+@@ -70,8 +70,7 @@
+         return action.findPackageCoverage(getName());
+     }
+ 
+-    @Override
+-    public void setOwner(Build owner) {
++    public void setOwner(AbstractBuild owner) {
+         super.setOwner(owner);    //To change body of overridden methods use File | Settings | File Templates.
+         for (FileCoverage fileCoverage : fileCoverages) {
+             fileCoverage.setOwner(owner);
+Index: src/main/java/hudson/plugins/clover/results/ProjectCoverage.java
+===================================================================
+--- src/main/java/hudson/plugins/clover/results/ProjectCoverage.java	(revision 9030)
++++ src/main/java/hudson/plugins/clover/results/ProjectCoverage.java	(working copy)
+@@ -1,12 +1,12 @@
+ package hudson.plugins.clover.results;
+ 
+-import hudson.model.Build;
++import hudson.model.AbstractBuild;
+ import hudson.model.Run;
+ import hudson.plugins.clover.CloverBuildAction;
+ 
++import java.io.IOException;
++import java.util.ArrayList;
+ import java.util.List;
+-import java.util.ArrayList;
+-import java.io.IOException;
+ 
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
+@@ -71,7 +71,7 @@
+     }
+ 
+     @Override
+-    public void setOwner(Build owner) {
++    public void setOwner(AbstractBuild owner) {
+         super.setOwner(owner);    //To change body of overridden methods use File | Settings | File Templates.
+         for (PackageCoverage p: packageCoverages) {
+             p.setOwner(owner);

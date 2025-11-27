@@ -1,0 +1,133 @@
+From 35a78fdd812d51b285b163fd0a6f05b90f9ff12f Mon Sep 17 00:00:00 2001
+From: Janick Reynders <janick.reynders@gmail.com>
+Date: Sat, 29 Jan 2011 00:11:39 +0100
+Subject: [PATCH] fix for HUDSON-7357
+
+---
+ core/src/main/java/hudson/model/Computer.java     |   32 +++++++++++-----
+ test/src/test/java/hudson/model/ExecutorTest.java |   42 +++++++++++++++++++-
+ 2 files changed, 61 insertions(+), 13 deletions(-)
+
+diff --git a/core/src/main/java/hudson/model/Computer.java b/core/src/main/java/hudson/model/Computer.java
+index ab0f83f..9789a08 100644
+--- a/core/src/main/java/hudson/model/Computer.java
++++ b/core/src/main/java/hudson/model/Computer.java
+@@ -69,11 +69,7 @@ import java.io.File;
+ import java.io.IOException;
+ import java.io.PrintWriter;
+ import java.io.StringWriter;
+-import java.util.ArrayList;
+-import java.util.HashMap;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Enumeration;
++import java.util.*;
+ import java.util.concurrent.CopyOnWriteArrayList;
+ import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.Executors;
+@@ -585,14 +581,29 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
+                     e.interrupt();
+         } else {
+             // if the number is increased, add new ones
+-            while(executors.size()<numExecutors) {
+-                Executor e = new Executor(this, executors.size());
+-                e.start();
+-                executors.add(e);
+-            }
++            addNewExecutorIfNecessary();
++        }
++    }
++
++    private void addNewExecutorIfNecessary() {
++        for (Integer number : getAvailableExecutorNumbers()) {
++            Executor e = new Executor(this, number);
++            e.start();
++            executors.add(e);
+         }
+     }
+ 
++    private Set<Integer> getAvailableExecutorNumbers() {
++        Set<Integer> availableNumbers  = new HashSet<Integer>();
++        for (int number = 0; number < numExecutors; number++)
++            availableNumbers.add(number);
++
++        for (Executor executor : executors)
++            availableNumbers.remove(executor.getNumber());
++
++        return availableNumbers;
++    }
++
+     /**
+      * Returns the number of idle {@link Executor}s that can start working immediately.
+      */
+@@ -689,6 +700,7 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
+      */
+     /*package*/ synchronized void removeExecutor(Executor e) {
+         executors.remove(e);
++        addNewExecutorIfNecessary();
+         if(!isAlive())
+             Hudson.getInstance().removeComputer(this);
+     }
+diff --git a/test/src/test/java/hudson/model/ExecutorTest.java b/test/src/test/java/hudson/model/ExecutorTest.java
+index d1b87de..2a05784 100644
+--- a/test/src/test/java/hudson/model/ExecutorTest.java
++++ b/test/src/test/java/hudson/model/ExecutorTest.java
+@@ -12,9 +12,7 @@ public class ExecutorTest extends HudsonTestCase {
+         Executor e = c.getExecutors().get(0);
+ 
+         // kill an executor
+-        e.killHard();
+-        while (e.isAlive())
+-            Thread.sleep(10);
++        kill(e);
+ 
+         // make sure it's dead
+         assertTrue(c.getExecutors().contains(e));
+@@ -27,6 +25,44 @@ public class ExecutorTest extends HudsonTestCase {
+         submit(p.getFormByName("yank"));
+ 
+         assertFalse(c.getExecutors().contains(e));
++        waitUntilExecutorSizeIs(c, 2);
++    }
++
++    public void testWhenAnExecuterIsYankedANewExecuterTakesItsPlace() throws Exception {
++        final Hudson hudson = Hudson.getInstance();
++        Computer c = hudson.toComputer();
++        Executor e = getExecutorByNumber(c, 0);
++
++        kill(e);
++        e.doYank();
++
++        waitUntilExecutorSizeIs(c, 2);
++
++        assertNotNull(getExecutorByNumber(c, 0));
++        assertNotNull(getExecutorByNumber(c, 1));
++    }
+ 
++    private void waitUntilExecutorSizeIs(Computer c, int executorCollectionSize) throws InterruptedException {
++        int timeOut = 10;
++        while (c.getExecutors().size() != executorCollectionSize) {
++            Thread.sleep(10);
++            if (timeOut-- == 0) fail("executor collection size was not " + executorCollectionSize);
++        }
+     }
++
++    private void kill(Executor e) throws InterruptedException {
++        e.killHard();
++        while (e.isAlive())
++            Thread.sleep(10);
++    }
++
++    private Executor getExecutorByNumber(Computer c, int executorNumber) {
++        for (Executor executor : c.getExecutors()) {
++            if (executor.getNumber() == executorNumber) {
++                return executor;
++            }
++        }
++        return null;
++    }
++
+ }
+-- 
+1.7.0.2.msysgit.0
+

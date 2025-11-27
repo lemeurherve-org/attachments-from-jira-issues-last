@@ -1,0 +1,18 @@
+diff --git a/src/main/java/hudson/scm/SubversionSCM.java b/src/main/java/hudson/scm/SubversionSCM.java
+index d34c91b..f78bede 100755
+--- a/src/main/java/hudson/scm/SubversionSCM.java
++++ b/src/main/java/hudson/scm/SubversionSCM.java
+@@ -1965,7 +1965,12 @@ public class SubversionSCM extends SCM implements Serializable {
+                 return FormValidation.error(Messages.SubversionSCM_doCheckRemote_required()); 
+ 
+             if(isValidateRemoteUpToVar()) {
+-                url = (url.indexOf('$') != -1) ? url.substring(0, url.indexOf('$')) : url;
++                if (url.indexOf('$') != -1) {
++                    url = url.substring(0, url.indexOf('$'));
++                    if (url.charAt(url.length() - 1) == '@') {
++                        url = url.substring(0, url.length() - 1);
++                    }
++                }
+             } else {
+                 url = new EnvVars(EnvVars.masterEnvVars).expand(url);
+             }

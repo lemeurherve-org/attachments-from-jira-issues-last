@@ -1,0 +1,126 @@
+INFO: Scanner configuration file: /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar_scanner/conf/sonar-scanner.properties
+INFO: Project root configuration file: NONE
+INFO: SonarScanner 4.6.0.2311
+INFO: Java 1.8.0_292 Private Build (64-bit)
+INFO: Linux 5.4.0-71-generic amd64
+INFO: User cache: /var/lib/jenkins/.sonar/cache
+INFO: Scanner configuration file: /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar_scanner/conf/sonar-scanner.properties
+INFO: Project root configuration file: NONE
+INFO: Analyzing on SonarQube server 8.8.0
+INFO: Default locale: "en_US", source code encoding: "UTF-8"
+WARN: SonarScanner will require Java 11 to run, starting in SonarQube 9.x
+INFO: Load global settings
+INFO: Load global settings (done) | time=50ms
+INFO: Server id: BF41A1F2-AXkXWpUXamF6BnD_qwA4
+INFO: User cache: /var/lib/jenkins/.sonar/cache
+INFO: Load/download plugins
+INFO: Load plugins index
+INFO: Load plugins index (done) | time=33ms
+INFO: Load/download plugins (done) | time=51ms
+INFO: Process project properties
+INFO: Process project properties (done) | time=6ms
+INFO: Execute project builders
+INFO: Execute project builders (done) | time=1ms
+INFO: Project key: soc_test
+INFO: Base dir: /var/lib/jenkins/workspace/soc_test_code_review
+INFO: Working dir: /var/lib/jenkins/workspace/soc_test_code_review/.scannerwork
+INFO: Load project settings for component key: 'soc_test'
+INFO: Load project settings for component key: 'soc_test' (done) | time=13ms
+INFO: Auto-configuring with CI 'Jenkins'
+INFO: Load quality profiles
+INFO: Load quality profiles (done) | time=42ms
+INFO: Auto-configuring with CI 'Jenkins'
+INFO: Load active rules
+INFO: Load active rules (done) | time=1025ms
+INFO: Indexing files...
+INFO: Project configuration:
+INFO: 22 files indexed
+INFO: Quality profile for py: Sonar way
+INFO: ------------- Run sensors on module soc_test
+INFO: Load metrics repository
+INFO: Load metrics repository (done) | time=18ms
+INFO: Sensor Python Sensor [python]
+INFO: Starting global symbols computation
+INFO: 13 source files to be analyzed
+INFO: Load project repositories
+INFO: Load project repositories (done) | time=13ms
+INFO: Starting rules execution
+INFO: 13 source files to be analyzed
+INFO: 13/13 source files have been analyzed
+INFO: Sensor Python Sensor [python] (done) | time=3700ms
+INFO: 13/13 source files have been analyzed
+INFO: Sensor Cobertura Sensor for Python coverage [python]
+INFO: Sensor Cobertura Sensor for Python coverage [python] (done) | time=8ms
+INFO: Sensor PythonXUnitSensor [python]
+INFO: Sensor PythonXUnitSensor [python] (done) | time=2ms
+INFO: Sensor CSS Rules [cssfamily]
+INFO: No CSS, PHP, HTML or VueJS files are found in the project. CSS analysis is skipped.
+INFO: Sensor CSS Rules [cssfamily] (done) | time=0ms
+INFO: Sensor JaCoCo XML Report Importer [jacoco]
+INFO: 'sonar.coverage.jacoco.xmlReportPaths' is not defined. Using default locations: target/site/jacoco/jacoco.xml,target/site/jacoco-it/jacoco.xml,build/reports/jacoco/test/jacocoTestReport.xml
+INFO: No report imported, no coverage information will be imported by JaCoCo XML Report Importer
+INFO: Sensor JaCoCo XML Report Importer [jacoco] (done) | time=2ms
+INFO: Sensor C# Project Type Information [csharp]
+INFO: Sensor C# Project Type Information [csharp] (done) | time=1ms
+INFO: Sensor C# Properties [csharp]
+INFO: Sensor C# Properties [csharp] (done) | time=0ms
+INFO: Sensor JavaXmlSensor [java]
+INFO: Sensor JavaXmlSensor [java] (done) | time=1ms
+INFO: Sensor HTML [web]
+INFO: Sensor HTML [web] (done) | time=2ms
+INFO: Sensor VB.NET Project Type Information [vbnet]
+INFO: Sensor VB.NET Project Type Information [vbnet] (done) | time=0ms
+INFO: Sensor VB.NET Properties [vbnet]
+INFO: Sensor VB.NET Properties [vbnet] (done) | time=0ms
+INFO: ------------- Run sensors on project
+INFO: Sensor Zero Coverage Sensor
+INFO: Sensor Zero Coverage Sensor (done) | time=9ms
+INFO: SCM Publisher is disabled
+INFO: CPD Executor 5 files had no CPD blocks
+INFO: CPD Executor Calculating CPD for 8 files
+INFO: CPD Executor CPD calculation finished (done) | time=8ms
+INFO: Analysis report generated in 43ms, dir size=115 KB
+INFO: Analysis report compressed in 25ms, zip size=32 KB
+INFO: Analysis report uploaded in 25ms
+INFO: ANALYSIS SUCCESSFUL, you can browse http://10.10.130.108:9000/dashboard?id=soc_test
+INFO: Note that you will be able to access the updated dashboard once the server has processed the submitted analysis report
+INFO: More about the report processing at http://10.10.130.108:9000/api/ce/task?id=AXlKozocpNPC4FuP_w6i
+INFO: Analysis total time: 5.963 s
+INFO: ------------------------------------------------------------------------
+INFO: EXECUTION SUCCESS
+INFO: ------------------------------------------------------------------------
+INFO: Total time: 6.556s
+INFO: Final Memory: 119M/2474M
+INFO: ------------------------------------------------------------------------
+[soc_test_code_review] $ /usr/bin/env bash /tmp/jenkins7024287011857733422.sh
+curl http://10.10.130.108:9000/api/ce/task?id=AXlKozocpNPC4FuP_w6i |jq '.task.status'
+1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   335  100   335    0     0   1240      0 --:--:-- --:--:-- --:--:--  1240
+"IN_PROGRESS"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  9156    0  9156    0     0  31572      0 --:--:-- --:--:-- --:--:-- 31572
+/var/lib/jenkins/workspace/soc_test_code_review
+org.quality.gates.jenkins.plugin.QGException: Expected status 200, got: 400. Response: {"errors":[{"msg":"The 'component' parameter is missing"}]}
+	at org.quality.gates.sonar.api.SonarHttpRequester.executeGetRequest(SonarHttpRequester.java:124)
+	at org.quality.gates.sonar.api.SonarHttpRequester.getAPITaskInfo(SonarHttpRequester.java:151)
+	at org.quality.gates.sonar.api.QualityGatesProvider.getAPIResultsForQualityGates(QualityGatesProvider.java:62)
+	at org.quality.gates.jenkins.plugin.BuildDecision.getStatus(BuildDecision.java:24)
+	at org.quality.gates.jenkins.plugin.QGPublisher.perform(QGPublisher.java:85)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:803)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:752)
+	at hudson.model.Build$BuildExecution.post2(Build.java:177)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:697)
+	at hudson.model.Run.execute(Run.java:1932)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:97)
+	at hudson.model.Executor.run(Executor.java:429)
+Build step 'Quality Gates Sonarqube Plugin' marked build as failure
+Getting Sonar Report from: /var/lib/jenkins/workspace/soc_test_code_review/sonar-report.json
+Report has loaded and contains 11 issues
+Issues to be commented: 0
+Review has been sent
+Finished: FAILURE

@@ -1,0 +1,465 @@
+def build_over_rhel7() {
+  String goroot = "/usr/local/go"
+  String home_dir = "/builddir"
+  String mock = "mock -r ${CONTAINER_NAME}"
+
+  sh(script: "${mock} --scrub=chroot")
+  sh(script: "${mock} --init --chroot --no-bootstrap-image --shell 'rpm --rebuilddb; test -d ${goroot} || mkdir ${goroot}'")
+
+  sh(script: "${MOCK_COPYIN_CMD} ${PGP_DIR}/${PGP_KEY_FILE} ${home_dir}")
+  sh(script: "${MOCK_SHELL_CMD} 'mkdir ${GNUPGHOME}; " + \
+              "GNUPGHOME=${GNUPGHOME} gpg --import --batch " + \
+              "${home_dir}/${PGP_KEY_FILE}'")
+  sh(script: "${MOCK_SHELL_CMD} 'rm -f ${home_dir}/${PGP_KEY_FILE}'")
+
+  sh(script: "${MOCK_COPYIN_CMD} ${PGP_DIR}/${MACROS_FILE} ${RPM_DIR}/macros")
+  sh(script: "${MOCK_COPYIN_CMD} ${PGP_DIR}/.phrase ${home_dir}")
+  sh(script: "${MOCK_SHELL_CMD} 'echo \"${RPMMACROS}\" > ${home_dir}/.rpmmacros'")
+
+  sh(script: "${MOCK_SHELL_CMD} \"rpmbuild -ba ${DEFINE} /rpmbuild/SPECS/${NAME}.spec\"")
+
+  sh(script: "${MOCK_SHELL_CMD} 'rpm --addsign /rpmbuild/RPMS/${ARCH}/*.rpm /rpmbuild/SRPMS/*.rpm'")
+
+  sh(script: "${MOCK_SHELL_CMD} 'cd /rpmbuild                    && " + \
+              "mkdir -p ${OS_PREFIX}/x86_64/RPMS                 && " + \
+              "cp -r RPMS/${ARCH}/*.rpm ${OS_PREFIX}/x86_64/RPMS && " + \
+              "cp -r SRPMS ${OS_PREFIX}/'")
+
+  do_archive()
+}
+
+def build_amzn2() {
+  String container_image = "example.com:5002/" + \
+                           "amzn2-builder:latest"
+  String home_dir = "/root"
+  String podman_opt = "-itd --privileged --name ${CONTAINER_NAME} -v \"${env.WORKSPACE}/${NAME}:/rpmbuild\""
+                    
+  sh(script: "podman run ${podman_opt} ${container_image}")
+
+  sh(script: "podman cp --pause=false ${PGP_DIR}/ ${CONTAINER_NAME}:${home_dir}")
+  sh(script: "${PODMAN_CMD} 'mkdir ${GNUPGHOME}; GNUPGHOME=${GNUPGHOME} " + \
+             "gpg --import --batch ${home_dir}/project_gpg/${PGP_KEY_FILE}'")
+
+  sh(script: "${PODMAN_CMD} 'cp ${home_dir}/project_gpg/${MACROS_FILE} ${RPM_DIR}/macros'")
+  sh(script: "${PODMAN_CMD} 'cp ${home_dir}/project_gpg/.phrase ${home_dir}'")
+  sh(script: "${PODMAN_CMD} 'echo \"${RPMMACROS}\" > ${home_dir}/.rpmmacros'")
+
+  sh(script: "${PODMAN_CMD} \"rpmbuild -ba ${DEFINE} /rpmbuild/SPECS/${NAME}.spec\"")
+
+  sh(script: "${PODMAN_CMD} 'rpm --addsign /rpmbuild/RPMS/${ARCH}/*.rpm /rpmbuild/SRPMS/*.rpm'")
+ 
+  sh(script: "${PODMAN_CMD} 'cd /rpmbuild                       && " + \
+             "mkdir -p ${OS_PREFIX}/x86_64/RPMS                 && " + \
+             "cp -r RPMS/${ARCH}/*.rpm ${OS_PREFIX}/x86_64/RPMS && " + \
+             "cp -r SRPMS ${OS_PREFIX}/'")
+
+  do_archive()
+}
+
+def build_amzn2023() {
+  String container_image = "example.com:5002/" + \
+                           "amzn2023-builder:latest"
+  String home_dir = "/root"
+  String podman_opt = "-itd --privileged --name ${CONTAINER_NAME} -v \"${env.WORKSPACE}/${NAME}:/rpmbuild\""
+
+  sh(script: "podman run ${podman_opt} ${container_image}")
+
+  sh(script: "podman cp --pause=false ${PGP_DIR}/ ${CONTAINER_NAME}:${home_dir}")
+  sh(script: "${PODMAN_CMD} 'cp ${home_dir}/project_gpg/${MACROS_FILE} ${RPM_DIR}/macros'")
+  sh(script: "${PODMAN_CMD} 'echo \"${RPMMACROS}\" > ${home_dir}/.rpmmacros'")
+
+  sh(script: "${PODMAN_CMD} \"rpmbuild -ba ${DEFINE} /rpmbuild/SPECS/${NAME}.spec\"")
+
+  sh(script: "${PODMAN_CMD} 'cd /rpmbuild                       && " + \
+             "mkdir -p ${OS_PREFIX}/x86_64/RPMS                 && " + \
+             "cp -r RPMS/${ARCH}/*.rpm ${OS_PREFIX}/x86_64/RPMS && " + \
+             "cp -r SRPMS ${OS_PREFIX}/'")
+
+  sh("cp ${PGP_DIR}/${MACROS_FILE} ~/.rpmmacros")
+  sh("echo ${GPG_SIGN_CMD} >> ~/.rpmmacros")
+  sh("sed -i '/^%_gpg_path/d' ~/.rpmmacros")
+  sh("GNUPGHOME=\"/home/jenkins/.gnupg\" rpm --addsign ${NAME}/${OS_PREFIX}/${ARCH}/RPMS/*.rpm ${NAME}/${OS_PREFIX}/SRPMS/*.src.rpm")
+
+  do_archive()
+}
+
+def build_ubuntu22() {
+  String container_image = "example.com:5002/" + \
+                           "ubuntu22-builder:latest"
+  String home_dir = "/root"
+  String podman_opt = "-itd --privileged --name ${CONTAINER_NAME} -v \"${env.WORKSPACE}/${NAME}:/debbuild\""
+
+  sh(script: "podman run ${podman_opt} ${container_image}")
+
+  sh(script: "podman cp --pause=false ${PGP_DIR}/ ${CONTAINER_NAME}:${home_dir}")
+  sh(script: "${PODMAN_CMD} \"cd /debbuild && make ubuntu22\"")
+
+  sh(script: "${PODMAN_CMD} 'cd /debbuild                        && " + \
+             "mkdir -p ${env.OS_PREFIX}/amd64/                   && " + \
+             "cp -r BUILD/ubuntu22/*.deb ${env.OS_PREFIX}/amd64/ && " + \
+             "cp -r BUILD/ubuntu22/*.dsc ${env.OS_PREFIX}/amd64/'")
+
+  do_archive()
+}
+
+def build_rhel_aarch64() {
+  def container
+  switch(OS) {
+  case 'RHEL9':
+    container = 'rhel9-aarch64-builder:20230117.2'
+    break
+  case 'RHEL8':
+    container = 'rhel8-aarch64-builder:20230117.2'
+    break
+  default:
+    error()
+  }
+  String container_image = "example.com:5002/" + \
+                           "${container}"
+  String home_dir = "/root"
+  String podman_opt = "-itd --privileged --name ${CONTAINER_NAME} -v \"${env.WORKSPACE}/${NAME}:/rpmbuild\""
+
+  sh(script: "podman run ${podman_opt} ${container_image}")
+
+  sh(script: "podman cp --pause=false ${PGP_DIR}/ ${CONTAINER_NAME}:${home_dir}")
+  sh(script: "${PODMAN_CMD} 'mkdir ${GNUPGHOME}; GNUPGHOME=${GNUPGHOME} " + \
+             "gpg --import --batch ${home_dir}/project_gpg/${PGP_KEY_FILE}'")
+
+  sh(script: "${PODMAN_CMD} 'cp ${home_dir}/project_gpg/${MACROS_FILE} ${RPM_DIR}/macros'")
+  sh(script: "${PODMAN_CMD} 'cp ${home_dir}/project_gpg/.phrase ${home_dir}'")
+  sh(script: "${PODMAN_CMD} 'echo \"${RPMMACROS}\" > ${home_dir}/.rpmmacros'")
+
+  sh(script: "${PODMAN_CMD} \"rpmbuild -ba ${DEFINE} /rpmbuild/SPECS/${NAME}.spec\"")
+
+  sh(script: "${PODMAN_CMD} 'GPG_TTY=\$(tty) rpm --addsign /rpmbuild/RPMS/${ARCH}/*.rpm'")
+
+  sh(script: "${PODMAN_CMD} 'cd /rpmbuild                        && " + \
+             "mkdir -p ${OS_PREFIX}/${ARCH}/RPMS                 && " + \
+             "cp -r RPMS/${ARCH}/*.rpm ${OS_PREFIX}/${ARCH}/RPMS'")
+
+  do_archive()
+}
+
+def do_archive() {
+  sh("freshclam")
+  sh("clamscan --infected --recursive ${NAME}/${OS_PREFIX}/")
+
+  dir("${NAME}") {
+    archiveArtifacts(artifacts: "${OS_PREFIX}/**", defaultExcludes: false,
+                     fingerprint: true, followSymlinks: false, onlyIfSuccessful: true)
+  }
+}
+
+def get_builder_label(String os, String arch) {
+  def label
+
+  switch(os) {
+  case 'RHEL9':
+    switch(arch) {
+    case 'aarch64':
+      label = 'builder-arm'
+      break
+    default:
+      label = 'builder-05'
+    }
+    break
+  case 'RHEL8':
+    switch(arch) {
+    case 'aarch64':
+      label = 'builder-arm'
+      break
+    default:
+      label = 'builder'
+    }
+    break
+  case 'RHEL7':
+  case 'AMZN2':
+    label = 'builder'
+    break
+  case 'AMZN2023':
+    label = 'builder-03'
+    break
+  case 'Ubuntu22':
+    label = 'builder'
+    break
+  default:
+    error()
+  }
+  
+  return label
+}
+
+def get_container_name(String os) {
+  def name
+
+  switch(os) {
+  case 'RHEL9':
+    name = 'container-rhel-9'
+    break
+  case 'RHEL8':
+    name = 'container-rhel-8'
+    break
+  case 'RHEL7':
+    name = 'container-rhel-7'
+    break
+  case 'AMZN2':
+    name = "container-build-amzn2"
+    break
+  case 'AMZN2023':
+    name = "container-build-amzn2023"
+    break
+  case 'Ubuntu22':
+    name = "container-build-ubuntu22"
+    break
+  default:
+    error()
+  }
+  
+  return name
+}
+
+def get_os_repository_prefix(String os) {
+  def prefix
+
+  switch(os) {
+  case 'RHEL9':
+    prefix = '9.x'
+    break
+  case 'RHEL8':
+    prefix = '8.x'
+    break
+  case 'RHEL7':
+    prefix = '7.x'
+    break
+  case 'AMZN2':
+    prefix = 'amzn2'
+    break
+  case 'AMZN2023':
+    prefix = 'amzn2023'
+    break
+  case 'Ubuntu22':
+    prefix = 'ubuntu'
+    break
+  default:
+    error()
+  }
+  
+  return prefix
+}
+
+def get_rpm_macros_filename(String version) {
+  def filename
+
+  switch(version) {
+  case '7.0':
+  case '6.0':
+    filename = 'over_project60_macros'
+    break
+  case '5.0':
+  case '4.0':
+    filename = 'macros'
+    break
+  default:
+    error()
+  }
+
+  return filename
+}
+
+def get_rpmmacros(String os, String arch) {
+  def phrase_dir
+  def rpmmacros
+
+  switch(arch) {
+    case 'aarch64':
+      phrase_dir = '/root'
+    default:
+      phrase_dir = '/builddir'
+  }
+
+  switch(os) {
+  case 'RHEL9':
+  case 'RHEL8':
+  case 'AMZN2023':
+    rpmmacros = "%_default_patch_fuzz 2 \n" + \
+                "%__gpg_sign_cmd %{__gpg} gpg --no-verbose " + \
+                "--no-armor --pinentry-mode loopback " + \
+                "--passphrase-file ${phrase_dir}/.phrase " + \
+                "--no-secmem-warning -u %{_gpg_name} " + \
+                "%{?_gpg_digest_algo:--digest-algo " + \
+                "%{_gpg_digest_algo}} -sbo " + \
+                "%{__signature_filename} %{__plaintext_filename}"
+    break
+  case 'RHEL7':
+  case 'AMZN2':
+    rpmmacros = "%_default_patch_fuzz 2"
+    break
+  default:
+    error()
+  }
+
+  return rpmmacros
+}
+
+def get_pgp_key_filename(String version) {
+  def filename
+
+  switch(version) {
+  case '7.0':
+  case '6.0':
+    filename = '.rsa4096_gpg_secret_key' 
+    break
+  case '5.0':
+  case '4.0':
+    filename = '.gpg_secret_key'
+    break
+  default:
+    error()
+  }
+
+  return filename
+}
+
+def get_gpg_sign_cmd(String version) {
+  GPG_SIGN_CMD_BEGIN = "%__gpg_sign_cmd %{__gpg} gpg --no-verbose --no-armor --pinentry-mode loopback --passphrase-file /usr/local/src/project_gpg/.phrase --no-secmem-warning %{?_gpg_digest_algo:--digest-algo %{_gpg_digest_algo}} -sbo %{__signature_filename} "
+  GPG_SIGN_CMD_END = " %{__plaintext_filename}"
+
+  if (version.contains("7.0") || version.contains("6.0")) {
+    return GPG_SIGN_CMD_BEGIN + "-u project-packager@example.com" + GPG_SIGN_CMD_END
+  }
+
+  return GPG_SIGN_CMD_BEGIN + "-u packager@example.com" + GPG_SIGN_CMD_END
+}
+
+
+pipeline {
+  agent {
+    label get_builder_label(params.OS, params.ARCH)
+  }
+
+  parameters {
+    string(name: 'NAME', description: 'Package Name')
+    string(name: 'TAG', description: 'The tag to check out and build')
+    choice(name: 'OS', choices: ['RHEL9', 'RHEL8', 'RHEL7', 'AMZN2', 'AMZN2023', 'Ubuntu22'],
+           description: 'The OS to build for')
+    choice(name: 'ARCH', choices: ['x86_64', 'aarch64', 'noarch'],
+           description: 'The architecture to build for')
+    choice(name: 'PROJECT_VERSION', choices: ['7.0', '6.0', '5.0', '4.0'],
+           description: 'The Project Major Version used to deploy to the test repository')
+  }
+
+  environment {
+    CONTAINER_NAME = get_container_name(params.OS)
+    DEFINE = "--define '_topdir /rpmbuild'"
+    RPM_DIR = "/etc/rpm"   
+    GNUPGHOME = "${env.RPM_DIR}/.pgp" 
+    MACROS_FILE = get_rpm_macros_filename(PROJECT_VERSION)
+    MOCK_CMD = "mock -r ${env.CONTAINER_NAME}"
+    MOCK_OPT = "'--plugin-option=bind_mount:dirs=[(\"${env.WORKSPACE}/${params.NAME}\", \"/rpmbuild\"), " + \
+                                                 "(\"/home/jenkins/go\", \"/builddir/go\")]'"
+    MOCK_COPYIN_CMD = "${env.MOCK_CMD} --copyin"
+    MOCK_SHELL_CMD = "${env.MOCK_CMD} ${env.MOCK_OPT} --chroot --shell"
+    OS_PREFIX = get_os_repository_prefix(params.OS)
+    PGP_DIR = "/usr/local/src/project_gpg"
+    PGP_KEY_FILE = get_pgp_key_filename(PROJECT_VERSION)
+    PODMAN_CMD = "podman exec ${env.CONTAINER_NAME} bash -c"
+    RPMMACROS = get_rpmmacros(params.OS, params.ARCH)
+    GPG_SIGN_CMD = get_gpg_sign_cmd(PROJECT_VERSION)
+    PROXY = 'http://proxy.example.com:8080'
+    http_proxy = "${env.PROXY}"
+    https_proxy = "${env.PROXY}"
+  }
+
+  post {
+    always {
+      script {
+        switch(OS) {
+        case 'RHEL9':
+        case 'RHEL8':
+        case 'RHEL7':
+          switch(ARCH) {
+            case 'aarch64':
+              sh(script: "${PODMAN_CMD} 'rm -fr /rpmbuild/*'")
+              sh(script: "podman stop ${CONTAINER_NAME} && podman rm ${CONTAINER_NAME}")
+              break
+            default:
+              sh(script: "${MOCK_SHELL_CMD} 'rm -fr /rpmbuild/*'")
+          }
+          break
+        case 'AMZN2':
+        case 'AMZN2023':
+          sh(script: "${PODMAN_CMD} 'rm -fr /rpmbuild/*'")
+          sh(script: "podman stop ${CONTAINER_NAME} && podman rm ${CONTAINER_NAME}")
+          break
+        case 'Ubuntu22':
+          sh(script: "${PODMAN_CMD} 'rm -fr /debbuild/*'")
+          sh(script: "podman stop ${CONTAINER_NAME} && podman rm ${CONTAINER_NAME}")
+          break
+        default:
+          error()
+        }
+      }
+    }
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        script {
+          shell(script: "test -d ${NAME} || mkdir ${NAME}")
+
+          dir("${NAME}") {
+            git(branch: "release/6.0",
+                url: "https://example.com/repo/${NAME}.git")
+
+            sh(script: "git checkout ${TAG}")
+            sh(script: "git gc")
+          }
+        }
+      }
+    }
+
+    stage('Build') {
+      steps {
+        script {
+          switch(OS) {
+          case 'RHEL9':
+          case 'RHEL8':
+            switch(ARCH) {
+              case 'aarch64':
+                build_rhel_aarch64()
+                break
+              default:
+                build_over_rhel7()
+            }
+            break
+          case 'RHEL7':
+            build_over_rhel7()
+            break
+          case 'AMZN2':
+            build_amzn2()
+            break
+          case 'AMZN2023':
+            build_amzn2023()
+            break
+          case 'Ubuntu22':
+            build_ubuntu22()
+            break
+          default:
+            error()
+          }
+        }
+      }
+    }
+
+    stage('Deploy') {
+      agent { label "test-repository" }
+      steps {
+        copyArtifacts(projectName: "${JOB_NAME}",
+                      selector: specific("${BUILD_NUMBER}"),
+                      filter: "${OS_PREFIX}/**",
+                      target: "/var/www/html/project-internal/${PROJECT_VERSION}/")
+      }
+    }
+  }
+}

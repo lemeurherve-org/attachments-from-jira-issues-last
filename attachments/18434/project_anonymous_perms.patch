@@ -1,0 +1,104 @@
+Index: SidACL.java
+===================================================================
+--- SidACL.java	(revision 13757)
++++ SidACL.java	(working copy)
+@@ -45,6 +45,9 @@
+         // finally everyone
+         b = hasPermission(EVERYONE,permission);
+         if(b!=null) return b;
++        // permissions granted to anonymous users are granted to everyone
++        b=hasPermission(ANONYMOUS,permission);
++        if(b!=null) return b;
+ 
+         return null;
+     }
+@@ -69,10 +72,24 @@
+      */
+     protected abstract Boolean hasPermission(Sid p, Permission permission);
+ 
++    protected String toString(Sid p) {
++        if (p instanceof GrantedAuthoritySid)
++            return ((GrantedAuthoritySid) p).getGrantedAuthority();
++        if (p instanceof PrincipalSid)
++            return ((PrincipalSid) p).getPrincipal();
++        if (p == EVERYONE)
++            return "role_everyone";
++        // hmm...
++        return p.toString();
++    }
++
+     /**
+      * Creates a new {@link SidACL} that first consults 'this' {@link SidACL} and then delegate to
+      * the given parent {@link SidACL}. By doing this at the {@link SidACL} level and not at the
+      * {@link ACL} level, this allows the child ACLs to have an explicit deny entry.
++     * Note that the combined ACL calls hasPermission(Sid,Permission) in the child and parent
++     * SidACLs directly, so if these override _hasPermission then this custom behavior will
++     * not be applied.
+      */
+     public final SidACL newInheritingACL(final SidACL parent) {
+         final SidACL child = this;
+Index: GlobalMatrixAuthorizationStrategy.java
+===================================================================
+--- GlobalMatrixAuthorizationStrategy.java	(revision 13757)
++++ GlobalMatrixAuthorizationStrategy.java	(working copy)
+@@ -112,22 +112,6 @@
+                 return true;
+             return null;
+         }
+-
+-        protected Boolean _hasPermission(Authentication a, Permission permission) {
+-            Boolean b = super._hasPermission(a,permission);
+-            // permissions granted to anonymous users are granted to everyone
+-            if(b==null) b=hasPermission(ANONYMOUS,permission);
+-            return b;
+-        }
+-
+-        private String toString(Sid p) {
+-            if (p instanceof GrantedAuthoritySid)
+-                return ((GrantedAuthoritySid) p).getGrantedAuthority();
+-            if (p instanceof PrincipalSid)
+-                return ((PrincipalSid) p).getPrincipal();
+-            // hmm...
+-            return p.toString();
+-        }
+     }
+ 
+     public Descriptor<AuthorizationStrategy> getDescriptor() {
+Index: AuthorizationMatrixProperty.java
+===================================================================
+--- AuthorizationMatrixProperty.java	(revision 13757)
++++ AuthorizationMatrixProperty.java	(working copy)
+@@ -146,31 +146,10 @@
+ 
+ 	private final class AclImpl extends SidACL {
+ 		protected Boolean hasPermission(Sid sid, Permission p) {
+-			String s = toString(sid);
+-			for (; p != null; p = p.impliedBy) {
+-				Set<String> set = grantedPermissions.get(p);
+-				if (set != null && set.contains(s))
+-					return true;
+-			}
++			if (AuthorizationMatrixProperty.this.hasPermission(toString(sid),p))
++				return true;
+ 			return null;
+ 		}
+-
+-		protected Boolean _hasPermission(Authentication a, Permission permission) {
+-			Boolean b = super._hasPermission(a, permission);
+-			// permissions granted to anonymous users are granted to everyone
+-			if (b == null)
+-				b = hasPermission(ANONYMOUS, permission);
+-			return b;
+-		}
+-
+-		private String toString(Sid p) {
+-			if (p instanceof GrantedAuthoritySid)
+-				return ((GrantedAuthoritySid) p).getGrantedAuthority();
+-			if (p instanceof PrincipalSid)
+-				return ((PrincipalSid) p).getPrincipal();
+-			// hmm...
+-			return p.toString();
+-		}
+ 	}
+ 
+ 	private Object readResolve() {

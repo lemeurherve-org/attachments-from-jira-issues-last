@@ -1,0 +1,113 @@
+From 7ff44f506a072253218d6ca1badc77373bd669aa Mon Sep 17 00:00:00 2001
+From: Michael Elkin <michael.elkin@bridgepointeducation.com>
+Date: Wed, 6 Jul 2011 21:01:11 -0700
+Subject: [PATCH] tag 1.414 for parameters in multiconfig filters
+
+---
+ core/src/main/java/hudson/matrix/MatrixBuild.java  |   23 +++++++++++--
+ .../src/main/java/hudson/matrix/MatrixProject.java |   35 ++++++++++++++------
+ 2 files changed, 44 insertions(+), 14 deletions(-)
+
+diff --git a/core/src/main/java/hudson/matrix/MatrixBuild.java b/core/src/main/java/hudson/matrix/MatrixBuild.java
+index 824e998..6c2a699 100644
+--- a/core/src/main/java/hudson/matrix/MatrixBuild.java
++++ b/core/src/main/java/hudson/matrix/MatrixBuild.java
+@@ -34,6 +34,7 @@ import hudson.model.Hudson;
+ import hudson.model.JobProperty;
+ import hudson.model.Node;
+ import hudson.model.ParametersAction;
++import hudson.model.ParameterValue;
+ import hudson.model.Queue;
+ import hudson.model.Result;
+ import hudson.model.Cause.UpstreamCause;
+@@ -229,15 +230,29 @@ public class MatrixBuild extends AbstractBuild<MatrixProject,MatrixBuild> {
+             Collection<MatrixConfiguration> activeConfigurations = p.getActiveConfigurations();
+             final int n = getNumber();
+             
+-            String touchStoneFilter = p.getTouchStoneCombinationFilter();
+             Collection<MatrixConfiguration> touchStoneConfigurations = new HashSet<MatrixConfiguration>();
+             Collection<MatrixConfiguration> delayedConfigurations = new HashSet<MatrixConfiguration>();
+-            for (MatrixConfiguration c: activeConfigurations) {
++	    ParametersAction parameters = getAction(ParametersAction.class);
++            String touchStoneFilter = p.getTouchStoneCombinationFilter();
++	    String combinationFilter = p.getCombinationFilter();
++
++	    // Iterate parameters to get correct values
++            if (parameters != null) {
++                for (ParameterValue pv: parameters) {
++		    if (pv == null) continue;
++                    if (touchStoneFilter != null)
++                        touchStoneFilter = touchStoneFilter.replace(pv.getName(), pv.createVariableResolver(null).resolve(pv.getName()) );
++                    if (combinationFilter != null)
++		        combinationFilter = combinationFilter.replace(pv.getName(), pv.createVariableResolver(null).resolve(pv.getName()) );
++                }
++            }
++
++	    for (MatrixConfiguration c: activeConfigurations) {
+                 if (!MatrixBuildListener.buildConfiguration(MatrixBuild.this, c))
+                     continue; // skip rebuild
+-                if (touchStoneFilter != null && c.getCombination().evalGroovyExpression(p.getAxes(), p.getTouchStoneCombinationFilter())) {
++                if (touchStoneFilter != null && c.getCombination().evalGroovyExpression(p.getAxes(), touchStoneFilter)) {
+                     touchStoneConfigurations.add(c);
+-                } else {
++                } else if (c.getCombination().evalGroovyExpression(p.getAxes(), combinationFilter)) {
+                     delayedConfigurations.add(c);
+                 }
+             }
+diff --git a/core/src/main/java/hudson/matrix/MatrixProject.java b/core/src/main/java/hudson/matrix/MatrixProject.java
+index 4776ee5..e6b8595 100644
+--- a/core/src/main/java/hudson/matrix/MatrixProject.java
++++ b/core/src/main/java/hudson/matrix/MatrixProject.java
+@@ -41,6 +41,9 @@ import hudson.model.Items;
+ import hudson.model.JDK;
+ import hudson.model.Job;
+ import hudson.model.Label;
++import hudson.model.ParameterDefinition;
++import hudson.model.ParametersDefinitionProperty;
++import hudson.model.ParameterValue;
+ import hudson.model.Queue.FlyweightTask;
+ import hudson.model.ResourceController;
+ import hudson.model.Result;
+@@ -379,17 +382,29 @@ public class MatrixProject extends AbstractProject<MatrixProject,MatrixBuild> im
+ 
+         // find all active configurations
+         Set<MatrixConfiguration> active = new LinkedHashSet<MatrixConfiguration>();
++        // parameters setup
++        ParametersDefinitionProperty paramDefProp = getProperty(ParametersDefinitionProperty.class);
++        String evaluatedCombinationFilter = getCombinationFilter();
++
++        // inject default parameter values to the filter as true to setup all active configurations
++        if (isParameterized() && evaluatedCombinationFilter != null) {
++            for(ParameterDefinition paramDefinition : paramDefProp.getParameterDefinitions()) {
++                ParameterValue defaultValue  = paramDefinition.getDefaultParameterValue();
++                evaluatedCombinationFilter = evaluatedCombinationFilter.replace(defaultValue.getName(), "true");
++            }
++        }
++
+         for (Combination c : axes.list()) {
+-            if(c.evalGroovyExpression(axes,combinationFilter)) {
+-        		LOGGER.fine("Adding configuration: " + c);
+-	            MatrixConfiguration config = configurations.get(c);
+-	            if(config==null) {
+-	                config = new MatrixConfiguration(this,c);
+-	                config.save();
+-	                configurations.put(config.getCombination(), config);
+-	            }
+-	            active.add(config);
+-        	}
++            if(c.evalGroovyExpression(axes,evaluatedCombinationFilter)) {
++                    LOGGER.fine("Adding configuration: " + c);
++                    MatrixConfiguration config = configurations.get(c);
++                    if(config==null) {
++                        config = new MatrixConfiguration(this,c);
++                        config.save();
++                        configurations.put(config.getCombination(), config);
++                    }
++                    active.add(config);
++             }
+         }
+         this.activeConfigurations = active;
+     }
+-- 
+1.7.3.4
+

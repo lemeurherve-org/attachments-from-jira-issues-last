@@ -1,0 +1,346 @@
+diff --git a/src/main/java/hudson/scm/SubversionEventHandlerImpl.java b/src/main/java/hudson/scm/SubversionEventHandlerImpl.java
+index 5efc98f..42eb7c1 100644
+--- a/src/main/java/hudson/scm/SubversionEventHandlerImpl.java
++++ b/src/main/java/hudson/scm/SubversionEventHandlerImpl.java
+@@ -36,12 +36,19 @@ public class SubversionEventHandlerImpl extends SVNEventAdapter {
+ 
+     protected final File baseDir;
+ 
+-    public SubversionEventHandlerImpl(PrintStream out, File baseDir) {
++    protected boolean quiet;
++
++    public SubversionEventHandlerImpl(PrintStream out, File baseDir, boolean quiet) {
+         this.out = out;
+         this.baseDir = baseDir;
++        this.quiet = quiet;
+     }
+ 
+     public void handleEvent(SVNEvent event, double progress) throws SVNException {
++        if (this.quiet) {
++            return;
++        }
++
+         File file = event.getFile();
+         String path = null;
+         if (file != null) {
+diff --git a/src/main/java/hudson/scm/SubversionSCM.java b/src/main/java/hudson/scm/SubversionSCM.java
+index 5b36db9..3b3d838 100755
+--- a/src/main/java/hudson/scm/SubversionSCM.java
++++ b/src/main/java/hudson/scm/SubversionSCM.java
+@@ -270,7 +270,7 @@ public class SubversionSCM extends SCM implements Serializable {
+      */
+     public SubversionSCM(String[] remoteLocations, String[] localLocations,
+                          boolean useUpdate, SubversionRepositoryBrowser browser, String excludedRegions) {
+-        this(ModuleLocation.parse(remoteLocations,localLocations,null,null), useUpdate, false, browser, excludedRegions, null, null, null);
++        this(ModuleLocation.parse(remoteLocations,localLocations,null,null,null), useUpdate, false, browser, excludedRegions, null, null, null);
+     }
+ 
+     /**
+@@ -278,7 +278,7 @@ public class SubversionSCM extends SCM implements Serializable {
+      */
+      public SubversionSCM(String[] remoteLocations, String[] localLocations,
+                          boolean useUpdate, SubversionRepositoryBrowser browser, String excludedRegions, String excludedUsers, String excludedRevprop) {
+-        this(ModuleLocation.parse(remoteLocations,localLocations,null,null), useUpdate, false, browser, excludedRegions, excludedUsers, excludedRevprop, null);
++        this(ModuleLocation.parse(remoteLocations,localLocations,null,null,null), useUpdate, false, browser, excludedRegions, excludedUsers, excludedRevprop, null);
+     }
+ 
+    /**
+@@ -2617,6 +2617,13 @@ public class SubversionSCM extends SCM implements Serializable {
+         @Exported
+         public boolean ignoreExternalsOption;
+ 
++         /**
++         * Flag to turn off log output.
++         */
++        @Exported
++        public boolean quietOption;
++
++
+         /**
+          * Cache of the repository UUID.
+          */
+@@ -2628,44 +2635,45 @@ public class SubversionSCM extends SCM implements Serializable {
+          */
+         @Deprecated
+         public ModuleLocation(String remote, String local) {
+-            this(remote, null, local, null, false);
++            this(remote, null, local, null, false, false);
+         }
+ 
+         /**
+          * Constructor to support backwards compatibility.
+          */
+         @Deprecated
+-        public ModuleLocation(String remote, String local, String depthOption, boolean ignoreExternalsOption) {
+-            this(remote,null,local,depthOption,ignoreExternalsOption);
++        public ModuleLocation(String remote, String local, String depthOption, boolean ignoreExternalsOption, boolean quietOption) {
++            this(remote,null,local,depthOption,ignoreExternalsOption,quietOption);
+         }
+ 
+         @DataBoundConstructor
+-        public ModuleLocation(String remote, String credentialsId, String local, String depthOption, boolean ignoreExternalsOption) {
++        public ModuleLocation(String remote, String credentialsId, String local, String depthOption, boolean ignoreExternalsOption, boolean quietOption) {
+             this.remote = Util.removeTrailingSlash(Util.fixNull(remote).trim());
+             this.credentialsId = credentialsId;
+             this.local = fixEmptyAndTrim(local);
+             this.depthOption = StringUtils.isEmpty(depthOption) ? SVNDepth.INFINITY.getName() : depthOption;
+             this.ignoreExternalsOption = ignoreExternalsOption;
++            this.quietOption = quietOption;
+         }
+ 
+         public ModuleLocation withRemote(String remote) {
+-            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption);
++            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption, quietOption);
+         }
+ 
+         public ModuleLocation withCredentialsId(String credentialsId) {
+-            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption);
++            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption, quietOption);
+         }
+ 
+         public ModuleLocation withLocal(String local) {
+-            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption);
++            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption, quietOption);
+         }
+ 
+         public ModuleLocation withDepthOption(String depthOption) {
+-            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption);
++            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption, quietOption);
+         }
+ 
+         public ModuleLocation withIgnoreExternalsOption(boolean ignoreExternalsOption) {
+-            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption);
++            return new ModuleLocation(remote, credentialsId, local, depthOption, ignoreExternalsOption, quietOption);
+         }
+ 
+         /**
+@@ -2837,6 +2845,15 @@ public class SubversionSCM extends SCM implements Serializable {
+             return ignoreExternalsOption;
+         }
+ 
++         /**
++         * Determines if operations should be logged.
++         *
++         * @return true if subversion operations should be logged.
++         */
++        public boolean isQuietOption() {
++            return quietOption;
++        }
++
+         /**
+          * Expand location value based on Build parametric execution.
+          *
+@@ -2858,7 +2875,7 @@ public class SubversionSCM extends SCM implements Serializable {
+          */
+         public ModuleLocation getExpandedLocation(EnvVars env) {
+             return new ModuleLocation(env.expand(remote), credentialsId, env.expand(getLocalDir()), getDepthOption(),
+-                    isIgnoreExternalsOption());
++                    isIgnoreExternalsOption(), isQuietOption());
+         }
+ 
+         @Override
+@@ -2869,13 +2886,14 @@ public class SubversionSCM extends SCM implements Serializable {
+         private static final long serialVersionUID = 1L;
+ 
+         @Deprecated
+-        public static List<ModuleLocation> parse(String[] remoteLocations, String[] localLocations, String[] depthOptions, boolean[] isIgnoreExternals) {
+-            return parse(remoteLocations, null, localLocations, depthOptions, isIgnoreExternals);
++        public static List<ModuleLocation> parse(String[] remoteLocations, String[] localLocations, String[] depthOptions, boolean[] isIgnoreExternals, boolean[] isQuiet) {
++            return parse(remoteLocations, null, localLocations, depthOptions, isIgnoreExternals, isQuiet);
+         }
+ 
+         public static List<ModuleLocation> parse(String[] remoteLocations, String[] credentialIds,
+                                                  String[] localLocations, String[] depthOptions,
+-                                                 boolean[] isIgnoreExternals) {
++                                                 boolean[] isIgnoreExternals,
++                                                 boolean[] isQuiet) {
+             List<ModuleLocation> modules = new ArrayList<ModuleLocation>();
+             if (remoteLocations != null && localLocations != null) {
+                 int entries = Math.min(remoteLocations.length, localLocations.length);
+@@ -2890,7 +2908,8 @@ public class SubversionSCM extends SCM implements Serializable {
+                                 credentialIds != null && credentialIds.length > i ? credentialIds[i] : null,
+                                 Util.nullify(localLocations[i]),
+                             depthOptions != null ? depthOptions[i] : null,
+-                            isIgnoreExternals != null && isIgnoreExternals[i]));
++                            isIgnoreExternals != null && isIgnoreExternals[i],
++                            isQuiet != null && isQuiet[i]));
+                     }
+                 }
+             }
+@@ -2920,7 +2939,7 @@ public class SubversionSCM extends SCM implements Serializable {
+             }
+ 
+             return new ModuleLocation(returnURL, credentialsId, getLocalDir(), getDepthOption(),
+-                    isIgnoreExternalsOption());
++                    isIgnoreExternalsOption(), isQuietOption());
+         }
+ 
+         @Extension
+diff --git a/src/main/java/hudson/scm/subversion/CheckoutUpdater.java b/src/main/java/hudson/scm/subversion/CheckoutUpdater.java
+index 5ffc6ca..bad974c 100755
+--- a/src/main/java/hudson/scm/subversion/CheckoutUpdater.java
++++ b/src/main/java/hudson/scm/subversion/CheckoutUpdater.java
+@@ -57,7 +57,9 @@ public class CheckoutUpdater extends WorkspaceUpdater {
+     private static final long serialVersionUID = -3502075714024708011L;
+ 
+     private static final FastDateFormat fmt = FastDateFormat.getInstance("''yyyy-MM-dd'T'HH:mm:ss.SSS Z''");
+-    
++
++    private boolean quiet = false;
++
+     @DataBoundConstructor
+     public CheckoutUpdater() {}
+ 
+@@ -90,7 +92,7 @@ public class CheckoutUpdater extends WorkspaceUpdater {
+                     listener.getLogger().println("Checking out " + location.remote + " at revision " + revisionName);
+ 
+                     File local = new File(ws, location.getLocalDir());
+-                    SubversionUpdateEventHandler eventHandler = new SubversionUpdateEventHandler(new PrintStream(pos), externals, local, location.getLocalDir());
++                    SubversionUpdateEventHandler eventHandler = new SubversionUpdateEventHandler(new PrintStream(pos), externals, local, location.getLocalDir(), quiet);
+                     svnuc.setEventHandler(eventHandler);
+                     svnuc.setExternalsHandler(eventHandler);
+                     svnuc.setIgnoreExternals(location.isIgnoreExternalsOption());
+diff --git a/src/main/java/hudson/scm/subversion/SubversionUpdateEventHandler.java b/src/main/java/hudson/scm/subversion/SubversionUpdateEventHandler.java
+index 3652d51..4172aa4 100755
+--- a/src/main/java/hudson/scm/subversion/SubversionUpdateEventHandler.java
++++ b/src/main/java/hudson/scm/subversion/SubversionUpdateEventHandler.java
+@@ -63,8 +63,8 @@ final class SubversionUpdateEventHandler extends SubversionEventHandlerImpl impl
+      */
+     private final String modulePath;
+     
+-    public SubversionUpdateEventHandler(PrintStream out, List<External> externals, File moduleDir, String modulePath) {
+-        super(out,moduleDir);
++    public SubversionUpdateEventHandler(PrintStream out, List<External> externals, File moduleDir, String modulePath, boolean quiet) {
++        super(out,moduleDir,quiet);
+         this.externals = externals;
+         this.modulePath = modulePath;
+     }
+@@ -128,4 +128,5 @@ final class SubversionUpdateEventHandler extends SubversionEventHandlerImpl impl
+             return revision;
+         }
+     }
+-}
+\ No newline at end of file
++}
++
+diff --git a/src/main/java/hudson/scm/subversion/UpdateUpdater.java b/src/main/java/hudson/scm/subversion/UpdateUpdater.java
+index 3844060..12fe60b 100755
+--- a/src/main/java/hudson/scm/subversion/UpdateUpdater.java
++++ b/src/main/java/hudson/scm/subversion/UpdateUpdater.java
+@@ -138,7 +138,8 @@ public class UpdateUpdater extends WorkspaceUpdater {
+ 
+             try {
+                 File local = new File(ws, location.getLocalDir());
+-                SubversionUpdateEventHandler eventHandler = new SubversionUpdateEventHandler(listener.getLogger(), externals, local, location.getLocalDir());
++                boolean quiet = location.isQuietOption();
++                SubversionUpdateEventHandler eventHandler = new SubversionUpdateEventHandler(listener.getLogger(), externals, local, location.getLocalDir(), quiet);
+                 svnuc.setEventHandler(eventHandler);
+                 svnuc.setExternalsHandler(eventHandler);
+ 
+diff --git a/src/main/resources/hudson/scm/SubversionSCM/ModuleLocation/config.jelly b/src/main/resources/hudson/scm/SubversionSCM/ModuleLocation/config.jelly
+index 8a32abc..cac83d5 100644
+--- a/src/main/resources/hudson/scm/SubversionSCM/ModuleLocation/config.jelly
++++ b/src/main/resources/hudson/scm/SubversionSCM/ModuleLocation/config.jelly
+@@ -54,6 +54,9 @@ THE SOFTWARE.
+   <f:entry title="${%Ignore externals}" field="ignoreExternalsOption">
+     <f:checkbox default="true"/>
+   </f:entry>
++  <f:entry title="${%Quiet}" field="quietOption">
++    <f:checkbox default="false"/>
++  </f:entry>
+   <f:entry>
+     <div align="right">
+       <input type="button" value="${%Delete}" class="repeatable-delete show-if-not-only" style="margin-left: 1em;"/>
+diff --git a/src/test/java/hudson/scm/SubversionSCMTest.java b/src/test/java/hudson/scm/SubversionSCMTest.java
+index 618b11b..0707792 100644
+--- a/src/test/java/hudson/scm/SubversionSCMTest.java
++++ b/src/test/java/hudson/scm/SubversionSCMTest.java
+@@ -818,7 +818,7 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+ //        SLAVE_DEBUG_PORT = 8001;
+         File repo = new CopyExisting(getClass().getResource("HUDSON-6030.zip")).allocate();
+         SubversionSCM scm = new SubversionSCM(ModuleLocation.parse(new String[]{"file://" + repo.toURI().toURL().getPath()},
+-                                                                   new String[]{"."}, null, null),
++                                                                   new String[]{"."}, null, null, null),
+                                               new UpdateUpdater(), null, ".*/bar", "", "", "", "");
+ 
+         FreeStyleProject p = createFreeStyleProject("testExcludedRegions");
+@@ -850,7 +850,7 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+ //        SLAVE_DEBUG_PORT = 8001;
+         File repo = new CopyExisting(getClass().getResource("HUDSON-6030.zip")).allocate();
+         SubversionSCM scm = new SubversionSCM(ModuleLocation.parse(new String[]{"file://" + repo.toURI().toURL().getPath()},
+-                                                                   new String[]{"."}, null, null),
++                                                                   new String[]{"."}, null, null, null),
+                                               new UpdateUpdater(), null, "", "", "", "", ".*/foo");
+ 
+         FreeStyleProject p = createFreeStyleProject("testExcludedRegions");
+@@ -885,7 +885,7 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+             ExecutionException {
+           File repo = new CopyExisting(getClass().getResource("JENKINS-10449.zip")).allocate();
+           SubversionSCM scm = new SubversionSCM(ModuleLocation.parse(new String[]{"file://" + repo.toURI().toURL().getPath()},
+-                                                                     new String[]{"."},null,null),
++                                                                     new String[]{"."},null,null,null),
+                                                 new UpdateUpdater(), null, "/z.*", "", "", "", "", false, shouldFilterLog, null);
+ 
+           FreeStyleProject p = createFreeStyleProject(String.format("testFilterChangelog-%s", shouldFilterLog));
+@@ -1511,8 +1511,8 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+             FreeStyleProject b = createFreeStyleProject();
+ 
+             ModuleLocation[] locations = {
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "no_externals", "infinity", true),
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "with_externals", "infinity", false)
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "no_externals", "infinity", true, false),
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "with_externals", "infinity", false, false)
+                 };
+ 
+             b.setScm(new SubversionSCM(Arrays.asList(locations), new CheckoutUpdater(), null, null, null, null, null, null));
+@@ -1538,10 +1538,10 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+             FreeStyleProject b = createFreeStyleProject();
+ 
+             ModuleLocation[] locations = {
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "empty", "empty", true),
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "files", "files", true),
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "immediates", "immediates", true),
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "infinity", "infinity", true)
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "empty", "empty", true, false),
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "files", "files", true, false),
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "immediates", "immediates", true, false),
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "infinity", "infinity", true, false)
+                 };
+ 
+             b.setScm(new SubversionSCM(Arrays.asList(locations), new CheckoutUpdater(), null, null, null, null, null, null));
+@@ -1588,7 +1588,7 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+             FreeStyleProject b = createFreeStyleProject();
+ 
+             ModuleLocation[] locations = {
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "proja", "infinity", true)
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "proja", "infinity", true, false)
+                 };
+ 
+             // Do initial update with infinite depth and check that file1 exists
+@@ -1599,7 +1599,7 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+ 
+             // Trigger new build with depth empty and check that file1 no longer exists
+             ModuleLocation[] locations2 = {
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "proja", "empty", true)
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "proja", "empty", true, false)
+                 };
+             b.setScm(new SubversionSCM(Arrays.asList(locations2), new UpdateUpdater(), null, null, null, null, null, null));
+             FreeStyleBuild build2 = assertBuildStatusSuccess(b.scheduleBuild2(0));
+@@ -1624,7 +1624,7 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+             FreeStyleProject b = createFreeStyleProject();
+ 
+             ModuleLocation[] locations = {
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "proja", "infinity", true)
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "proja", "infinity", true, false)
+                 };
+ 
+             // Do initial update with infinite depth and check that subdir exists
+@@ -1644,7 +1644,7 @@ public class SubversionSCMTest extends AbstractSubversionTest {
+ 
+             // Trigger new build with depth unknown and check that subdir still does not exist
+             ModuleLocation[] locations2 = {
+-                    new ModuleLocation("svn://localhost/jenkins-777/proja", "proja", "undefined", true)
++                    new ModuleLocation("svn://localhost/jenkins-777/proja", "proja", "undefined", true, false)
+                 };
+             b.setScm(new SubversionSCM(Arrays.asList(locations2), new UpdateUpdater(), null, null, null, null, null, null));
+             FreeStyleBuild build2 = assertBuildStatusSuccess(b.scheduleBuild2(0));

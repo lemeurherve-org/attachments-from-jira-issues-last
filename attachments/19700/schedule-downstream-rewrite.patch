@@ -1,0 +1,208 @@
+### Eclipse Workspace Patch 1.0
+#P ivy
+Index: src/main/resources/hudson/ivy/Messages.properties
+===================================================================
+--- src/main/resources/hudson/ivy/Messages.properties	(revision 34220)
++++ src/main/resources/hudson/ivy/Messages.properties	(working copy)
+@@ -47,3 +47,7 @@
+ IvyModuleSetBuild.NoSuchPropertyFile=No such property file {0} exists\nPlease verify that your Ivy settings property files are specified properly and exist in the workspace.
+ 
+ IvyProbeAction.DisplayName=Monitor Ivy Process
++
++IvyBuild.DownstreamDisabled=Downstream project {0} is disabled. Triggering skipped
++IvyBuild.InQueue={0} is already in the queue
++IvyBuild.Triggering=Triggering a new build of {0}
+Index: src/main/java/hudson/ivy/AbstractIvyBuild.java
+===================================================================
+--- src/main/java/hudson/ivy/AbstractIvyBuild.java	(revision 34220)
++++ src/main/java/hudson/ivy/AbstractIvyBuild.java	(working copy)
+@@ -23,20 +23,23 @@
+  */
+ package hudson.ivy;
+ 
+-import hudson.Util;
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
++import hudson.model.Action;
+ import hudson.model.BuildListener;
+ import hudson.model.DependencyGraph;
+ import hudson.model.Hudson;
+-import hudson.model.Result;
+ import hudson.model.Run;
+ import hudson.model.Cause.UpstreamCause;
+-import hudson.tasks.BuildTrigger;
++import hudson.model.DependencyGraph.Dependency;
+ 
+ import java.io.File;
+ import java.io.IOException;
++import java.util.ArrayList;
+ import java.util.Calendar;
++import java.util.Collections;
++import java.util.Comparator;
++import java.util.List;
+ import java.util.Set;
+ 
+ public abstract class AbstractIvyBuild<P extends AbstractIvyProject<P,B>,B extends AbstractIvyBuild<P,B>> extends AbstractBuild<P, B>  {
+@@ -57,90 +60,61 @@
+     public AbstractIvyBuild(P project, File buildDir) throws IOException {
+         super(project, buildDir);
+     }
+-    
++
+     /**
++     * <p>
+      * Schedules all the downstream builds.
+-     * Returns immediately if build result doesn't meet the required level
+-     * (as specified by {@link BuildTrigger}, or {@link Result#SUCCESS} if none).
+-     *
++     * </p>
++     * <p>
++     * If a downstream project will end up being triggered by a longer route
++     * then it is not triggered.
++     * </p>
++     * 
+      * @param listener
+-     *      Where the progress reports go.
++     *            Where the progress reports go.
+      */
+     protected final void scheduleDownstreamBuilds(BuildListener listener) {
+-        BuildTrigger bt = getParent().getPublishersList().get(BuildTrigger.class);
+-        if (getResult().isWorseThan(bt!=null ? bt.getThreshold() : Result.SUCCESS)) return;
++        final DependencyGraph graph = Hudson.getInstance().getDependencyGraph();
++        List<Dependency> downstreamProjects = new ArrayList<Dependency>(
++                graph.getDownstreamDependencies(getParent()));
++        // Sort topologically
++        Collections.sort(downstreamProjects, new Comparator<Dependency>() {
++            public int compare(Dependency lhs, Dependency rhs) {
++                // Swapping lhs/rhs to get reverse sort:
++                return graph.compare(rhs.getDownstreamProject(), lhs.getDownstreamProject());
++            }
++        });
+ 
+-        // trigger dependency builds
+-        for( AbstractProject<?,?> down : getParent().getDownstreamProjects()) {
+-            if(debug)
+-                listener.getLogger().println("Considering whether to trigger "+down+" or not");
+-            
+-            // if the downstream module depends on multiple modules,
+-            // only trigger them when all the upstream dependencies are updated.
+-            boolean trigger = true;
+-            
+-            if (down.isInQueue()) {
+-            	if(debug)
+-                    listener.getLogger().println(" -> No, because downstream is already in queue");
+-            	trigger = false;
+-            } 
+-            // Check to see if any of its upstream dependencies are already building or in queue.
+-            else if (areUpstreamsBuilding(down, getParent())) {
+-                if(debug)
+-                    listener.getLogger().println(" -> No, because downstream has dependencies already building or in queue");
+-                trigger = false;
++        for (Dependency dep : downstreamProjects) {
++            AbstractProject<?,?> p = dep.getDownstreamProject();
++            if (p.isDisabled()) {
++                listener.getLogger().println(Messages.IvyBuild_DownstreamDisabled(p.getFullDisplayName()));
++                continue;
+             }
+-            // Check to see if any of its upstream dependencies are in this list of downstream projects.
+-            else if (inDownstreamProjects(down)) {
++            List<Action> buildActions = new ArrayList<Action>();
++            if (dep.shouldTriggerBuild(this, listener, buildActions)) {
+                 if(debug)
+-                    listener.getLogger().println(" -> No, because downstream has dependencies in the downstream projects list");
+-                trigger = false;
+-            }
+-            else {
+-                AbstractBuild<?,?> dlb = down.getLastBuild(); // can be null.
+-                for (AbstractIvyProject up : Util.filter(down.getUpstreamProjects(),AbstractIvyProject.class)) {
+-                    Run ulb;
+-                    if(up==getParent()) {
+-                        // the current build itself is not registered as lastSuccessfulBuild
+-                        // at this point, so we have to take that into account. ugly.
+-                        if(getResult()==null || !getResult().isWorseThan(Result.UNSTABLE))
+-                            ulb = this;
+-                        else
+-                            ulb = up.getLastSuccessfulBuild();
+-                    } else
+-                        ulb = up.getLastSuccessfulBuild();
+-                    if(ulb==null) {
+-                        // if no usable build is available from the upstream,
+-                        // then we have to wait at least until this build is ready
+-                        if(debug)
+-                            listener.getLogger().println(" -> No, because another upstream "+up+" for "+down+" has no successful build");
+-                        trigger = false;
+-                        break;
++                    listener.getLogger().println("Considering whether to trigger "+p+" or not");
++                
++                if (inDownstreamProjects(p)) {
++                    if(debug)
++                        listener.getLogger().println(" -> No, because downstream has dependencies in the downstream projects list");
++                } else {
++                    if(p.scheduleBuild(p.getQuietPeriod(), new UpstreamCause((Run<?,?>)this))) {
++                        listener.getLogger().println(Messages.IvyBuild_Triggering(p.getFullDisplayName()));
++                    } else {
++                        listener.getLogger().println(Messages.IvyBuild_InQueue(p.getFullDisplayName()));
+                     }
+-                    
+-                    // if no record of the relationship in the last build
+-                    // is available, we'll just have to assume that the condition
+-                    // for the new build is met, or else no build will be fired forever.
+-                    if(dlb==null)   continue;
+-                    int n = dlb.getUpstreamRelationship(up);
+-                    if(n==-1)   continue;
+-                    
+-                    assert ulb.getNumber()>=n;
+                 }
+             }
+-            
+-            if(trigger) {
+-                listener.getLogger().println(Messages.IvyBuild_Triggering(down.getName()));
+-                down.scheduleBuild(new UpstreamCause((Run<?,?>)this));
+-            }
+         }
+     }
+     
+-    private boolean inDownstreamProjects(AbstractProject downstreamProject) {
++    private boolean inDownstreamProjects(AbstractProject<?,?> downstreamProject) {
+         DependencyGraph graph = Hudson.getInstance().getDependencyGraph();
+         Set<AbstractProject> tups = graph.getTransitiveUpstream(downstreamProject);
+         
+-        for (AbstractProject tup : tups) {
++        for (AbstractProject<?,?> tup : tups) {
+             for (AbstractProject<?,?> dp : getParent().getDownstreamProjects()) {
+                 if(dp!=getParent() && dp!=downstreamProject && dp==tup) 
+                     return true;
+@@ -148,33 +122,4 @@
+         }
+         return false;
+     }
+-
+-
+-   /**
+-     * Determines whether any of the upstream project are either
+-     * building or in the queue.
+-     *
+-     * This means eventually there will be an automatic triggering of
+-     * the given project (provided that all builds went smoothly.)
+-     *
+-     * @param downstreamProject
+-     *      The AbstractProject we want to build.
+-     * @param excludeProject
+-     *      An AbstractProject to exclude - if we see this in the transitive
+-     *      dependencies, we're not going to bother checking to see if it's
+-     *      building. For example, pass the current parent project to be sure
+-     *      that it will be ignored when looking for building dependencies.
+-     * @return
+-     *      True if any upstream projects are building or in queue, false otherwise.
+-     */
+-    private boolean areUpstreamsBuilding(AbstractProject downstreamProject,
+-                                                   AbstractProject excludeProject) {
+-        DependencyGraph graph = Hudson.getInstance().getDependencyGraph();
+-        Set<AbstractProject> tups = graph.getTransitiveUpstream(downstreamProject);
+-        for (AbstractProject tup : tups) {
+-            if(tup!=excludeProject && (tup.isBuilding() || tup.isInQueue()))
+-                return true;
+-        }
+-        return false;
+-    }
+ }

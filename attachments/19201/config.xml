@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>TUPC UnitTest done on the latest DEV_SYNC changes</description>
+  <logRotator>
+    <daysToKeep>7</daysToKeep>
+    <numToKeep>-1</numToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.plugins.clearcase.ClearCaseSCM">
+    <viewName>lteci_TUPC_i22</viewName>
+    <mkviewOptionalParam></mkviewOptionalParam>
+    <filteringOutDestroySubBranchEvent>false</filteringOutDestroySubBranchEvent>
+    <useUpdate>false</useUpdate>
+    <removeViewOnRename>false</removeViewOnRename>
+    <excludedRegions></excludedRegions>
+    <loadRules>/lte/C_Application/SC_TUP/CP_TUPc/Make/CI/FDD/CI_TUPC.cs&#xd;
+/lte/C_Application/SC_TUP/CP_TUPc/Make/CI/FDD/SYNC_TUPC.cs&#xd;
+/lte/C_Application/Make/SCBM/configspec/CI_TRIGGER/GLOBAL_i22/FDD/MLN1.0_CPLANE_i22.cs&#xd;
+/lte/C_Application/Make/SCBM/configspec/CI_TRIGGER/GLOBAL_i22/FDD/DEV_MLN1.0_CPLANE_i22.cs</loadRules>
+    <useDynamicView>true</useDynamicView>
+    <viewDrive>/view</viewDrive>
+    <multiSitePollBuffer>0</multiSitePollBuffer>
+    <createDynView>false</createDynView>
+    <winDynStorageDir>\\nxnci1\views\dynamic</winDynStorageDir>
+    <unixDynStorageDir>/view/lteci_TUPC_i22</unixDynStorageDir>
+    <configSpec>element * CHECKEDOUT&#xd;
+element * /main/lte_22/LATEST&#xd;
+element * /main/LATEST</configSpec>
+    <branch>main</branch>
+    <doNotUpdateConfigSpec>true</doNotUpdateConfigSpec>
+    <useTimeRule>false</useTimeRule>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>* * * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>/usr/atria/bin/cleartool setview -exec &apos;/user/lteci/CI/install/FDD/cruisecontrol-bin_i22/default_cs.sh lteci_${JOB_NAME} &amp;&amp; mkdir -p /data/ixtools/lte/ci_logs/${JOB_NAME} &amp;&amp; /view/lteci_${JOB_NAME}/lte/C_Application/Make/SCBM/bin/unittest_tupC.sh -distclean -ver CI_TUPC_i22 -xml -skipcpp2junit -lcov&apos; lteci_${JOB_NAME}</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>FLINTVIEW_TUPC_i22</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+    <hudson.plugins.cppunit.CppUnitPublisher>
+      <testResultsPattern>exec/linux/debug/*.xml </testResultsPattern>
+      <useWorkspaceBaseDir>true</useWorkspaceBaseDir>
+    </hudson.plugins.cppunit.CppUnitPublisher>
+    <htmlpublisher.HtmlPublisher>
+      <reportTargets>
+        <htmlpublisher.HtmlPublisherTarget>
+          <reportName>LCOV Report</reportName>
+          <reportDir>/view/lteci_TUPC_i22/lte/lteDo/coverage/TUPC/</reportDir>
+          <reportFiles>index.html</reportFiles>
+          <keepAll>false</keepAll>
+          <wrapperName>htmlpublisher-wrapper.html</wrapperName>
+        </htmlpublisher.HtmlPublisherTarget>
+      </reportTargets>
+    </htmlpublisher.HtmlPublisher>
+    <hudson.tasks.Mailer>
+      <recipients>COORAMRDBTSCPFTALL@internal.nsn.com</recipients>
+      <dontNotifyEveryUnstableBuild>true</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <timeoutMinutes>180</timeoutMinutes>
+      <failBuild>true</failBuild>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+  </buildWrappers>
+  <customWorkspace>/view/lteci_TUPC_i22/lte/lteDo/</customWorkspace>
+</project>

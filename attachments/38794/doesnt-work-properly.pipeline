@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            steps {
+                withMaven(maven: 'maven-3.3.9',
+                          mavenLocalRepo: '/home/jenkins/.m2/repository')
+                {
+                    sh 'mvn clean install -Dmaven.test.failure.ignore=true'
+                }
+            }
+        }
+    }
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+            script {
+                if(currentBuild.result == 'ABORTED')
+                {
+		    // This never gets triggered - even if the build was actually aborted.
+                    echo "I echo only if ABORTED"
+                }
+                if(currentBuild.result == 'FAILED')
+                {
+		    // This gets triggered when the build was aborted
+                    echo "I echo only if FAILED"
+                }                
+            }
+        }
+    }
+}

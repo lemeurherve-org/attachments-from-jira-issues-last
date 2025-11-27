@@ -1,0 +1,87 @@
+Index: src/main/java/hudson/plugins/violations/types/gendarme/GendarmeParser.java
+===================================================================
+--- src/main/java/hudson/plugins/violations/types/gendarme/GendarmeParser.java	(revision 36999)
++++ src/main/java/hudson/plugins/violations/types/gendarme/GendarmeParser.java	(working copy)
+@@ -39,6 +39,7 @@
+ 	static final Logger logger = Logger.getLogger(GendarmeParser.class.toString());
+ 	
+ 	static final String TYPE_NAME = "gendarme";
++        static final Pattern pathPattern = Pattern.compile("^(.*)\\(.([0-9]*)\\)$");
+ 	private FullBuildModel model;
+     private File reportParentFile;
+     private File projectPath;
+@@ -113,8 +114,7 @@
+ 				int line = 0;
+ 
+ 				if(rule.getType() == GendarmeRuleType.Method){
+-					Pattern pattern = Pattern.compile("^(.*)\\(.([0-9]*)\\)$");
+-					Matcher matcher = pattern.matcher(source);
++					Matcher matcher = pathPattern.matcher(source);
+ 					logger.info("matcher.groupCount() : "+matcher.groupCount());
+ 					
+ 					logger.info("matcher.matches() : "+matcher.matches());
+@@ -126,7 +126,7 @@
+ 					}
+ 					if(matcher.matches()){
+ 						String fullPath = matcher.group(1);
+-						File sourceFile = new File(fullPath);
++                                                GendarmeSourcePath sourceFile = new GendarmeSourcePath(fullPath);
+ 						fileName = sourceFile.getName();
+ 						filePath = sourceFile.getParent();
+ 						line = Integer.parseInt(matcher.group(2)); 
+Index: src/main/java/hudson/plugins/violations/types/gendarme/GendarmeSourcePath.java
+===================================================================
+--- src/main/java/hudson/plugins/violations/types/gendarme/GendarmeSourcePath.java	(revision 0)
++++ src/main/java/hudson/plugins/violations/types/gendarme/GendarmeSourcePath.java	(revision 0)
+@@ -0,0 +1,51 @@
++/*
++ * To change this template, choose Tools | Templates
++ * and open the template in the editor.
++ */
++
++package hudson.plugins.violations.types.gendarme;
++
++import java.util.regex.Matcher;
++import java.util.regex.Pattern;
++
++/**
++ *
++ * @author Damien Churchill
++ */
++public class GendarmeSourcePath {
++
++    String path;
++    String separator;
++    static final Pattern winPath = Pattern.compile("^[a-zA-Z]:\\\\.*$");
++
++    public GendarmeSourcePath(String path) {
++        this.path = path;
++        Matcher matcher = winPath.matcher(path);
++
++        if (matcher.matches()) {
++            this.separator = "\\";
++        } else {
++            this.separator = "/";
++        }
++    }
++
++    public String getName() {
++        int lastIndex = this.path.lastIndexOf(this.separator);
++        if (lastIndex == -1) {
++            return this.path;
++        } else if (lastIndex + 1 > this.path.length()) {
++            return this.path;
++        } else {
++            return this.path.substring(lastIndex + 1);
++        }
++    }
++
++    public String getParent() {
++        int lastIndex = this.path.lastIndexOf(this.separator);
++        if (lastIndex == -1) {
++            return this.path;
++        } else {
++            return this.path.substring(0, lastIndex);
++        }
++    }
++}

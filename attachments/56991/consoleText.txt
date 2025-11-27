@@ -1,0 +1,46 @@
+Démarré par l'utilisateur Eric Beuque
++ /Users/abcdefg/devel/build/scripts/run_test.sh jet1oeil-toolkit-testsuite build/Debug /Users/abcdefg/jenkins/workspace/Toolkit_Trunk/platform-darwin-clang-x86_64-10_14_Debug/src/testfile -maxwarnings 0
+-- Current path /Users/abcdefg/jenkins/workspace/Toolkit_Trunk/platform-darwin-clang-x86_64-10_14_Debug
+-- Launching build/Debug/jet1oeil-toolkit-testsuite
+-- Entering directory build/Debug
++ /home/devel/build/scripts/run_test.sh jet1oeil-toolkit-testsuite build /home/abcdefg/jenkins/workspace/Toolkit_Trunk/platform-debian-stretch-gcc64_Release/src/testfile -maxwarnings 0
+-- Current path /home/abcdefg/jenkins/workspace/Toolkit_Trunk/platform-debian-stretch-gcc64_Release
+-- Launching build/jet1oeil-toolkit-testsuite
+-- Entering directory build
+DEBUG:    (Thread 139689230178112) [Main] Using test directory: /home/abcdefg/jenkins/workspace/Toolkit_Trunk/platform-debian-stretch-gcc64_Release/src/testfile
+Compilation warnings checks
+[Pipeline] recordIssues
+[GNU C Compiler (gcc)] Sleeping for 5 seconds due to JENKINS-32191...
+[GNU C Compiler (gcc)] Parsing console log (workspace: '/var/lib/jenkins/workspace/Toolkit_Trunk')
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] step
+Sending e-mails to: test@example.com
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+edu.hm.hafner.analysis.ParsingException: Unable to change directory using: .*Entering directory [`'](?<dir>.*)['`] to match -- Entering directory build/Debug
+	at edu.hm.hafner.analysis.LookaheadParser.extractDirectory(LookaheadParser.java:157)
+	at edu.hm.hafner.analysis.LookaheadParser.enterDirectory(LookaheadParser.java:92)
+	at edu.hm.hafner.analysis.LookaheadParser.handleDirectoryChanges(LookaheadParser.java:123)
+	at edu.hm.hafner.analysis.LookaheadParser.parse(LookaheadParser.java:68)
+	at edu.hm.hafner.analysis.LookaheadParser.parse(LookaheadParser.java:57)
+	at edu.hm.hafner.analysis.registry.CompositeParserDescriptor$CompositeParser.parse(CompositeParserDescriptor.java:84)
+	at io.jenkins.plugins.analysis.core.model.ReportScanningTool.scanInConsoleLog(ReportScanningTool.java:190)
+	at io.jenkins.plugins.analysis.core.model.ReportScanningTool.scan(ReportScanningTool.java:137)
+	at io.jenkins.plugins.analysis.core.model.ReportScanningTool.scan(ReportScanningTool.java:129)
+	at io.jenkins.plugins.analysis.core.steps.IssuesScanner.scan(IssuesScanner.java:95)
+	at io.jenkins.plugins.analysis.core.steps.IssuesRecorder.scanWithTool(IssuesRecorder.java:765)
+	at io.jenkins.plugins.analysis.core.steps.IssuesRecorder.record(IssuesRecorder.java:728)
+	at io.jenkins.plugins.analysis.core.steps.IssuesRecorder.perform(IssuesRecorder.java:697)
+	at io.jenkins.plugins.analysis.core.steps.RecordIssuesStep$Execution.run(RecordIssuesStep.java:1109)
+	at io.jenkins.plugins.analysis.core.steps.RecordIssuesStep$Execution.run(RecordIssuesStep.java:1067)
+	at org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:47)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+Finished: FAILURE

@@ -1,0 +1,20 @@
+Index: ../jenkins-git-plugin/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ../jenkins-git-plugin/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java	(date 1316994046000)
++++ ../jenkins-git-plugin/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java	(date 1338908213000)
+@@ -167,6 +166,12 @@
+                 Branch b = j.next();
+                 boolean keep = false;
+                 for (BranchSpec bspec : gitSCM.getBranches()) {
++                    if (bspec.getName().indexOf("${") >= 0) {
++                        // variable resolution is not possible here - we must not filter this branch
++                        verbose(listener, "Cannot resolve branch specifier {0}, filtering is disabled", bspec.getName());
++                        keep = true;
++                        break;
++                    }
+                     if (bspec.matches(b.getName())) {
+                         keep = true;
+                         break;

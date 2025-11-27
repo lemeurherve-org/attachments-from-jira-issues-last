@@ -1,0 +1,1907 @@
+Thread Dump
+Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911 Windows10Slave-1_629455e7-1b76-4d2e-bc24-480dc0267885
+Channel reader thread: Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911
+
+"Channel reader thread: Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911" Id=12970 Group=main RUNNABLE
+	at sun.reflect.ByteVectorImpl.resize(ByteVectorImpl.java:84)
+	at sun.reflect.ByteVectorImpl.add(ByteVectorImpl.java:63)
+	at sun.reflect.ClassFileAssembler.emitByte(ClassFileAssembler.java:74)
+	at sun.reflect.ClassFileAssembler.emitShort(ClassFileAssembler.java:64)
+	at sun.reflect.ClassFileAssembler.emitConstantPoolUTF8(ClassFileAssembler.java:105)
+	at sun.reflect.AccessorGenerator.emitBoxingContantPoolEntries(AccessorGenerator.java:285)
+	at sun.reflect.MethodAccessorGenerator.generate(MethodAccessorGenerator.java:353)
+	at sun.reflect.MethodAccessorGenerator.generateSerializationConstructor(MethodAccessorGenerator.java:112)
+	at sun.reflect.ReflectionFactory.newConstructorForSerialization(ReflectionFactory.java:340)
+	at java.io.ObjectStreamClass.getSerializableConstructor(ObjectStreamClass.java:1420)
+	at java.io.ObjectStreamClass.access$1500(ObjectStreamClass.java:72)
+	at java.io.ObjectStreamClass$2.run(ObjectStreamClass.java:497)
+	at java.io.ObjectStreamClass$2.run(ObjectStreamClass.java:472)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.io.ObjectStreamClass.<init>(ObjectStreamClass.java:472)
+	at java.io.ObjectStreamClass.lookup(ObjectStreamClass.java:369)
+	at java.io.ObjectStreamClass.initNonProxy(ObjectStreamClass.java:598)
+	at java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1630)
+	at java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1521)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:1781)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1353)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:373)
+	at hudson.remoting.Command.readFrom(Command.java:94)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+Channel reader thread: Windows10Slave-1_629455e7-1b76-4d2e-bc24-480dc0267885
+
+"Channel reader thread: Windows10Slave-1_629455e7-1b76-4d2e-bc24-480dc0267885" Id=9580 Group=main WAITING on com.trilead.ssh2.channel.Channel@1df89932
+	at java.lang.Object.wait(Native Method)
+	-  waiting on com.trilead.ssh2.channel.Channel@1df89932
+	at java.lang.Object.wait(Object.java:502)
+	at com.trilead.ssh2.channel.FifoBuffer.read(FifoBuffer.java:212)
+	at com.trilead.ssh2.channel.Channel$Output.read(Channel.java:127)
+	at com.trilead.ssh2.channel.ChannelManager.getChannelData(ChannelManager.java:936)
+	at com.trilead.ssh2.channel.ChannelInputStream.read(ChannelInputStream.java:58)
+	at com.trilead.ssh2.channel.ChannelInputStream.read(ChannelInputStream.java:79)
+	at hudson.remoting.FlightRecorderInputStream.read(FlightRecorderInputStream.java:86)
+	at hudson.remoting.ChunkedInputStream.readHeader(ChunkedInputStream.java:72)
+	at hudson.remoting.ChunkedInputStream.readUntilBreak(ChunkedInputStream.java:103)
+	at hudson.remoting.ChunkedCommandTransport.readBlock(ChunkedCommandTransport.java:39)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+DestroyJavaVM
+
+"DestroyJavaVM" Id=19 Group=main RUNNABLE
+
+FilePath.localPool [#231]
+
+"FilePath.localPool [#231]" Id=25106 Group=main RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:454)
+	at hudson.Functions.getThreadInfos(Functions.java:1220)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:98)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:95)
+	at hudson.remoting.LocalChannel$1.call(LocalChannel.java:52)
+	at jenkins.util.ContextResettingExecutorService$2.call(ContextResettingExecutorService.java:46)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@225bb75d
+
+Handling GET /threadDump from 10.30.250.31 : RequestHandlerThread[#662] Jenkins/threadDump.jelly
+
+"Handling GET /threadDump from 10.30.250.31 : RequestHandlerThread[#662] Jenkins/threadDump.jelly" Id=25079 Group=main TIMED_WAITING on java.util.concurrent.FutureTask@c81dce4
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.FutureTask@c81dce4
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.FutureTask.awaitDone(FutureTask.java:426)
+	at java.util.concurrent.FutureTask.get(FutureTask.java:204)
+	at hudson.remoting.LocalChannel$2.get(LocalChannel.java:81)
+	at jenkins.model.Jenkins.getAllThreadDumps(Jenkins.java:3733)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.commons.jexl.util.introspection.UberspectImpl$VelMethodImpl.invoke(UberspectImpl.java:258)
+	at org.apache.commons.jexl.parser.ASTMethod.execute(ASTMethod.java:104)
+	at org.apache.commons.jexl.parser.ASTReference.execute(ASTReference.java:83)
+	at org.apache.commons.jexl.parser.ASTReference.value(ASTReference.java:57)
+	at org.apache.commons.jexl.parser.ASTReferenceExpression.value(ASTReferenceExpression.java:51)
+	at org.apache.commons.jexl.ExpressionImpl.evaluate(ExpressionImpl.java:80)
+	at hudson.ExpressionFactory2$JexlExpression.evaluate(ExpressionFactory2.java:74)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$3.run(CoreTagLibrary.java:134)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.CallTagLibScript$1.run(CallTagLibScript.java:99)
+	at org.apache.commons.jelly.tags.define.InvokeBodyTag.doTag(InvokeBodyTag.java:91)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:269)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$1.run(CoreTagLibrary.java:98)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$2.run(CoreTagLibrary.java:105)
+	at org.kohsuke.stapler.jelly.CallTagLibScript.run(CallTagLibScript.java:120)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.CallTagLibScript$1.run(CallTagLibScript.java:99)
+	at org.apache.commons.jelly.tags.define.InvokeBodyTag.doTag(InvokeBodyTag.java:91)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:269)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.ReallyStaticTagLibrary$1.run(ReallyStaticTagLibrary.java:99)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.ReallyStaticTagLibrary$1.run(ReallyStaticTagLibrary.java:99)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.ReallyStaticTagLibrary$1.run(ReallyStaticTagLibrary.java:99)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.ReallyStaticTagLibrary$1.run(ReallyStaticTagLibrary.java:99)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$2.run(CoreTagLibrary.java:105)
+	at org.kohsuke.stapler.jelly.CallTagLibScript.run(CallTagLibScript.java:120)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$2.run(CoreTagLibrary.java:105)
+	at org.kohsuke.stapler.jelly.JellyViewScript.run(JellyViewScript.java:95)
+	at org.kohsuke.stapler.jelly.DefaultScriptInvoker.invokeScript(DefaultScriptInvoker.java:63)
+	at org.kohsuke.stapler.jelly.DefaultScriptInvoker.invokeScript(DefaultScriptInvoker.java:53)
+	at org.kohsuke.stapler.jelly.JellyFacet$1.dispatch(JellyFacet.java:95)
+	at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:746)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:876)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:649)
+	at org.kohsuke.stapler.Stapler.service(Stapler.java:238)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:812)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1669)
+	at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:135)
+	at hudson.util.PluginServletFilter.doFilter(PluginServletFilter.java:126)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at hudson.security.csrf.CrumbFilter.doFilter(CrumbFilter.java:86)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:84)
+	at hudson.security.UnwrapSecurityExceptionFilter.doFilter(UnwrapSecurityExceptionFilter.java:51)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at jenkins.security.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:117)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.providers.anonymous.AnonymousProcessingFilter.doFilter(AnonymousProcessingFilter.java:125)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.rememberme.RememberMeProcessingFilter.doFilter(RememberMeProcessingFilter.java:142)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.AbstractProcessingFilter.doFilter(AbstractProcessingFilter.java:271)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at jenkins.security.BasicHeaderProcessor.doFilter(BasicHeaderProcessor.java:93)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.context.HttpSessionContextIntegrationFilter.doFilter(HttpSessionContextIntegrationFilter.java:249)
+	at hudson.security.HttpSessionContextIntegrationFilter2.doFilter(HttpSessionContextIntegrationFilter2.java:67)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at hudson.security.ChainedServletFilter.doFilter(ChainedServletFilter.java:76)
+	at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:171)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at org.kohsuke.stapler.compression.CompressionFilter.doFilter(CompressionFilter.java:49)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at hudson.util.CharacterEncodingFilter.doFilter(CharacterEncodingFilter.java:82)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at org.kohsuke.stapler.DiagnosticThreadNameFilter.doFilter(DiagnosticThreadNameFilter.java:30)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:585)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:143)
+	at org.eclipse.jetty.security.SecurityHandler.handle(SecurityHandler.java:553)
+	at org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:223)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1127)
+	at org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:515)
+	at org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:185)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1061)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:141)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:97)
+	at org.eclipse.jetty.server.Server.handle(Server.java:499)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:311)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:257)
+	at org.eclipse.jetty.io.AbstractConnection$2.run(AbstractConnection.java:544)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@cca1cb7
+
+Jenkins cron thread
+
+"Jenkins cron thread" Id=20 Group=main WAITING on java.util.TaskQueue@25b47c18
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.util.TaskQueue@25b47c18
+	at java.lang.Object.wait(Object.java:502)
+	at java.util.TimerThread.mainLoop(Timer.java:526)
+	at java.util.TimerThread.run(Timer.java:505)
+
+Jenkins UDP 33848 monitoring thread
+
+"Jenkins UDP 33848 monitoring thread" Id=65 Group=main RUNNABLE (in native)
+	at java.net.PlainDatagramSocketImpl.receive0(Native Method)
+	-  locked java.net.PlainDatagramSocketImpl@75d3f06f
+	at java.net.AbstractPlainDatagramSocketImpl.receive(AbstractPlainDatagramSocketImpl.java:143)
+	-  locked java.net.PlainDatagramSocketImpl@75d3f06f
+	at java.net.DatagramSocket.receive(DatagramSocket.java:812)
+	-  locked java.net.DatagramPacket@298982e0
+	-  locked java.net.MulticastSocket@3a5bec65
+	at hudson.UDPBroadcastThread.run(UDPBroadcastThread.java:84)
+
+jenkins.util.Timer [#10]
+
+"jenkins.util.Timer [#10]" Id=62 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+jenkins.util.Timer [#1]
+
+"jenkins.util.Timer [#1]" Id=21 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+jenkins.util.Timer [#2] / waiting for hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911
+
+"jenkins.util.Timer [#2] / waiting for hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911" Id=33 Group=main TIMED_WAITING on hudson.remoting.UserRequest@184ab0b9
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.UserRequest@184ab0b9
+	at hudson.remoting.Request.call(Request.java:147)
+	at hudson.remoting.Channel.call(Channel.java:796)
+	at hudson.FilePath.act(FilePath.java:985)
+	at hudson.FilePath.act(FilePath.java:974)
+	at hudson.FilePath.deleteRecursive(FilePath.java:1176)
+	at org.jenkinsci.plugins.durabletask.FileMonitoringTask$FileMonitoringController.cleanup(FileMonitoringTask.java:171)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.check(DurableTaskStep.java:288)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.run(DurableTaskStep.java:234)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@274c1b47
+
+jenkins.util.Timer [#3]
+
+"jenkins.util.Timer [#3]" Id=34 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+jenkins.util.Timer [#4]
+
+"jenkins.util.Timer [#4]" Id=35 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+jenkins.util.Timer [#5]
+
+"jenkins.util.Timer [#5]" Id=36 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+jenkins.util.Timer [#6]
+
+"jenkins.util.Timer [#6]" Id=37 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+jenkins.util.Timer [#7] / waiting for hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911
+
+"jenkins.util.Timer [#7] / waiting for hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911" Id=38 Group=main TIMED_WAITING on hudson.remoting.UserRequest@1a6f9ea7
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.UserRequest@1a6f9ea7
+	at hudson.remoting.Request.call(Request.java:147)
+	at hudson.remoting.Channel.call(Channel.java:796)
+	at hudson.FilePath.act(FilePath.java:985)
+	at hudson.FilePath.act(FilePath.java:974)
+	at hudson.FilePath.deleteRecursive(FilePath.java:1176)
+	at org.jenkinsci.plugins.durabletask.FileMonitoringTask$FileMonitoringController.cleanup(FileMonitoringTask.java:171)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.check(DurableTaskStep.java:288)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.run(DurableTaskStep.java:234)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@62ede135
+
+jenkins.util.Timer [#8] / waiting for hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911
+
+"jenkins.util.Timer [#8] / waiting for hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911" Id=39 Group=main TIMED_WAITING on hudson.remoting.UserRequest@6cd87890
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.UserRequest@6cd87890
+	at hudson.remoting.Request.call(Request.java:147)
+	at hudson.remoting.Channel.call(Channel.java:796)
+	at hudson.FilePath.act(FilePath.java:985)
+	at hudson.FilePath.act(FilePath.java:974)
+	at hudson.FilePath.deleteRecursive(FilePath.java:1176)
+	at org.jenkinsci.plugins.durabletask.FileMonitoringTask$FileMonitoringController.cleanup(FileMonitoringTask.java:171)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.check(DurableTaskStep.java:288)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.run(DurableTaskStep.java:234)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@5aa7da0e
+
+jenkins.util.Timer [#9]
+
+"jenkins.util.Timer [#9]" Id=40 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@23de6353
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+LauncherControlThread[ControlPort=-1]
+
+"LauncherControlThread[ControlPort=-1]" Id=17 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at winstone.Launcher.run(Launcher.java:243)
+	at java.lang.Thread.run(Thread.java:745)
+
+NioSocketAcceptor-1
+
+"NioSocketAcceptor-1" Id=64 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$2@2339e887
+	-  locked java.util.Collections$UnmodifiableSet@49032407
+	-  locked sun.nio.ch.EPollSelectorImpl@2cf82145
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.select(NioSocketAcceptor.java:238)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor$Acceptor.run(AbstractPollingIoAcceptor.java:432)
+	at org.apache.mina.util.NamePreservingRunnable.run(NamePreservingRunnable.java:64)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@5e0d9d87
+
+Okio Watchdog
+
+"Okio Watchdog" Id=134 Group=main WAITING on java.lang.Class@3d95da9e
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.Class@3d95da9e
+	at java.lang.Object.wait(Object.java:502)
+	at okio.AsyncTimeout.awaitTimeout(AsyncTimeout.java:311)
+	at okio.AsyncTimeout.access$000(AsyncTimeout.java:40)
+	at okio.AsyncTimeout$Watchdog.run(AsyncTimeout.java:286)
+
+org.eclipse.jetty.server.session.HashSessionManager@4b952a2dTimer
+
+"org.eclipse.jetty.server.session.HashSessionManager@4b952a2dTimer" Id=11 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@39fdce9e
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@39fdce9e
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+Ping thread for channel hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911
+
+"Ping thread for channel hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911" Id=12971 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:91)
+
+Ping thread for channel hudson.remoting.Channel@4bffcc18:Windows10Slave-1_629455e7-1b76-4d2e-bc24-480dc0267885
+
+"Ping thread for channel hudson.remoting.Channel@4bffcc18:Windows10Slave-1_629455e7-1b76-4d2e-bc24-480dc0267885" Id=9595 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:91)
+
+RemoteInvocationHandler [#11]
+
+"RemoteInvocationHandler [#11]" Id=21734 Group=main TIMED_WAITING on java.lang.ref.ReferenceQueue$Lock@6e342277
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@6e342277
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at hudson.remoting.RemoteInvocationHandler$Unexporter.run(RemoteInvocationHandler.java:567)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.AtmostOneThreadExecutor$Worker.run(AtmostOneThreadExecutor.java:110)
+	at java.lang.Thread.run(Thread.java:745)
+
+RequestHandlerThread[#1]-selector-ServerConnectorManager@f402b2d/0
+
+"RequestHandlerThread[#1]-selector-ServerConnectorManager@f402b2d/0" Id=14 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$2@363eba05
+	-  locked java.util.Collections$UnmodifiableSet@6b294cb9
+	-  locked sun.nio.ch.EPollSelectorImpl@5e7c7ea2
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.select(SelectorManager.java:600)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.run(SelectorManager.java:549)
+	at org.eclipse.jetty.util.thread.NonBlockingThread.run(NonBlockingThread.java:52)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@6e9175d8
+
+RequestHandlerThread[#2]-selector-ServerConnectorManager@f402b2d/1
+
+"RequestHandlerThread[#2]-selector-ServerConnectorManager@f402b2d/1" Id=15 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$2@18d8a251
+	-  locked java.util.Collections$UnmodifiableSet@7fd95721
+	-  locked sun.nio.ch.EPollSelectorImpl@798ba07e
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.select(SelectorManager.java:600)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.run(SelectorManager.java:549)
+	at org.eclipse.jetty.util.thread.NonBlockingThread.run(NonBlockingThread.java:52)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@7d0b7e3c
+
+RequestHandlerThread[#3]-acceptor-0@1630dc5f-ServerConnector@8f2ef19{HTTP/1.1}{127.0.0.1:8080}
+
+"RequestHandlerThread[#3]-acceptor-0@1630dc5f-ServerConnector@8f2ef19{HTTP/1.1}{127.0.0.1:8080}" Id=16 Group=main RUNNABLE (in native)
+	at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:422)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:250)
+	-  locked java.lang.Object@754757b5
+	at org.eclipse.jetty.server.ServerConnector.accept(ServerConnector.java:377)
+	at org.eclipse.jetty.server.AbstractConnector$Acceptor.run(AbstractConnector.java:500)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@2eae8e6e
+
+RequestHandlerThread[#666]
+
+"RequestHandlerThread[#666]" Id=25086 Group=main WAITING on java.util.concurrent.SynchronousQueue$TransferStack@18c9f290
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.SynchronousQueue$TransferStack@18c9f290
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:458)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:362)
+	at java.util.concurrent.SynchronousQueue.take(SynchronousQueue.java:924)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+Running CpsFlowExecution[Owner[Tanium/patch/2051-applicability-saved-q/3:Tanium/patch/2051-applicability-saved-q #3]] / waiting for hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911
+
+"Running CpsFlowExecution[Owner[Tanium/patch/2051-applicability-saved-q/3:Tanium/patch/2051-applicability-saved-q #3]] / waiting for hudson.remoting.Channel@3dce0ad8:Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911" Id=12900 Group=main TIMED_WAITING on hudson.remoting.UserRequest@7ee5c06e
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.UserRequest@7ee5c06e
+	at hudson.remoting.Request.call(Request.java:147)
+	at hudson.remoting.Channel.call(Channel.java:796)
+	at hudson.FilePath.act(FilePath.java:985)
+	at hudson.FilePath.act(FilePath.java:974)
+	at hudson.FilePath.deleteRecursive(FilePath.java:1176)
+	at org.jenkinsci.plugins.credentialsbinding.impl.FileBinding$UnbinderImpl.unbind(FileBinding.java:82)
+	at org.jenkinsci.plugins.credentialsbinding.impl.BindingStep$Callback.cleanup(BindingStep.java:189)
+	at org.jenkinsci.plugins.credentialsbinding.impl.BindingStep$Callback.onFailure(BindingStep.java:202)
+	at org.jenkinsci.plugins.workflow.cps.CpsBodyExecution$FailureAdapter.receive(CpsBodyExecution.java:343)
+	at com.cloudbees.groovy.cps.impl.ThrowBlock$1.receive(ThrowBlock.java:68)
+	at com.cloudbees.groovy.cps.impl.ConstantBlock.eval(ConstantBlock.java:21)
+	at com.cloudbees.groovy.cps.Next.step(Next.java:58)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:154)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:18)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:33)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:108)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:163)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:324)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$100(CpsThreadGroup.java:78)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:236)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:224)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:63)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:112)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@5d0e89b4
+
+Scheduler-248609774
+
+"Scheduler-248609774" Id=30 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@49a5c87b
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@49a5c87b
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+ThinBackup Worker Thread thread
+
+"ThinBackup Worker Thread thread" Id=19647 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at java.lang.Thread.sleep(Thread.java:340)
+	at java.util.concurrent.TimeUnit.sleep(TimeUnit.java:386)
+	at org.jvnet.hudson.plugins.thinbackup.utils.Utils.waitUntilIdleAndSwitchToQuietMode(Utils.java:117)
+	at org.jvnet.hudson.plugins.thinbackup.ThinBackupPeriodicWork.backupNow(ThinBackupPeriodicWork.java:83)
+	at org.jvnet.hudson.plugins.thinbackup.ThinBackupPeriodicWork.execute(ThinBackupPeriodicWork.java:68)
+	at org.jvnet.hudson.plugins.thinbackup.hudson.model.AsyncPeriodicWork$1.run(AsyncPeriodicWork.java:53)
+	at java.lang.Thread.run(Thread.java:745)
+
+Thread-1388
+
+"Thread-1388" Id=9556 Group=main RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(SocketInputStream.java:116)
+	at java.net.SocketInputStream.read(SocketInputStream.java:170)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.fill_buffer(CipherInputStream.java:41)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.internal_read(CipherInputStream.java:52)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.getBlock(CipherInputStream.java:79)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.read(CipherInputStream.java:108)
+	at com.trilead.ssh2.transport.TransportConnection.receiveMessage(TransportConnection.java:232)
+	at com.trilead.ssh2.transport.TransportManager.receiveLoop(TransportManager.java:693)
+	at com.trilead.ssh2.transport.TransportManager$1.run(TransportManager.java:489)
+	at java.lang.Thread.run(Thread.java:745)
+
+Thread-1696
+
+"Thread-1696" Id=12963 Group=main RUNNABLE (in native)
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(SocketInputStream.java:116)
+	at java.net.SocketInputStream.read(SocketInputStream.java:170)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.fill_buffer(CipherInputStream.java:41)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.internal_read(CipherInputStream.java:52)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.getBlock(CipherInputStream.java:79)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.read(CipherInputStream.java:108)
+	at com.trilead.ssh2.transport.TransportConnection.receiveMessage(TransportConnection.java:232)
+	at com.trilead.ssh2.transport.TransportManager.receiveLoop(TransportManager.java:693)
+	at com.trilead.ssh2.transport.TransportManager$1.run(TransportManager.java:489)
+	at java.lang.Thread.run(Thread.java:745)
+
+WorkflowRun.copyLogs [#1]
+
+"WorkflowRun.copyLogs [#1]" Id=102 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+WorkflowRun.copyLogs [#2]
+
+"WorkflowRun.copyLogs [#2]" Id=104 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+WorkflowRun.copyLogs [#3]
+
+"WorkflowRun.copyLogs [#3]" Id=105 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+WorkflowRun.copyLogs [#4]
+
+"WorkflowRun.copyLogs [#4]" Id=112 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+WorkflowRun.copyLogs [#5]
+
+"WorkflowRun.copyLogs [#5]" Id=113 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@727d60c1
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+Finalizer
+
+"Finalizer" Id=3 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@1890119c
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@1890119c
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+
+Java2D Disposer
+
+"Java2D Disposer" Id=12 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@7a50ad43
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@7a50ad43
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	at sun.java2d.Disposer.run(Disposer.java:148)
+	at java.lang.Thread.run(Thread.java:745)
+
+Reference Handler
+
+"Reference Handler" Id=2 Group=system WAITING on java.lang.ref.Reference$Lock@25a4e542
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@25a4e542
+	at java.lang.Object.wait(Object.java:502)
+	at java.lang.ref.Reference.tryHandlePending(Reference.java:191)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:153)
+
+Signal Dispatcher
+
+"Signal Dispatcher" Id=4 Group=system RUNNABLE
+
+Windows10Slave-1_30767751-fc07-4cb0-8344-27597d0cd911
+Channel reader thread: channel
+
+"Channel reader thread: channel" Id=11 Group=main RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(Unknown Source)
+	at java.io.BufferedInputStream.fill(Unknown Source)
+	at java.io.BufferedInputStream.read(Unknown Source)
+	-  locked java.io.BufferedInputStream@ab24592
+	at hudson.remoting.FlightRecorderInputStream.read(FlightRecorderInputStream.java:86)
+	at hudson.remoting.ChunkedInputStream.readHeader(ChunkedInputStream.java:72)
+	at hudson.remoting.ChunkedInputStream.readUntilBreak(ChunkedInputStream.java:103)
+	at hudson.remoting.ChunkedCommandTransport.readBlock(ChunkedCommandTransport.java:39)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+main
+
+"main" Id=1 Group=main TIMED_WAITING on hudson.remoting.Channel@1175e2db
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.Channel@1175e2db
+	at hudson.remoting.Channel.join(Channel.java:964)
+	at hudson.remoting.Launcher.main(Launcher.java:562)
+	at hudson.remoting.Launcher.runWithStdinStdout(Launcher.java:477)
+	at hudson.remoting.Launcher.run(Launcher.java:251)
+	at hudson.remoting.Launcher.main(Launcher.java:201)
+
+Ping thread for channel hudson.remoting.Channel@1175e2db:channel
+
+"Ping thread for channel hudson.remoting.Channel@1175e2db:channel" Id=17 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:91)
+
+pool-1-thread-1 for channel
+
+"pool-1-thread-1 for channel" Id=12 Group=main RUNNABLE
+	at com.sun.jna.Pointer.<clinit>(Pointer.java:41)
+	at com.sun.jna.Structure.<clinit>(Structure.java:2078)
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@2e678166
+
+pool-1-thread-115 for channel
+
+"pool-1-thread-115 for channel" Id=184 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@2f05b9fd
+
+pool-1-thread-12 for channel
+
+"pool-1-thread-12 for channel" Id=73 Group=main RUNNABLE
+	at hudson.util.jna.Kernel32Utils.getWin32FileAttributes(Kernel32Utils.java:77)
+	at hudson.util.jna.Kernel32Utils.isJunctionOrSymlink(Kernel32Utils.java:98)
+	at hudson.Util.isSymlink(Util.java:507)
+	at hudson.FilePath.deleteRecursive(FilePath.java:1199)
+	at hudson.FilePath.access$1000(FilePath.java:195)
+	at hudson.FilePath$14.invoke(FilePath.java:1179)
+	at hudson.FilePath$14.invoke(FilePath.java:1176)
+	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:2731)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@20160e36
+
+pool-1-thread-128 for channel
+
+"pool-1-thread-128 for channel" Id=197 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@65463e08
+
+pool-1-thread-13 for channel
+
+"pool-1-thread-13 for channel" Id=79 Group=main RUNNABLE
+	at hudson.util.jna.Kernel32Utils.getWin32FileAttributes(Kernel32Utils.java:77)
+	at hudson.util.jna.Kernel32Utils.isJunctionOrSymlink(Kernel32Utils.java:98)
+	at hudson.Util.isSymlink(Util.java:507)
+	at hudson.FilePath.deleteRecursive(FilePath.java:1199)
+	at hudson.FilePath.access$1000(FilePath.java:195)
+	at hudson.FilePath$14.invoke(FilePath.java:1179)
+	at hudson.FilePath$14.invoke(FilePath.java:1176)
+	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:2731)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@5bd2fc12
+
+pool-1-thread-142 for channel
+
+"pool-1-thread-142 for channel" Id=211 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@4921d9aa
+
+pool-1-thread-15 for channel
+
+"pool-1-thread-15 for channel" Id=81 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@1e810e60
+
+pool-1-thread-157 for channel
+
+"pool-1-thread-157 for channel" Id=226 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@66acf0f4
+
+pool-1-thread-171 for channel
+
+"pool-1-thread-171 for channel" Id=240 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@3503ef1
+
+pool-1-thread-188 for channel
+
+"pool-1-thread-188 for channel" Id=257 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@3029d45e
+
+pool-1-thread-202 for channel
+
+"pool-1-thread-202 for channel" Id=271 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@467c106
+
+pool-1-thread-216 for channel
+
+"pool-1-thread-216 for channel" Id=285 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@3d41b5a
+
+pool-1-thread-22 for channel
+
+"pool-1-thread-22 for channel" Id=88 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@2052c61e
+
+pool-1-thread-230 for channel
+
+"pool-1-thread-230 for channel" Id=299 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@476ce29b
+
+pool-1-thread-244 for channel
+
+"pool-1-thread-244 for channel" Id=313 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@24be6f18
+
+pool-1-thread-259 for channel
+
+"pool-1-thread-259 for channel" Id=328 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@11226883
+
+pool-1-thread-272 for channel
+
+"pool-1-thread-272 for channel" Id=341 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@7d22b5dd
+
+pool-1-thread-28 for channel
+
+"pool-1-thread-28 for channel" Id=94 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@71e168ad
+
+pool-1-thread-287 for channel
+
+"pool-1-thread-287 for channel" Id=356 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@15141d8
+
+pool-1-thread-302 for channel
+
+"pool-1-thread-302 for channel" Id=372 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@17d167bf
+
+pool-1-thread-316 for channel
+
+"pool-1-thread-316 for channel" Id=386 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@31589558
+
+pool-1-thread-330 for channel
+
+"pool-1-thread-330 for channel" Id=400 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@22b0c823
+
+pool-1-thread-344 for channel
+
+"pool-1-thread-344 for channel" Id=414 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@28aa4fbc
+
+pool-1-thread-358 for channel
+
+"pool-1-thread-358 for channel" Id=428 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@26683540
+
+pool-1-thread-37 for channel
+
+"pool-1-thread-37 for channel" Id=103 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@46770f9a
+
+pool-1-thread-372 for channel
+
+"pool-1-thread-372 for channel" Id=442 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@632f185b
+
+pool-1-thread-386 for channel
+
+"pool-1-thread-386 for channel" Id=456 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@2792f6ee
+
+pool-1-thread-4 for channel
+
+"pool-1-thread-4 for channel" Id=16 Group=main RUNNABLE
+	at com.sun.jna.Native.initIDs(Native Method)
+	at com.sun.jna.Native.<clinit>(Native.java:148)
+	at hudson.util.jna.Kernel32Utils.load(Kernel32Utils.java:112)
+	at hudson.util.jna.Kernel32.<clinit>(Kernel32.java:37)
+	at hudson.util.jna.Kernel32Utils.getWin32FileAttributes(Kernel32Utils.java:77)
+	at hudson.util.jna.Kernel32Utils.isJunctionOrSymlink(Kernel32Utils.java:98)
+	at hudson.Util.isSymlink(Util.java:507)
+	at hudson.FilePath.deleteRecursive(FilePath.java:1199)
+	at hudson.FilePath.access$1000(FilePath.java:195)
+	at hudson.FilePath$14.invoke(FilePath.java:1179)
+	at hudson.FilePath$14.invoke(FilePath.java:1176)
+	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:2731)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@26cfd4ae
+
+pool-1-thread-400 for channel
+
+"pool-1-thread-400 for channel" Id=470 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@762b767b
+
+pool-1-thread-41 for channel
+
+"pool-1-thread-41 for channel" Id=107 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@517f38e6
+
+pool-1-thread-415 for channel
+
+"pool-1-thread-415 for channel" Id=485 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@6daf13b6
+
+pool-1-thread-430 for channel
+
+"pool-1-thread-430 for channel" Id=500 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@82db88f
+
+pool-1-thread-444 for channel
+
+"pool-1-thread-444 for channel" Id=514 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@312f6fd5
+
+pool-1-thread-459 for channel
+
+"pool-1-thread-459 for channel" Id=532 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@157f05b2
+
+pool-1-thread-47 for channel
+
+"pool-1-thread-47 for channel" Id=113 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@3a4701c2
+
+pool-1-thread-472 for channel
+
+"pool-1-thread-472 for channel" Id=545 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@4d832592
+
+pool-1-thread-486 for channel
+
+"pool-1-thread-486 for channel" Id=559 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@363a204c
+
+pool-1-thread-501 for channel
+
+"pool-1-thread-501 for channel" Id=574 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@3b91077
+
+pool-1-thread-514 for channel
+
+"pool-1-thread-514 for channel" Id=587 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@382e3043
+
+pool-1-thread-529 for channel
+
+"pool-1-thread-529 for channel" Id=602 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@441bf004
+
+pool-1-thread-543 for channel
+
+"pool-1-thread-543 for channel" Id=616 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@437d6db
+
+pool-1-thread-55 for channel
+
+"pool-1-thread-55 for channel" Id=121 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@b36c853
+
+pool-1-thread-557 for channel
+
+"pool-1-thread-557 for channel" Id=630 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@202e6dd8
+
+pool-1-thread-571 for channel
+
+"pool-1-thread-571 for channel" Id=644 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@47124dfb
+
+pool-1-thread-585 for channel
+
+"pool-1-thread-585 for channel" Id=658 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@55120e9a
+
+pool-1-thread-59 for channel
+
+"pool-1-thread-59 for channel" Id=125 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@5eea62e9
+
+pool-1-thread-6 for channel
+
+"pool-1-thread-6 for channel" Id=26 Group=main RUNNABLE
+	at hudson.util.jna.Kernel32Utils.getWin32FileAttributes(Kernel32Utils.java:77)
+	at hudson.util.jna.Kernel32Utils.isJunctionOrSymlink(Kernel32Utils.java:98)
+	at hudson.Util.isSymlink(Util.java:507)
+	at hudson.FilePath.deleteRecursive(FilePath.java:1199)
+	at hudson.FilePath.access$1000(FilePath.java:195)
+	at hudson.FilePath$14.invoke(FilePath.java:1179)
+	at hudson.FilePath$14.invoke(FilePath.java:1176)
+	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:2731)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@41f7efd6
+
+pool-1-thread-600 for channel
+
+"pool-1-thread-600 for channel" Id=673 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@6d15da77
+
+pool-1-thread-615 for channel
+
+"pool-1-thread-615 for channel" Id=688 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@388af0cd
+
+pool-1-thread-620 for channel
+
+"pool-1-thread-620 for channel" Id=693 Group=main RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(Unknown Source)
+	at hudson.Functions.getThreadInfos(Functions.java:1220)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:98)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:95)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@549420b4
+
+pool-1-thread-65 for channel
+
+"pool-1-thread-65 for channel" Id=131 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@6f06bc4a
+
+pool-1-thread-71 for channel
+
+"pool-1-thread-71 for channel" Id=137 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@6326364c
+
+pool-1-thread-81 for channel
+
+"pool-1-thread-81 for channel" Id=147 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@59aadf45
+
+pool-1-thread-85 for channel
+
+"pool-1-thread-85 for channel" Id=151 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@7ebaee05
+
+pool-1-thread-99 for channel
+
+"pool-1-thread-99 for channel" Id=168 Group=main RUNNABLE
+	at org.jvnet.hudson.Windows.monitor(Windows.java:42)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:124)
+	at hudson.node_monitors.SwapSpaceMonitor$MonitorTask.call(SwapSpaceMonitor.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@312c8135
+
+RemoteInvocationHandler [#13]
+
+"RemoteInvocationHandler [#13]" Id=521 Group=main TIMED_WAITING on java.lang.ref.ReferenceQueue$Lock@62992440
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@62992440
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	at hudson.remoting.RemoteInvocationHandler$Unexporter.run(RemoteInvocationHandler.java:567)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at hudson.remoting.AtmostOneThreadExecutor$Worker.run(AtmostOneThreadExecutor.java:110)
+	at java.lang.Thread.run(Unknown Source)
+
+Attach Listener
+
+"Attach Listener" Id=5 Group=system RUNNABLE
+
+Finalizer
+
+"Finalizer" Id=3 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@7f506246
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@7f506246
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Unknown Source)
+
+Reference Handler
+
+"Reference Handler" Id=2 Group=system WAITING on java.lang.ref.Reference$Lock@7e59c354
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@7e59c354
+	at java.lang.Object.wait(Unknown Source)
+	at java.lang.ref.Reference.tryHandlePending(Unknown Source)
+	at java.lang.ref.Reference$ReferenceHandler.run(Unknown Source)
+
+Signal Dispatcher
+
+"Signal Dispatcher" Id=4 Group=system RUNNABLE
+
+Windows10Slave-1_629455e7-1b76-4d2e-bc24-480dc0267885
+Channel reader thread: channel
+
+"Channel reader thread: channel" Id=11 Group=main RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(Unknown Source)
+	at java.io.BufferedInputStream.fill(Unknown Source)
+	at java.io.BufferedInputStream.read(Unknown Source)
+	-  locked java.io.BufferedInputStream@fe5c1a3
+	at hudson.remoting.FlightRecorderInputStream.read(FlightRecorderInputStream.java:86)
+	at hudson.remoting.ChunkedInputStream.readHeader(ChunkedInputStream.java:72)
+	at hudson.remoting.ChunkedInputStream.readUntilBreak(ChunkedInputStream.java:103)
+	at hudson.remoting.ChunkedCommandTransport.readBlock(ChunkedCommandTransport.java:39)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+main
+
+"main" Id=1 Group=main TIMED_WAITING on hudson.remoting.Channel@1175e2db
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.Channel@1175e2db
+	at hudson.remoting.Channel.join(Channel.java:964)
+	at hudson.remoting.Launcher.main(Launcher.java:562)
+	at hudson.remoting.Launcher.runWithStdinStdout(Launcher.java:477)
+	at hudson.remoting.Launcher.run(Launcher.java:251)
+	at hudson.remoting.Launcher.main(Launcher.java:201)
+
+Ping thread for channel hudson.remoting.Channel@1175e2db:channel
+
+"Ping thread for channel hudson.remoting.Channel@1175e2db:channel" Id=17 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:91)
+
+pool-1-thread-152 for channel
+
+"pool-1-thread-152 for channel" Id=498 Group=main RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(Unknown Source)
+	at hudson.Functions.getThreadInfos(Functions.java:1220)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:98)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:95)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@e954a9f
+
+RemoteInvocationHandler [#260]
+
+"RemoteInvocationHandler [#260]" Id=496 Group=main TIMED_WAITING on java.lang.ref.ReferenceQueue$Lock@499860c0
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@499860c0
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	at hudson.remoting.RemoteInvocationHandler$Unexporter.run(RemoteInvocationHandler.java:567)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at hudson.remoting.AtmostOneThreadExecutor$Worker.run(AtmostOneThreadExecutor.java:110)
+	at java.lang.Thread.run(Unknown Source)
+
+Attach Listener
+
+"Attach Listener" Id=5 Group=system RUNNABLE
+
+Finalizer
+
+"Finalizer" Id=3 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@510cd5c3
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@510cd5c3
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Unknown Source)
+
+Reference Handler
+
+"Reference Handler" Id=2 Group=system WAITING on java.lang.ref.Reference$Lock@255e75f8
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@255e75f8
+	at java.lang.Object.wait(Unknown Source)
+	at java.lang.ref.Reference.tryHandlePending(Unknown Source)
+	at java.lang.ref.Reference$ReferenceHandler.run(Unknown Source)
+
+Signal Dispatcher
+
+"Signal Dispatcher" Id=4 Group=system RUNNABLE
+

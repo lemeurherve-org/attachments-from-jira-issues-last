@@ -1,0 +1,455 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf130
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf0 \CocoaLigature0 Dec 21, 2015 6:03:28 PM com.mchange.v2.c3p0.stmt.GooGooStatementCache checkinStatement\
+INFO: Problem with checked-in Statement, discarding.\
+com.mysql.jdbc.exceptions.MySQLNonTransientConnectionException: No operations allowed after statement closed.\
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:888)\
+	at com.mysql.jdbc.Statement.checkClosed(Statement.java:385)\
+	at com.mysql.jdbc.PreparedStatement.clearParameters(PreparedStatement.java:678)\
+	at com.mchange.v2.c3p0.stmt.GooGooStatementCache.refreshStatement(GooGooStatementCache.java:604)\
+	at com.mchange.v2.c3p0.stmt.GooGooStatementCache.checkinStatement(GooGooStatementCache.java:236)\
+	at com.mchange.v2.c3p0.impl.NewPooledConnection.checkinStatement(NewPooledConnection.java:282)\
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.close(NewProxyPreparedStatement.java:1807)\
+	at org.hibernate.jdbc.AbstractBatcher.closePreparedStatement(AbstractBatcher.java:563)\
+	at org.hibernate.jdbc.AbstractBatcher.closeStatement(AbstractBatcher.java:291)\
+	at org.hibernate.jdbc.AbstractBatcher.closeQueryStatement(AbstractBatcher.java:307)\
+	at org.hibernate.jdbc.AbstractBatcher.closeQueryStatement(AbstractBatcher.java:234)\
+	at org.hibernate.loader.Loader.getResultSet(Loader.java:1883)\
+	at org.hibernate.loader.Loader.doQuery(Loader.java:718)\
+	at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:270)\
+	at org.hibernate.loader.Loader.doList(Loader.java:2449)\
+	at org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2192)\
+	at org.hibernate.loader.Loader.list(Loader.java:2187)\
+	at org.hibernate.loader.criteria.CriteriaLoader.list(CriteriaLoader.java:119)\
+	at org.hibernate.impl.SessionImpl.list(SessionImpl.java:1706)\
+	at org.hibernate.impl.CriteriaImpl.list(CriteriaImpl.java:347)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$36.doInHibernate(HibernateTemplate.java:1056)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$36.doInHibernate(HibernateTemplate.java:1)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:406)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.executeWithNativeSession(HibernateTemplate.java:374)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:1046)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:1039)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.getBuildNodeByUrl(BuildDetailsHibernateRepository.java:61)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.saveBuildDetails(BuildDetailsHibernateRepository.java:84)\
+	at org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl.prebuild(DbAuditPublisherImpl.java:137)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:840)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:835)\
+	at hudson.model.Build$BuildExecution.doRun(Build.java:144)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)\
+	at hudson.model.Run.execute(Run.java:1741)\
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)\
+	at hudson.model.ResourceController.execute(ResourceController.java:98)\
+	at hudson.model.Executor.run(Executor.java:408)\
+\
+Dec 21, 2015 6:03:28 PM org.hibernate.util.JDBCExceptionReporter logExceptions\
+WARNING: SQL Error: 0, SQLState: 08S01\
+Dec 21, 2015 6:03:28 PM org.hibernate.util.JDBCExceptionReporter logExceptions\
+SEVERE: Communications link failure due to underlying exception: \
+\
+** BEGIN NESTED EXCEPTION ** \
+\
+java.io.EOFException\
+MESSAGE: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.\
+\
+STACKTRACE:\
+\
+java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.\
+	at com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:1997)\
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:2411)\
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:2916)\
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:1631)\
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:1723)\
+	at com.mysql.jdbc.Connection.execSQL(Connection.java:3283)\
+	at com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:1332)\
+	at com.mysql.jdbc.PreparedStatement.executeQuery(PreparedStatement.java:1467)\
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.executeQuery(NewProxyPreparedStatement.java:76)\
+	at org.hibernate.jdbc.AbstractBatcher.getResultSet(AbstractBatcher.java:208)\
+	at org.hibernate.loader.Loader.getResultSet(Loader.java:1869)\
+	at org.hibernate.loader.Loader.doQuery(Loader.java:718)\
+	at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:270)\
+	at org.hibernate.loader.Loader.doList(Loader.java:2449)\
+	at org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2192)\
+	at org.hibernate.loader.Loader.list(Loader.java:2187)\
+	at org.hibernate.loader.criteria.CriteriaLoader.list(CriteriaLoader.java:119)\
+	at org.hibernate.impl.SessionImpl.list(SessionImpl.java:1706)\
+	at org.hibernate.impl.CriteriaImpl.list(CriteriaImpl.java:347)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$36.doInHibernate(HibernateTemplate.java:1056)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$36.doInHibernate(HibernateTemplate.java:1)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:406)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.executeWithNativeSession(HibernateTemplate.java:374)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:1046)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:1039)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.getBuildNodeByUrl(BuildDetailsHibernateRepository.java:61)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.saveBuildDetails(BuildDetailsHibernateRepository.java:84)\
+	at org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl.prebuild(DbAuditPublisherImpl.java:137)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:840)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:835)\
+	at hudson.model.Build$BuildExecution.doRun(Build.java:144)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)\
+	at hudson.model.Run.execute(Run.java:1741)\
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)\
+	at hudson.model.ResourceController.execute(ResourceController.java:98)\
+	at hudson.model.Executor.run(Executor.java:408)\
+\
+\
+** END NESTED EXCEPTION **\
+\
+\
+\
+Last packet sent to the server was 2 ms ago.\
+Dec 21, 2015 6:03:28 PM org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository getBuildNodeByUrl\
+SEVERE: could not execute query; nested exception is org.hibernate.exception.JDBCConnectionException: could not execute query\
+org.springframework.dao.DataAccessResourceFailureException: could not execute query; nested exception is org.hibernate.exception.JDBCConnectionException: could not execute query\
+	at org.springframework.orm.hibernate3.SessionFactoryUtils.convertHibernateAccessException(SessionFactoryUtils.java:631)\
+	at org.springframework.orm.hibernate3.HibernateAccessor.convertHibernateAccessException(HibernateAccessor.java:412)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:411)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.executeWithNativeSession(HibernateTemplate.java:374)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:1046)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:1039)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.getBuildNodeByUrl(BuildDetailsHibernateRepository.java:61)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.saveBuildDetails(BuildDetailsHibernateRepository.java:84)\
+	at org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl.prebuild(DbAuditPublisherImpl.java:137)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:840)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:835)\
+	at hudson.model.Build$BuildExecution.doRun(Build.java:144)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)\
+	at hudson.model.Run.execute(Run.java:1741)\
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)\
+	at hudson.model.ResourceController.execute(ResourceController.java:98)\
+	at hudson.model.Executor.run(Executor.java:408)\
+Caused by: org.hibernate.exception.JDBCConnectionException: could not execute query\
+	at org.hibernate.exception.SQLStateConverter.convert(SQLStateConverter.java:99)\
+	at org.hibernate.exception.JDBCExceptionHelper.convert(JDBCExceptionHelper.java:66)\
+	at org.hibernate.loader.Loader.doList(Loader.java:2452)\
+	at org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2192)\
+	at org.hibernate.loader.Loader.list(Loader.java:2187)\
+	at org.hibernate.loader.criteria.CriteriaLoader.list(CriteriaLoader.java:119)\
+	at org.hibernate.impl.SessionImpl.list(SessionImpl.java:1706)\
+	at org.hibernate.impl.CriteriaImpl.list(CriteriaImpl.java:347)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$36.doInHibernate(HibernateTemplate.java:1056)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$36.doInHibernate(HibernateTemplate.java:1)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:406)\
+	... 14 more\
+Caused by: com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: \
+\
+** BEGIN NESTED EXCEPTION ** \
+\
+java.io.EOFException\
+MESSAGE: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.\
+\
+STACKTRACE:\
+\
+java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.\
+	at com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:1997)\
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:2411)\
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:2916)\
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:1631)\
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:1723)\
+	at com.mysql.jdbc.Connection.execSQL(Connection.java:3283)\
+	at com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:1332)\
+	at com.mysql.jdbc.PreparedStatement.executeQuery(PreparedStatement.java:1467)\
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.executeQuery(NewProxyPreparedStatement.java:76)\
+	at org.hibernate.jdbc.AbstractBatcher.getResultSet(AbstractBatcher.java:208)\
+	at org.hibernate.loader.Loader.getResultSet(Loader.java:1869)\
+	at org.hibernate.loader.Loader.doQuery(Loader.java:718)\
+	at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:270)\
+	at org.hibernate.loader.Loader.doList(Loader.java:2449)\
+	at org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2192)\
+	at org.hibernate.loader.Loader.list(Loader.java:2187)\
+	at org.hibernate.loader.criteria.CriteriaLoader.list(CriteriaLoader.java:119)\
+	at org.hibernate.impl.SessionImpl.list(SessionImpl.java:1706)\
+	at org.hibernate.impl.CriteriaImpl.list(CriteriaImpl.java:347)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$36.doInHibernate(HibernateTemplate.java:1056)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$36.doInHibernate(HibernateTemplate.java:1)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:406)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.executeWithNativeSession(HibernateTemplate.java:374)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:1046)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:1039)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.getBuildNodeByUrl(BuildDetailsHibernateRepository.java:61)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.saveBuildDetails(BuildDetailsHibernateRepository.java:84)\
+	at org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl.prebuild(DbAuditPublisherImpl.java:137)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:840)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:835)\
+	at hudson.model.Build$BuildExecution.doRun(Build.java:144)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)\
+	at hudson.model.Run.execute(Run.java:1741)\
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)\
+	at hudson.model.ResourceController.execute(ResourceController.java:98)\
+	at hudson.model.Executor.run(Executor.java:408)\
+\
+\
+** END NESTED EXCEPTION **\
+\
+\
+\
+Last packet sent to the server was 2 ms ago.\
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:2622)\
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:2916)\
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:1631)\
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:1723)\
+	at com.mysql.jdbc.Connection.execSQL(Connection.java:3283)\
+	at com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:1332)\
+	at com.mysql.jdbc.PreparedStatement.executeQuery(PreparedStatement.java:1467)\
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.executeQuery(NewProxyPreparedStatement.java:76)\
+	at org.hibernate.jdbc.AbstractBatcher.getResultSet(AbstractBatcher.java:208)\
+	at org.hibernate.loader.Loader.getResultSet(Loader.java:1869)\
+	at org.hibernate.loader.Loader.doQuery(Loader.java:718)\
+	at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:270)\
+	at org.hibernate.loader.Loader.doList(Loader.java:2449)\
+	... 22 more\
+\
+Dec 21, 2015 6:03:28 PM com.mchange.v2.c3p0.stmt.GooGooStatementCache checkinStatement\
+INFO: Problem with checked-in Statement, discarding.\
+com.mysql.jdbc.exceptions.MySQLNonTransientConnectionException: No operations allowed after statement closed.\
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:888)\
+	at com.mysql.jdbc.Statement.checkClosed(Statement.java:385)\
+	at com.mysql.jdbc.PreparedStatement.clearParameters(PreparedStatement.java:678)\
+	at com.mchange.v2.c3p0.stmt.GooGooStatementCache.refreshStatement(GooGooStatementCache.java:604)\
+	at com.mchange.v2.c3p0.stmt.GooGooStatementCache.checkinStatement(GooGooStatementCache.java:236)\
+	at com.mchange.v2.c3p0.impl.NewPooledConnection.checkinStatement(NewPooledConnection.java:282)\
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.close(NewProxyPreparedStatement.java:1807)\
+	at org.hibernate.jdbc.AbstractBatcher.closePreparedStatement(AbstractBatcher.java:563)\
+	at org.hibernate.jdbc.AbstractBatcher.closeStatement(AbstractBatcher.java:291)\
+	at org.hibernate.persister.entity.AbstractEntityPersister.getDatabaseSnapshot(AbstractEntityPersister.java:1123)\
+	at org.hibernate.engine.StatefulPersistenceContext.getDatabaseSnapshot(StatefulPersistenceContext.java:291)\
+	at org.hibernate.engine.ForeignKeys.isTransient(ForeignKeys.java:212)\
+	at org.hibernate.event.def.AbstractSaveEventListener.getEntityState(AbstractSaveEventListener.java:532)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.performSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:103)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:93)\
+	at org.hibernate.impl.SessionImpl.fireSaveOrUpdate(SessionImpl.java:677)\
+	at org.hibernate.impl.SessionImpl.saveOrUpdate(SessionImpl.java:669)\
+	at org.hibernate.engine.CascadingAction$5.cascade(CascadingAction.java:252)\
+	at org.hibernate.engine.Cascade.cascadeToOne(Cascade.java:392)\
+	at org.hibernate.engine.Cascade.cascadeAssociation(Cascade.java:335)\
+	at org.hibernate.engine.Cascade.cascadeProperty(Cascade.java:204)\
+	at org.hibernate.engine.Cascade.cascade(Cascade.java:161)\
+	at org.hibernate.event.def.AbstractSaveEventListener.cascadeBeforeSave(AbstractSaveEventListener.java:451)\
+	at org.hibernate.event.def.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:283)\
+	at org.hibernate.event.def.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:204)\
+	at org.hibernate.event.def.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:144)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.saveWithGeneratedOrRequestedId(DefaultSaveOrUpdateEventListener.java:210)\
+	at org.hibernate.event.def.DefaultSaveEventListener.saveWithGeneratedOrRequestedId(DefaultSaveEventListener.java:56)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.entityIsTransient(DefaultSaveOrUpdateEventListener.java:195)\
+	at org.hibernate.event.def.DefaultSaveEventListener.performSaveOrUpdate(DefaultSaveEventListener.java:50)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:93)\
+	at org.hibernate.impl.SessionImpl.fireSave(SessionImpl.java:705)\
+	at org.hibernate.impl.SessionImpl.save(SessionImpl.java:693)\
+	at org.hibernate.impl.SessionImpl.save(SessionImpl.java:689)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$12.doInHibernate(HibernateTemplate.java:686)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$12.doInHibernate(HibernateTemplate.java:1)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:406)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.executeWithNativeSession(HibernateTemplate.java:374)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.save(HibernateTemplate.java:683)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.saveBuildDetails(BuildDetailsHibernateRepository.java:89)\
+	at org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl.prebuild(DbAuditPublisherImpl.java:137)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:840)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:835)\
+	at hudson.model.Build$BuildExecution.doRun(Build.java:144)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)\
+	at hudson.model.Run.execute(Run.java:1741)\
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)\
+	at hudson.model.ResourceController.execute(ResourceController.java:98)\
+	at hudson.model.Executor.run(Executor.java:408)\
+\
+Dec 21, 2015 6:03:28 PM org.hibernate.util.JDBCExceptionReporter logExceptions\
+WARNING: SQL Error: 0, SQLState: 08S01\
+Dec 21, 2015 6:03:28 PM org.hibernate.util.JDBCExceptionReporter logExceptions\
+SEVERE: Communications link failure due to underlying exception: \
+\
+** BEGIN NESTED EXCEPTION ** \
+\
+java.io.EOFException\
+MESSAGE: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.\
+\
+STACKTRACE:\
+\
+java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.\
+	at com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:1997)\
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:2411)\
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:2916)\
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:1631)\
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:1723)\
+	at com.mysql.jdbc.Connection.execSQL(Connection.java:3283)\
+	at com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:1332)\
+	at com.mysql.jdbc.PreparedStatement.executeQuery(PreparedStatement.java:1467)\
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.executeQuery(NewProxyPreparedStatement.java:76)\
+	at org.hibernate.persister.entity.AbstractEntityPersister.getDatabaseSnapshot(AbstractEntityPersister.java:1100)\
+	at org.hibernate.engine.StatefulPersistenceContext.getDatabaseSnapshot(StatefulPersistenceContext.java:291)\
+	at org.hibernate.engine.ForeignKeys.isTransient(ForeignKeys.java:212)\
+	at org.hibernate.event.def.AbstractSaveEventListener.getEntityState(AbstractSaveEventListener.java:532)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.performSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:103)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:93)\
+	at org.hibernate.impl.SessionImpl.fireSaveOrUpdate(SessionImpl.java:677)\
+	at org.hibernate.impl.SessionImpl.saveOrUpdate(SessionImpl.java:669)\
+	at org.hibernate.engine.CascadingAction$5.cascade(CascadingAction.java:252)\
+	at org.hibernate.engine.Cascade.cascadeToOne(Cascade.java:392)\
+	at org.hibernate.engine.Cascade.cascadeAssociation(Cascade.java:335)\
+	at org.hibernate.engine.Cascade.cascadeProperty(Cascade.java:204)\
+	at org.hibernate.engine.Cascade.cascade(Cascade.java:161)\
+	at org.hibernate.event.def.AbstractSaveEventListener.cascadeBeforeSave(AbstractSaveEventListener.java:451)\
+	at org.hibernate.event.def.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:283)\
+	at org.hibernate.event.def.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:204)\
+	at org.hibernate.event.def.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:144)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.saveWithGeneratedOrRequestedId(DefaultSaveOrUpdateEventListener.java:210)\
+	at org.hibernate.event.def.DefaultSaveEventListener.saveWithGeneratedOrRequestedId(DefaultSaveEventListener.java:56)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.entityIsTransient(DefaultSaveOrUpdateEventListener.java:195)\
+	at org.hibernate.event.def.DefaultSaveEventListener.performSaveOrUpdate(DefaultSaveEventListener.java:50)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:93)\
+	at org.hibernate.impl.SessionImpl.fireSave(SessionImpl.java:705)\
+	at org.hibernate.impl.SessionImpl.save(SessionImpl.java:693)\
+	at org.hibernate.impl.SessionImpl.save(SessionImpl.java:689)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$12.doInHibernate(HibernateTemplate.java:686)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$12.doInHibernate(HibernateTemplate.java:1)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:406)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.executeWithNativeSession(HibernateTemplate.java:374)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.save(HibernateTemplate.java:683)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.saveBuildDetails(BuildDetailsHibernateRepository.java:89)\
+	at org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl.prebuild(DbAuditPublisherImpl.java:137)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:840)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:835)\
+	at hudson.model.Build$BuildExecution.doRun(Build.java:144)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)\
+	at hudson.model.Run.execute(Run.java:1741)\
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)\
+	at hudson.model.ResourceController.execute(ResourceController.java:98)\
+	at hudson.model.Executor.run(Executor.java:408)\
+\
+\
+** END NESTED EXCEPTION **\
+\
+\
+\
+Last packet sent to the server was 1 ms ago.\
+Dec 21, 2015 6:03:28 PM org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl prebuild\
+SEVERE: could not retrieve snapshot: [org.jenkins.plugins.audit2db.internal.model.BuildNodeImpl#jenkins1.prod-release.something.net/computer/Hulk/]; nested exception is org.hibernate.exception.JDBCConnectionException: could not retrieve snapshot: [org.jenkins.plugins.audit2db.internal.model.BuildNodeImpl#jenkins1.prod-release.something.net/computer/Hulk/]\
+org.springframework.dao.DataAccessResourceFailureException: could not retrieve snapshot: [org.jenkins.plugins.audit2db.internal.model.BuildNodeImpl#jenkins1.prod-release.something.net/computer/Hulk/]; nested exception is org.hibernate.exception.JDBCConnectionException: could not retrieve snapshot: [org.jenkins.plugins.audit2db.internal.model.BuildNodeImpl#jenkins1.prod-release.something.net/computer/Hulk/]\
+	at org.springframework.orm.hibernate3.SessionFactoryUtils.convertHibernateAccessException(SessionFactoryUtils.java:631)\
+	at org.springframework.orm.hibernate3.HibernateAccessor.convertHibernateAccessException(HibernateAccessor.java:412)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:411)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.executeWithNativeSession(HibernateTemplate.java:374)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.save(HibernateTemplate.java:683)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.saveBuildDetails(BuildDetailsHibernateRepository.java:89)\
+	at org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl.prebuild(DbAuditPublisherImpl.java:137)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:840)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:835)\
+	at hudson.model.Build$BuildExecution.doRun(Build.java:144)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)\
+	at hudson.model.Run.execute(Run.java:1741)\
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)\
+	at hudson.model.ResourceController.execute(ResourceController.java:98)\
+	at hudson.model.Executor.run(Executor.java:408)\
+Caused by: org.hibernate.exception.JDBCConnectionException: could not retrieve snapshot: [org.jenkins.plugins.audit2db.internal.model.BuildNodeImpl#jenkins1.prod-release.something.net/computer/Hulk/]\
+	at org.hibernate.exception.SQLStateConverter.convert(SQLStateConverter.java:99)\
+	at org.hibernate.exception.JDBCExceptionHelper.convert(JDBCExceptionHelper.java:66)\
+	at org.hibernate.persister.entity.AbstractEntityPersister.getDatabaseSnapshot(AbstractEntityPersister.java:1127)\
+	at org.hibernate.engine.StatefulPersistenceContext.getDatabaseSnapshot(StatefulPersistenceContext.java:291)\
+	at org.hibernate.engine.ForeignKeys.isTransient(ForeignKeys.java:212)\
+	at org.hibernate.event.def.AbstractSaveEventListener.getEntityState(AbstractSaveEventListener.java:532)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.performSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:103)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:93)\
+	at org.hibernate.impl.SessionImpl.fireSaveOrUpdate(SessionImpl.java:677)\
+	at org.hibernate.impl.SessionImpl.saveOrUpdate(SessionImpl.java:669)\
+	at org.hibernate.engine.CascadingAction$5.cascade(CascadingAction.java:252)\
+	at org.hibernate.engine.Cascade.cascadeToOne(Cascade.java:392)\
+	at org.hibernate.engine.Cascade.cascadeAssociation(Cascade.java:335)\
+	at org.hibernate.engine.Cascade.cascadeProperty(Cascade.java:204)\
+	at org.hibernate.engine.Cascade.cascade(Cascade.java:161)\
+	at org.hibernate.event.def.AbstractSaveEventListener.cascadeBeforeSave(AbstractSaveEventListener.java:451)\
+	at org.hibernate.event.def.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:283)\
+	at org.hibernate.event.def.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:204)\
+	at org.hibernate.event.def.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:144)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.saveWithGeneratedOrRequestedId(DefaultSaveOrUpdateEventListener.java:210)\
+	at org.hibernate.event.def.DefaultSaveEventListener.saveWithGeneratedOrRequestedId(DefaultSaveEventListener.java:56)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.entityIsTransient(DefaultSaveOrUpdateEventListener.java:195)\
+	at org.hibernate.event.def.DefaultSaveEventListener.performSaveOrUpdate(DefaultSaveEventListener.java:50)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:93)\
+	at org.hibernate.impl.SessionImpl.fireSave(SessionImpl.java:705)\
+	at org.hibernate.impl.SessionImpl.save(SessionImpl.java:693)\
+	at org.hibernate.impl.SessionImpl.save(SessionImpl.java:689)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$12.doInHibernate(HibernateTemplate.java:686)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$12.doInHibernate(HibernateTemplate.java:1)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:406)\
+	... 12 more\
+Caused by: com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: \
+\
+** BEGIN NESTED EXCEPTION ** \
+\
+java.io.EOFException\
+MESSAGE: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.\
+\
+STACKTRACE:\
+\
+java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.\
+	at com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:1997)\
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:2411)\
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:2916)\
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:1631)\
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:1723)\
+	at com.mysql.jdbc.Connection.execSQL(Connection.java:3283)\
+	at com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:1332)\
+	at com.mysql.jdbc.PreparedStatement.executeQuery(PreparedStatement.java:1467)\
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.executeQuery(NewProxyPreparedStatement.java:76)\
+	at org.hibernate.persister.entity.AbstractEntityPersister.getDatabaseSnapshot(AbstractEntityPersister.java:1100)\
+	at org.hibernate.engine.StatefulPersistenceContext.getDatabaseSnapshot(StatefulPersistenceContext.java:291)\
+	at org.hibernate.engine.ForeignKeys.isTransient(ForeignKeys.java:212)\
+	at org.hibernate.event.def.AbstractSaveEventListener.getEntityState(AbstractSaveEventListener.java:532)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.performSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:103)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:93)\
+	at org.hibernate.impl.SessionImpl.fireSaveOrUpdate(SessionImpl.java:677)\
+	at org.hibernate.impl.SessionImpl.saveOrUpdate(SessionImpl.java:669)\
+	at org.hibernate.engine.CascadingAction$5.cascade(CascadingAction.java:252)\
+	at org.hibernate.engine.Cascade.cascadeToOne(Cascade.java:392)\
+	at org.hibernate.engine.Cascade.cascadeAssociation(Cascade.java:335)\
+	at org.hibernate.engine.Cascade.cascadeProperty(Cascade.java:204)\
+	at org.hibernate.engine.Cascade.cascade(Cascade.java:161)\
+	at org.hibernate.event.def.AbstractSaveEventListener.cascadeBeforeSave(AbstractSaveEventListener.java:451)\
+	at org.hibernate.event.def.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:283)\
+	at org.hibernate.event.def.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:204)\
+	at org.hibernate.event.def.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:144)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.saveWithGeneratedOrRequestedId(DefaultSaveOrUpdateEventListener.java:210)\
+	at org.hibernate.event.def.DefaultSaveEventListener.saveWithGeneratedOrRequestedId(DefaultSaveEventListener.java:56)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.entityIsTransient(DefaultSaveOrUpdateEventListener.java:195)\
+	at org.hibernate.event.def.DefaultSaveEventListener.performSaveOrUpdate(DefaultSaveEventListener.java:50)\
+	at org.hibernate.event.def.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:93)\
+	at org.hibernate.impl.SessionImpl.fireSave(SessionImpl.java:705)\
+	at org.hibernate.impl.SessionImpl.save(SessionImpl.java:693)\
+	at org.hibernate.impl.SessionImpl.save(SessionImpl.java:689)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$12.doInHibernate(HibernateTemplate.java:686)\
+	at org.springframework.orm.hibernate3.HibernateTemplate$12.doInHibernate(HibernateTemplate.java:1)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.doExecute(HibernateTemplate.java:406)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.executeWithNativeSession(HibernateTemplate.java:374)\
+	at org.springframework.orm.hibernate3.HibernateTemplate.save(HibernateTemplate.java:683)\
+	at org.jenkins.plugins.audit2db.internal.data.BuildDetailsHibernateRepository.saveBuildDetails(BuildDetailsHibernateRepository.java:89)\
+	at org.jenkins.plugins.audit2db.internal.DbAuditPublisherImpl.prebuild(DbAuditPublisherImpl.java:137)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:840)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.preBuild(AbstractBuild.java:835)\
+	at hudson.model.Build$BuildExecution.doRun(Build.java:144)\
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)\
+	at hudson.model.Run.execute(Run.java:1741)\
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)\
+	at hudson.model.ResourceController.execute(ResourceController.java:98)\
+	at hudson.model.Executor.run(Executor.java:408)\
+\
+\
+** END NESTED EXCEPTION **\
+\
+\
+\
+Last packet sent to the server was 1 ms ago.\
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:2622)\
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:2916)\
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:1631)\
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:1723)\
+	at com.mysql.jdbc.Connection.execSQL(Connection.java:3283)\
+	at com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:1332)\
+	at com.mysql.jdbc.PreparedStatement.executeQuery(PreparedStatement.java:1467)\
+	at com.mchange.v2.c3p0.impl.NewProxyPreparedStatement.executeQuery(NewProxyPreparedStatement.java:76)\
+	at org.hibernate.persister.entity.AbstractEntityPersister.getDatabaseSnapshot(AbstractEntityPersister.java:1100)\
+	... 39 more\
+\
+Dec 21, 2015 6:03:28 PM hudson.model.Run execute\
+INFO: social-graph_develop_builder #110 main build action completed: FAILURE}

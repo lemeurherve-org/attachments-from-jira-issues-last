@@ -1,0 +1,153 @@
+def projects
+def toolbox
+
+pyToolsDir = "pipeline-toolbox"
+stacks = "stacks"
+qaStack = "$stacks/qa-stack.json"
+rcStack = "$stacks/rc-stack.json"
+uatStack = "$stacks/uat-stack.json"
+pythonPath = "PYTHONPATH=\$PYTHONPATH:$pyToolsDir"
+generator = "$pyToolsDir/generator.py"
+deploy = "$pyToolsDir/jenkins-upgrade.py"
+imageValidator = "$pyToolsDir/image_validator.py"
+stablizer = "$pyToolsDir/wait-for-stabilization.py"
+RCMarathon = "http://10.170.11.11:8080"
+QAMarathon = "http://10.170.11.11:8080"
+UATMarathon = "http://10.170.11.11:8080"
+PRODMarathon = "10.170.11.11"
+changeFile = "changes.txt"
+mylestone = 0
+qaMesosCredentialsId = 'mesos-1.8-creds'
+uatMesosCredentialsId = 'mesos-1.8-creds'
+rcMesosCredentialsId = 'mesos-1.8-creds'
+
+def setMilestone(message) {
+    mylestone += 1
+    milestone ordinal: mylestone, label: message
+}
+
+def newNode() {
+    checkout scm
+    toolbox = load 'src/toolbox.groovy'
+    verifyPythonTools(toolbox)
+    return toolbox
+}
+
+def tagRepo(d) {
+    dir(d) {
+        tag = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+        sh "git config user.email 'astovall@cotiviti.com'"
+        sh "git config user.name 'jenkins'"
+        sh "git config --global http.sslVerify false"
+        sh "git tag $tag"
+        sshagent(["19eba46e-896c-4951-ae6b-2fed243a6ceb"]) {
+            sh "git push origin ${tag}"
+        }
+    }
+}
+
+def tagRepos(projects) {
+    tagRepo(".")
+    tagRepo(pyToolsDir)
+    for(repo in projects) {
+        tagRepo(repo)
+    }
+}
+
+def verifyPythonTools(toolbox) {
+    if(fileExists(pyToolsDir) == false){
+        toolbox.setupPythonTools(pyToolsDir)
+    }
+}
+
+def enterEnvironment(environ, stack, dst, credentials) {
+    node("mesos-light") {
+        unstash "stacks"
+        toolbox = newNode()
+        stage("Entering $environ") {
+            withEnv([pythonPath]) {
+                stage("Computing upgrade delta") {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentials, passwordVariable: 'pass', usernameVariable: 'user']]) {
+                        sh "$deploy --fake --src $stack --status $changeFile --mesos $dst --user ${env.user} --password ${env.pass}"
+                    }
+                    diffs = readFile(changeFile)
+                }
+            }
+        }
+    }
+
+    stage("Upgrading $environ") {
+        if(diffs != "") {
+            input message: diffs
+        }
+        setMilestone("Begin $env install")
+        node("mesos-light") {
+            unstash "stacks"
+            toolbox = newNode()
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentials, passwordVariable: 'pass', usernameVariable: 'user']]) {
+                sh "$deploy --src $stack --mesos $dst --user ${env.user} --password ${env.pass}"
+            }
+            stage("Wait for $environ to stabalize") {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentials, passwordVariable: 'pass', usernameVariable: 'user']]) {
+                    sh "$stablizer --src $stack --mesos $dst --user ${env.user} --password ${env.pass}"
+                }
+            }
+        }
+    }
+}
+
+node('mesos-light') {
+    step([$class: 'WsCleanup'])
+    stage('Setup Deployer') {
+        toolbox = newNode()
+    }
+    stage('Setup Sources') {
+        projects = toolbox.setupRepos()
+        baseCommand = generator
+        for(entry in projects) {
+            baseCommand += " --source " + entry.value['dir']
+        }
+        withEnv([pythonPath]) {
+            sh "$baseCommand --env rc --output $rcStack"
+            sh "$baseCommand --env qa --output $qaStack"
+            sh "$baseCommand --env uat --output $uatStack"
+        }
+        toolbox.archiveFile("$stacks/*.json")
+        stash name: "stacks", includes: "$stacks/*.json"
+    }
+
+    stage('Verify Docker Images') {
+        withEnv([pythonPath]) {
+            sh "$imageValidator --source=$rcStack"
+        }
+    }
+    setMilestone("Images Validated")
+
+    stage('Deploy RC') {
+        withEnv([pythonPath]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: rcMesosCredentialsId, passwordVariable: 'pass', usernameVariable: 'user']]) {
+                sh "$deploy --fake --src $rcStack --status $changeFile --mesos $RCMarathon --user ${env.user} --password ${env.pass}"
+                echo readFile(changeFile)
+                sh "$deploy --src $rcStack --mesos $RCMarathon --user ${env.user} --password ${env.pass}"
+            }
+        }
+    }
+
+    stage('Wait for RC to stabalize') {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: rcMesosCredentialsId, passwordVariable: 'pass', usernameVariable: 'user']]) {
+            sh "$stablizer --src $rcStack --mesos $RCMarathon --user ${env.user} --password ${env.pass}"
+        }
+    }
+
+    stage("Tagging RC") {
+        repos = []
+        for(entry in projects) {
+            repos << entry.value['dir']
+        }
+        tagRepos(repos)
+    }
+
+}
+
+enterEnvironment("QA", qaStack, QAMarathon, qaMesosCredentialsId)
+enterEnvironment("UAT", uatStack, UATMarathon, uatMesosCredentialsId)

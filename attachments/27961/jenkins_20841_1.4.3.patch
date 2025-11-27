@@ -1,0 +1,70 @@
+diff --git a/src/main/java/au/com/centrumsystems/hudson/plugin/buildpipeline/DownstreamProjectGridBuilder.java b/src/main/java/au/com/centrumsystems/hudson/plugin/buildpipeline/DownstreamProjectGridBuilder.java
+index 6bcdab6..4778884 100644
+--- a/src/main/java/au/com/centrumsystems/hudson/plugin/buildpipeline/DownstreamProjectGridBuilder.java
++++ b/src/main/java/au/com/centrumsystems/hudson/plugin/buildpipeline/DownstreamProjectGridBuilder.java
+@@ -1,6 +1,7 @@
+ package au.com.centrumsystems.hudson.plugin.buildpipeline;
+ 
+ import hudson.Extension;
++import hudson.Functions;
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
+ import hudson.model.Item;
+@@ -37,6 +38,11 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
+     private String firstJob;
+ 
+     /**
++     * Url to the first job in the grid, relative to the owner view
++     */
++    private String firstJobLink;
++
++    /**
+      * @param firstJob Name of the job to lead the piepline.
+      */
+     @DataBoundConstructor
+@@ -153,6 +159,10 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
+         return firstJob;
+     }
+ 
++    public String getFirstJobLink() {        
++        return firstJobLink;
++    }
++
+     /**
+      * The job that's configured as the head of the pipeline.
+      *
+@@ -183,7 +193,6 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
+         if (p == null) {
+             return HttpResponses.error(StaplerResponse.SC_BAD_REQUEST, "No such project: " + getFirstJob());
+         }
+-
+         return new HttpResponse() {
+             @Override
+             public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException, ServletException {
+@@ -202,6 +211,13 @@ public class DownstreamProjectGridBuilder extends ProjectGridBuilder {
+ 
+     @Override
+     public ProjectGrid build(BuildPipelineView owner) {
++        AbstractProject<?, ?> project = Jenkins.getInstance().getItem(firstJob,owner.getOwnerItemGroup(),AbstractProject.class);            
++        if ( project != null ) {
++            this.firstJobLink = project.getUrl();
++        }
++        else {
++            this.firstJobLink = "";
++        }
+         return new GridImpl(owner.getOwnerItemGroup(), getFirstJob(owner));
+     }
+ 
+diff --git a/src/main/resources/au/com/centrumsystems/hudson/plugin/buildpipeline/BuildPipelineView/bpp.jelly b/src/main/resources/au/com/centrumsystems/hudson/plugin/buildpipeline/BuildPipelineView/bpp.jelly
+index 4b13d6f..bd554e6 100644
+--- a/src/main/resources/au/com/centrumsystems/hudson/plugin/buildpipeline/BuildPipelineView/bpp.jelly
++++ b/src/main/resources/au/com/centrumsystems/hudson/plugin/buildpipeline/BuildPipelineView/bpp.jelly
+@@ -229,7 +229,7 @@
+         <j:if test="${hasBuildPermission}">
+           <div class="icon-container">
+ 		<j:if test="${from.startsWithParameters}">
+-			<div onclick="buildPipeline.fillDialog('${rootURL}/job/${from.gridBuilder.firstJob}/build?delay=0sec', 'Starts the pipeline with parameters')">
++			<div onclick="buildPipeline.fillDialog('${rootURL}/${from.gridBuilder.firstJobLink}/build?delay=0sec', 'Starts the pipeline with parameters')">
+                 <img src="${rootURL}/images/24x24/clock.png" alt="Trigger a Pipeline" class="icon-with-caption"/>
+             </div>
+ 		</j:if>

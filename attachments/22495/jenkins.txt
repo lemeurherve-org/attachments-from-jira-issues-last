@@ -1,0 +1,154 @@
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchStandard(Launcher.java:329)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:239)
+	at org.jvnet.hudson.maven3.agent.Maven3Main.launch(Maven3Main.java:158)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:122)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:74)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:287)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)
+Caused by: java.lang.ExceptionInInitializerError
+	at edu.umd.cs.findbugs.DetectorFactoryCollection.getCoreResource(DetectorFactoryCollection.java:360)
+	at edu.umd.cs.findbugs.SystemProperties.loadPropertiesFromConfigFile(SystemProperties.java:72)
+	at edu.umd.cs.findbugs.SystemProperties.<clinit>(SystemProperties.java:55)
+	at edu.umd.cs.findbugs.SortedBugCollection.<clinit>(SortedBugCollection.java:185)
+	at hudson.plugins.findbugs.parser.FindBugsParser.readXml(FindBugsParser.java:262)
+	at hudson.plugins.findbugs.parser.FindBugsParser.parse(FindBugsParser.java:206)
+	at hudson.plugins.findbugs.parser.FindBugsParser.parse(FindBugsParser.java:143)
+	at hudson.plugins.findbugs.parser.FindBugsParser.parse(FindBugsParser.java:103)
+	at hudson.plugins.analysis.core.FilesParser.parseFile(FilesParser.java:261)
+	at hudson.plugins.analysis.core.FilesParser.parseFiles(FilesParser.java:220)
+	at hudson.plugins.analysis.core.FilesParser.invoke(FilesParser.java:169)
+	at hudson.plugins.analysis.core.FilesParser.invoke(FilesParser.java:31)
+	at hudson.FilePath.act(FilePath.java:785)
+	at hudson.FilePath.act(FilePath.java:767)
+	at hudson.plugins.findbugs.FindBugsReporter.perform(FindBugsReporter.java:169)
+	at hudson.plugins.analysis.core.HealthAwareReporter.postExecute(HealthAwareReporter.java:304)
+	at hudson.maven.Maven3Builder$MavenExecutionListener.recordMojoSucceeded(Maven3Builder.java:582)
+	at hudson.maven.Maven3Builder$MavenExecutionListener.mojoSucceeded(Maven3Builder.java:545)
+	at org.apache.maven.lifecycle.internal.DefaultExecutionEventCatapult.fire(DefaultExecutionEventCatapult.java:87)
+	at org.apache.maven.lifecycle.internal.DefaultExecutionEventCatapult.fire(DefaultExecutionEventCatapult.java:42)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:228)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:84)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:59)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.singleThreadedBuild(LifecycleStarter.java:183)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:161)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:319)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:156)
+	at org.jvnet.hudson.maven3.launcher.Maven3Launcher.main(Maven3Launcher.java:79)
+	... 18 more
+Caused by: java.lang.IllegalStateException: Unable to load core plugin
+	at edu.umd.cs.findbugs.PluginLoader.loadCorePlugin(PluginLoader.java:1308)
+	at edu.umd.cs.findbugs.PluginLoader.loadInitialPlugins(PluginLoader.java:1259)
+	at edu.umd.cs.findbugs.PluginLoader.<clinit>(PluginLoader.java:146)
+	... 48 more
+Caused by: edu.umd.cs.findbugs.PluginException: Couldn't parse "file:/tmp/hudson-remoting7164884878132869089/findbugs.xml" using org.dom4j.io.SAXReader
+	at edu.umd.cs.findbugs.PluginLoader.init(PluginLoader.java:560)
+	at edu.umd.cs.findbugs.PluginLoader.<init>(PluginLoader.java:280)
+	at edu.umd.cs.findbugs.PluginLoader.loadCorePlugin(PluginLoader.java:1304)
+	... 50 more
+Caused by: org.dom4j.DocumentException: org.dom4j.DocumentFactory cannot be cast to org.dom4j.DocumentFactory Nested exception: org.dom4j.DocumentFactory cannot be cast to org.dom4j.DocumentFactory
+	at org.dom4j.io.SAXReader.read(SAXReader.java:484)
+	at org.dom4j.io.SAXReader.read(SAXReader.java:365)
+	at edu.umd.cs.findbugs.PluginLoader.init(PluginLoader.java:558)
+	... 52 more
+Caused by: java.lang.ClassCastException: org.dom4j.DocumentFactory cannot be cast to org.dom4j.DocumentFactory
+	at org.dom4j.DocumentFactory.getInstance(DocumentFactory.java:97)
+	at org.dom4j.io.SAXReader.getDocumentFactory(SAXReader.java:645)
+	at org.dom4j.io.SAXReader.createContentHandler(SAXReader.java:969)
+	at org.dom4j.io.SAXReader.read(SAXReader.java:449)
+	... 54 more
+channel stopped
+ERROR: Failed to parse POMs
+hudson.util.IOException2: java.lang.reflect.InvocationTargetException
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:189)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:74)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:287)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)
+Caused by: java.lang.Exception: java.lang.reflect.InvocationTargetException
+	at org.jvnet.hudson.maven3.agent.Maven3Main.launch(Maven3Main.java:161)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:122)
+	... 10 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchStandard(Launcher.java:329)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:239)
+	at org.jvnet.hudson.maven3.agent.Maven3Main.launch(Maven3Main.java:158)
+	... 11 more
+Caused by: java.lang.ExceptionInInitializerError
+	at edu.umd.cs.findbugs.DetectorFactoryCollection.getCoreResource(DetectorFactoryCollection.java:360)
+	at edu.umd.cs.findbugs.SystemProperties.loadPropertiesFromConfigFile(SystemProperties.java:72)
+	at edu.umd.cs.findbugs.SystemProperties.<clinit>(SystemProperties.java:55)
+	at edu.umd.cs.findbugs.SortedBugCollection.<clinit>(SortedBugCollection.java:185)
+	at hudson.plugins.findbugs.parser.FindBugsParser.readXml(FindBugsParser.java:262)
+	at hudson.plugins.findbugs.parser.FindBugsParser.parse(FindBugsParser.java:206)
+	at hudson.plugins.findbugs.parser.FindBugsParser.parse(FindBugsParser.java:143)
+	at hudson.plugins.findbugs.parser.FindBugsParser.parse(FindBugsParser.java:103)
+	at hudson.plugins.analysis.core.FilesParser.parseFile(FilesParser.java:261)
+	at hudson.plugins.analysis.core.FilesParser.parseFiles(FilesParser.java:220)
+	at hudson.plugins.analysis.core.FilesParser.invoke(FilesParser.java:169)
+	at hudson.plugins.analysis.core.FilesParser.invoke(FilesParser.java:31)
+	at hudson.FilePath.act(FilePath.java:785)
+	at hudson.FilePath.act(FilePath.java:767)
+	at hudson.plugins.findbugs.FindBugsReporter.perform(FindBugsReporter.java:169)
+	at hudson.plugins.analysis.core.HealthAwareReporter.postExecute(HealthAwareReporter.java:304)
+	at hudson.maven.Maven3Builder$MavenExecutionListener.recordMojoSucceeded(Maven3Builder.java:582)
+	at hudson.maven.Maven3Builder$MavenExecutionListener.mojoSucceeded(Maven3Builder.java:545)
+	at org.apache.maven.lifecycle.internal.DefaultExecutionEventCatapult.fire(DefaultExecutionEventCatapult.java:87)
+	at org.apache.maven.lifecycle.internal.DefaultExecutionEventCatapult.fire(DefaultExecutionEventCatapult.java:42)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:228)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:84)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:59)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.singleThreadedBuild(LifecycleStarter.java:183)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:161)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:319)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:156)
+	at org.jvnet.hudson.maven3.launcher.Maven3Launcher.main(Maven3Launcher.java:79)
+	... 18 more
+Caused by: java.lang.IllegalStateException: Unable to load core plugin
+	at edu.umd.cs.findbugs.PluginLoader.loadCorePlugin(PluginLoader.java:1308)
+	at edu.umd.cs.findbugs.PluginLoader.loadInitialPlugins(PluginLoader.java:1259)
+	at edu.umd.cs.findbugs.PluginLoader.<clinit>(PluginLoader.java:146)
+	... 48 more
+Caused by: edu.umd.cs.findbugs.PluginException: Couldn't parse "file:/tmp/hudson-remoting7164884878132869089/findbugs.xml" using org.dom4j.io.SAXReader
+	at edu.umd.cs.findbugs.PluginLoader.init(PluginLoader.java:560)
+	at edu.umd.cs.findbugs.PluginLoader.<init>(PluginLoader.java:280)
+	at edu.umd.cs.findbugs.PluginLoader.loadCorePlugin(PluginLoader.java:1304)
+	... 50 more
+Caused by: org.dom4j.DocumentException: org.dom4j.DocumentFactory cannot be cast to org.dom4j.DocumentFactory Nested exception: org.dom4j.DocumentFactory cannot be cast to org.dom4j.DocumentFactory
+	at org.dom4j.io.SAXReader.read(SAXReader.java:484)
+	at org.dom4j.io.SAXReader.read(SAXReader.java:365)
+	at edu.umd.cs.findbugs.PluginLoader.init(PluginLoader.java:558)
+	... 52 more
+Caused by: java.lang.ClassCastException: org.dom4j.DocumentFactory cannot be cast to org.dom4j.DocumentFactory
+	at org.dom4j.DocumentFactory.getInstance(DocumentFactory.java:97)
+	at org.dom4j.io.SAXReader.getDocumentFactory(SAXReader.java:645)
+	at org.dom4j.io.SAXReader.createContentHandler(SAXReader.java:969)
+	at org.dom4j.io.SAXReader.read(SAXReader.java:449)
+	... 54 more
+[WARNINGS] Skipping publisher since build result is FAILURE Skipping Cobertura coverage report as build was not UNSTABLE or better ...
+

@@ -1,0 +1,47 @@
+diff -Naur jenkinsci-clearcase-plugin-91e5932/src/main/java/hudson/plugins/clearcase/util/OutputFormat.java jenkinsci-clearcase-plugin-91e5932-fix/src/main/java/hudson/plugins/clearcase/util/OutputFormat.java
+--- jenkinsci-clearcase-plugin-91e5932/src/main/java/hudson/plugins/clearcase/util/OutputFormat.java	2012-09-17 06:09:46.000000000 +0300
++++ jenkinsci-clearcase-plugin-91e5932-fix/src/main/java/hudson/plugins/clearcase/util/OutputFormat.java	2012-10-22 15:02:15.971097300 +0200
+@@ -68,5 +68,5 @@
+     public static final String UCM_ACTIVITY_CONTRIBUTING = "%[contrib_acts]p";
+ 
+     // UCM Versions
+-    public static final String UCM_VERSION_ACTIVITY = "%[activity]Xp";
++    public static final String UCM_VERSION_ACTIVITY = "%[activity]p";
+ }
+diff -Naur jenkinsci-clearcase-plugin-91e5932/src/test/java/hudson/plugins/clearcase/ucm/UcmChangeLogActionTest.java jenkinsci-clearcase-plugin-91e5932-fix/src/test/java/hudson/plugins/clearcase/ucm/UcmChangeLogActionTest.java
+--- jenkinsci-clearcase-plugin-91e5932/src/test/java/hudson/plugins/clearcase/ucm/UcmChangeLogActionTest.java	2012-09-17 06:09:46.000000000 +0300
++++ jenkinsci-clearcase-plugin-91e5932-fix/src/test/java/hudson/plugins/clearcase/ucm/UcmChangeLogActionTest.java	2012-10-22 12:45:07.110304700 +0200
+@@ -50,12 +50,12 @@
+     @Test
+     public void assertFormatContainsComment() throws Exception {
+         when(
+-                cleartool.lshistory(eq("\\\"%Nd\\\" \\\"%En\\\" \\\"%Vn\\\" \\\"%[activity]Xp\\\" \\\"%e\\\" \\\"%o\\\" \\\"%u\\\" \\n%c\\n"), any(Date.class),
++                cleartool.lshistory(eq("\\\"%Nd\\\" \\\"%En\\\" \\\"%Vn\\\" \\\"%[activity]p\\\" \\\"%e\\\" \\\"%o\\\" \\\"%u\\\" \\n%c\\n"), any(Date.class),
+                         anyString(), anyString(), any(String[].class), anyBoolean(), anyBoolean())).thenReturn(new StringReader(""));
+ 
+         UcmChangeLogAction action = new UcmChangeLogAction(cleartool, null);
+         action.getChanges(new Date(), "IGNORED", new String[] { "Release_2_1_int" }, new String[] { "vobs/projects/Server" });
+-        verify(cleartool).lshistory(eq("\\\"%Nd\\\" \\\"%En\\\" \\\"%Vn\\\" \\\"%[activity]Xp\\\" \\\"%e\\\" \\\"%o\\\" \\\"%u\\\" \\n%c\\n"), any(Date.class),
++        verify(cleartool).lshistory(eq("\\\"%Nd\\\" \\\"%En\\\" \\\"%Vn\\\" \\\"%[activity]p\\\" \\\"%e\\\" \\\"%o\\\" \\\"%u\\\" \\n%c\\n"), any(Date.class),
+                 anyString(), anyString(), any(String[].class), anyBoolean(), anyBoolean());
+     }
+ 
+diff -Naur jenkinsci-clearcase-plugin-91e5932/src/test/java/hudson/plugins/clearcase/ucm/UcmHistoryActionTest.java jenkinsci-clearcase-plugin-91e5932-fix/src/test/java/hudson/plugins/clearcase/ucm/UcmHistoryActionTest.java
+--- jenkinsci-clearcase-plugin-91e5932/src/test/java/hudson/plugins/clearcase/ucm/UcmHistoryActionTest.java	2012-09-17 06:09:46.000000000 +0300
++++ jenkinsci-clearcase-plugin-91e5932-fix/src/test/java/hudson/plugins/clearcase/ucm/UcmHistoryActionTest.java	2012-10-22 12:45:11.369159300 +0200
+@@ -185,13 +185,13 @@
+     public void assertFormatContainsComment() throws Exception {
+         when(cleartool.doesViewExist("viewTag")).thenReturn(Boolean.TRUE);
+         when(
+-                cleartool.lshistory(eq("\\\"%Nd\\\" \\\"%u\\\" \\\"%En\\\" \\\"%Vn\\\" \\\"%e\\\" \\\"%o\\\" \\\"%[activity]Xp\\\" \\n%c\\n"), any(Date.class),
++                cleartool.lshistory(eq("\\\"%Nd\\\" \\\"%u\\\" \\\"%En\\\" \\\"%Vn\\\" \\\"%e\\\" \\\"%o\\\" \\\"%[activity]p\\\" \\n%c\\n"), any(Date.class),
+                         anyString(), anyString(), any(String[].class), anyBoolean(), anyBoolean())).thenReturn(new StringReader(""));
+ 
+         UcmHistoryAction action = createUcmHistoryAction();
+         action.getChanges(new Date(), "viewPath", "viewTag", new String[] { "Release_2_1_int" }, new String[] { "vobs/projects/Server" });
+         
+-        verify(cleartool).lshistory(eq("\\\"%Nd\\\" \\\"%u\\\" \\\"%En\\\" \\\"%Vn\\\" \\\"%e\\\" \\\"%o\\\" \\\"%[activity]Xp\\\" \\n%c\\n"), any(Date.class),
++        verify(cleartool).lshistory(eq("\\\"%Nd\\\" \\\"%u\\\" \\\"%En\\\" \\\"%Vn\\\" \\\"%e\\\" \\\"%o\\\" \\\"%[activity]p\\\" \\n%c\\n"), any(Date.class),
+                 anyString(), anyString(), any(String[].class), anyBoolean(), anyBoolean());
+     }
+ 

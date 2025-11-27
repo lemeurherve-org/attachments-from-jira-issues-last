@@ -1,0 +1,211 @@
+Index: src/main/java/hudson/plugins/bazaar/BazaarRepositoryBrowser.java
+===============================================================
+--- src/main/java/hudson/plugins/bazaar/BazaarRepositoryBrowser.java	(revision 30369)
++++ src/main/java/hudson/plugins/bazaar/BazaarRepositoryBrowser.java	(working copy)
+@@ -30,4 +30,11 @@ public abstract class BazaarRepositoryBrowser extends RepositoryBrowser<BazaarCh
+      */
+     public abstract URL getFileLink(BazaarAffectedFile affectedFile) throws IOException;
+ 
++    protected static boolean isRenaming(BazaarAffectedFile affectedFile) {
++        return affectedFile.getOldPath() != null;
++    }
++
++    protected static boolean isFolderPath(String path) {
++        return path.endsWith("/");
++    }
+ }
+Index: src/main/java/hudson/plugins/bazaar/browsers/Loggerhead.java
+===============================================================
+--- src/main/java/hudson/plugins/bazaar/browsers/Loggerhead.java	(revision 30369)
++++ src/main/java/hudson/plugins/bazaar/browsers/Loggerhead.java	(working copy)
+@@ -48,10 +48,6 @@ public class Loggerhead extends BazaarRepositoryBrowser {
+         return url;
+     }
+ 
+-    private static boolean isRenaming(BazaarAffectedFile affectedFile) {
+-        return affectedFile.getOldPath() != null;
+-    }
+-
+     @Override
+     public URL getFileLink(BazaarAffectedFile affectedFile) throws IOException {
+         String path = affectedFile.getPath().trim();
+@@ -69,10 +65,6 @@ public class Loggerhead extends BazaarRepositoryBrowser {
+         return browsingType;
+     }
+ 
+-    private static boolean isFolderPath(String path) {
+-        return path.endsWith("/");
+-    }
+-
+ 
+     @Extension
+     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+Index: src/main/java/hudson/plugins/bazaar/browsers/OpenGrok.java
+===============================================================
+--- src/main/java/hudson/plugins/bazaar/browsers/OpenGrok.java	(revision 0)
++++ src/main/java/hudson/plugins/bazaar/browsers/OpenGrok.java	(revision 0)
+@@ -0,0 +1,109 @@
++package hudson.plugins.bazaar.browsers;
++
++import hudson.Extension;
++import hudson.model.Descriptor;
++import hudson.plugins.bazaar.BazaarAffectedFile;
++import hudson.plugins.bazaar.BazaarChangeSet;
++import hudson.plugins.bazaar.BazaarRepositoryBrowser;
++import hudson.scm.EditType;
++import hudson.scm.RepositoryBrowser;
++
++import java.io.IOException;
++import java.net.URL;
++
++import org.kohsuke.stapler.DataBoundConstructor;
++
++/**
++ * {@link RepositoryBrowser} for OpenGrok.
++ *
++ * @author Alexandre Garnier <zigarn@dev.java.net>
++ */
++public class OpenGrok extends BazaarRepositoryBrowser {
++
++    /**
++     * The URL of the OpenGrok repository.
++     *
++     * This is normally like <tt>http://src.opensolaris.org/source/</tt>
++     * Normalized to have '/' at the tail.
++     */
++    public final URL url;
++
++    /**
++     * Root Bazaar module name (like 'foo/bar' &mdash; normalized to
++     * have no leading nor trailing slash.) Can be empty.
++     */
++    private final String rootModule;
++
++    @DataBoundConstructor
++    public OpenGrok(URL url, String rootModule) {
++        this.url = normalizeToEndWithSlash(url);
++
++        // normalize
++        rootModule = rootModule.trim();
++        if(rootModule.startsWith("/"))
++            rootModule = rootModule.substring(1);
++        if(rootModule.endsWith("/"))
++            rootModule = rootModule.substring(0,rootModule.length()-1);
++
++        this.rootModule = rootModule;
++    }
++
++    @Override
++    public URL getChangeSetLink(BazaarChangeSet changeSet) throws IOException {
++        return null;
++    }
++
++    @Override
++    public URL getDiffLink(BazaarAffectedFile affectedFile) throws IOException {
++        URL url = null;
++        String path = affectedFile.getPath().trim();
++        if (affectedFile.getEditType() == EditType.EDIT && ! isFolderPath(path) && ! isRenaming(affectedFile)) {
++            int revision = extractRevision(affectedFile);
++            path = getFullPath(path);
++            url = new URL(this.url, String.format("./diff/%s?r1=/%s@%s&r2=/%s@%s",path,
++                                                                                  path,
++                                                                                  revision-1,
++                                                                                  path,
++                                                                                  revision));
++        }
++        return url;
++    }
++
++    @Override
++    public URL getFileLink(BazaarAffectedFile affectedFile) throws IOException {
++        URL url = null;
++        String path = affectedFile.getPath().trim();
++        if (affectedFile.getEditType() == EditType.EDIT && ! isFolderPath(path) && ! isRenaming(affectedFile)) {
++            int revision = extractRevision(affectedFile);
++            path = getFullPath(path);
++            url = new URL(this.url, String.format("./xref/%s?r=%s", path, revision));
++        }
++        return url;
++    }
++
++    private static int extractRevision(BazaarAffectedFile affectedFile) {
++        return Integer.valueOf(affectedFile.getChangeSet().getRevision());
++    }
++
++    private String getFullPath(String path) {
++        return this.rootModule + "/" + path;
++    }
++
++    @Extension
++    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
++
++    public Descriptor<RepositoryBrowser<?>> getDescriptor() {
++        return DESCRIPTOR;
++    }
++
++    public static class DescriptorImpl extends Descriptor<RepositoryBrowser<?>> {
++        public DescriptorImpl() {
++            super(OpenGrok.class);
++        }
++
++        @Override
++        public String getDisplayName() {
++            return "OpenGrok";
++        }
++    }
++}
+Index: src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/config.jelly
+===============================================================
+--- src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/config.jelly	(revision 0)
++++ src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/config.jelly	(revision 0)
+@@ -0,0 +1,8 @@
++<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
++  <f:entry title="URL" field="url">
++    <f:textbox />
++  </f:entry>
++  <f:entry title="Root module" field="rootModule">
++    <f:textbox />
++  </f:entry>
++</j:jelly>
+Index: src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-rootModule.html
+===============================================================
+--- src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-rootModule.html	(revision 0)
++++ src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-rootModule.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++  Specify the root Bazaar module that this OpenGrok monitors.
++  For example, for <tt>http://src.opensolaris.org/source/xref/opengrok/trunk/</tt>,
++  this field would be <tt>opengrok/trunk/</tt> because it displays the directory "/opengrok/trunk/".
++</div>
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-rootModule_fr.html
+===============================================================
+--- src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-rootModule_fr.html	(revision 0)
++++ src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-rootModule_fr.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++  Spécifiez ici le module racine Bazaar que cet OpenGrok obsverve.
++  Par exemple, pour <tt>http://src.opensolaris.org/source/xref/opengrok/trunk/</tt>,
++  ce champ serait <tt>opengrok/trunk</tt> car il affiche le répertoire "/opengrok/trunk".
++</div>
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-url.html
+===============================================================
+--- src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-url.html	(revision 0)
++++ src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-url.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++  The repository browser URL for the root of the project.
++  For example, the <tt>OpenGrok</tt> project would use
++  <tt>http://src.opensolaris.org/source/</tt>.
++</div>
+Index: src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-url_fr.html
+===============================================================
+--- src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-url_fr.html	(revision 0)
++++ src/main/resources/hudson/plugins/bazaar/browsers/OpenGrok/help-url_fr.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++  L'URL racine du projet pour le navigateur de l'outil de gestion de configuration du code.
++  Par exemple, pour le projet <tt>OpenGrok</tt>&nbsp;:
++  <tt>http://src.opensolaris.org/source/</tt>.
++</div>

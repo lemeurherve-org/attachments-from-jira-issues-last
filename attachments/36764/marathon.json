@@ -1,0 +1,82 @@
+{
+  "volumes": null,
+  "id": "/prefcomm-api/input-validation-service",
+  "cmd": null,
+  "args": null,
+  "user": null,
+  "env": {
+    "HAPROXY_SSL_CERT": "",
+    "HAPROXY_SYSCTL_PARAMS": "net.ipv4.tcp_tw_reuse=1 net.ipv4.tcp_fin_timeout=30 net.ipv4.tcp_max_syn_backlog=10240 net.ipv4.tcp_max_tw_buckets=400000 net.ipv4.tcp_max_orphans=60000 net.core.somaxconn=10000",
+    "SPRING_PROFILES_ACTIVE": "dev",
+    "TEST.SECRET": {
+      "secret": "secret0"
+    }
+  },
+  "instances": 3,
+  "cpus": 0.1,
+  "mem": 512,
+  "disk": 512,
+  "gpus": 0,
+  "executor": null,
+  "constraints": null,
+  "fetch": [
+    {
+      "uri": "file:///etc/docker.tar.gz"
+    }
+  ],
+  "storeUrls": null,
+  "backoffSeconds": 1,
+  "backoffFactor": 1.15,
+  "maxLaunchDelaySeconds": 3600,
+  "container": {
+    "docker": {
+      "image": "scrubbedURL/input-validation-service:POM_VERSION",
+      "forcePullImage": true,
+      "privileged": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp",
+          "servicePort": 10015
+        }
+      ],
+      "network": "BRIDGE"
+    }
+  },
+  "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "path": "/health",
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 6,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "readinessChecks": null,
+  "dependencies": null,
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 1,
+    "maximumOverCapacity": 1
+  },
+  "labels": {
+    "HAPROXY_GROUP": "prefcomm-api-external"
+  },
+  "acceptedResourceRoles": null,
+  "residency": null,
+  "secrets": {
+    "secret0": {
+      "source": "/prefcomm-api/test_secret"
+    }
+  },
+  "taskKillGracePeriodSeconds": null,
+  "portDefinitions": [
+    {
+      "port": 10015,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ],
+  "requirePorts": false
+}

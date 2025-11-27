@@ -1,0 +1,1103 @@
+Index: plugins/scp/src/main/java/be/certipost/hudson/plugin/Entry.java
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/scp/src/main/java/be/certipost/hudson/plugin/Entry.java,v
+retrieving revision 1.1
+diff -u -r1.1 Entry.java
+--- plugins/scp/src/main/java/be/certipost/hudson/plugin/Entry.java	20 Jul 2007 21:35:53 -0000	1.1
++++ plugins/scp/src/main/java/be/certipost/hudson/plugin/Entry.java	6 Nov 2007 14:54:53 -0000
+@@ -18,4 +18,42 @@
+      * May contain macro, wildcard.
+      */
+     public String sourceFile;
++    
++    public boolean hiddenUpload = false;
++
++    public boolean latestLink = false;
++
++    public String getFilePath() {
++        return filePath;
++    }
++
++    public void setFilePath(String filePath) {
++        this.filePath = filePath;
++    }
++
++    public boolean isHiddenUpload() {
++        return hiddenUpload;
++    }
++
++    public void setHiddenUpload(boolean hiddenUpload) {
++        this.hiddenUpload = hiddenUpload;
++    }
++
++    public boolean isLatestLink() {
++        return latestLink;
++    }
++
++    public void setLatestLink(boolean latestLink) {
++        this.latestLink = latestLink;
++    }
++
++    public String getSourceFile() {
++        return sourceFile;
++    }
++
++    public void setSourceFile(String sourceFile) {
++        this.sourceFile = sourceFile;
++    }
++    
++    
+ }
+Index: plugins/scp/src/main/java/be/certipost/hudson/plugin/SCPRepositoryPublisher.java
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/scp/src/main/java/be/certipost/hudson/plugin/SCPRepositoryPublisher.java,v
+retrieving revision 1.3
+diff -u -r1.3 SCPRepositoryPublisher.java
+--- plugins/scp/src/main/java/be/certipost/hudson/plugin/SCPRepositoryPublisher.java	8 Aug 2007 07:22:39 -0000	1.3
++++ plugins/scp/src/main/java/be/certipost/hudson/plugin/SCPRepositoryPublisher.java	6 Nov 2007 14:54:53 -0000
+@@ -10,213 +10,193 @@
+ import hudson.tasks.Publisher;
+ import hudson.util.CopyOnWriteList;
+ import hudson.util.FormFieldValidator;
+-
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Map;
+-
+ import javax.servlet.ServletException;
+-
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
+-
+ import com.jcraft.jsch.JSchException;
+ import com.jcraft.jsch.SftpException;
++import java.io.File;
++import java.io.FileFilter;
+ 
+ /**
+- * 
++ *
+  * @author Ramil Israfilov
+  *
+  */
+ public class SCPRepositoryPublisher extends Publisher {
+ 
+-	/**
+-	 * Name of the scp site to post a file to.
+-	 */
+-	private String siteName;
+-
+-
+-	private final List<Entry> entries = new ArrayList<Entry>();
+-
+-	public SCPRepositoryPublisher() {
+-	}
+-	
+-	public SCPRepositoryPublisher(String siteName){
+-		if (siteName == null) {
+-			// defaults to the first one
+-			SCPSite[] sites = DESCRIPTOR.getSites();
+-			if (sites.length > 0)
+-				siteName = sites[0].getName();
+-		}
+-		this.siteName = siteName;
+-	}
+-	
+-	
+-
+-	public List<Entry> getEntries() {
+-		return entries;
+-	}
+-	
+-	public SCPSite getSite() {
+-		SCPSite[] sites = DESCRIPTOR.getSites();
+-		if (siteName == null && sites.length > 0)
+-			// default
+-			return sites[0];
+-
+-		for (SCPSite site : sites) {
+-			if (site.getName().equals(siteName))
+-				return site;
+-		}
+-		return null;
+-	}
+-
+-	public boolean perform(Build build, Launcher launcher,
+-			BuildListener listener) throws InterruptedException {
+-		if (build.getResult() == Result.FAILURE) {
+-			// build failed. don't post
+-			return true;
+-		}
+-		
+-		SCPSite scpsite = null;
+-		try {
+-			scpsite=getSite();
+-			listener.getLogger().println("Connecting to " + scpsite.getHostname());
+-			scpsite.createSession();
+-			
+-
+-			Map<String, String> envVars = build.getEnvVars();
+-
+-			for (Entry e : entries) {
+-				String expanded = Util.replaceMacro(e.sourceFile, envVars);
+-				FilePath[] src = build.getProject().getWorkspace().list(
+-						expanded);
+-				String folderPath = Util.replaceMacro(e.filePath, envVars);
+-				if (src.length == 0)
+-					listener.getLogger().println("No file(s) found: "
+-							+ expanded);
+-
+-				if (src.length == 1) {
+-					listener.getLogger().println("remote folderPath " + folderPath+",local file:"+src[0].getName());
+-					scpsite.upload(folderPath,src[0],envVars,listener.getLogger());
+-				} else {
+-					 for( FilePath s : src ){
+-						 listener.getLogger().println("remote folderPath " + folderPath+",local file:"+src[0].getName());
+-						 scpsite.upload(folderPath, s, envVars,listener.getLogger());
+-					 }
+-				}
+-			}
+-		} catch (IOException e) {
+-			e.printStackTrace(listener.error("Failed to upload files"));
+-			build.setResult(Result.UNSTABLE);
+-		} catch (JSchException e) {
+-			e.printStackTrace(listener.error("Failed to upload files"));
+-			build.setResult(Result.UNSTABLE);
+-		} catch (SftpException e) {
+-			e.printStackTrace(listener.error("Failed to upload files"));
+-			build.setResult(Result.UNSTABLE);
+-		}finally{
+-			if(scpsite !=null){
+-				scpsite.closeSession();
+-			}
+-			
+-		}
+-
+-		return true;
+-	}
+-
+-	public Descriptor<Publisher> getDescriptor() {
+-		return DESCRIPTOR;
+-	}
+-
+-	public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+-	
+-	public static final class DescriptorImpl extends Descriptor<Publisher>{
+-		
+-		public DescriptorImpl(){
+-			super(SCPRepositoryPublisher.class);
+-			load();
+-		}
+-		
+-		protected DescriptorImpl(Class<? extends Publisher> clazz) {
+-			super(clazz);
+-		}
+-
+-		private final CopyOnWriteList<SCPSite> sites = new CopyOnWriteList<SCPSite>();
+-		
+-		public String getDisplayName() {
+-			return "Publish artifacts to SCP Repository";
+-		}
+-
+-		public String getHelpFile() {
+-			return "/plugin/scp/help.html";
+-		}
+-
+-		public Publisher newInstance(StaplerRequest req) {
+-			SCPRepositoryPublisher pub = new SCPRepositoryPublisher();
+-			req.bindParameters(pub, "scp.");
+-			pub.getEntries().addAll(
+-					req.bindParametersToList(Entry.class, "scp.entry."));
+-			return pub;
+-		}
+-		
+-		public SCPSite[] getSites() {
+-			Iterator<SCPSite> it = sites.iterator();
+-			int size=0;
+-			while(it.hasNext()){
+-				it.next();
+-				size++;
+-			}
+-			return sites.toArray(new SCPSite[size]);
+-		}
+-
+-		public boolean configure(StaplerRequest req) {
+-			sites.replaceBy(req.bindParametersToList(SCPSite.class, "scp."));
+-			save();
+-			return true;
+-		}
+-		
+-		public void doLoginCheck(final StaplerRequest req, StaplerResponse rsp)
+-				throws IOException, ServletException {
+-			new FormFieldValidator(req, rsp, false) {
+-				protected void check() throws IOException, ServletException {
+-					String hostname = Util.fixEmpty(request
+-							.getParameter("hostname"));
+-					if (hostname == null) {// hosts is not entered yet
+-						ok();
+-						return;
+-					}
+-					SCPSite site = new SCPSite(hostname, request
+-							.getParameter("port"),
+-							request.getParameter("user"), request
+-									.getParameter("pass"));
+-					try {
+-						try {
+-							site.createSession();
+-							site.closeSession();
+-						} catch (JSchException e) {
+-							throw new IOException("Can't connect to server");
+-						}
+-						
+-						ok();
+-					} catch (IOException e) {
+-						error(e.getMessage());
+-
+-					}
+-				}
+-			}.process();
+-
+-		}
+-
+-	}
+-
+-	public String getSiteName() {
+-		return siteName;
+-	}
+-
+-	public void setSiteName(String siteName) {
+-		this.siteName = siteName;
+-	};
+-
++    /**
++     * Name of the scp site to post a file to.
++     */
++    private String siteName;
++    private final List<Entry> entries = new ArrayList<Entry>();
++
++    public SCPRepositoryPublisher() {
++    }
++
++    public SCPRepositoryPublisher(String siteName) {
++        if (siteName == null) {
++            // defaults to the first one
++            SCPSite[] sites = DESCRIPTOR.getSites();
++            if (sites.length > 0) {
++                siteName = sites[0].getName();
++            }
++        }
++        this.siteName = siteName;
++    }
++
++    public List<Entry> getEntries() {
++        return entries;
++    }
++
++    public SCPSite getSite() {
++        SCPSite[] sites = DESCRIPTOR.getSites();
++        if (siteName == null && sites.length > 0) {
++            // default
++            return sites[0];
++        }
++        for (SCPSite site : sites) {
++            if (site.getName().equals(siteName)) {
++                return site;
++            }
++        }
++        return null;
++    }
++
++    public boolean perform(Build build, Launcher launcher, BuildListener listener) throws InterruptedException {
++        if (build.getResult() == Result.FAILURE) {
++            // build failed. don't post
++            return true;
++        }
++
++        SCPSite scpsite = null;
++        try {
++            scpsite = getSite();
++
++            Map<String, String> envVars = build.getEnvVars();
++
++            for (Entry e : entries) {
++                String expanded = Util.replaceMacro(e.sourceFile, envVars);
++                String folderPath = Util.replaceMacro(e.filePath, envVars);
++                String usedFolderPath = (e.isHiddenUpload()) ? folderPath.substring(0, folderPath.lastIndexOf("/"))+ "." + folderPath.substring(folderPath.lastIndexOf("/")+1): folderPath;
++                FilePath usedFilePath = ((expanded.startsWith("/")) ? (new FilePath(new File("/"))).child(expanded.substring(1)):build.getProject().getWorkspace().child(expanded));
++                listener.getLogger().println("Expanded :" + expanded);
++                List<FilePath> src = usedFilePath.list(new FileFilter() {
++                    public boolean accept(File pathname) {
++                        return true;
++                    }
++                });
++                if (src == null) {
++                    listener.getLogger().println("No file(s) found: " + expanded);
++                    return true;
++                }
++                if (!scpsite.upload(folderPath, src, envVars, listener.getLogger(),e.hiddenUpload,e.latestLink)) {
++                    build.setResult(Result.UNSTABLE);
++                }
++            }
++        } catch (IOException e) {
++            e.printStackTrace(listener.error("Failed to upload files"));
++            build.setResult(Result.UNSTABLE);
++        } catch (JSchException e) {
++            e.printStackTrace(listener.error("Failed to upload files"));
++            build.setResult(Result.UNSTABLE);
++        } catch (SftpException e) {
++            e.printStackTrace(listener.error("Failed to upload files"));
++            build.setResult(Result.UNSTABLE);
++        }
++
++        return true;
++    }
++
++    public Descriptor<Publisher> getDescriptor() {
++        return DESCRIPTOR;
++    }
++    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
++
++    public static final class DescriptorImpl extends Descriptor<Publisher> {
++
++        public DescriptorImpl() {
++            super(SCPRepositoryPublisher.class);
++            load();
++        }
++
++        protected DescriptorImpl(Class<? extends Publisher> clazz) {
++            super(clazz);
++        }
++        private final CopyOnWriteList<SCPSite> sites = new CopyOnWriteList<SCPSite>();
++
++        public String getDisplayName() {
++            return "Publish artifacts to SCP Repository";
++        }
++
++        @Override
++        public String getHelpFile() {
++            return "/plugin/scp/help.html";
++        }
++
++        @Override
++        public Publisher newInstance(StaplerRequest req) {
++            SCPRepositoryPublisher pub = new SCPRepositoryPublisher();
++            req.bindParameters(pub, "scp.");
++            pub.getEntries().addAll(req.bindParametersToList(Entry.class, "scp.entry."));
++            return pub;
++        }
++
++        public SCPSite[] getSites() {
++            Iterator<SCPSite> it = sites.iterator();
++            int size = 0;
++            while (it.hasNext()) {
++                it.next();
++                size++;
++            }
++            return sites.toArray(new SCPSite[size]);
++        }
++
++        public boolean configure(StaplerRequest req) {
++            sites.replaceBy(req.bindParametersToList(SCPSite.class, "scp."));
++            save();
++            return true;
++        }
++
++        public void doLoginCheck(final StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
++            new FormFieldValidator(req, rsp, false) {
++
++                protected void check() throws IOException, ServletException {
++                    String hostname = Util.fixEmpty(request.getParameter("hostname"));
++                    if (hostname == null) {
++                        // hosts is not entered yet
++                        ok();
++                        return;
++                    }
++                    SCPSite site = new SCPSite(hostname, request.getParameter("port"), request.getParameter("user"), request.getParameter("pass"), request.getParameter("ident"));
++                    try {
++//						try {
++//							site.createSession();
++//							site.closeSession();
++//						} catch (JSchException e) {
++//							throw new IOException("Can't connect to server");
++//						}
++                        ok();
++                    } catch (IOException e) {
++                        error(e.getMessage());
++                    }
++                }
++            }.process();
++        }
++    }
++
++    public String getSiteName() {
++        return siteName;
++    }
++
++    public void setSiteName(String siteName) {
++        this.siteName = siteName;
++    }
++    {
++    }
+ }
+\ No newline at end of file
+Index: plugins/scp/src/main/java/be/certipost/hudson/plugin/SCPSite.java
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/scp/src/main/java/be/certipost/hudson/plugin/SCPSite.java,v
+retrieving revision 1.1
+diff -u -r1.1 SCPSite.java
+--- plugins/scp/src/main/java/be/certipost/hudson/plugin/SCPSite.java	20 Jul 2007 21:35:53 -0000	1.1
++++ plugins/scp/src/main/java/be/certipost/hudson/plugin/SCPSite.java	6 Nov 2007 14:54:53 -0000
+@@ -1,12 +1,10 @@
+ package be.certipost.hudson.plugin;
+ 
+ import hudson.FilePath;
+-
+ import java.io.IOException;
+ import java.io.InputStream;
+ import java.io.PrintStream;
+ import java.util.Map;
+-
+ import com.jcraft.jsch.ChannelSftp;
+ import com.jcraft.jsch.JSch;
+ import com.jcraft.jsch.JSchException;
+@@ -14,188 +12,408 @@
+ import com.jcraft.jsch.SftpATTRS;
+ import com.jcraft.jsch.SftpException;
+ import com.jcraft.jsch.UserInfo;
++import java.io.File;
++import java.io.FileFilter;
++import java.util.ArrayList;
++import java.util.List;
++import java.util.concurrent.Callable;
++import java.util.concurrent.ExecutionException;
++import java.util.concurrent.ExecutorCompletionService;
++import java.util.concurrent.ExecutorService;
++import java.util.concurrent.Executors;
++import java.util.concurrent.Future;
++import java.util.concurrent.LinkedBlockingQueue;
++import java.util.concurrent.ThreadPoolExecutor;
++import java.util.concurrent.TimeUnit;
+ 
+ /**
+- * 
++ *
+  * @author Ramil Israfilov
+  *
+  */
+ public class SCPSite {
+-	String hostname;
+-	int port;
+-	String username;
+-	String password;
+-	String rootRepositoryPath;
+-
+-	JSch jsch;
+-	private Session session;
+-	private ChannelSftp channel;
+-
+-
+-	public SCPSite() {
+-
+-	}
+-
+-	public SCPSite(String hostname, int port, String username, String password, String rootRepositoryPath) {
+-		this.hostname = hostname;
+-		this.port = port;
+-		this.username = username;
+-		this.password = password;
+-		this.rootRepositoryPath = rootRepositoryPath;
+-	}
+-
+-	public SCPSite(String hostname, String port, String username,
+-			String password) {
+-		this.hostname = hostname;
+-		try {
+-			this.port = Integer.parseInt(port);
+-		} catch (Exception e) {
+-			this.port = 22;
+-		}
+-		this.username = username;
+-		this.password = password;
+-	}
+-
+-	public String getHostname() {
+-		return hostname;
+-	}
+-
+-	public void setHostname(String hostname) {
+-		this.hostname = hostname;
+-	}
+-
+-	public String getPort() {
+-		return "" + port;
+-	}
+-
+-	public void setPort(String port) {
+-		try {
+-			this.port = Integer.parseInt(port);
+-		} catch (Exception e) {
+-			this.port = 22;
+-		}
+-	}
+-	
+-	public int getIntegerPort(){
+-		return port;
+-	}
+-
+-	public String getUsername() {
+-		return username;
+-	}
+-
+-	public void setUsername(String username) {
+-		this.username = username;
+-	}
+-
+-	public String getPassword() {
+-		return password;
+-	}
+-
+-	public void setPassword(String password) {
+-		this.password = password;
+-	}
+-	
+-	public String getRootRepositoryPath() {
+-		return rootRepositoryPath;
+-	}
+-
+-	public void setRootRepositoryPath(String rootRepositoryPath) {
+-		this.rootRepositoryPath = rootRepositoryPath;
+-	}
+-
+-	public String getName() {
+-		return hostname;
+-	}
+-
+-	public void createSession() throws JSchException {
+-		jsch=new JSch();
+-		session=jsch.getSession(username, hostname, port);
+-		session.setPassword(password);
+-		UserInfo ui = new SCPUserInfo(password);
+-		session.setUserInfo(ui );
+-		session.connect();
+-		channel=(ChannelSftp) session.openChannel("sftp");
+-		
+-		channel.connect();
+-		
+-	}
+-
+-	public void closeSession() {
+-		if(channel != null){
+-			channel.disconnect();
+-			channel=null;
+-		}
+-		if(session !=null){
+-			session.disconnect();
+-			session=null;
+-		}
+-		
+-	}
+-
+-	public void upload(String folderPath, FilePath filePath,
+-			Map<String, String> envVars, PrintStream logger) throws IOException, InterruptedException, SftpException {
+-		 
+-		if(session ==null || channel ==null){
+-			throw new IOException("Connection to "+hostname+", user="+username+" is not established");
+-		}
+-		SftpATTRS rootdirstat = channel.stat(rootRepositoryPath);
+-		if(rootdirstat == null){
+-			throw new IOException("Can't get stat of root repository directory:"+rootRepositoryPath);
+-		}else{
+-			if(!rootdirstat.isDir()){
+-				throw new IOException(rootRepositoryPath+" is not a directory");
+-			}
+-		}
+-		if(filePath.isDirectory()){
+-			FilePath[] subfiles = filePath.list("**/*");
+-			if(subfiles != null){
+-				for (int i = 0; i < subfiles.length; i++) {
+-					upload(folderPath+"/"+filePath.getName(), subfiles[i], envVars, logger);
+-				}
+-			}
+-		}else{
+-			String localfilename=filePath.getName();
+-			mkdirs(folderPath, logger);	
+-			InputStream in = filePath.read();
+-			channel.put(in, rootRepositoryPath+"/"+folderPath+"/"+localfilename);
+-			in.close();
+-		}
+-		
+-		
+-	}
+-	
+-	private void mkdirs(String filePath, PrintStream logger) throws SftpException, IOException {
+-		String pathnames[]=filePath.split("/");
+-		String curdir = rootRepositoryPath;
+-		if(pathnames != null){
+-			for (int i = 0; i < pathnames.length; i++) {
+-				if(pathnames[i].length()==0){
+-					continue;
+-				}
+-				
+-				SftpATTRS dirstat = null;
+-				try{
+-					dirstat=channel.stat(curdir+"/"+pathnames[i]);
+-				}catch(SftpException e){
+-					if(e.message.indexOf("No such file") == -1){
+-						throw e;
+-					}
+-				}
+-				if(dirstat == null){
+-					//try to create dir
+-					logger.println("Trying to create "+curdir+"/"+pathnames[i]);
+-					channel.mkdir(curdir+"/"+pathnames[i]);
+-				}else{
+-					if(!dirstat.isDir()){
+-						throw new IOException(curdir+"/"+pathnames[i]+" is not a directory:"+dirstat);
+-					}
+-				}
+-				curdir = curdir+"/"+pathnames[i];
+-			}
+-		}
+-	}
+-	
+-	
+-	
+-}
++
++    String hostname;
++    int port;
++    int maxThreads;
++    String username;
++    String password;
++    String identity;
++    String rootRepositoryPath;
++    LinkedBlockingQueue<LocalFile> filePaths;
++
++    public SCPSite() {
++    }
++
++    public SCPSite(String hostname, int port, String username, String password, String identity, String rootRepositoryPath) {
++        this.hostname = hostname;
++        this.port = port;
++        this.username = username;
++        this.password = password;
++        this.identity = identity;
++        this.rootRepositoryPath = rootRepositoryPath;
++    }
++
++    public SCPSite(String hostname, String port, String username, String password, String identity) {
++        this.hostname = hostname;
++        try {
++            this.port = Integer.parseInt(port);
++        } catch (Exception e) {
++            this.port = 22;
++        }
++        this.username = username;
++        this.password = password;
++        this.identity = identity;
++    }
++
++    public String getHostname() {
++        return hostname;
++    }
++
++    public void setHostname(String hostname) {
++        this.hostname = hostname;
++    }
++
++    public String getPort() {
++        return "" + port;
++    }
++
++    public void setPort(String port) {
++        try {
++            this.port = Integer.parseInt(port);
++        } catch (Exception e) {
++            this.port = 22;
++        }
++    }
++
++    public String getMaxThreads() {
++        return "" + maxThreads;
++    }
++
++    public void setMaxThreads(String maxThreads) {
++        try {
++            this.maxThreads = Integer.parseInt(maxThreads);
++        } catch (Exception e) {
++            this.maxThreads = 1;
++        }
++    }
++
++    public int getIntegerPort() {
++        return port;
++    }
++
++    public String getUsername() {
++        return username;
++    }
++
++    public void setUsername(String username) {
++        this.username = username;
++    }
++
++    public String getIdentity() {
++        return identity;
++    }
++
++    public void setIdentity(String identity) {
++        this.identity = identity;
++    }
++
++    public String getPassword() {
++        return password;
++    }
++
++    public void setPassword(String password) {
++        this.password = password;
++    }
++
++    public String getRootRepositoryPath() {
++        return rootRepositoryPath;
++    }
++
++    public void setRootRepositoryPath(String rootRepositoryPath) {
++        this.rootRepositoryPath = rootRepositoryPath;
++    }
++
++    public String getName() {
++        return hostname;
++    }
++
++    public boolean upload(String folderPath, List<FilePath> filePath, Map<String, String> envVars, PrintStream logger, boolean hiddenUpload, boolean latestLink) throws IOException, InterruptedException, SftpException, JSchException {
++        logger.println("Connecting to " + getHostname());
++        filePaths = new LinkedBlockingQueue<LocalFile>();
++        String usedFolderPath = (hiddenUpload) ? folderPath.substring(0, folderPath.lastIndexOf("/") + 1) + "." + folderPath.substring(folderPath.lastIndexOf("/") + 1) : folderPath;
++
++        for (FilePath s : filePath) {
++            logger.println("remote folderPath " + folderPath + ",local file:" + s.getName());
++
++            filePaths.offer(new LocalFile(usedFolderPath, s));
++        }
++
++        //Create root dirs... <HACK>
++        SCPSession s = new SCPSession(this, null, logger);
++        s.createSession();
++        s.mkdirs(usedFolderPath, logger);
++        s.closeSession();
++
++        ExecutorService es = Executors.newFixedThreadPool(maxThreads);
++        ExecutorCompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(es);
++        List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>(maxThreads);
++        Boolean result = Boolean.FALSE;
++        try {
++            for (int i = 0; i < maxThreads; i++) {
++                SCPSession scp = new SCPSession(this, filePaths, logger);
++                futures.add(ecs.submit(scp));
++            }
++            result = Boolean.TRUE;
++            for (int i = 0; i < maxThreads; ++i) {
++                try {
++                    Boolean r = ecs.take().get();
++                    if (r != null) {
++                        if (!r.booleanValue()) {
++                            es.shutdownNow();
++                            result = Boolean.FALSE;
++                        }
++                    }
++                } catch (ExecutionException ignore) {
++                }
++            }
++        } finally {
++            for (Future<Boolean> f : futures) {
++                f.cancel(true);
++            }
++        }
++        if (!result.booleanValue()) {
++            return false;
++        }
++        if (hiddenUpload) {
++            s.createSession();
++            s.rename(usedFolderPath, folderPath);
++            s.closeSession();
++            if (!s.isOk()) {
++                return false;
++            }
++        }
++        if (latestLink) {
++            s.createSession();
++            String link = folderPath.substring(0, folderPath.lastIndexOf("/") + 1) + "latest";
++            String oldLink = folderPath.substring(0, folderPath.lastIndexOf("/") + 1) + "latest.old";
++            s.rm(oldLink);
++            s.rename(link, oldLink);
++            s.symlink(folderPath, link);
++            s.closeSession();
++            if (!s.isOk()) {
++                return false;
++            }
++        }
++
++        return true;
++    }
++
++    class LocalFile {
++
++        public String folderPath;
++        public FilePath filePath;
++
++        public LocalFile(String p, FilePath f) {
++            folderPath = p;
++            filePath = f;
++        }
++    }
++
++    class SCPSession implements Runnable, Callable<Boolean> {
++
++        SCPSite scpSite;
++        JSch jsch;
++        private Session session;
++        private ChannelSftp channel;
++        LinkedBlockingQueue<LocalFile> filePaths;
++        PrintStream logger;
++        boolean ok = true;
++
++        public SCPSession(SCPSite scpSite, LinkedBlockingQueue<LocalFile> filePaths, PrintStream logger) {
++            this.scpSite = scpSite;
++            this.filePaths = filePaths;
++            this.logger = logger;
++        }
++
++        public void createSession() {
++            try {
++                jsch = new JSch();
++                if (scpSite.getIdentity() != null) {
++                    File identityFile = new File(identity);
++                    if (identityFile.exists() && identityFile.isFile()) {
++                        jsch.addIdentity(scpSite.getIdentity(), "passphrase");
++                    }
++                }
++                session = jsch.getSession(scpSite.getUsername(), scpSite.getHostname(), scpSite.getIntegerPort());
++                session.setPassword(scpSite.getPassword());
++                UserInfo ui = new SCPUserInfo(scpSite.getPassword());
++                session.setUserInfo(ui);
++                session.connect();
++                channel = (ChannelSftp) session.openChannel("sftp");
++
++                channel.connect();
++            } catch (JSchException jSchException) {
++            }
++        }
++
++        public void closeSession() {
++            if (channel != null) {
++                channel.disconnect();
++                channel = null;
++            }
++            if (session != null) {
++                session.disconnect();
++                session = null;
++            }
++        }
++
++        public boolean isOk() {
++            return ok;
++        }
++
++        public Boolean call() throws Exception {
++            ok = true;
++            run();
++            return new Boolean(ok);
++        }
++
++        public void run() {
++            createSession();
++
++            try {
++                SftpATTRS rootdirstat = channel.stat(rootRepositoryPath);
++                if (rootdirstat == null) {
++                    throw new IOException("Can't get stat of root repository directory:" + rootRepositoryPath);
++                } else {
++                    if (!rootdirstat.isDir()) {
++                        throw new IOException(rootRepositoryPath + " is not a directory");
++                    }
++                }
++                while (filePaths != null) {
++                    LocalFile localFile = filePaths.poll(2, TimeUnit.SECONDS);
++                    if (localFile == null) {
++                        //nothing served for 2 sec - close exit
++                        closeSession();
++                        return;
++                    }
++                    logger.println("remote folderPath " + localFile.folderPath + ",local file:" + localFile.filePath.getName());
++                    if (localFile.filePath.isDirectory()) {
++                        List<FilePath> subfiles = localFile.filePath.list(new FileFilter() {
++
++                            public boolean accept(File pathname) {
++                                return true;
++                            }
++                        });
++
++                        mkdirs(localFile.folderPath + "/" + localFile.filePath.getName(), logger);
++                        for (FilePath s : subfiles) {
++                            filePaths.offer(new LocalFile(localFile.folderPath + "/" + localFile.filePath.getName(), s));
++//                            upload(folderPath + "/" + filePath.getName(), subfiles[i], envVars, logger);
++                        }
++                    } else {
++                        String localfilename = localFile.filePath.getName();
++//                        mkdirs(localFile.folderPath, logger);
++                        InputStream in = localFile.filePath.read();
++                        channel.put(in, rootRepositoryPath + "/" + localFile.folderPath + "/" + localfilename);
++                        in.close();
++                    }
++                }
++            } catch (InterruptedException ie) {
++//                Thread.currentThread().getThreadGroup().interrupt();
++            } catch (Exception ex) {
++//                Thread.currentThread().getThreadGroup().interrupt();
++                logger.println("SCP Upload FAILED");
++                ex.printStackTrace(logger);
++                ok = false;
++            } finally {
++                closeSession();
++            }
++        }
++
++        private void mkdirs(String filePath, PrintStream logger) throws SftpException, IOException {
++            String[] pathnames = filePath.split("/");
++            String curdir = rootRepositoryPath;
++            if (pathnames != null) {
++                for (int i = 0; i < pathnames.length; i++) {
++                    if (pathnames[i].length() == 0) {
++                        continue;
++                    }
++
++                    SftpATTRS dirstat = null;
++                    try {
++                        dirstat = channel.stat(curdir + "/" + pathnames[i]);
++                    } catch (SftpException e) {
++                        if (e.message.indexOf("No such file") == -1) {
++                            throw e;
++                        }
++                    }
++                    if (dirstat == null) {
++                        //try to create dir
++                        logger.println("Trying to create " + curdir + "/" + pathnames[i]);
++                        channel.mkdir(curdir + "/" + pathnames[i]);
++                    } else {
++                        if (!dirstat.isDir()) {
++                            throw new IOException(curdir + "/" + pathnames[i] + " is not a directory:" + dirstat);
++                        }
++                    }
++                    curdir = curdir + "/" + pathnames[i];
++                }
++            }
++        }
++
++        private void rename(java.lang.String oldpath, java.lang.String newpath) {
++            ok = true;
++            try {
++                SftpATTRS filestat = null;
++                filestat = channel.stat(rootRepositoryPath + "/" + oldpath);
++                if (filestat == null) {
++                    logger.println("SCP Rename FAILED from: " + rootRepositoryPath + "/" + oldpath + " to: " + rootRepositoryPath + "/" + newpath + "- source file/dir doesn't exist");
++                    ok = false;
++                    return;
++                }
++                logger.println("Rename from: " + rootRepositoryPath + "/" + oldpath + " to: " + rootRepositoryPath + "/" + newpath);
++                channel.rename(rootRepositoryPath + "/" + oldpath, rootRepositoryPath + "/" + newpath);
++            } catch (SftpException ex) {
++                logger.println("SCP Rename FAILED from: " + rootRepositoryPath + "/" + oldpath + " to: " + rootRepositoryPath + "/" + newpath);
++                ok = false;
++            }
++        }
++
++        private void symlink(java.lang.String oldpath, java.lang.String newpath) {
++            ok = true;
++            try {
++                SftpATTRS filestat = null;
++                filestat = channel.stat(rootRepositoryPath + "/" + oldpath);
++                if (filestat == null) {
++                    logger.println("SCP Symlink FAILED from: " + rootRepositoryPath + "/" + oldpath + " to: " + rootRepositoryPath + "/" + newpath + "- source file/dir doesn't exist");
++                    ok = false;
++                    return;
++                }
++                logger.println("Symlink from: " + rootRepositoryPath + "/" + oldpath + " to: " + rootRepositoryPath + "/" + newpath);
++                channel.symlink(rootRepositoryPath + "/" + oldpath, rootRepositoryPath + "/" + newpath);
++            } catch (SftpException ex) {
++                logger.println("SCP Symlink FAILED from: " + rootRepositoryPath + "/" + oldpath + " to: " + rootRepositoryPath + "/" + newpath);
++                ok = false;
++            }
++        }
++
++        private void rm(java.lang.String path) {
++            ok = true;
++            try {
++                SftpATTRS filestat = null;
++                filestat = channel.stat(rootRepositoryPath + "/" + path);
++                if (filestat == null) {
++                    ok = false;
++                    return;
++                }
++                logger.println("Remove: " + rootRepositoryPath + "/" + path);
++                channel.rm(path);
++            } catch (SftpException ex) {
++                logger.println("SCP Remove FAILED: " + rootRepositoryPath + "/" + path);
++                ok = false;
++            }
++        }
++
++    }
++}
+\ No newline at end of file
+Index: plugins/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/config.jelly
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/config.jelly,v
+retrieving revision 1.2
+diff -u -r1.2 config.jelly
+--- plugins/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/config.jelly	8 Aug 2007 07:22:39 -0000	1.2
++++ plugins/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/config.jelly	6 Nov 2007 14:54:53 -0000
+@@ -21,6 +21,12 @@
+           <input class="setting-input" name="scp.entry.filePath"
+             type="text" value="${e.filePath}" />
+         </f:entry>
++        <f:entry title="Hidden upload dir">
++          <f:checkbox name="scp.entry.hiddenUpload" checked="${e.hiddenUpload}"/>
++        </f:entry>
++        <f:entry title="Latest links">
++          <f:checkbox name="scp.entry.latestLink" checked="${e.latestLink}"/>
++        </f:entry>
+         <f:entry title="">
+           <div align="right">
+             <f:repeatableDeleteButton />
+Index: plugins/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/global.jelly
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/global.jelly,v
+retrieving revision 1.2
+diff -u -r1.2 global.jelly
+--- plugins/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/global.jelly	8 Aug 2007 07:22:39 -0000	1.2
++++ plugins/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/global.jelly	6 Nov 2007 14:54:53 -0000
+@@ -17,15 +17,21 @@
+           <f:entry title="User Name" help="/plugin/scp/help-login.html">
+             <f:textbox name="scp.username" value="${site.username}"
+ 				checkMethod="post"
+-				checkUrl="'${rootURL}/publisher/SCPRepositoryPublisher/loginCheck?hostname='+escape(Form.findMatchingInput(this,'scp.hostname').value)+'&amp;port='+escape(Form.findMatchingInput(this,'scp.port').value)+'&amp;user='+escape(this.value)+'&amp;pass='+escape(Form.findMatchingInput(this,'scp.password').value)"
++				checkUrl="'${rootURL}/publisher/SCPRepositoryPublisher/loginCheck?hostname='+escape(Form.findMatchingInput(this,'scp.hostname').value)+'&amp;port='+escape(Form.findMatchingInput(this,'scp.port').value)+'&amp;user='+escape(this.value)+'&amp;pass='+escape(Form.findMatchingInput(this,'scp.password').value)+'&amp;ident='+escape(Form.findMatchingInput(this,'scp.identity').value)"
+ 			/>
+           </f:entry>
++          <f:entry title="Identity file">
++            <f:textbox name="scp.identity" value="${site.identity}"/>
++          </f:entry>
+           <f:entry title="Password">
+             <input class="setting-input" name="scp.password"
+                    type="password" value="${site.password}"
+ 				   onchange="Form.findMatchingInput(this,'scp.username').onchange()"
+                     />
+           </f:entry>
++          <f:entry title="Number of possible threads">
++            <f:textbox name="scp.maxThreads" value="${site.maxThreads}"/>
++          </f:entry>
+           <f:entry title="">
+             <div align="right">
+               <f:repeatableDeleteButton />

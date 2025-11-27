@@ -1,0 +1,41 @@
+Building in workspace /var/jenkins_home/workspace/golang
+Unpacking Go from https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz to /var/jenkins_home/tools/org.jenkinsci.plugins.golang.GolangInstallation/latest on Jenkins
+FATAL: Failed to install https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz to /var/jenkins_home/tools/org.jenkinsci.plugins.golang.GolangInstallation/latest
+java.io.IOException: Failed to install https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz to /var/jenkins_home/tools/org.jenkinsci.plugins.golang.GolangInstallation/latest
+	at hudson.FilePath.installIfNecessaryFrom(FilePath.java:860)
+	at hudson.FilePath.installIfNecessaryFrom(FilePath.java:768)
+	at org.jenkinsci.plugins.golang.GolangInstaller.performInstallation(GolangInstaller.java:56)
+	at hudson.tools.InstallerTranslator.getToolHome(InstallerTranslator.java:68)
+	at hudson.tools.ToolLocationNodeProperty.getToolHome(ToolLocationNodeProperty.java:109)
+	at hudson.tools.ToolInstallation.translateFor(ToolInstallation.java:206)
+	at org.jenkinsci.plugins.golang.GolangInstallation.forNode(GolangInstallation.java:43)
+	at org.jenkinsci.plugins.golang.GolangBuildWrapper.setUp(GolangBuildWrapper.java:34)
+	at hudson.model.Build$BuildExecution.doRun(Build.java:156)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:534)
+	at hudson.model.Run.execute(Run.java:1720)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:404)
+Caused by: java.io.IOException: Failed to unpack https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz (164515 bytes read of total 82565628)
+	at hudson.FilePath.installIfNecessaryFrom(FilePath.java:854)
+	... 13 more
+Caused by: java.io.IOException: Failed to extract input stream
+	at hudson.FilePath.readFromTar(FilePath.java:2328)
+	at hudson.FilePath.access$400(FilePath.java:195)
+	at hudson.FilePath$10.invoke(FilePath.java:730)
+	at hudson.FilePath$10.invoke(FilePath.java:728)
+	at hudson.FilePath.act(FilePath.java:1018)
+	at hudson.FilePath.act(FilePath.java:996)
+	at hudson.FilePath.untarFrom(FilePath.java:728)
+	at hudson.FilePath.installIfNecessaryFrom(FilePath.java:852)
+	... 13 more
+Caused by: java.io.IOException: Truncated TAR archive
+	at org.apache.commons.compress.archivers.tar.TarArchiveInputStream.read(TarArchiveInputStream.java:618)
+	at java.io.InputStream.read(InputStream.java:101)
+	at org.apache.commons.io.IOUtils.copyLarge(IOUtils.java:1792)
+	at org.apache.commons.io.IOUtils.copyLarge(IOUtils.java:1769)
+	at org.apache.commons.io.IOUtils.copy(IOUtils.java:1744)
+	at hudson.util.IOUtils.copy(IOUtils.java:40)
+	at hudson.FilePath.readFromTar(FilePath.java:2318)
+	... 20 more
+Finished: FAILURE

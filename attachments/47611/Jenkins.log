@@ -1,0 +1,138 @@
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Using containerTemplate)
+[Pipeline] podTemplate
+[Pipeline] {
+[Pipeline] node
+[2019-06-07T21:37:02.225Z] Still waiting to schedule task
+[2019-06-07T21:37:02.226Z] ‘ubuntu-k8s-q39n2-jmrsk’ is offline
+[2019-06-07T21:37:35.682Z] Agent ubuntu-k8s-q39n2-jmrsk is provisioned from template Kubernetes Pod Template
+[2019-06-07T21:37:35.682Z] Agent specification [Kubernetes Pod Template] (ubuntu-k8s): 
+[2019-06-07T21:37:35.682Z] * [nodejs] node:10-alpine
+[2019-06-07T21:37:35.682Z] 
+[2019-06-07T21:37:41.738Z] Running on ubuntu-k8s-q39n2-jmrsk in /home/jenkins/workspace/zz-sandbox/jm/k8tst-dclrtv
+[Pipeline] {
+[Pipeline] container
+[Pipeline] {
+[Pipeline] container
+[Pipeline] {
+[Pipeline] sh
+[2019-06-07T21:37:53.629Z] + node --version
+[2019-06-07T21:37:53.629Z] v10.16.0
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] containerLog
+[2019-06-07T21:37:54.365Z] > start log of container 'nodejs' in pod 'ubuntu-k8s-q39n2-jmrsk'
+[2019-06-07T21:37:54.366Z] > end log of container 'nodejs' in pod 'ubuntu-k8s-q39n2-jmrsk'
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // podTemplate
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Using yaml)
+[Pipeline] podTemplate
+[Pipeline] {
+[Pipeline] node
+[2019-06-07T21:38:12.799Z] Still waiting to schedule task
+[2019-06-07T21:38:12.799Z] ‘ubuntu-k8s-h8m2b-257wg’ is offline
+[2019-06-07T21:38:47.456Z] Agent ubuntu-k8s-h8m2b-257wg is provisioned from template Kubernetes Pod Template
+[2019-06-07T21:38:47.456Z] Agent specification [Kubernetes Pod Template] (ubuntu-k8s): 
+[2019-06-07T21:38:47.456Z] yaml:
+[2019-06-07T21:38:47.456Z] 
+[2019-06-07T21:38:47.456Z] apiVersion: v1
+[2019-06-07T21:38:47.456Z] kind: Pod
+[2019-06-07T21:38:47.456Z] spec:
+[2019-06-07T21:38:47.456Z] containers:
+[2019-06-07T21:38:47.456Z] - name: nodejs
+[2019-06-07T21:38:47.456Z]   image: node:10-alpine
+[2019-06-07T21:38:47.456Z]   command:
+[2019-06-07T21:38:47.456Z]     - cat
+[2019-06-07T21:38:47.456Z]   tty: true
+[2019-06-07T21:38:47.456Z] 
+[2019-06-07T21:38:47.456Z] 
+[2019-06-07T21:38:54.087Z] Running on ubuntu-k8s-h8m2b-257wg in /home/jenkins/workspace/zz-sandbox/jm/k8tst-dclrtv
+[Pipeline] {
+[Pipeline] container
+[Pipeline] {
+[Pipeline] sh
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // podTemplate
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timestamps
+[Pipeline] End of Pipeline
+java.io.IOException: container [nodejs] does not exist in pod [ubuntu-k8s-h8m2b-257wg]
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.waitUntilPodContainersAreReady(ContainerExecDecorator.java:498)
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.doLaunch(ContainerExecDecorator.java:292)
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.launch(ContainerExecDecorator.java:273)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:455)
+	at org.jenkinsci.plugins.durabletask.BourneShellScript.launchWithCookie(BourneShellScript.java:206)
+	at org.jenkinsci.plugins.durabletask.FileMonitoringTask.launch(FileMonitoringTask.java:99)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.start(DurableTaskStep.java:308)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:268)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:176)
+	at org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:122)
+	at sun.reflect.GeneratedMethodAccessor429.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:93)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1213)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1022)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.call(PogoMetaClassSite.java:42)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:48)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:113)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:158)
+	at org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:23)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:157)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:156)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:160)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:130)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:130)
+	at com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:17)
+	at WorkflowScript.run(WorkflowScript:48)
+	at ___cps.transform___(Native Method)
+	at com.cloudbees.groovy.cps.impl.ContinuationGroup.methodCall(ContinuationGroup.java:57)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:109)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:82)
+	at sun.reflect.GeneratedMethodAccessor52.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at com.cloudbees.groovy.cps.impl.ConstantBlock.eval(ConstantBlock.java:21)
+	at com.cloudbees.groovy.cps.Next.step(Next.java:83)
+	at com.cloudbees.groovy.cps.Continuable$1.call(Continuable.java:174)
+	at com.cloudbees.groovy.cps.Continuable$1.call(Continuable.java:163)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport$ThreadCategoryInfo.use(GroovyCategorySupport.java:129)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport.use(GroovyCategorySupport.java:268)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:163)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:18)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:51)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:186)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:370)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$200(CpsThreadGroup.java:93)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:282)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:270)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:64)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:131)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:59)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Finished: FAILURE

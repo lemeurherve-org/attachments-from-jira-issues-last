@@ -1,0 +1,41 @@
+import java.text.SimpleDateFormat
+
+node {
+    def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
+    String partialFileName = "\\" + dateFormat.format(new Date()) + "-soc-"
+
+servers = ['10.xxx.xxx.xxx']
+
+	def soc_remote = [:]
+	soc_remote.name = 'UMBCS SOC'
+	soc_remote.allowAnyHosts = true
+	//soc_remote.fileTransfer = 'scp'
+	
+   
+	withCredentials([usernamePassword(credentialsId: 'Credentials', usernameVariable: 'USER_ID', passwordVariable: 'USER_PASSWORD')]) {
+		soc_remote.user = USER_ID
+		soc_remote.password = USER_PASSWORD
+		
+		servers.each { server ->
+            String FileName = partialFileName + ".zip"
+            soc_remote.host = server
+				
+				stage("Run log gather script") {
+					//sshCommand remote: soc_remote, command: '/tmp/zip.sh'
+				
+				    echo "skipping stage for testing"
+				}
+				stage("Download logs") {
+					dir('C:\\temp') {
+					    sshCommand remote: soc_remote, command: 'ls -ltr ~'
+                        try {
+                        sshGet remote: soc_remote, from: '~/test.zip', into: FileName, override: true
+                        } catch (err) {
+                          echo "something failed"
+                          echo "${err}"
+                          }
+					}
+				}
+        }
+	}
+}

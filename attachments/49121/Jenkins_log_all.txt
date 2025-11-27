@@ -1,0 +1,813 @@
+Jenkins Log
+Sep 14, 2019 1:22:22 PM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #162
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 14, 2019 2:22:28 PM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #163 completed: SUCCESS
+Sep 14, 2019 2:22:29 PM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #163
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 14, 2019 2:29:24 PM INFO org.kohsuke.stapler.LocaleDrivenResourceProvider getLocaleDrivenResourceProviders
+Registered LocaleDrivenResourceProvider: jenkins.MetaLocaleDrivenResourceProvider@1365b8f
+Sep 14, 2019 2:29:59 PM WARNING org.eclipse.jetty.server.handler.ContextHandler$Context log
+Error while serving http://cwdalm101.cokeonena.com:8082/job/Newman%20Tests/configSubmit
+line 1:2: unexpected char: 'n'
+	at hudson.scheduler.CrontabLexer.nextToken(CrontabLexer.java:184)
+	at antlr.TokenBuffer.fill(TokenBuffer.java:69)
+	at antlr.TokenBuffer.LA(TokenBuffer.java:80)
+	at antlr.LLkParser.LA(LLkParser.java:52)
+	at hudson.scheduler.CrontabParser.startRule(CrontabParser.java:84)
+	at hudson.scheduler.CronTab.set(CronTab.java:118)
+	at hudson.scheduler.CronTab.<init>(CronTab.java:100)
+	at hudson.scheduler.CronTabList.create(CronTabList.java:121)
+Caused: antlr.ANTLRException: Invalid input: "@nightly"
+	at hudson.scheduler.CronTabList.create(CronTabList.java:123)
+	at hudson.scheduler.CronTabList.create(CronTabList.java:96)
+	at hudson.triggers.Trigger.<init>(Trigger.java:170)
+	at hudson.triggers.TimerTrigger.<init>(TimerTrigger.java:58)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.kohsuke.stapler.RequestImpl.invokeConstructor(RequestImpl.java:529)
+Caused: java.lang.IllegalArgumentException
+	at org.kohsuke.stapler.RequestImpl.invokeConstructor(RequestImpl.java:544)
+	at org.kohsuke.stapler.RequestImpl.instantiate(RequestImpl.java:784)
+	at org.kohsuke.stapler.RequestImpl.access$200(RequestImpl.java:83)
+	at org.kohsuke.stapler.RequestImpl$TypePair.convertJSON(RequestImpl.java:678)
+Caused: java.lang.IllegalArgumentException: Failed to instantiate class hudson.triggers.TimerTrigger from {"spec":"@nightly"}
+	at org.kohsuke.stapler.RequestImpl$TypePair.convertJSON(RequestImpl.java:681)
+	at org.kohsuke.stapler.RequestImpl.bindJSON(RequestImpl.java:478)
+	at org.kohsuke.stapler.RequestImpl.bindJSON(RequestImpl.java:474)
+	at hudson.model.Descriptor.newInstance(Descriptor.java:596)
+Caused: java.lang.Error: Failed to instantiate class hudson.triggers.TimerTrigger from {"spec":"@nightly"}
+	at hudson.model.Descriptor.newInstance(Descriptor.java:604)
+	at hudson.util.DescribableList.rebuild(DescribableList.java:177)
+	at org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty.reconfigure(PipelineTriggersJobProperty.java:159)
+	at org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty.reconfigure(PipelineTriggersJobProperty.java:55)
+	at hudson.util.DescribableList.rebuild(DescribableList.java:175)
+	at hudson.model.Job.doConfigSubmit(Job.java:1338)
+	at java.lang.invoke.MethodHandle.invokeWithArguments(Unknown Source)
+	at org.kohsuke.stapler.Function$MethodFunction.invoke(Function.java:396)
+Caused: java.lang.reflect.InvocationTargetException
+	at org.kohsuke.stapler.Function$MethodFunction.invoke(Function.java:400)
+	at org.kohsuke.stapler.Function$InstanceFunction.invoke(Function.java:408)
+	at org.kohsuke.stapler.interceptor.RequirePOST$Processor.invoke(RequirePOST.java:77)
+	at org.kohsuke.stapler.PreInvokeInterceptedFunction.invoke(PreInvokeInterceptedFunction.java:26)
+	at org.kohsuke.stapler.Function.bindAndInvoke(Function.java:212)
+	at org.kohsuke.stapler.Function.bindAndInvokeAndServeResponse(Function.java:145)
+	at org.kohsuke.stapler.MetaClass$11.doDispatch(MetaClass.java:535)
+	at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:58)
+	at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:747)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:878)
+	at org.kohsuke.stapler.MetaClass$4.doDispatch(MetaClass.java:280)
+	at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:58)
+	at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:747)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:878)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:676)
+	at org.kohsuke.stapler.Stapler.service(Stapler.java:238)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:873)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1623)
+	at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:154)
+	at jenkins.telemetry.impl.UserLanguages$AcceptLanguageFilter.doFilter(UserLanguages.java:128)
+	at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:151)
+	at hudson.util.PluginServletFilter.doFilter(PluginServletFilter.java:157)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1610)
+	at hudson.security.csrf.CrumbFilter.doFilter(CrumbFilter.java:99)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1610)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:84)
+	at hudson.security.UnwrapSecurityExceptionFilter.doFilter(UnwrapSecurityExceptionFilter.java:51)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at jenkins.security.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:117)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.providers.anonymous.AnonymousProcessingFilter.doFilter(AnonymousProcessingFilter.java:125)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.rememberme.RememberMeProcessingFilter.doFilter(RememberMeProcessingFilter.java:142)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.AbstractProcessingFilter.doFilter(AbstractProcessingFilter.java:271)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at jenkins.security.BasicHeaderProcessor.doFilter(BasicHeaderProcessor.java:93)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.context.HttpSessionContextIntegrationFilter.doFilter(HttpSessionContextIntegrationFilter.java:249)
+	at hudson.security.HttpSessionContextIntegrationFilter2.doFilter(HttpSessionContextIntegrationFilter2.java:67)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at hudson.security.ChainedServletFilter.doFilter(ChainedServletFilter.java:90)
+	at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:171)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1610)
+	at org.kohsuke.stapler.compression.CompressionFilter.doFilter(CompressionFilter.java:49)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1610)
+	at hudson.util.CharacterEncodingFilter.doFilter(CharacterEncodingFilter.java:82)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1610)
+	at org.kohsuke.stapler.DiagnosticThreadNameFilter.doFilter(DiagnosticThreadNameFilter.java:30)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1610)
+	at org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:540)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:146)
+	at org.eclipse.jetty.security.SecurityHandler.handle(SecurityHandler.java:524)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:132)
+	at org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:257)
+	at org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:1701)
+	at org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:255)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1345)
+	at org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:203)
+	at org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:480)
+	at org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:1668)
+	at org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:201)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1247)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:144)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:132)
+	at org.eclipse.jetty.server.Server.handle(Server.java:502)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:370)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:267)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:305)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:103)
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:117)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.runTask(EatWhatYouKill.java:333)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:310)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:168)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.run(EatWhatYouKill.java:126)
+	at org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:366)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:765)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$2.run(QueuedThreadPool.java:683)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 14, 2019 6:54:53 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 14, 2019 6:54:53 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 10 ms
+Sep 14, 2019 10:39:23 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 14, 2019 10:39:23 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 40 ms
+Sep 14, 2019 11:52:04 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 14, 2019 11:52:04 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 14, 2019 11:52:10 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 14, 2019 11:52:11 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 14, 2019 11:52:11 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 14, 2019 11:52:11 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 14, 2019 11:52:12 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 14, 2019 11:52:12 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 14, 2019 11:52:12 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,930 ms
+Sep 15, 2019 1:22:09 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #164 completed: SUCCESS
+Sep 15, 2019 1:22:10 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #164
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 15, 2019 10:07:49 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 15, 2019 10:07:49 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 2 ms
+Sep 15, 2019 6:55:38 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 15, 2019 6:55:38 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 6 ms
+Sep 15, 2019 10:40:08 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 15, 2019 10:40:08 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 6 ms
+Sep 15, 2019 11:52:49 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 15, 2019 11:52:49 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 15, 2019 11:52:56 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 15, 2019 11:52:56 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 15, 2019 11:52:56 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 15, 2019 11:52:56 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 15, 2019 11:52:57 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 15, 2019 11:52:57 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 15, 2019 11:52:57 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,605 ms
+Sep 16, 2019 1:21:38 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #165 completed: SUCCESS
+Sep 16, 2019 1:21:39 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #165
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 16, 2019 10:08:34 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 16, 2019 10:08:34 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 6 ms
+Sep 16, 2019 6:55:37 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 16, 2019 6:55:37 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 1 ms
+Sep 16, 2019 10:40:07 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 16, 2019 10:40:07 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 1 ms
+Sep 16, 2019 11:52:49 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 16, 2019 11:52:49 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 16, 2019 11:52:49 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 16, 2019 11:52:49 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 16, 2019 11:52:49 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 16, 2019 11:52:49 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 753 ms
+Sep 17, 2019 1:21:51 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #166 completed: SUCCESS
+Sep 17, 2019 1:21:52 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #166
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 17, 2019 10:07:13 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 17, 2019 10:07:13 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 3 ms
+Sep 17, 2019 6:54:16 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 17, 2019 6:54:16 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 5 ms
+Sep 17, 2019 10:38:46 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 17, 2019 10:38:46 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 6 ms
+Sep 17, 2019 11:51:28 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 17, 2019 11:51:28 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 17, 2019 11:51:34 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 17, 2019 11:51:35 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 17, 2019 11:51:35 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 17, 2019 11:51:35 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 17, 2019 11:51:35 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 17, 2019 11:51:35 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 17, 2019 11:51:35 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,362 ms
+Sep 18, 2019 1:22:14 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #167 completed: SUCCESS
+Sep 18, 2019 1:22:15 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #167
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 18, 2019 10:07:13 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 18, 2019 10:07:13 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 6 ms
+Sep 18, 2019 6:54:16 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 18, 2019 6:54:16 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 1 ms
+Sep 18, 2019 10:38:46 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 18, 2019 10:38:46 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 1 ms
+Sep 18, 2019 11:51:27 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 18, 2019 11:51:27 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 18, 2019 11:51:28 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 18, 2019 11:51:28 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 18, 2019 11:51:28 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 18, 2019 11:51:28 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 758 ms
+Sep 19, 2019 1:22:22 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #168 completed: SUCCESS
+Sep 19, 2019 1:22:23 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #168
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 19, 2019 10:07:12 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 19, 2019 10:07:12 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 2 ms
+Sep 19, 2019 6:54:15 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 19, 2019 6:54:15 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 4 ms
+Sep 19, 2019 10:38:45 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 19, 2019 10:38:45 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 6 ms
+Sep 19, 2019 11:51:27 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 19, 2019 11:51:27 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 19, 2019 11:51:33 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 19, 2019 11:51:33 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 19, 2019 11:51:33 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 19, 2019 11:51:34 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 19, 2019 11:51:34 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 19, 2019 11:51:34 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 19, 2019 11:51:34 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,392 ms
+Sep 20, 2019 1:22:20 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #169 completed: SUCCESS
+Sep 20, 2019 1:22:20 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #169
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 20, 2019 10:07:12 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 20, 2019 10:07:12 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 5 ms
+Sep 20, 2019 6:54:15 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 20, 2019 6:54:15 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 1 ms
+Sep 20, 2019 10:38:45 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 20, 2019 10:38:45 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 1 ms
+Sep 20, 2019 11:51:26 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 20, 2019 11:51:26 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 20, 2019 11:51:26 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 20, 2019 11:51:27 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 20, 2019 11:51:27 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 20, 2019 11:51:27 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 839 ms
+Sep 21, 2019 1:22:19 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #170 completed: SUCCESS
+Sep 21, 2019 1:22:19 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #170
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 21, 2019 10:07:11 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 21, 2019 10:07:11 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 2 ms
+Sep 21, 2019 6:54:14 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 21, 2019 6:54:14 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 5 ms
+Sep 21, 2019 10:38:44 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 21, 2019 10:38:44 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 6 ms
+Sep 21, 2019 11:51:26 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 21, 2019 11:51:26 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 21, 2019 11:51:32 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 21, 2019 11:51:33 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 21, 2019 11:51:33 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 21, 2019 11:51:33 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 21, 2019 11:51:33 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 21, 2019 11:51:33 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 21, 2019 11:51:33 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,295 ms
+Sep 22, 2019 1:22:20 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #171 completed: SUCCESS
+Sep 22, 2019 1:22:21 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #171
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 22, 2019 10:07:11 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 22, 2019 10:07:11 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 5 ms
+Sep 22, 2019 6:54:14 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 22, 2019 6:54:14 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 1 ms
+Sep 22, 2019 10:38:44 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 22, 2019 10:38:44 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 2 ms
+Sep 22, 2019 11:51:25 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 22, 2019 11:51:25 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 22, 2019 11:51:26 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 22, 2019 11:51:26 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 22, 2019 11:51:26 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 22, 2019 11:51:26 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 797 ms
+Sep 23, 2019 1:22:12 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #172 completed: SUCCESS
+Sep 23, 2019 1:22:13 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #172
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 23, 2019 10:07:10 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 23, 2019 10:07:10 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 2 ms
+Sep 23, 2019 6:54:13 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 23, 2019 6:54:13 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 5 ms
+Sep 23, 2019 10:38:43 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 23, 2019 10:38:43 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 5 ms
+Sep 23, 2019 11:51:25 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 23, 2019 11:51:25 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 23, 2019 11:51:31 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 23, 2019 11:51:31 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 23, 2019 11:51:32 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 23, 2019 11:51:32 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 23, 2019 11:51:32 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 23, 2019 11:51:32 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 23, 2019 11:51:32 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,128 ms
+Sep 24, 2019 1:22:31 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #173 completed: SUCCESS
+Sep 24, 2019 1:22:32 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #173
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 24, 2019 10:07:10 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 24, 2019 10:07:10 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 5 ms
+Sep 24, 2019 6:54:13 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 24, 2019 6:54:13 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 1 ms
+Sep 24, 2019 10:38:43 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 24, 2019 10:38:43 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 2 ms
+Sep 24, 2019 11:51:24 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 24, 2019 11:51:24 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 24, 2019 11:51:25 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 24, 2019 11:51:25 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 24, 2019 11:51:25 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 24, 2019 11:51:25 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 802 ms
+Sep 25, 2019 1:22:07 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #174 completed: SUCCESS
+Sep 25, 2019 1:22:08 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #174
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 25, 2019 10:07:10 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 25, 2019 10:07:10 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 2 ms
+Sep 25, 2019 6:54:13 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 25, 2019 6:54:13 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 5 ms
+Sep 25, 2019 10:38:42 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 25, 2019 10:38:42 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 5 ms
+Sep 25, 2019 11:51:24 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 25, 2019 11:51:24 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 25, 2019 11:51:30 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 25, 2019 11:51:31 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 25, 2019 11:51:31 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 25, 2019 11:51:31 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 25, 2019 11:51:32 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 25, 2019 11:51:32 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 25, 2019 11:51:32 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,518 ms
+Sep 26, 2019 1:22:17 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #175 completed: SUCCESS
+Sep 26, 2019 1:22:17 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #175
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 26, 2019 10:07:09 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 26, 2019 10:07:09 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 7 ms
+Sep 26, 2019 6:54:12 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 26, 2019 6:54:12 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 2 ms
+Sep 26, 2019 10:38:42 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 26, 2019 10:38:42 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 1 ms
+Sep 26, 2019 11:51:24 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 26, 2019 11:51:24 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 26, 2019 11:51:24 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 26, 2019 11:51:24 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 26, 2019 11:51:24 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 26, 2019 11:51:24 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 837 ms
+Sep 27, 2019 1:22:10 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #176 completed: SUCCESS
+Sep 27, 2019 1:22:11 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #176
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 27, 2019 10:07:09 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 27, 2019 10:07:09 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 2 ms
+Sep 27, 2019 6:54:11 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 27, 2019 6:54:11 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 6 ms
+Sep 27, 2019 10:38:41 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 27, 2019 10:38:41 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 5 ms
+Sep 27, 2019 11:51:23 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 27, 2019 11:51:23 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 27, 2019 11:51:29 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 27, 2019 11:51:30 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 27, 2019 11:51:30 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 27, 2019 11:51:30 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 27, 2019 11:51:30 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 27, 2019 11:51:30 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 27, 2019 11:51:30 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,560 ms
+Sep 28, 2019 1:22:10 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #177 completed: SUCCESS
+Sep 28, 2019 1:22:11 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #177
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 28, 2019 10:07:08 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 28, 2019 10:07:08 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 7 ms
+Sep 28, 2019 6:54:11 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 28, 2019 6:54:11 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 2 ms
+Sep 28, 2019 10:38:41 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 28, 2019 10:38:41 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 2 ms
+Sep 28, 2019 11:51:23 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 28, 2019 11:51:23 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 28, 2019 11:51:23 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 28, 2019 11:51:23 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 28, 2019 11:51:23 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 28, 2019 11:51:23 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 853 ms
+Sep 29, 2019 1:22:14 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #178 completed: SUCCESS
+Sep 29, 2019 1:22:15 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #178
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 29, 2019 10:07:08 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 29, 2019 10:07:08 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 2 ms
+Sep 29, 2019 6:54:10 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Fingerprint cleanup
+Sep 29, 2019 6:54:10 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Fingerprint cleanup. 5 ms
+Sep 29, 2019 10:38:40 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started telemetry collection
+Sep 29, 2019 10:38:40 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished telemetry collection. 5 ms
+Sep 29, 2019 11:51:22 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Download metadata
+Sep 29, 2019 11:51:22 PM INFO hudson.util.Retrier start
+Attempt #1 to do the action check updates server
+Sep 29, 2019 11:51:28 PM INFO hudson.model.UpdateSite updateData
+Obtained the latest update center data file for UpdateSource default
+Sep 29, 2019 11:51:29 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Sep 29, 2019 11:51:29 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Sep 29, 2019 11:51:29 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Sep 29, 2019 11:51:29 PM INFO hudson.model.DownloadService$Downloadable load
+Obtained the updated data file for hudson.tools.JDKInstaller
+Sep 29, 2019 11:51:29 PM INFO hudson.util.Retrier start
+Performed the action check updates server successfully at the attempt #1
+Sep 29, 2019 11:51:29 PM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Download metadata. 7,164 ms
+Sep 30, 2019 1:22:12 AM INFO org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+Newman Tests #179 completed: SUCCESS
+Sep 30, 2019 1:22:13 AM WARNING org.jenkinsci.plugins.workflow.job.WorkflowRun getLogFile
+Avoid calling getLogFile on Newman Tests #179
+java.lang.UnsupportedOperationException
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.getLogFile(WorkflowRun.java:1085)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getOctaneLogFile(CIJenkinsServicesImpl.java:569)
+	at com.microfocus.application.automation.tools.octane.CIJenkinsServicesImpl.getBuildLog(CIJenkinsServicesImpl.java:368)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.pushBuildLog(LogsServiceImpl.java:160)
+	at com.hp.octane.integrations.services.logs.LogsServiceImpl.worker(LogsServiceImpl.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+Sep 30, 2019 10:07:07 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Started Workspace clean-up
+Sep 30, 2019 10:07:07 AM INFO hudson.model.AsyncPeriodicWork$1 run
+Finished Workspace clean-up. 6 ms

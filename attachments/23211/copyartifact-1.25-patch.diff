@@ -1,0 +1,59 @@
+Linker Basisordner: C:\Users\bed8pl\Downloads\copyartifact-plugin-copyartifact-1.25-original
+Rechter Basisordner: C:\Users\bed8pl\Downloads\copyartifact-plugin-copyartifact-1.25
+--- copyartifact-plugin-copyartifact-1.25\src\main\java\hudson\plugins\copyartifact\CopyArtifact.java	2012-11-06 06:46:58.000000000 +0100
++++ copyartifact-plugin-copyartifact-1.25\src\main\java\hudson\plugins\copyartifact\CopyArtifact.java	2013-02-19 11:55:09.000000000 +0100
+@@ -145,23 +145,37 @@
+     }
+ 
+     public boolean isOptional() {
+         return optional != null && optional;
+     }
+ 
++    private boolean isFixedJobName(String jobName) {
++        // job name is fixed if there's no variable
++        if (!jobName.contains("$"))
++            return true;
++        // if there's a variable but no job name/filter separator, it cannot be a fixed job name
++        if (!jobName.contains("/"))
++            return false;
++        // if both exist, separator must be before variable
++        return jobName.indexOf('/') < jobName.indexOf('$');
++    }
++
+     @Override
+     public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener)
+             throws InterruptedException {
+         PrintStream console = listener.getLogger();
+         String expandedProject = projectName, expandedFilter = filter;
+         try {
+             EnvVars env = build.getEnvironment(listener);
+             env.overrideAll(build.getBuildVariables()); // Add in matrix axes..
+             expandedProject = env.expand(projectName);
+             JobResolver job = new JobResolver(build.getProject().getParent(),expandedProject);
+-            if (job.job != null && !expandedProject.equals(projectName)
++            if (job != null) {
++                console.println("Determined project name: " + job.job.getDisplayName());
++            }
++            if (job.job != null && !isFixedJobName(projectName)
+                 // If projectName is parameterized, need to do permission check on source project.
+                 // Would like to check if user who started build has permission, but unable to get
+                 // Authentication object for arbitrary user.. instead, only allow use of parameters
+                 // to select jobs which are accessible to all authenticated users.
+                 && !job.job.getACL().hasPermission(
+                         new UsernamePasswordAuthenticationToken("authenticated", "",
+@@ -265,13 +279,14 @@
+         BuildFilter filter = new BuildFilter();
+ 
+         JobResolver(ItemGroup context, String projectName) {
+             job = getItem(context, projectName);
+             if (job == null) {
+                 // Check for parameterized job with filter (see help file)
+-                int i = projectName.lastIndexOf('/');
++                int equalCharIndex = projectName.indexOf('=');
++                int i = projectName.substring(0, equalCharIndex > 0 ? equalCharIndex : projectName.length()).lastIndexOf('/');
+                 if (i > 0) {
+                     Job<?,?> candidate = getItem(context, projectName.substring(0, i));
+                     if (candidate != null) {
+                         ParametersBuildFilter pFilter = new ParametersBuildFilter(projectName.substring(i + 1));
+                         if (pFilter.isValid(candidate)) {
+                             job = candidate;

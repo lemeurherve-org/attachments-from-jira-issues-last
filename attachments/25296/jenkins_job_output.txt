@@ -1,0 +1,137 @@
+Started by user Vijay Krishna Doddala
+Building in workspace D:\Softwares\jenkins\jobs\Perform_Release\workspace
+Updating https://server-mydomain.com/svn/New_FW/CI_POC/branches/CI_POC_Release01/SpringMVC323REST_NEW at revision '2014-02-11T19:15:39.301 +0530'
+At revision 547
+no change for https://server-mydomain.com/svn/New_FW/CI_POC/branches/CI_POC_Release01/SpringMVC323REST_NEW since the previous build
+Parsing POMs
+[workspace] $ "C:\Program Files\Java\jdk1.6.0_24/bin/java" -cp D:\Softwares\jenkins\plugins\maven-plugin\WEB-INF\lib\maven31-agent-1.4.jar;D:\Softwares\apache-maven-3.1.0\boot\plexus-classworlds-2.4.2.jar;D:\Softwares\apache-maven-3.1.0/conf/logging jenkins.maven3.agent.Maven31Main D:\Softwares\apache-maven-3.1.0 D:\Softwares\jboss-5.0.1.GA\server\default\deploy\jenkins.war\WEB-INF\lib\remoting-2.33.jar D:\Softwares\jenkins\plugins\maven-plugin\WEB-INF\lib\maven31-interceptor-1.4.jar D:\Softwares\jenkins\plugins\maven-plugin\WEB-INF\lib\maven3-interceptor-commons-1.4.jar 56824
+<===[JENKINS REMOTING CAPACITY]===>channel started
+Executing Maven:  -B -f D:\Softwares\jenkins\jobs\Perform_Release\workspace\pom.xml -DdevelopmentVersion=1.0.1-SNAPSHOT -DreleaseVersion=1.0.0 -X -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dresume=false -DdryRun=true release:prepare
+Apache Maven 3.1.0 (893ca28a1da9d5f51ac03827af98bb730128f9f2; 2013-06-28 07:45:32+0530)
+Maven home: D:\Softwares\apache-maven-3.1.0
+Java version: 1.6.0_24, vendor: Sun Microsystems Inc.
+Java home: C:\Program Files\Java\jdk1.6.0_24\jre
+Default locale: en_US, platform encoding: Cp1252
+OS name: "windows nt (unknown)", version: "6.2", arch: "amd64", family: "windows"
+[INFO] Error stacktraces are turned on.
+[DEBUG] Reading global settings from D:\Softwares\apache-maven-3.1.0\conf\settings.xml
+[DEBUG] Reading user settings from C:\Users\doddalav\.m2\settings.xml
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.mydomain.simple:ServiceEJB:jar:1.0.0-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-ejb-plugin is missing. @ line 24, column 12
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[HUDSON] Collecting dependencies info[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Service
+[INFO] ServiceEJB
+[INFO] SpringMVC323REST
+
+[HUDSON] Collecting dependencies info
+[HUDSON] Collecting dependencies info
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Service 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-release-plugin:2.4.2:prepare (default-cli) @ Service ---
+[INFO] Change the default 'svn' provider implementation to 'javasvn'.
+[INFO] Verifying that there are no local modifications...
+[INFO]   ignoring changes on: **\release.properties, **\pom.xml.next, **\pom.xml.releaseBackup, **\pom.xml.backup, **\pom.xml.branch, **\pom.xml.tag
+[INFO] SVN status directory: D:\Softwares\jenkins\jobs\Perform_Release\workspace
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] Service ........................................... FAILURE [21.763s]
+[INFO] ServiceEJB ........................................ SKIPPED
+[INFO] SpringMVC323REST .................................. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 28.550s
+[INFO] Finished at: Tue Feb 11 19:16:55 IST 2014
+[INFO] Final Memory: 8M/63M
+[INFO] ------------------------------------------------------------------------
+Waiting for Jenkins to finish collecting data
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-release-plugin:2.4.2:prepare (default-cli) on project Service: Unable to check for local modifications
+[ERROR] Provider message:
+[ERROR] SVN status failed.
+[ERROR] Command output:
+[ERROR] svn: Authentication required for '<https://server-mydomain.com:443>'
+[ERROR] -> [Help 1]
+org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal org.apache.maven.plugins:maven-release-plugin:2.4.2:prepare (default-cli) on project Service: Unable to check for local modifications
+Provider message:
+SVN status failed.
+Command output:
+svn: Authentication required for '<https://server-mydomain.com:443>'
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:212)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:84)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:59)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.singleThreadedBuild(LifecycleStarter.java:183)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:161)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:318)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:153)
+	at org.jvnet.hudson.maven3.launcher.Maven31Launcher.main(Maven31Launcher.java:132)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchStandard(Launcher.java:331)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:239)
+	at jenkins.maven3.agent.Maven31Main.launch(Maven31Main.java:181)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:134)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:69)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:328)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+Caused by: org.apache.maven.plugin.MojoFailureException: Unable to check for local modifications
+Provider message:
+SVN status failed.
+Command output:
+svn: Authentication required for '<https://server-mydomain.com:443>'
+	at org.apache.maven.plugins.release.PrepareReleaseMojo.prepareRelease(PrepareReleaseMojo.java:285)
+	at org.apache.maven.plugins.release.PrepareReleaseMojo.execute(PrepareReleaseMojo.java:232)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:106)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:208)
+	... 31 more
+Caused by: org.apache.maven.shared.release.scm.ReleaseScmCommandException: Unable to check for local modifications
+Provider message:
+SVN status failed.
+Command output:
+svn: Authentication required for '<https://server-mydomain.com:443>'
+	at org.apache.maven.shared.release.phase.ScmCheckModificationsPhase.execute(ScmCheckModificationsPhase.java:137)
+	at org.apache.maven.shared.release.phase.ScmCheckModificationsPhase.simulate(ScmCheckModificationsPhase.java:200)
+	at org.apache.maven.shared.release.DefaultReleaseManager.prepare(DefaultReleaseManager.java:228)
+	at org.apache.maven.shared.release.DefaultReleaseManager.prepare(DefaultReleaseManager.java:169)
+	at org.apache.maven.shared.release.DefaultReleaseManager.prepare(DefaultReleaseManager.java:146)
+	at org.apache.maven.shared.release.DefaultReleaseManager.prepare(DefaultReleaseManager.java:107)
+	at org.apache.maven.plugins.release.PrepareReleaseMojo.prepareRelease(PrepareReleaseMojo.java:277)
+	... 34 more
+[ERROR] 
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[JENKINS] Archiving D:\Softwares\jenkins\jobs\Perform_Release\workspace\pom.xml to com.mydomain.simple/Service/1.0.0-SNAPSHOT/Service-1.0.0-SNAPSHOT.pom
+[JENKINS] Archiving D:\Softwares\jenkins\jobs\Perform_Release\workspace\SpringMVC323REST\pom.xml to com.mydomain.simple/SpringMVC323REST/1.0.0-SNAPSHOT/SpringMVC323REST-1.0.0-SNAPSHOT.pom
+[JENKINS] Archiving D:\Softwares\jenkins\jobs\Perform_Release\workspace\ServiceEJB\pom.xml to com.mydomain.simple/ServiceEJB/1.0.0-SNAPSHOT/ServiceEJB-1.0.0-SNAPSHOT.pom
+channel stopped
+[M2Release] its only a dryRun, no need to mark it for keep
+Finished: FAILURE

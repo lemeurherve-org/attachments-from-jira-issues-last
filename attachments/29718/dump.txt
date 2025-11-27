@@ -1,0 +1,561 @@
+2015-05-04 18:57:01
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.25-b02 mixed mode):
+
+"Attach Listener" #122 daemon prio=9 os_prio=0 tid=0x00007fe398006800 nid=0x25f4 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"SIGTERM handler" #119 daemon prio=9 os_prio=0 tid=0x00007fe398004800 nid=0x25d0 waiting for monitor entry [0x00007fe3b5441000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at java.lang.Shutdown.exit(Shutdown.java:212)
+	- waiting to lock <0x000000070662c0b0> (a java.lang.Class for java.lang.Shutdown)
+	at java.lang.Terminator$1.handle(Terminator.java:52)
+	at sun.misc.Signal$1.run(Signal.java:212)
+	at java.lang.Thread.run(Thread.java:745)
+
+"SIGTERM handler" #118 daemon prio=9 os_prio=0 tid=0x00007fe398003800 nid=0x25cf waiting for monitor entry [0x00007fe3b6396000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at java.lang.Shutdown.exit(Shutdown.java:212)
+	- waiting to lock <0x000000070662c0b0> (a java.lang.Class for java.lang.Shutdown)
+	at java.lang.Terminator$1.handle(Terminator.java:52)
+	at sun.misc.Signal$1.run(Signal.java:212)
+	at java.lang.Thread.run(Thread.java:745)
+
+"Shutdown" #19 prio=5 os_prio=0 tid=0x00007fe36400b800 nid=0x25ce waiting on condition [0x00007fe3b5541000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000708044880> (a com.google.common.util.concurrent.AbstractFuture$Sync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:997)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1304)
+	at com.google.common.util.concurrent.AbstractFuture$Sync.get(AbstractFuture.java:275)
+	at com.google.common.util.concurrent.AbstractFuture.get(AbstractFuture.java:111)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.waitForSuspension(CpsFlowExecution.java:541)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.suspendAll(CpsFlowExecution.java:746)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:105)
+	at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:169)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:282)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:210)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+	at jenkins.model.Jenkins$20.execute(Jenkins.java:2776)
+	at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:128)
+	- locked <0x00000007833e1a20> (a org.jvnet.hudson.reactor.Reactor)
+	at jenkins.model.Jenkins$20.execute(Jenkins.java:2776)
+	at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+	at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:263)
+	- locked <0x00000007833e1a20> (a org.jvnet.hudson.reactor.Reactor)
+	at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:168)
+	at jenkins.model.Jenkins.cleanUp(Jenkins.java:2773)
+	at hudson.WebAppMain.contextDestroyed(WebAppMain.java:397)
+	at org.mortbay.jetty.handler.ContextHandler.doStop(ContextHandler.java:545)
+	at org.mortbay.jetty.webapp.WebAppContext.doStop(WebAppContext.java:451)
+	at org.mortbay.component.AbstractLifeCycle.stop(AbstractLifeCycle.java:65)
+	at org.mortbay.jetty.handler.HandlerCollection.doStop(HandlerCollection.java:164)
+	at org.mortbay.component.AbstractLifeCycle.stop(AbstractLifeCycle.java:65)
+	at org.mortbay.jetty.handler.HandlerCollection.doStop(HandlerCollection.java:164)
+	at org.mortbay.component.AbstractLifeCycle.stop(AbstractLifeCycle.java:65)
+	at org.mortbay.jetty.handler.HandlerWrapper.doStop(HandlerWrapper.java:129)
+	at org.mortbay.jetty.Server.doStop(Server.java:242)
+	at org.mortbay.component.AbstractLifeCycle.stop(AbstractLifeCycle.java:65)
+	at org.mortbay.jetty.Server$ShutdownHookThread.run(Server.java:509)
+
+"SIGTERM handler" #117 daemon prio=9 os_prio=0 tid=0x00007fe398002800 nid=0x25cc waiting for monitor entry [0x00007fe3b5140000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at java.lang.Shutdown.exit(Shutdown.java:212)
+	- waiting to lock <0x000000070662c0b0> (a java.lang.Class for java.lang.Shutdown)
+	at java.lang.Terminator$1.handle(Terminator.java:52)
+	at sun.misc.Signal$1.run(Signal.java:212)
+	at java.lang.Thread.run(Thread.java:745)
+
+"SIGTERM handler" #116 daemon prio=9 os_prio=0 tid=0x00007fe398001800 nid=0x25cb in Object.wait() [0x00007fe3b4f3e000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Thread.join(Thread.java:1245)
+	- locked <0x000000070760da08> (a org.mortbay.jetty.Server$ShutdownHookThread)
+	at java.lang.Thread.join(Thread.java:1319)
+	at java.lang.ApplicationShutdownHooks.runHooks(ApplicationShutdownHooks.java:106)
+	at java.lang.ApplicationShutdownHooks$1.run(ApplicationShutdownHooks.java:46)
+	at java.lang.Shutdown.runHooks(Shutdown.java:123)
+	at java.lang.Shutdown.sequence(Shutdown.java:167)
+	at java.lang.Shutdown.exit(Shutdown.java:212)
+	- locked <0x000000070662c0b0> (a java.lang.Class for java.lang.Shutdown)
+	at java.lang.Terminator$1.handle(Terminator.java:52)
+	at sun.misc.Signal$1.run(Signal.java:212)
+	at java.lang.Thread.run(Thread.java:745)
+
+"CpsStepContext.getProgramPromise [#5]" #89 daemon prio=5 os_prio=0 tid=0x00007fe34041a000 nid=0x22ac waiting on condition [0x00007fe3b6798000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007080457f0> (a com.google.common.util.concurrent.AbstractFuture$Sync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:997)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1304)
+	at com.google.common.util.concurrent.AbstractFuture$Sync.get(AbstractFuture.java:275)
+	at com.google.common.util.concurrent.AbstractFuture.get(AbstractFuture.java:111)
+	at org.jenkinsci.plugins.workflow.cps.CpsStepContext$1.run(CpsStepContext.java:248)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"Executor #-1 for master : executing sleepy #63" #88 daemon prio=5 os_prio=0 tid=0x00007fe340418000 nid=0x22ab in Object.wait() [0x00007fe3a04d0000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.waitForCompletion(WorkflowRun.java:215)
+	- locked <0x0000000708133118> (a java.util.concurrent.atomic.AtomicBoolean)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:163)
+	at hudson.model.ResourceController.execute(ResourceController.java:89)
+	at hudson.model.Executor.run(Executor.java:240)
+	at hudson.model.OneOffExecutor.run(OneOffExecutor.java:43)
+
+"Executor #-1 for master : executing sleepy #62" #86 daemon prio=5 os_prio=0 tid=0x00007fe340416000 nid=0x22a9 in Object.wait() [0x00007fe3a05d1000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.waitForCompletion(WorkflowRun.java:215)
+	- locked <0x0000000708338288> (a java.util.concurrent.atomic.AtomicBoolean)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:163)
+	at hudson.model.ResourceController.execute(ResourceController.java:89)
+	at hudson.model.Executor.run(Executor.java:240)
+	at hudson.model.OneOffExecutor.run(OneOffExecutor.java:43)
+
+"CpsStepContext.getProgramPromise [#4]" #84 daemon prio=5 os_prio=0 tid=0x00007fe34034a000 nid=0x22a7 waiting on condition [0x00007fe3a06d2000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000708045090> (a com.google.common.util.concurrent.AbstractFuture$Sync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:997)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1304)
+	at com.google.common.util.concurrent.AbstractFuture$Sync.get(AbstractFuture.java:275)
+	at com.google.common.util.concurrent.AbstractFuture.get(AbstractFuture.java:111)
+	at org.jenkinsci.plugins.workflow.cps.CpsStepContext$1.run(CpsStepContext.java:248)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"CpsStepContext.getProgramPromise [#3]" #82 daemon prio=5 os_prio=0 tid=0x00007fe340403800 nid=0x22a5 waiting on condition [0x00007fe3a07d3000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000708045ba0> (a com.google.common.util.concurrent.AbstractFuture$Sync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:997)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1304)
+	at com.google.common.util.concurrent.AbstractFuture$Sync.get(AbstractFuture.java:275)
+	at com.google.common.util.concurrent.AbstractFuture.get(AbstractFuture.java:111)
+	at org.jenkinsci.plugins.workflow.cps.CpsStepContext$1.run(CpsStepContext.java:248)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"Executor #-1 for master : executing sleepy #61" #81 daemon prio=5 os_prio=0 tid=0x00007fe340402800 nid=0x22a4 in Object.wait() [0x00007fe3b6093000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.waitForCompletion(WorkflowRun.java:215)
+	- locked <0x0000000708331f18> (a java.util.concurrent.atomic.AtomicBoolean)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:163)
+	at hudson.model.ResourceController.execute(ResourceController.java:89)
+	at hudson.model.Executor.run(Executor.java:240)
+	at hudson.model.OneOffExecutor.run(OneOffExecutor.java:43)
+
+"Executor #-1 for master : executing sleepy #60" #79 daemon prio=5 os_prio=0 tid=0x00007fe340401000 nid=0x22a0 in Object.wait() [0x00007fe3a08d4000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.waitForCompletion(WorkflowRun.java:215)
+	- locked <0x00000007083bc908> (a java.util.concurrent.atomic.AtomicBoolean)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:163)
+	at hudson.model.ResourceController.execute(ResourceController.java:89)
+	at hudson.model.Executor.run(Executor.java:240)
+	at hudson.model.OneOffExecutor.run(OneOffExecutor.java:43)
+
+"CpsStepContext.getProgramPromise [#2]" #77 daemon prio=5 os_prio=0 tid=0x00007fe34039c800 nid=0x229e waiting on condition [0x00007fe3b5a79000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000708045440> (a com.google.common.util.concurrent.AbstractFuture$Sync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:997)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1304)
+	at com.google.common.util.concurrent.AbstractFuture$Sync.get(AbstractFuture.java:275)
+	at com.google.common.util.concurrent.AbstractFuture.get(AbstractFuture.java:111)
+	at org.jenkinsci.plugins.workflow.cps.CpsStepContext$1.run(CpsStepContext.java:248)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"Executor #-1 for master : executing sleepy #59" #75 daemon prio=5 os_prio=0 tid=0x00007fe3403fe000 nid=0x229c in Object.wait() [0x00007fe3b5c7b000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.waitForCompletion(WorkflowRun.java:215)
+	- locked <0x0000000708188a90> (a java.util.concurrent.atomic.AtomicBoolean)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:163)
+	at hudson.model.ResourceController.execute(ResourceController.java:89)
+	at hudson.model.Executor.run(Executor.java:240)
+	at hudson.model.OneOffExecutor.run(OneOffExecutor.java:43)
+
+"Executor #-1 for master : executing sleepy #64" #72 daemon prio=5 os_prio=0 tid=0x00007fe34039b800 nid=0x2299 in Object.wait() [0x00007fe3b5978000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.waitForCompletion(WorkflowRun.java:215)
+	- locked <0x0000000708382568> (a java.util.concurrent.atomic.AtomicBoolean)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:163)
+	at hudson.model.ResourceController.execute(ResourceController.java:89)
+	at hudson.model.Executor.run(Executor.java:240)
+	at hudson.model.OneOffExecutor.run(OneOffExecutor.java:43)
+
+"Jenkins UDP 33848 monitoring thread" #55 prio=5 os_prio=0 tid=0x00007fe34c110800 nid=0x2293 runnable [0x00007fe3b5e91000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainDatagramSocketImpl.receive0(Native Method)
+	- locked <0x000000070815d568> (a java.net.PlainDatagramSocketImpl)
+	at java.net.AbstractPlainDatagramSocketImpl.receive(AbstractPlainDatagramSocketImpl.java:144)
+	- locked <0x000000070815d568> (a java.net.PlainDatagramSocketImpl)
+	at java.net.DatagramSocket.receive(DatagramSocket.java:812)
+	- locked <0x00000007085e1d10> (a java.net.DatagramPacket)
+	- locked <0x000000070815d518> (a java.net.MulticastSocket)
+	at hudson.UDPBroadcastThread.run(UDPBroadcastThread.java:82)
+
+"TCP slave agent listener port=0" #54 prio=5 os_prio=0 tid=0x00007fe34c12d800 nid=0x2292 runnable [0x00007fe3b5d7c000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:241)
+	- locked <0x000000070815d048> (a java.lang.Object)
+	at hudson.TcpSlaveAgentListener.run(TcpSlaveAgentListener.java:95)
+
+"CpsStepContext.getProgramPromise [#1]" #52 daemon prio=5 os_prio=0 tid=0x00007fe388952000 nid=0x2290 waiting on condition [0x00007fe3a11d7000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000708044880> (a com.google.common.util.concurrent.AbstractFuture$Sync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:997)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1304)
+	at com.google.common.util.concurrent.AbstractFuture$Sync.get(AbstractFuture.java:275)
+	at com.google.common.util.concurrent.AbstractFuture.get(AbstractFuture.java:111)
+	at org.jenkinsci.plugins.workflow.cps.CpsStepContext$1.run(CpsStepContext.java:248)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#10]" #50 daemon prio=5 os_prio=0 tid=0x00007fe34017c800 nid=0x228e waiting on condition [0x00007fe3a14e1000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#9]" #49 daemon prio=5 os_prio=0 tid=0x00007fe33c017800 nid=0x228b waiting on condition [0x00007fe3a1cfa000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#8]" #48 daemon prio=5 os_prio=0 tid=0x00007fe354051800 nid=0x228a waiting on condition [0x00007fe3a1dfb000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#7]" #47 daemon prio=5 os_prio=0 tid=0x00007fe354028000 nid=0x2289 waiting on condition [0x00007fe3a20fc000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#6]" #46 daemon prio=5 os_prio=0 tid=0x00007fe354026800 nid=0x2288 waiting on condition [0x00007fe3a21fd000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#5]" #45 daemon prio=5 os_prio=0 tid=0x00007fe354024800 nid=0x2287 waiting on condition [0x00007fe3a22fe000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#4]" #44 daemon prio=5 os_prio=0 tid=0x00007fe354022800 nid=0x2286 waiting on condition [0x00007fe3b4106000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#3]" #43 daemon prio=5 os_prio=0 tid=0x00007fe354015800 nid=0x2285 waiting on condition [0x00007fe3b4207000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#2]" #42 daemon prio=5 os_prio=0 tid=0x00007fe33c003000 nid=0x2282 waiting on condition [0x00007fe3b4908000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"jenkins.util.Timer [#1]" #27 daemon prio=5 os_prio=0 tid=0x00007fe34c076800 nid=0x222f waiting on condition [0x00007fe3b6194000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000707c5b330> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"Console scanner" #25 daemon prio=5 os_prio=0 tid=0x00007fe3d6593000 nid=0x222e waiting on condition [0x00007fe3b6295000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at org.jenkinsci.maven.plugins.hpi.ConsoleScanner.getSomeSleep(ConsoleScanner.java:40)
+	at org.jenkinsci.maven.plugins.hpi.ConsoleScanner.run(ConsoleScanner.java:28)
+
+"Jenkins cron thread" #23 prio=5 os_prio=0 tid=0x00007fe34c054800 nid=0x222c in Object.wait() [0x00007fe3b6697000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:502)
+	at java.util.TimerThread.mainLoop(Timer.java:526)
+	- locked <0x0000000707742ec0> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Timer.java:505)
+
+"Java2D Disposer" #21 daemon prio=10 os_prio=0 tid=0x00007fe3d6515800 nid=0x2227 in Object.wait() [0x00007fe3bc104000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:142)
+	- locked <0x000000070768ac00> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:158)
+	at sun.java2d.Disposer.run(Disposer.java:148)
+	at java.lang.Thread.run(Thread.java:745)
+
+"btpool0-0" #20 prio=5 os_prio=0 tid=0x00007fe3d4a68000 nid=0x2222 in Object.wait() [0x00007fe3bcc7e000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.mortbay.thread.BoundedThreadPool$PoolThread.run(BoundedThreadPool.java:469)
+	- locked <0x0000000707683040> (a org.mortbay.thread.BoundedThreadPool$PoolThread)
+
+"resolver-5" #18 daemon prio=5 os_prio=0 tid=0x00007fe3d63e3000 nid=0x2220 waiting on condition [0x00007fe3bcd7f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007060ff2b8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"resolver-4" #17 daemon prio=5 os_prio=0 tid=0x00007fe3d5bfa000 nid=0x221f waiting on condition [0x00007fe3bce80000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007060ff2b8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"resolver-3" #16 daemon prio=5 os_prio=0 tid=0x00007fe3d5bf9000 nid=0x221e waiting on condition [0x00007fe3bcf81000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007060ff2b8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"resolver-2" #15 daemon prio=5 os_prio=0 tid=0x00007fe3d5c09800 nid=0x221d waiting on condition [0x00007fe3bd082000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007060ff2b8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"resolver-1" #14 daemon prio=5 os_prio=0 tid=0x00007fe3d5c0b000 nid=0x221c waiting on condition [0x00007fe3bd183000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000007060ff2b8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1067)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1127)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+
+"Service Thread" #11 daemon prio=9 os_prio=0 tid=0x00007fe3d40db000 nid=0x21d8 runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C1 CompilerThread2" #10 daemon prio=9 os_prio=0 tid=0x00007fe3d40c5000 nid=0x21d7 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread1" #9 daemon prio=9 os_prio=0 tid=0x00007fe3d40c3800 nid=0x21d6 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread0" #8 daemon prio=9 os_prio=0 tid=0x00007fe3d40c0800 nid=0x21d5 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"JDWP Command Reader" #7 daemon prio=10 os_prio=0 tid=0x00007fe38c001000 nid=0x21cd runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"JDWP Event Helper Thread" #6 daemon prio=10 os_prio=0 tid=0x00007fe3d40be000 nid=0x21cc runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"JDWP Transport Listener: dt_socket" #5 daemon prio=10 os_prio=0 tid=0x00007fe3d40ba800 nid=0x21cb runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Signal Dispatcher" #4 daemon prio=9 os_prio=0 tid=0x00007fe3d40ab800 nid=0x21c9 runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" #3 daemon prio=8 os_prio=0 tid=0x00007fe3d407f000 nid=0x21c8 in Object.wait() [0x00007fe3bfbfa000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:142)
+	- locked <0x000000070640ccc8> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:158)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+
+"Reference Handler" #2 daemon prio=10 os_prio=0 tid=0x00007fe3d407d000 nid=0x21c7 in Object.wait() [0x00007fe3bfcfb000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:502)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:157)
+	- locked <0x0000000706558040> (a java.lang.ref.Reference$Lock)
+
+"main" #1 prio=5 os_prio=0 tid=0x00007fe3d400c000 nid=0x21c1 in Object.wait() [0x00007fe3dd940000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.mortbay.thread.BoundedThreadPool.join(BoundedThreadPool.java:182)
+	- locked <0x0000000707683380> (a java.lang.String)
+	at org.mortbay.jetty.plugin.Jetty6PluginServer.join(Jetty6PluginServer.java:217)
+	at org.jenkinsci.maven.plugins.hpi.AbstractJettyMojo.startJetty(AbstractJettyMojo.java:312)
+	at org.jenkinsci.maven.plugins.hpi.AbstractJettyMojo.execute(AbstractJettyMojo.java:248)
+	at org.jenkinsci.maven.plugins.hpi.RunMojo.execute(RunMojo.java:331)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:101)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:209)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:84)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:59)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.singleThreadedBuild(LifecycleStarter.java:183)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:161)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:320)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:156)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:537)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:196)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:141)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:290)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:230)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:409)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:352)
+
+"VM Thread" os_prio=0 tid=0x00007fe3d4075800 nid=0x21c6 runnable 
+
+"GC task thread#0 (ParallelGC)" os_prio=0 tid=0x00007fe3d4021800 nid=0x21c2 runnable 
+
+"GC task thread#1 (ParallelGC)" os_prio=0 tid=0x00007fe3d4023000 nid=0x21c3 runnable 
+
+"GC task thread#2 (ParallelGC)" os_prio=0 tid=0x00007fe3d4025000 nid=0x21c4 runnable 
+
+"GC task thread#3 (ParallelGC)" os_prio=0 tid=0x00007fe3d4027000 nid=0x21c5 runnable 
+
+"VM Periodic Task Thread" os_prio=0 tid=0x00007fe3d40e5800 nid=0x21d9 waiting on condition 
+
+JNI global references: 29394
+

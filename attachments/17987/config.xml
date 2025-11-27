@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.maven.MavenModuleSet>
+  <rootModule>
+    <groupId>nz.gen.akl</groupId>
+    <artifactId>buildnumberbug</artifactId>
+  </rootModule>
+  <defaultGoals>install</defaultGoals>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <reporters/>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>svn://wlgvproj01/ampfsnz/PlaySandPit/scratch</remote>
+        <local>scratch</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <useUpdate>false</useUpdate>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <jdk>(Default)</jdk>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>* * * * */10</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.jira.JiraProjectProperty>
+      <siteName>http://wlgvproj01/jira/</siteName>
+    </hudson.plugins.jira.JiraProjectProperty>
+  </properties>
+  <description></description>
+  <actions class="vector"/>
+</hudson.maven.MavenModuleSet>

@@ -1,0 +1,424 @@
+Index: src/test/java/hudson/plugins/sitemonitor/model/SiteTest.java
+===================================================================
+--- src/test/java/hudson/plugins/sitemonitor/model/SiteTest.java	(revision 30358)
++++ src/test/java/hudson/plugins/sitemonitor/model/SiteTest.java	(working copy)
+@@ -8,7 +8,30 @@
+     private Site site;
+ 
+     public void testGetUrlShouldGiveExpectedUrlValue() {
+-        site = new Site("http://hudson-ci.org");
++        site = new Site("http://hudson-ci.org", "");
+         assertEquals("http://hudson-ci.org", site.getUrl());
+     }
++
++    public void testGetCookieValEmpty() {
++        site = new Site("http://hudson-ci.org", "");
++        assertEquals("http://hudson-ci.org", site.getUrl());
++        assertEquals("", site.getCookieVal());
++    }
++
++    public void testGetCookieValNonEmpty() {
++        site = new Site("http://hudson-ci.org", "", "foo=bar");
++        assertEquals("http://hudson-ci.org", site.getUrl());
++        assertEquals("foo=bar;", site.getCookieVal());
++    }
++
++    public void testGetCookieValConvertCommas() {
++        site = new Site("http://hudson-ci.org", "", "foo=bar, a=b");
++        assertEquals("http://hudson-ci.org", site.getUrl());
++        assertEquals("foo=bar; a=b;", site.getCookieVal());
++    }
++
++    public void testGetContainedStringShouldGiveExpectedValue() {
++        site = new Site("http://hudson-ci.org", "<title>Hudson CI</title>");
++        assertEquals("<title>Hudson CI</title>", site.getContainedString());
++    }
+ }
+Index: src/test/java/hudson/plugins/sitemonitor/model/ResultTest.java
+===================================================================
+--- src/test/java/hudson/plugins/sitemonitor/model/ResultTest.java	(revision 30358)
++++ src/test/java/hudson/plugins/sitemonitor/model/ResultTest.java	(working copy)
+@@ -9,7 +9,7 @@
+     private Result result;
+ 
+     public void setUp() {
+-        result = new Result(new Site("http://hudson-ci.org"),
++        result = new Result(new Site("http://hudson-ci.org", ""),
+                 HttpURLConnection.HTTP_OK, Status.DOWN, "some note");
+     }
+ 
+Index: src/test/java/hudson/plugins/sitemonitor/SiteMonitorRecorderTest.java
+===================================================================
+--- src/test/java/hudson/plugins/sitemonitor/SiteMonitorRecorderTest.java	(revision 30358)
++++ src/test/java/hudson/plugins/sitemonitor/SiteMonitorRecorderTest.java	(working copy)
+@@ -14,8 +14,8 @@
+ 
+     public void testGetSitesShouldGiveExpectedSites() {
+         List<Site> sites = new ArrayList<Site>();
+-        sites.add(new Site("http://hudson-ci.org"));
+-        sites.add(new Site("http://hudson.dev.java.net"));
++        sites.add(new Site("http://hudson-ci.org", ""));
++        sites.add(new Site("http://hudson.dev.java.net", ""));
+         builder = new SiteMonitorRecorder(sites);
+         assertEquals(sites, builder.getSites());
+     }
+Index: src/test/java/hudson/plugins/sitemonitor/SiteMonitorRootActionTest.java
+===================================================================
+--- src/test/java/hudson/plugins/sitemonitor/SiteMonitorRootActionTest.java	(revision 30358)
++++ src/test/java/hudson/plugins/sitemonitor/SiteMonitorRootActionTest.java	(working copy)
+@@ -4,7 +4,7 @@
+ import hudson.plugins.sitemonitor.model.Site;
+ import hudson.plugins.sitemonitor.model.Status;
+ 
+-import java.net.HttpURLConnection;
++import org.apache.commons.httpclient.HttpStatus;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+@@ -16,27 +16,37 @@
+ 
+     public void setUp() {
+         List<Result> results = new ArrayList<Result>();
+-        Result result1 = new Result(new Site("http://hudson-ci.org"),
+-                HttpURLConnection.HTTP_OK, Status.UP, "some note 1");
+-        Result result2 = new Result(new Site("http://blah"),
+-                HttpURLConnection.HTTP_BAD_GATEWAY, Status.ERROR, "some note 2");
++        Result result1 = new Result(new Site("http://wiki.hudson-ci.org", ""),
++                HttpStatus.SC_OK, Status.UP, "some note 1");
++        Result result2 = new Result(new Site("http://blah", ""),
++                                    HttpStatus.SC_BAD_GATEWAY, Status.ERROR, "some note 2");
++        Result result3 = new Result(new Site("http://hudson-ci.org", "<title>Hudson NOT CI</title>"),
++                HttpStatus.SC_OK, Status.MISSING_STRING, "some note 3");
+         results.add(result1);
+         results.add(result2);
++        results.add(result3);
+         action = new SiteMonitorRootAction(results);
+     }
+ 
+     public void testGetResultsShouldGiveExpectedResults() {
+         List<Result> results = action.getResults();
+-        assertEquals("http://hudson-ci.org", results.get(0).getSite().getUrl());
+-        assertEquals(new Integer(HttpURLConnection.HTTP_OK), results.get(0)
++        assertEquals("http://wiki.hudson-ci.org", results.get(0).getSite().getUrl());
++        assertEquals(new Integer(HttpStatus.SC_OK), results.get(0)
+                 .getResponseCode());
+         assertEquals(Status.UP, results.get(0).getStatus());
+         assertEquals("some note 1", results.get(0).getNote());
+         assertEquals("http://blah", results.get(1).getSite().getUrl());
+-        assertEquals(new Integer(HttpURLConnection.HTTP_BAD_GATEWAY), results
++        assertEquals(new Integer(HttpStatus.SC_BAD_GATEWAY), results
+                 .get(1).getResponseCode());
+         assertEquals(Status.ERROR, results.get(1).getStatus());
+         assertEquals("some note 2", results.get(1).getNote());
++
++        assertEquals("http://hudson-ci.org", results.get(2).getSite().getUrl());
++        assertEquals("<title>Hudson NOT CI</title>", results.get(2).getSite().getContainedString());
++        assertEquals(new Integer(HttpStatus.SC_OK), results.get(2).getResponseCode());
++        assertEquals("some note 3", results.get(2).getNote());
++        assertEquals(Status.MISSING_STRING, results.get(2).getStatus());
++        
+     }
+ 
+     public void testGetDisplayNameShouldGiveExpectedValue() {
+Index: src/main/java/hudson/plugins/sitemonitor/model/Status.java
+===================================================================
+--- src/main/java/hudson/plugins/sitemonitor/model/Status.java	(revision 30358)
++++ src/main/java/hudson/plugins/sitemonitor/model/Status.java	(working copy)
+@@ -19,6 +19,10 @@
+      * Site is down when host is unknown or a connection timeout is detected.
+      */
+     DOWN,
++        /**
++         * Site doesn't have a string in its body that we're looking for.
++         */
++        MISSING_STRING,
+     /**
+      * Site connection throws unexpected exception.
+      */
+Index: src/main/java/hudson/plugins/sitemonitor/model/Site.java
+===================================================================
+--- src/main/java/hudson/plugins/sitemonitor/model/Site.java	(revision 30358)
++++ src/main/java/hudson/plugins/sitemonitor/model/Site.java	(working copy)
+@@ -21,11 +21,19 @@
+  */
+ package hudson.plugins.sitemonitor.model;
+ 
++import java.util.Collections;
++import java.util.List;
++import java.util.ArrayList;
++
+ /**
+  * This class keeps the details of the web site to be monitored.
+  * @author cliffano
+  */
+ public class Site {
++    /**
++     * Cookies
++     */
++    private String cookieVal;
+ 
+     /**
+      * The web site URL.
+@@ -33,18 +41,56 @@
+     private String mUrl;
+ 
+     /**
++     * String to search for in response body
++     */
++    private String containedString;
++    
++    /**
+      * Constructs a Site with specified details.
+      * @param url
+      *            the web site URL
++     * @param containedString
++     *            The string to search for in the response body
++     * @param cookies
++     *            Optional list of cookies.
+      */
+-    public Site(final String url) {
++    public Site(final String url, final String containedString, final String cookieVal) {
+         mUrl = url;
++        this.containedString = containedString;
++        
++        StringBuilder cookieBuilder = new StringBuilder();
++        
++        for (String cookiePair : cookieVal.split("[,;]\\s*")) {
++            if ((cookiePair!=null) && (!cookiePair.equals(""))) {
++                cookieBuilder.append(cookiePair.trim() + "; ");
++            }
++        }
++
++        this.cookieVal = cookieBuilder.toString().trim();
+     }
+ 
++    public Site(final String url, final String containedString) {
++        this(url, containedString, "");
++    }
++
+     /**
++     * @return the optional cookies
++     */
++    public final String getCookieVal() {
++        return cookieVal;
++    }
++    
++    /**
+      * @return the web site URL
+      */
+     public final String getUrl() {
+         return mUrl;
+     }
++
++    /**
++     * @return the string to search for in the response body
++     */
++    public final String getContainedString() {
++        return containedString;
++    }
+ }
+Index: src/main/java/hudson/plugins/sitemonitor/SiteMonitorRecorder.java
+===================================================================
+--- src/main/java/hudson/plugins/sitemonitor/SiteMonitorRecorder.java	(revision 30358)
++++ src/main/java/hudson/plugins/sitemonitor/SiteMonitorRecorder.java	(working copy)
+@@ -30,8 +30,15 @@
+ import hudson.tasks.BuildStepMonitor;
+ import hudson.tasks.Recorder;
+ 
++import org.apache.commons.httpclient.HttpClient;
++import org.apache.commons.httpclient.SimpleHttpConnectionManager;
++import org.apache.commons.httpclient.params.HttpClientParams;
++import org.apache.commons.httpclient.HttpMethodBase;
++import org.apache.commons.httpclient.HttpMethod;
++import org.apache.commons.httpclient.methods.GetMethod;
++import org.apache.commons.httpclient.cookie.CookiePolicy;
++
+ import java.io.IOException;
+-import java.net.HttpURLConnection;
+ import java.net.SocketTimeoutException;
+ import java.net.URL;
+ import java.net.UnknownHostException;
+@@ -101,18 +108,47 @@
+             String note = "";
+ 
+             try {
+-                HttpURLConnection connection = (HttpURLConnection) (new URL(
+-                        site.getUrl())).openConnection();
+-                connection.setConnectTimeout(descriptor.getTimeout()
+-                        * MILLISECS_IN_SECS);
+-                responseCode = connection.getResponseCode();
++                SimpleHttpConnectionManager connectionManager = new SimpleHttpConnectionManager();
++                connectionManager.getParams().setConnectionTimeout(descriptor.getTimeout()
++                                                                   * MILLISECS_IN_SECS);
++                HttpClientParams params = new HttpClientParams();
++                params.setSoTimeout(10 * 60 * 1000);
++                HttpClient client = new HttpClient(params, connectionManager);
++                GetMethod method = new GetMethod(site.getUrl());
++                if ((site.getCookieVal()!=null) && (!site.getCookieVal().equals(""))) {
++                    method.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+ 
++                    method.setRequestHeader("Cookie", site.getCookieVal());
++                }
++
++                client.executeMethod(method);
++
++                responseCode = new Integer(method.getStatusCode());
++
+                 List<Integer> successResponseCodes = descriptor
+                         .getSuccessResponseCodes();
+                 if (successResponseCodes.contains(responseCode)) {
+-                    status = Status.UP;
++                    if ((site.getContainedString()!=null) && (!site.getContainedString().equals(""))) {
++                        if (method.getResponseBodyAsString()!=null) {
++                            if (method.getResponseBodyAsString().indexOf(site.getContainedString()) >= 0) {
++                                status = Status.UP;
++                            }
++                            else {
++                                status = Status.MISSING_STRING;
++                                note = "Missing string in response body";
++                            }
++                        }
++                        else {
++                            status = Status.MISSING_STRING;
++                            note = "Missing string in response body";
++                        }
++                    }
++                    else {
++                        status = Status.UP;
++                    }
+                 } else {
+                     status = Status.ERROR;
++                                    
+                 }
+             } catch (SocketTimeoutException ste) {
+                 listener.getLogger().println(ste + " - " + ste.getMessage());
+Index: src/main/java/hudson/plugins/sitemonitor/SiteMonitorDescriptor.java
+===================================================================
+--- src/main/java/hudson/plugins/sitemonitor/SiteMonitorDescriptor.java	(revision 30358)
++++ src/main/java/hudson/plugins/sitemonitor/SiteMonitorDescriptor.java	(working copy)
+@@ -28,7 +28,6 @@
+ import hudson.tasks.Publisher;
+ import hudson.util.FormValidation;
+ 
+-import java.net.HttpURLConnection;
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.logging.Logger;
+@@ -36,6 +35,8 @@
+ import net.sf.json.JSONArray;
+ import net.sf.json.JSONObject;
+ 
++import org.apache.commons.httpclient.HttpStatus;
++
+ import org.apache.commons.lang.StringUtils;
+ import org.kohsuke.stapler.QueryParameter;
+ import org.kohsuke.stapler.StaplerRequest;
+@@ -109,7 +110,7 @@
+     public final List<Integer> getSuccessResponseCodes() {
+         if (mSuccessResponseCodes == null) {
+             mSuccessResponseCodes = new ArrayList<Integer>();
+-            mSuccessResponseCodes.add(HttpURLConnection.HTTP_OK);
++            mSuccessResponseCodes.add(HttpStatus.SC_OK);
+         }
+         return mSuccessResponseCodes;
+     }
+@@ -154,13 +155,15 @@
+         if (sitesObject instanceof JSONObject) {
+             for (Object siteObject : json.getJSONObject("sites").values()) {
+                 String url = String.valueOf(siteObject);
+-                sites.add(new Site(url));
++                sites.add(new Site(url, ""));
+             }
+         } else if (sitesObject instanceof JSONArray) {
+             for (Object siteObject : (JSONArray) sitesObject) {
+                 if (siteObject instanceof JSONObject) {
+                     String url = ((JSONObject) siteObject).getString("url");
+-                    sites.add(new Site(url));
++                    String containedString = ((JSONObject) siteObject).getString("containedString");
++                    String cookieVal = ((JSONObject) siteObject).getString("cookieVal");
++                    sites.add(new Site(url, containedString, cookieVal));
+                 }
+             }
+         } else {
+Index: src/main/resources/hudson/plugins/sitemonitor/SiteMonitorRecorder/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/sitemonitor/SiteMonitorRecorder/config.jelly	(revision 30358)
++++ src/main/resources/hudson/plugins/sitemonitor/SiteMonitorRecorder/config.jelly	(working copy)
+@@ -4,14 +4,22 @@
+             <table style="width: 100%;">
+                 <f:entry title="${%URL}" help="${rootURL}/plugin/sitemonitor/url.html">
+                     <f:textbox name="url" value="${site.url}" checkUrl="'${rootURL}/publisher/SiteMonitorRecorder/checkUrl?value='+encode(this.value)"/>
+-                    <div style="text-align: right;">
+-                        <input type="button" value="${%Delete}" class="repeatable-delete show-if-not-only"/>
+-                    </div>
+                 </f:entry>
++                <f:advanced>
++                  <f:entry title="${%Required String in Body}" help="${rootURL}/plugin/sitemonitor/string_in_body.html">
++                    <f:textbox name="containedString" value="${site.containedString}" />
++                  </f:entry>
++                  <f:entry title="${%Cookies for Site}" help="${rootURL}/plugin/sitemonitor/cookies.html">
++                    <f:textbox name="cookieVal" value="${site.cookieVal}" />
++                  </f:entry>
++                </f:advanced>
+                 <f:entry>
+-                    <div style="text-align: right;">
+-                        <input type="button" value="${%Add URL...}" class="repeatable-add show-if-last"/>
+-                    </div>
++                  <div style="text-align: right;">
++                    <input type="button" value="${%Delete}" class="repeatable-delete show-if-not-only"/>
++                  </div>
++                  <div style="text-align: right;">
++                    <input type="button" value="${%Add URL...}" class="repeatable-add show-if-last"/>
++                  </div>
+                 </f:entry>
+             </table>
+         </f:repeatable>
+Index: src/main/webapp/cookies.html
+===================================================================
+--- src/main/webapp/cookies.html	(revision 0)
++++ src/main/webapp/cookies.html	(revision 0)
+@@ -0,0 +1 @@
++Simple cookie key/value pairs, separated by "," or ";".
+\ No newline at end of file
+Index: src/main/webapp/images/missing_string.png
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: src/main/webapp/images/missing_string.png
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: src/main/webapp/string_in_body.html
+===================================================================
+--- src/main/webapp/string_in_body.html	(revision 0)
++++ src/main/webapp/string_in_body.html	(revision 0)
+@@ -0,0 +1 @@
++Optional string to search for in body of response - if that string is not found, the site monitoring will report an error.
+\ No newline at end of file
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 30358)
++++ pom.xml	(working copy)
+@@ -3,7 +3,7 @@
+     <parent>
+         <groupId>org.jvnet.hudson.plugins</groupId>
+         <artifactId>plugin</artifactId>
+-        <version>1.319</version>
++        <version>1.326</version>
+         <relativePath>../pom.xml</relativePath>
+     </parent>
+ 
+@@ -45,6 +45,11 @@
+     </pluginRepositories>
+ 
+     <dependencies>
++   <dependency>
++     <groupId>commons-httpclient</groupId>
++     <artifactId>commons-httpclient</artifactId>
++     <version>3.1</version>
++   </dependency>
+         <dependency>
+             <groupId>org.mockito</groupId>
+             <artifactId>mockito-core</artifactId>

@@ -1,0 +1,17 @@
+testset:
+  root: "x:/Document/Project/Folder"
+  name: "x:.//@folderIdentifier"
+  subtype-id: "v:hp.qc.test-set.default"
+test:
+  root: "x:Folder/TestCase"
+  q|id: "x:.//@TC_Identifier"
+  name: "x:.//@TC_Name"
+  subtype-id: "v:MANUAL"
+run:
+  root: "x:." # "." means the same XML object as defined above in 'test' entity, all elements defined below are searched from the same root element as 'test' root
+  udf|Imported TAS Version: "x:.//@TestScriptVersion"
+  udf|Jenkins Build: "x: ${BUILD_NUMBER}"
+  status: "x:.//@TC_Status"
+  udf|Jenkins URL: "https://xxxxxxx.xx.com/ci/job/${JOB_NAME}/${BUILD_NUMBER}"
+  udf|Run On Version: "x:.//@RunOnVersion" # Create an UDF and set its label to "run on version", to trigger the versioning logic
+  udf|Jenkins Job Initiator: "x:../../../..//@OrchUserId"

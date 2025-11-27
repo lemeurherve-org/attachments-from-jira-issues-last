@@ -1,0 +1,30 @@
+Checking project XYZ
+Web hook created
+Proposing XYZ
+ERROR: [Mon Mar 18 11:39:39 IST 2024] Could not fetch sources from navigator io.jenkins.plugins.gitlabbranchsource.GitLabSCMNavigator@2e37f580
+[Mon Mar 18 11:39:39 IST 2024] Finished organization scan. Scan took 19 min
+FATAL: Failed to recompute children of XYZ_folder
+org.gitlab4j.api.GitLabApiException: 404 Not Found
+	at org.gitlab4j.api.AbstractApi.validate(AbstractApi.java:678)
+	at org.gitlab4j.api.AbstractApi.get(AbstractApi.java:214)
+	at org.gitlab4j.api.Pager.<init>(Pager.java:92)
+	at org.gitlab4j.api.RepositoryApi.getBranches(RepositoryApi.java:146)
+	at org.gitlab4j.api.RepositoryApi.getBranches(RepositoryApi.java:51)
+	at io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource.retrieve(GitLabSCMSource.java:334)
+Caused: java.io.IOException: Failed to fetch latest heads
+	at io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource.retrieve(GitLabSCMSource.java:580)
+	at jenkins.scm.api.SCMSource._retrieve(SCMSource.java:372)
+	at jenkins.scm.api.SCMSource.fetch(SCMSource.java:326)
+	at jenkins.branch.MultiBranchProjectFactory$BySCMSourceCriteria.recognizes(MultiBranchProjectFactory.java:262)
+	at jenkins.branch.OrganizationFolder$SCMSourceObserverImpl$1.recognizes(OrganizationFolder.java:1361)
+	at jenkins.branch.OrganizationFolder$SCMSourceObserverImpl$1.complete(OrganizationFolder.java:1376)
+	at jenkins.scm.api.trait.SCMNavigatorRequest.process(SCMNavigatorRequest.java:252)
+	at jenkins.scm.api.trait.SCMNavigatorRequest.process(SCMNavigatorRequest.java:202)
+	at io.jenkins.plugins.gitlabbranchsource.GitLabSCMNavigator.visitSources(GitLabSCMNavigator.java:309)
+	at jenkins.branch.OrganizationFolder.computeChildren(OrganizationFolder.java:535)
+	at com.cloudbees.hudson.plugins.folder.computed.ComputedFolder.updateChildren(ComputedFolder.java:265)
+	at com.cloudbees.hudson.plugins.folder.computed.FolderComputation.run(FolderComputation.java:167)
+	at jenkins.branch.OrganizationFolder$OrganizationScan.run(OrganizationFolder.java:920)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:442)
+Finished: FAILURE

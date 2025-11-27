@@ -1,0 +1,251 @@
+Oct 19, 2018 5:15:04 PM com.nirima.jenkins.plugins.docker.DockerCloud provision
+INFO: Asked to provision 1 slave(s) for: dockeragent
+Oct 19, 2018 5:15:04 PM com.nirima.jenkins.plugins.docker.DockerCloud canAddProvisionedSlave
+INFO: Provisioning 'jenkinsci/slave' on 'docker'; Total containers: 0 (of 100)
+Oct 19, 2018 5:15:04 PM com.nirima.jenkins.plugins.docker.DockerCloud provision
+INFO: Will provision 'jenkinsci/slave', for label: 'dockeragent', in cloud: 'docker'
+Oct 19, 2018 5:15:04 PM hudson.slaves.NodeProvisioner$StandardStrategyImpl apply
+INFO: Started provisioning Image of jenkinsci/slave from docker with 1 executors. Remaining excess workload: 0
+Oct 19, 2018 5:15:04 PM com.nirima.jenkins.plugins.docker.DockerTemplate pullImage
+INFO: Pulling image 'jenkinsci/slave:latest'. This may take awhile...
+Oct 19, 2018 5:15:04 PM io.jenkins.docker.client.DockerAPI getOrMakeClient
+INFO: Cached connection io.jenkins.docker.client.DockerAPI$SharableDockerClient@18f6c132 to DockerClientParameters{dockerUri=unix:///var/run/docker.sock, credentialsId=null, readTimeoutInMsOrNull=300000, connectTimeoutInMsOrNull=60000}
+Oct 19, 2018 5:15:05 PM com.nirima.jenkins.plugins.docker.DockerCloud provision
+INFO: Asked to provision 1 slave(s) for: dockeragent
+Oct 19, 2018 5:15:05 PM com.nirima.jenkins.plugins.docker.DockerCloud provision
+INFO: Not provisioning additional slaves for dockeragent; we have 1 executors being started already
+Oct 19, 2018 5:15:09 PM com.nirima.jenkins.plugins.docker.DockerTemplate pullImage
+INFO: Finished pulling image 'jenkinsci/slave:latest', took 5254 ms
+Oct 19, 2018 5:15:09 PM com.nirima.jenkins.plugins.docker.DockerTemplate doProvisionNode
+INFO: Trying to run container for jenkinsci/slave
+Oct 19, 2018 5:15:09 PM com.nirima.jenkins.plugins.docker.DockerTemplate doProvisionNode
+INFO: Trying to run container for node dockeragent-0002sinrcnyoa from image: jenkinsci/slave
+Oct 19, 2018 5:15:09 PM com.nirima.jenkins.plugins.docker.DockerTemplate doProvisionNode
+INFO: Started container ID 0b5feb5d1d04cd19226338ebb2af8c91a7bb71a9ce8a017a72c33064092a3df7 for node dockeragent-0002sinrcnyoa from image: jenkinsci/slave
+channel started
+
+Oct 19, 2018 5:15:14 PM io.jenkins.docker.DockerTransientNode$1 println
+INFO: Disconnected computer for node 'dockeragent-0002sinrcnyoa'.
+Oct 19, 2018 5:15:14 PM hudson.remoting.Request$2 run
+INFO: Failed to send back a reply to the request hudson.remoting.Request$2@c5630e7: hudson.remoting.ChannelClosedException: Channel "hudson.remoting.Channel@7d18d15c:dockeragent-0002sinrcnyoa": channel is already closed
+Oct 19, 2018 5:15:14 PM io.jenkins.docker.DockerTransientNode$1 println
+INFO: Removed Node for node 'dockeragent-0002sinrcnyoa'.
+Oct 19, 2018 5:15:14 PM org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+INFO: docker-pipeline-2 #7 completed: SUCCESS
+Oct 19, 2018 5:15:15 PM hudson.slaves.NodeProvisioner$2 run
+INFO: Image of jenkinsci/slave provisioning successfully completed. We have now 2 computer(s)
+channel started
+
+Oct 19, 2018 5:15:25 PM hudson.remoting.SynchronousCommandTransport$ReaderThread run
+SEVERE: I/O error in channel dockeragent-0002sinrcnyoa
+java.io.IOException: Unexpected termination of the channel
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:77)
+Caused by: java.io.EOFException
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2675)
+	at java.io.ObjectInputStream$BlockDataInputStream.readShort(ObjectInputStream.java:3150)
+	at java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:859)
+	at java.io.ObjectInputStream.<init>(ObjectInputStream.java:355)
+	at hudson.remoting.ObjectInputStreamEx.<init>(ObjectInputStreamEx.java:49)
+	at hudson.remoting.Command.readFrom(Command.java:140)
+	at hudson.remoting.Command.readFrom(Command.java:126)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:36)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:63)
+
+Oct 19, 2018 5:15:25 PM io.jenkins.docker.DockerTransientNode$1 println
+INFO: Stopped container '0b5feb5d1d04cd19226338ebb2af8c91a7bb71a9ce8a017a72c33064092a3df7' for node 'dockeragent-0002sinrcnyoa'.
+Oct 19, 2018 5:15:25 PM io.jenkins.docker.DockerTransientNode$1 println
+INFO: Removed container '0b5feb5d1d04cd19226338ebb2af8c91a7bb71a9ce8a017a72c33064092a3df7' for node 'dockeragent-0002sinrcnyoa'.
+Oct 19, 2018 5:15:54 PM hudson.model.AsyncPeriodicWork$1 run
+INFO: Started DockerContainerWatchdog Asynchronous Periodic Work
+Oct 19, 2018 5:15:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog execute
+INFO: Docker Container Watchdog has been triggered
+Oct 19, 2018 5:15:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog$Statistics writeStatisticsToLog
+INFO: Watchdog Statistics: Number of overall executions: 13, Executions with processing timeout: 0, Containers removed gracefully: 0, Containers removed with force: 0, Containers removal failed: 0, Nodes removed successfully: 4, Nodes removal failed: 0, Container removal average duration (gracefully): 0 ms, Container removal average duration (force): 0 ms, Average overall runtime of watchdog: 10 ms, Average runtime of container retrieval: 9 ms
+Oct 19, 2018 5:15:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog loadNodeMap
+INFO: We currently have 1 nodes assigned to this Jenkins instance, which we will check
+Oct 19, 2018 5:15:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog execute
+INFO: Checking Docker Cloud docker at unix:///var/run/docker.sock
+Oct 19, 2018 5:15:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog cleanUpSuperfluousComputer
+INFO: io.jenkins.docker.DockerTransientNode[dockeragent-0002sinrcnyoa] has container ID 0b5feb5d1d04cd19226338ebb2af8c91a7bb71a9ce8a017a72c33064092a3df7, but the container does not exist in any docker cloud. Will remove node.
+Oct 19, 2018 5:15:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog execute
+INFO: Docker Container Watchdog check has been completed
+Oct 19, 2018 5:15:54 PM hudson.model.AsyncPeriodicWork$1 run
+INFO: Finished DockerContainerWatchdog Asynchronous Periodic Work. 16 ms
+Oct 19, 2018 5:16:23 PM hudson.slaves.SlaveComputer tryReconnect
+INFO: Attempting to reconnect dockeragent-0002sinrcnyoa
+Oct 19, 2018 5:16:23 PM com.github.dockerjava.core.async.ResultCallbackTemplate onError
+SEVERE: Error during callback
+com.github.dockerjava.api.exception.NotFoundException: {"message":"No such container: 0b5feb5d1d04cd19226338ebb2af8c91a7bb71a9ce8a017a72c33064092a3df7"}
+
+	at com.github.dockerjava.netty.handler.HttpResponseHandler.channelRead0(HttpResponseHandler.java:103)
+	at com.github.dockerjava.netty.handler.HttpResponseHandler.channelRead0(HttpResponseHandler.java:33)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:105)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.handler.logging.LoggingHandler.channelRead(LoggingHandler.java:241)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:438)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:310)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:284)
+	at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:253)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.handler.logging.LoggingHandler.channelRead(LoggingHandler.java:241)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1334)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:926)
+	at io.netty.channel.kqueue.AbstractKQueueStreamChannel$KQueueStreamUnsafe.readReady(AbstractKQueueStreamChannel.java:608)
+	at io.netty.channel.kqueue.KQueueDomainSocketChannel$KQueueDomainUnsafe.readReady(KQueueDomainSocketChannel.java:127)
+	at io.netty.channel.kqueue.AbstractKQueueChannel$AbstractKQueueUnsafe.readReady(AbstractKQueueChannel.java:355)
+	at io.netty.channel.kqueue.KQueueEventLoop.processReady(KQueueEventLoop.java:198)
+	at io.netty.channel.kqueue.KQueueEventLoop.run(KQueueEventLoop.java:270)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:858)
+	at io.netty.util.concurrent.DefaultThreadFactory$DefaultRunnableDecorator.run(DefaultThreadFactory.java:138)
+	at java.lang.Thread.run(Thread.java:748)
+
+Oct 19, 2018 5:18:23 PM hudson.slaves.SlaveComputer tryReconnect
+INFO: Attempting to reconnect dockeragent-0002sinrcnyoa
+Oct 19, 2018 5:18:23 PM com.github.dockerjava.core.async.ResultCallbackTemplate onError
+SEVERE: Error during callback
+com.github.dockerjava.api.exception.NotFoundException: {"message":"No such container: 0b5feb5d1d04cd19226338ebb2af8c91a7bb71a9ce8a017a72c33064092a3df7"}
+
+	at com.github.dockerjava.netty.handler.HttpResponseHandler.channelRead0(HttpResponseHandler.java:103)
+	at com.github.dockerjava.netty.handler.HttpResponseHandler.channelRead0(HttpResponseHandler.java:33)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:105)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.handler.logging.LoggingHandler.channelRead(LoggingHandler.java:241)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:438)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:310)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:284)
+	at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:253)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.handler.logging.LoggingHandler.channelRead(LoggingHandler.java:241)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1334)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:926)
+	at io.netty.channel.kqueue.AbstractKQueueStreamChannel$KQueueStreamUnsafe.readReady(AbstractKQueueStreamChannel.java:608)
+	at io.netty.channel.kqueue.KQueueDomainSocketChannel$KQueueDomainUnsafe.readReady(KQueueDomainSocketChannel.java:127)
+	at io.netty.channel.kqueue.AbstractKQueueChannel$AbstractKQueueUnsafe.readReady(AbstractKQueueChannel.java:355)
+	at io.netty.channel.kqueue.KQueueEventLoop.processReady(KQueueEventLoop.java:198)
+	at io.netty.channel.kqueue.KQueueEventLoop.run(KQueueEventLoop.java:270)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:858)
+	at io.netty.util.concurrent.DefaultThreadFactory$DefaultRunnableDecorator.run(DefaultThreadFactory.java:138)
+	at java.lang.Thread.run(Thread.java:748)
+
+Oct 19, 2018 5:20:23 PM hudson.slaves.SlaveComputer tryReconnect
+INFO: Attempting to reconnect dockeragent-0002sinrcnyoa
+Oct 19, 2018 5:20:23 PM io.jenkins.docker.client.DockerAPI$1 entryDroppedFromCache
+INFO: Dropped connection io.jenkins.docker.client.DockerAPI$SharableDockerClient@18f6c132 to DockerClientParameters{dockerUri=unix:///var/run/docker.sock, credentialsId=null, readTimeoutInMsOrNull=300000, connectTimeoutInMsOrNull=60000}
+Oct 19, 2018 5:20:23 PM com.github.dockerjava.core.async.ResultCallbackTemplate onError
+SEVERE: Error during callback
+com.github.dockerjava.api.exception.NotFoundException: {"message":"No such container: 0b5feb5d1d04cd19226338ebb2af8c91a7bb71a9ce8a017a72c33064092a3df7"}
+
+	at com.github.dockerjava.netty.handler.HttpResponseHandler.channelRead0(HttpResponseHandler.java:103)
+	at com.github.dockerjava.netty.handler.HttpResponseHandler.channelRead0(HttpResponseHandler.java:33)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:105)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.handler.logging.LoggingHandler.channelRead(LoggingHandler.java:241)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:438)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:310)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:284)
+	at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:253)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.handler.logging.LoggingHandler.channelRead(LoggingHandler.java:241)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1334)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:926)
+	at io.netty.channel.kqueue.AbstractKQueueStreamChannel$KQueueStreamUnsafe.readReady(AbstractKQueueStreamChannel.java:608)
+	at io.netty.channel.kqueue.KQueueDomainSocketChannel$KQueueDomainUnsafe.readReady(KQueueDomainSocketChannel.java:127)
+	at io.netty.channel.kqueue.AbstractKQueueChannel$AbstractKQueueUnsafe.readReady(AbstractKQueueChannel.java:355)
+	at io.netty.channel.kqueue.KQueueEventLoop.processReady(KQueueEventLoop.java:198)
+	at io.netty.channel.kqueue.KQueueEventLoop.run(KQueueEventLoop.java:270)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:858)
+	at io.netty.util.concurrent.DefaultThreadFactory$DefaultRunnableDecorator.run(DefaultThreadFactory.java:138)
+	at java.lang.Thread.run(Thread.java:748)
+
+Oct 19, 2018 5:20:54 PM hudson.model.AsyncPeriodicWork$1 run
+INFO: Started DockerContainerWatchdog Asynchronous Periodic Work
+Oct 19, 2018 5:20:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog execute
+INFO: Docker Container Watchdog has been triggered
+Oct 19, 2018 5:20:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog$Statistics writeStatisticsToLog
+INFO: Watchdog Statistics: Number of overall executions: 14, Executions with processing timeout: 0, Containers removed gracefully: 0, Containers removed with force: 0, Containers removal failed: 0, Nodes removed successfully: 5, Nodes removal failed: 0, Container removal average duration (gracefully): 0 ms, Container removal average duration (force): 0 ms, Average overall runtime of watchdog: 10 ms, Average runtime of container retrieval: 9 ms
+Oct 19, 2018 5:20:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog loadNodeMap
+INFO: We currently have 0 nodes assigned to this Jenkins instance, which we will check
+Oct 19, 2018 5:20:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog execute
+INFO: Checking Docker Cloud docker at unix:///var/run/docker.sock
+Oct 19, 2018 5:20:54 PM com.nirima.jenkins.plugins.docker.DockerContainerWatchdog execute
+INFO: Docker Container Watchdog check has been completed
+Oct 19, 2018 5:20:54 PM hudson.model.AsyncPeriodicWork$1 run
+INFO: Finished DockerContainerWatchdog Asynchronous Periodic Work. 8 ms
+Oct 19, 2018 5:21:23 PM hudson.slaves.SlaveComputer tryReconnect
+INFO: Attempting to reconnect dockeragent-0002sinrcnyoa
+Oct 19, 2018 5:21:23 PM com.github.dockerjava.core.async.ResultCallbackTemplate onError
+SEVERE: Error during callback
+com.github.dockerjava.api.exception.NotFoundException: {"message":"No such container: 0b5feb5d1d04cd19226338ebb2af8c91a7bb71a9ce8a017a72c33064092a3df7"}
+
+	at com.github.dockerjava.netty.handler.HttpResponseHandler.channelRead0(HttpResponseHandler.java:103)
+	at com.github.dockerjava.netty.handler.HttpResponseHandler.channelRead0(HttpResponseHandler.java:33)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:105)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.handler.logging.LoggingHandler.channelRead(LoggingHandler.java:241)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:438)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:310)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:284)
+	at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:253)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.handler.logging.LoggingHandler.channelRead(LoggingHandler.java:241)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1334)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:926)
+	at io.netty.channel.kqueue.AbstractKQueueStreamChannel$KQueueStreamUnsafe.readReady(AbstractKQueueStreamChannel.java:608)
+	at io.netty.channel.kqueue.KQueueDomainSocketChannel$KQueueDomainUnsafe.readReady(KQueueDomainSocketChannel.java:127)
+	at io.netty.channel.kqueue.AbstractKQueueChannel$AbstractKQueueUnsafe.readReady(AbstractKQueueChannel.java:355)
+	at io.netty.channel.kqueue.KQueueEventLoop.processReady(KQueueEventLoop.java:198)
+	at io.netty.channel.kqueue.KQueueEventLoop.run(KQueueEventLoop.java:270)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:858)
+	at io.netty.util.concurrent.DefaultThreadFactory$DefaultRunnableDecorator.run(DefaultThreadFactory.java:138)
+	at java.lang.Thread.run(Thread.java:748)
+
+Oct 19, 2018 5:22:18 PM org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+INFO: docker-pipeline #8 completed: ABORTED

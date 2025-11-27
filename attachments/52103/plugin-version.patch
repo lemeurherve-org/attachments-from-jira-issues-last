@@ -1,0 +1,21 @@
+diff -Nuar docker-workflow-plugin-docker-workflow-1.23.org/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java docker-workflow-plugin-docker-workflow-1.23/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java
+--- docker-workflow-plugin-docker-workflow-1.23.org/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java	2020-07-30 11:53:02.288167129 +0200
++++ docker-workflow-plugin-docker-workflow-1.23/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java	2020-07-30 11:54:30.669088330 +0200
+@@ -145,7 +145,7 @@
+                 : new WindowsDockerClient(launcher, node, toolName);
+ 
+             VersionNumber dockerVersion = dockerClient.version();
+-            if (dockerVersion != null) {
++            /* if (dockerVersion != null) {
+                 if (dockerVersion.isOlderThan(new VersionNumber("1.7"))) {
+                     throw new AbortException("The docker version is less than v1.7. Pipeline functions requiring 'docker exec' (e.g. 'docker.inside') or SELinux labeling will not work.");
+                 } else if (dockerVersion.isOlderThan(new VersionNumber("1.8"))) {
+@@ -156,7 +156,7 @@
+                 }
+             } else {
+                 listener.error("Failed to parse docker version. Please note there is a minimum docker version requirement of v1.7.");
+-            }
++            } */
+ 
+             FilePath tempDir = tempDir(workspace);
+             tempDir.mkdirs();

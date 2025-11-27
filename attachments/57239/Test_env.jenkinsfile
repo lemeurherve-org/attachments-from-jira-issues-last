@@ -1,0 +1,60 @@
+properties([parameters([string(defaultValue: '/main/Automation', name: 'Branch')])])
+def _branchName = params.Branch
+
+// Start of Pipeline
+pipeline 
+{
+agent {
+            node {
+                label 'master'
+                }
+            } 
+    // Start of the Pipeline-Stages
+    stages 
+	{ 
+		stage('XML_Creation') 
+			{
+				steps 
+				{
+					script 
+					{
+					    echo"here"
+					    dir('C:\\Users\\qjq2g6') {
+                            bat'''
+                                echo "The build number is ${env.BUILD_NUMBER}"
+                                (
+                                    echo "The build number is ${env.BUILD_NUMBER}"
+                                )>build.txt
+                                '''
+                        }
+					}       
+				}
+			}
+            
+	}
+    post {
+		success {
+        echo "done"
+        //deleteDir()	
+        }
+        always{
+        echo 'Pipeline finished'
+            emailext attachmentsPattern: 'build.txt',
+            attachLog: true,
+               body:'''Hello All,
+                  $PROJECT_NAME - Build  $BUILD_NUMBER - $BUILD_STATUS: Branch_Name : $_branchName
+                  
+                  Changes:${CHANGES}
+                  Check console output at  $BUILD_URL to view the results or attached build log.
+
+                  Have a nice day :)
+
+                  Best Regards,
+                  Jenkins''',
+				  compressLog: true,
+    
+                 subject: '$PROJECT_NAME - Build  $BUILD_NUMBER - $BUILD_STATUS', to: recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']]
+            
+        }
+    }			
+ }

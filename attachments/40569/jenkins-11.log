@@ -1,0 +1,551 @@
+﻿OPENSHIFT_JENKINS_JVM_ARCH is set to i386 so using 32 bit Java
+Generating kubernetes-plugin configuration (/opt/openshift/configuration/config.xml.tpl) ...
+Generating kubernetes-plugin credentials (/var/lib/jenkins/credentials.xml.tpl) ...
+Copying Jenkins configuration to /var/lib/jenkins ...
+Copying 157 Jenkins plugins to /var/lib/jenkins ...
+Creating initial Jenkins 'admin' user ...
+Running from: /usr/lib/jenkins/jenkins.war
+webroot: EnvVars.masterEnvVars.get("JENKINS_HOME")
+Dec 03, 2017 9:53:05 PM Main deleteWinstoneTempContents
+WARNING: Failed to delete the temporary Winstone file /tmp/winstone/jenkins.war
+Dec 03, 2017 9:53:05 PM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: Logging initialized @429ms
+Dec 03, 2017 9:53:05 PM winstone.Logger logInternal
+INFO: Beginning extraction from war file
+Dec 03, 2017 9:53:06 PM org.eclipse.jetty.util.log.JavaUtilLog warn
+WARNING: Empty contextPath
+Dec 03, 2017 9:53:06 PM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: jetty-9.2.z-SNAPSHOT
+Dec 03, 2017 9:53:07 PM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
+Jenkins home directory: /var/lib/jenkins found at: EnvVars.masterEnvVars.get("JENKINS_HOME")
+Dec 03, 2017 9:53:08 PM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: Started w.@50eab8{/,file:/var/lib/jenkins/war/,AVAILABLE}{/var/lib/jenkins/war}
+Dec 03, 2017 9:53:08 PM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: Started ServerConnector@1eebbff{HTTP/1.1}{0.0.0.0:8080}
+Dec 03, 2017 9:53:08 PM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: Started @3216ms
+Dec 03, 2017 9:53:08 PM winstone.Logger logInternal
+INFO: Winstone Servlet Engine v2.0 running: controlPort=disabled
+Dec 03, 2017 9:53:08 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Started initialization
+Dec 03, 2017 9:53:13 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Listed all plugins
+Dec 03, 2017 9:53:14 PM com.sonyericsson.hudson.plugins.gerrit.trigger.PluginImpl start
+INFO: Starting Gerrit-Trigger Plugin
+Dec 03, 2017 9:53:14 PM com.sonymobile.tools.gerrit.gerritevents.GerritSendCommandQueue startQueue
+INFO: SendQueue started! Current pool size: 1
+Dec 03, 2017 9:53:14 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQNotifierConfig start
+INFO: Starting MQNotifier Plugin
+Dec 03, 2017 9:53:14 PM jenkins.plugins.logstash.PluginImpl start
+INFO: Logstash: a logstash agent to send jenkins logs to a logstash indexer.
+Dec 03, 2017 9:53:15 PM org.jvnet.hudson.plugins.JythonPlugin start
+INFO: Installed Jython runtime
+Dec 03, 2017 9:53:22 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Prepared all plugins
+Dec 03, 2017 9:53:23 PM com.sonyericsson.hudson.plugins.gerrit.trigger.replication.ReplicationCache initialize
+INFO: initialized replication cache with expiration in MINUTES: 360
+Dec 03, 2017 9:53:23 PM com.sonyericsson.hudson.plugins.gerrit.trigger.replication.ReplicationQueueTaskDispatcher <init>
+WARNING: No GerritHandler was specified, won't register as event listener, so no function.
+Dec 03, 2017 9:53:25 PM hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1 error
+WARNING: Failed to instantiate Key[type=hudson.plugins.claim.ClaimConfig, annotation=[none]]; skipping this component
+com.google.inject.ProvisionException: Unable to provision, see the following errors:
+1) Tried proxying hudson.plugins.claim.ClaimConfig to support a circular dependency, but it is not an interface.
+1 error
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:52)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:145)
+	at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(ExtensionFinder.java:424)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:41)
+	at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:1016)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+	at hudson.ExtensionFinder$GuiceFinder._find(ExtensionFinder.java:386)
+	at hudson.ExtensionFinder$GuiceFinder.find(ExtensionFinder.java:377)
+	at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:472)
+	at hudson.ExtensionList.load(ExtensionList.java:365)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.getComponents(ExtensionList.java:168)
+	at hudson.DescriptorExtensionList.load(DescriptorExtensionList.java:191)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.iterator(ExtensionList.java:157)
+	at hudson.model.User.load(User.java:201)
+	at hudson.model.User.<init>(User.java:155)
+	at hudson.model.User.getOrCreate(User.java:464)
+	at hudson.model.User.getById(User.java:535)
+	at hudson.model.User.get(User.java:519)
+	at hudson.model.User.current(User.java:503)
+	at org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext.withCurrentUser(ApprovalContext.java:72)
+	at hudson.plugins.claim.ClaimConfig.setGroovyTrigger(ClaimConfig.java:131)
+	at hudson.plugins.claim.ClaimConfig.<init>(ClaimConfig.java:22)
+	at hudson.plugins.claim.ClaimConfig$$FastClassByGuice$$74f9760b.newInstance(<generated>)
+	at com.google.inject.internal.cglib.reflect.$FastConstructor.newInstance(FastConstructor.java:40)
+	at com.google.inject.internal.DefaultConstructionProxyFactory$1.newInstance(DefaultConstructionProxyFactory.java:61)
+	at com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:105)
+	at com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:85)
+	at com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:267)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter$1.call(ProviderToInternalFactoryAdapter.java:46)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:145)
+	at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(ExtensionFinder.java:424)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:41)
+	at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:1016)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1092)
+	at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+	at hudson.ExtensionFinder$GuiceFinder._find(ExtensionFinder.java:386)
+	at hudson.ExtensionFinder$GuiceFinder.find(ExtensionFinder.java:377)
+	at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:472)
+	at hudson.ExtensionList.load(ExtensionList.java:365)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.iterator(ExtensionList.java:157)
+	at hudson.ExtensionList.get(ExtensionList.java:148)
+	at hudson.plugins.sonar.SonarPlugin.postInitialize(SonarPlugin.java:47)
+	at hudson.PluginManager$2$1$2.run(PluginManager.java:543)
+	at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:169)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:282)
+	at jenkins.model.Jenkins$7.runTask(Jenkins.java:1089)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:210)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Dec 03, 2017 9:53:26 PM hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1 error
+WARNING: Failed to instantiate Key[type=hudson.plugins.claim.ClaimConfig, annotation=[none]]; skipping this component
+com.google.inject.ProvisionException: Unable to provision, see the following errors:
+1) Tried proxying hudson.plugins.claim.ClaimConfig to support a circular dependency, but it is not an interface.
+1 error
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:52)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:145)
+	at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(ExtensionFinder.java:424)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:41)
+	at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:1016)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+	at hudson.ExtensionFinder$GuiceFinder._find(ExtensionFinder.java:386)
+	at hudson.ExtensionFinder$GuiceFinder.find(ExtensionFinder.java:377)
+	at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:472)
+	at hudson.ExtensionList.load(ExtensionList.java:365)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.iterator(ExtensionList.java:157)
+	at jenkins.model.Jenkins.getDescriptor(Jenkins.java:1521)
+	at org.jenkinsci.plugins.p4.ConfigurationListener.onChange(ConfigurationListener.java:28)
+	at hudson.model.listeners.SaveableListener.fireOnChange(SaveableListener.java:81)
+	at hudson.model.Descriptor.save(Descriptor.java:872)
+	at io.fabric8.jenkins.openshiftsync.GlobalPluginConfiguration.<init>(GlobalPluginConfiguration.java:77)
+	at io.fabric8.jenkins.openshiftsync.GlobalPluginConfiguration$$FastClassByGuice$$7bc306ea.newInstance(<generated>)
+	at com.google.inject.internal.cglib.reflect.$FastConstructor.newInstance(FastConstructor.java:40)
+	at com.google.inject.internal.DefaultConstructionProxyFactory$1.newInstance(DefaultConstructionProxyFactory.java:61)
+	at com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:105)
+	at com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:85)
+	at com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:267)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter$1.call(ProviderToInternalFactoryAdapter.java:46)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:145)
+	at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(ExtensionFinder.java:424)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:41)
+	at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:1016)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+	at hudson.ExtensionFinder$GuiceFinder._find(ExtensionFinder.java:386)
+	at hudson.ExtensionFinder$GuiceFinder.find(ExtensionFinder.java:377)
+	at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:472)
+	at hudson.ExtensionList.load(ExtensionList.java:365)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.getComponents(ExtensionList.java:168)
+	at hudson.DescriptorExtensionList.load(DescriptorExtensionList.java:191)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.iterator(ExtensionList.java:157)
+	at hudson.model.User.load(User.java:201)
+	at hudson.model.User.<init>(User.java:155)
+	at hudson.model.User.getOrCreate(User.java:464)
+	at hudson.model.User.getById(User.java:535)
+	at hudson.model.User.get(User.java:519)
+	at hudson.model.User.current(User.java:503)
+	at org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext.withCurrentUser(ApprovalContext.java:72)
+	at hudson.plugins.claim.ClaimConfig.setGroovyTrigger(ClaimConfig.java:131)
+	at hudson.plugins.claim.ClaimConfig.<init>(ClaimConfig.java:22)
+	at hudson.plugins.claim.ClaimConfig$$FastClassByGuice$$74f9760b.newInstance(<generated>)
+	at com.google.inject.internal.cglib.reflect.$FastConstructor.newInstance(FastConstructor.java:40)
+	at com.google.inject.internal.DefaultConstructionProxyFactory$1.newInstance(DefaultConstructionProxyFactory.java:61)
+	at com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:105)
+	at com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:85)
+	at com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:267)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter$1.call(ProviderToInternalFactoryAdapter.java:46)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:145)
+	at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(ExtensionFinder.java:424)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:41)
+	at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:1016)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1092)
+	at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+	at hudson.ExtensionFinder$GuiceFinder._find(ExtensionFinder.java:386)
+	at hudson.ExtensionFinder$GuiceFinder.find(ExtensionFinder.java:377)
+	at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:472)
+	at hudson.ExtensionList.load(ExtensionList.java:365)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.iterator(ExtensionList.java:157)
+	at hudson.ExtensionList.get(ExtensionList.java:148)
+	at hudson.plugins.sonar.SonarPlugin.postInitialize(SonarPlugin.java:47)
+	at hudson.PluginManager$2$1$2.run(PluginManager.java:543)
+	at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:169)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:282)
+	at jenkins.model.Jenkins$7.runTask(Jenkins.java:1089)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:210)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Dec 03, 2017 9:53:26 PM hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1 error
+WARNING: Failed to instantiate Key[type=io.fabric8.jenkins.openshiftsync.GlobalPluginConfiguration, annotation=[none]]; skipping this component
+com.google.inject.ProvisionException: Unable to provision, see the following errors:
+1) Tried proxying io.fabric8.jenkins.openshiftsync.GlobalPluginConfiguration to support a circular dependency, but it is not an interface.
+1 error
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:52)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:145)
+	at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(ExtensionFinder.java:424)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:41)
+	at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:1016)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+	at hudson.ExtensionFinder$GuiceFinder._find(ExtensionFinder.java:386)
+	at hudson.ExtensionFinder$GuiceFinder.find(ExtensionFinder.java:377)
+	at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:472)
+	at hudson.ExtensionList.load(ExtensionList.java:365)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.iterator(ExtensionList.java:157)
+	at jenkins.model.Jenkins.getDescriptor(Jenkins.java:1521)
+	at org.jenkinsci.plugins.p4.ConfigurationListener.onChange(ConfigurationListener.java:28)
+	at hudson.model.listeners.SaveableListener.fireOnChange(SaveableListener.java:81)
+	at hudson.model.Descriptor.save(Descriptor.java:872)
+	at io.fabric8.jenkins.openshiftsync.GlobalPluginConfiguration.<init>(GlobalPluginConfiguration.java:77)
+	at io.fabric8.jenkins.openshiftsync.GlobalPluginConfiguration$$FastClassByGuice$$7bc306ea.newInstance(<generated>)
+	at com.google.inject.internal.cglib.reflect.$FastConstructor.newInstance(FastConstructor.java:40)
+	at com.google.inject.internal.DefaultConstructionProxyFactory$1.newInstance(DefaultConstructionProxyFactory.java:61)
+	at com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:105)
+	at com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:85)
+	at com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:267)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter$1.call(ProviderToInternalFactoryAdapter.java:46)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:145)
+	at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(ExtensionFinder.java:424)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:41)
+	at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:1016)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+	at hudson.ExtensionFinder$GuiceFinder._find(ExtensionFinder.java:386)
+	at hudson.ExtensionFinder$GuiceFinder.find(ExtensionFinder.java:377)
+	at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:472)
+	at hudson.ExtensionList.load(ExtensionList.java:365)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.getComponents(ExtensionList.java:168)
+	at hudson.DescriptorExtensionList.load(DescriptorExtensionList.java:191)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.iterator(ExtensionList.java:157)
+	at hudson.model.User.load(User.java:201)
+	at hudson.model.User.<init>(User.java:155)
+	at hudson.model.User.getOrCreate(User.java:464)
+	at hudson.model.User.getById(User.java:535)
+	at hudson.model.User.get(User.java:519)
+	at hudson.model.User.current(User.java:503)
+	at org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext.withCurrentUser(ApprovalContext.java:72)
+	at hudson.plugins.claim.ClaimConfig.setGroovyTrigger(ClaimConfig.java:131)
+	at hudson.plugins.claim.ClaimConfig.<init>(ClaimConfig.java:22)
+	at hudson.plugins.claim.ClaimConfig$$FastClassByGuice$$74f9760b.newInstance(<generated>)
+	at com.google.inject.internal.cglib.reflect.$FastConstructor.newInstance(FastConstructor.java:40)
+	at com.google.inject.internal.DefaultConstructionProxyFactory$1.newInstance(DefaultConstructionProxyFactory.java:61)
+	at com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:105)
+	at com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:85)
+	at com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:267)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter$1.call(ProviderToInternalFactoryAdapter.java:46)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1103)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:145)
+	at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(ExtensionFinder.java:424)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:41)
+	at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:1016)
+	at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.java:1092)
+	at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+	at hudson.ExtensionFinder$GuiceFinder._find(ExtensionFinder.java:386)
+	at hudson.ExtensionFinder$GuiceFinder.find(ExtensionFinder.java:377)
+	at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:472)
+	at hudson.ExtensionList.load(ExtensionList.java:365)
+	at hudson.ExtensionList.ensureLoaded(ExtensionList.java:303)
+	at hudson.ExtensionList.iterator(ExtensionList.java:157)
+	at hudson.ExtensionList.get(ExtensionList.java:148)
+	at hudson.plugins.sonar.SonarPlugin.postInitialize(SonarPlugin.java:47)
+	at hudson.PluginManager$2$1$2.run(PluginManager.java:543)
+	at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:169)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:282)
+	at jenkins.model.Jenkins$7.runTask(Jenkins.java:1089)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:210)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Dec 03, 2017 9:53:26 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Started all plugins
+Dec 03, 2017 9:53:26 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Augmented all extensions
+Dec 03, 2017 9:53:26 PM jenkins.advancedqueue.PrioritySorterPlugin init1
+INFO: Configuring the Priority Sorter ...
+Dec 03, 2017 9:53:26 PM io.fabric8.jenkins.openshiftsync.GlobalPluginConfiguration$1 doRun
+INFO: Waiting for Jenkins to be started
+Dec 03, 2017 9:53:27 PM hudson.plugins.project_inheritance.projects.actions.service.CachingInheritanceListService <init>
+INFO: Service CachingInheritanceListService instantiated
+Dec 03, 2017 9:53:27 PM hudson.plugins.project_inheritance.projects.actions.InheritanceListActionFactory <init>
+INFO: Extension InheritanceListActionFactory instantiated
+Dec 03, 2017 9:53:28 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Loaded all jobs
+Dec 03, 2017 9:53:28 PM jenkins.advancedqueue.PrioritySorterPlugin init2
+INFO: Sorting existing Queue ...
+Dec 03, 2017 9:53:28 PM jenkins.advancedqueue.sorter.AdvancedQueueSorter init
+INFO: Initialized the QueueSorter with 0 Buildable Items
+Dec 03, 2017 9:53:28 PM jenkins.util.groovy.GroovyHookScript execute
+INFO: Executing /var/lib/jenkins/init.groovy.d/configure-jenkins.groovy
+Dec 03, 2017 9:53:28 PM hudson.model.AsyncPeriodicWork$1 run
+INFO: Started Download metadata
+Dec 03, 2017 9:53:28 PM hudson.model.AllView migrateLegacyPrimaryAllViewLocalizedName
+INFO: JENKINS-38606 detected for AllView in ; renaming view from all to {2}
+Dec 03, 2017 9:53:28 PM org.springframework.context.support.AbstractApplicationContext prepareRefresh
+INFO: Refreshing org.springframework.web.context.support.StaticWebApplicationContext@10bc99b: display name [Root WebApplicationContext]; startup date [Sun Dec 03 21:53:28 UTC 2017]; root of context hierarchy
+Dec 03, 2017 9:53:28 PM org.springframework.context.support.AbstractApplicationContext obtainFreshBeanFactory
+INFO: Bean factory for application context [org.springframework.web.context.support.StaticWebApplicationContext@10bc99b]: org.springframework.beans.factory.support.DefaultListableBeanFactory@1cfa255
+Dec 03, 2017 9:53:28 PM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1cfa255: defining beans [authenticationManager]; root of factory hierarchy
+Dec 03, 2017 9:53:29 PM org.springframework.context.support.AbstractApplicationContext prepareRefresh
+INFO: Refreshing org.springframework.web.context.support.StaticWebApplicationContext@1c30568: display name [Root WebApplicationContext]; startup date [Sun Dec 03 21:53:29 UTC 2017]; root of context hierarchy
+Dec 03, 2017 9:53:29 PM org.springframework.context.support.AbstractApplicationContext obtainFreshBeanFactory
+INFO: Bean factory for application context [org.springframework.web.context.support.StaticWebApplicationContext@1c30568]: org.springframework.beans.factory.support.DefaultListableBeanFactory@14be1d8
+Dec 03, 2017 9:53:29 PM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@14be1d8: defining beans [filter,legacy]; root of factory hierarchy
+Dec 03, 2017 9:53:29 PM java_util_logging_Logger$log$0 call
+INFO: running configure-jenkins.groovy
+Dec 03, 2017 9:53:29 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftSetOAuth setOauth
+INFO: OpenShift OAuth: enable oauth set to true force true lastCheck Thu Jan 01 00:00:00 UTC 1970
+Dec 03, 2017 9:53:29 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftSetOAuth setOauth
+INFO: OpenShift OAuth: configured security realm on startup: hudson.security.HudsonPrivateSecurityRealm@14bd8c8 last check Thu Jan 01 00:00:00 UTC 1970
+Dec 03, 2017 9:53:30 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm populateDefaults
+INFO: OpenShift OAuth: provider: OpenShiftProviderInfo: issuer: https://console.s6.core.rht-labs.com auth ep: https://console.s6.core.rht-labs.com/oauth/authorize token ep: https://console.s6.core.rht-labs.com/oauth/token
+Dec 03, 2017 9:53:30 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm populateDefaults
+INFO: OpenShift OAuth returning true with namespace jenkins-42276-ci-cd SA dir null default /run/secrets/kubernetes.io/serviceaccount SA name null default jenkins client ID null default system:serviceaccount:jenkins-42276-ci-cd:jenkins secret null default eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJqZW5raW5zLTQyMjc2LWNpLWNkIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImplbmtpbnMtdG9rZW4tN3hidGYiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiamVua2lucyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImFmNWI5MGU2LWQ4NjQtMTFlNy05N2QwLWZhMTYzZWRjYmM0OCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpqZW5raW5zLTQyMjc2LWNpLWNkOmplbmtpbnMifQ.lOQHilbq1_1onFq1evvGC3LAVAZYgzpmZLyAcSl75gaPxu0lfP3FAOdrBHWMCMSrO5HWzdoUTObxtTM5Y4blScpk2SnEXCR9PUCnkfjWvHbkFhi7Pq70SkXYaAwy5kjcKWs2r0wSnLCLbiugla-57vyMwshwhDo7-dYCLB2XDRbJlo2ZG9ne6dbAJ4Tw1uM9i1s74Kgsq2npLoy-B0wD8sBdpZCq_9ZA7MQLerL1WPB_kYE06V4f7WlG-Z3pI7QAimkJcAlsTFUorg3PDPjIBx3L9gjdp8jKwttkD7y0p8IoCKjsTo-GXz4weu-M-jqD4gNjI1EnXuyo1GBTihrq8w redirect null default https://console.s6.core.rht-labs.com server null default https://openshift.default.svc
+Dec 03, 2017 9:53:30 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm populateDefaults
+INFO: OpenShift OAuth: provider: OpenShiftProviderInfo: issuer: https://console.s6.core.rht-labs.com auth ep: https://console.s6.core.rht-labs.com/oauth/authorize token ep: https://console.s6.core.rht-labs.com/oauth/token
+Dec 03, 2017 9:53:30 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm populateDefaults
+INFO: OpenShift OAuth returning true with namespace jenkins-42276-ci-cd SA dir null default /run/secrets/kubernetes.io/serviceaccount SA name null default jenkins client ID null default system:serviceaccount:jenkins-42276-ci-cd:jenkins secret null default eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJqZW5raW5zLTQyMjc2LWNpLWNkIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImplbmtpbnMtdG9rZW4tN3hidGYiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiamVua2lucyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImFmNWI5MGU2LWQ4NjQtMTFlNy05N2QwLWZhMTYzZWRjYmM0OCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpqZW5raW5zLTQyMjc2LWNpLWNkOmplbmtpbnMifQ.lOQHilbq1_1onFq1evvGC3LAVAZYgzpmZLyAcSl75gaPxu0lfP3FAOdrBHWMCMSrO5HWzdoUTObxtTM5Y4blScpk2SnEXCR9PUCnkfjWvHbkFhi7Pq70SkXYaAwy5kjcKWs2r0wSnLCLbiugla-57vyMwshwhDo7-dYCLB2XDRbJlo2ZG9ne6dbAJ4Tw1uM9i1s74Kgsq2npLoy-B0wD8sBdpZCq_9ZA7MQLerL1WPB_kYE06V4f7WlG-Z3pI7QAimkJcAlsTFUorg3PDPjIBx3L9gjdp8jKwttkD7y0p8IoCKjsTo-GXz4weu-M-jqD4gNjI1EnXuyo1GBTihrq8w redirect null default https://console.s6.core.rht-labs.com server null default https://openshift.default.svc
+Dec 03, 2017 9:53:30 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftSetOAuth setOauth
+INFO: OpenShift OAuth: running in OpenShift pod with required OAuth features: true
+Dec 03, 2017 9:53:30 PM org.springframework.context.support.AbstractApplicationContext prepareRefresh
+INFO: Refreshing org.springframework.web.context.support.StaticWebApplicationContext@2a99aa: display name [Root WebApplicationContext]; startup date [Sun Dec 03 21:53:30 UTC 2017]; root of context hierarchy
+Dec 03, 2017 9:53:30 PM org.springframework.context.support.AbstractApplicationContext obtainFreshBeanFactory
+INFO: Bean factory for application context [org.springframework.web.context.support.StaticWebApplicationContext@2a99aa]: org.springframework.beans.factory.support.DefaultListableBeanFactory@16f3aa1
+Dec 03, 2017 9:53:30 PM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@16f3aa1: defining beans [filter,legacy]; root of factory hierarchy
+Dec 03, 2017 9:53:30 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftSetOAuth setOauth
+INFO: OpenShift OAuth: Jenkins security realm set to OpenShift OAuth
+Dec 03, 2017 9:53:30 PM jenkins.util.groovy.GroovyHookScript execute
+INFO: Executing /var/lib/jenkins/init.groovy.d/configure-slack.groovy
+Dec 03, 2017 9:53:30 PM jenkins.util.groovy.GroovyHookScript execute
+INFO: Executing /var/lib/jenkins/init.groovy.d/configure-sonarqube.groovy
+Dec 03, 2017 9:53:30 PM hudson.model.UpdateSite updateData
+INFO: Obtained the latest update center data file for UpdateSource default
+Dec 03, 2017 9:53:31 PM hudson.model.UpdateSite updateData
+INFO: Obtained the latest update center data file for UpdateSource jucies
+Dec 03, 2017 9:53:31 PM hudson.model.DownloadService$Downloadable load
+INFO: Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+Dec 03, 2017 9:53:31 PM java_util_logging_Logger$log$0 call
+INFO: Configuring SonarQube
+Dec 03, 2017 9:53:31 PM java_util_logging_Logger$log$0 call
+INFO: Delete existing SonarQube Jenkins token
+Dec 03, 2017 9:53:31 PM jenkins.util.groovy.GroovyHookScript execute
+WARNING: Failed to execute /var/lib/jenkins/init.groovy.d/configure-sonarqube.groovy
+java.net.UnknownHostException: sonarqube
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:180)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:463)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:558)
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:242)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:339)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:357)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:1220)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1156)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1050)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:984)
+	at sun.net.www.protocol.http.HttpURLConnection.getOutputStream0(HttpURLConnection.java:1334)
+	at sun.net.www.protocol.http.HttpURLConnection.getOutputStream(HttpURLConnection.java:1309)
+	at sun.net.www.protocol.http.HttpURLConnection$getOutputStream$1.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:48)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:113)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:117)
+	at configure-sonarqube.run(configure-sonarqube.groovy:42)
+	at groovy.lang.GroovyShell.evaluate(GroovyShell.java:585)
+	at jenkins.util.groovy.GroovyHookScript.execute(GroovyHookScript.java:136)
+	at jenkins.util.groovy.GroovyHookScript.execute(GroovyHookScript.java:127)
+	at jenkins.util.groovy.GroovyHookScript.run(GroovyHookScript.java:110)
+	at hudson.init.impl.GroovyInitScript.init(GroovyInitScript.java:41)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:104)
+	at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:282)
+	at jenkins.model.Jenkins$7.runTask(Jenkins.java:1089)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:210)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Dec 03, 2017 9:53:31 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Completed initialization
+Dec 03, 2017 9:53:31 PM hudson.model.DownloadService$Downloadable load
+INFO: Obtained the updated data file for hudson.tasks.Ant.AntInstaller
+Dec 03, 2017 9:53:31 PM hudson.model.DownloadService$Downloadable load
+INFO: Obtained the updated data file for hudson.plugins.gradle.GradleInstaller
+Dec 03, 2017 9:53:31 PM io.fabric8.jenkins.openshiftsync.BuildConfigWatcher start
+INFO: Now handling startup build configs!!
+Dec 03, 2017 9:53:31 PM io.fabric8.jenkins.openshiftsync.ConfigMapWatcher start
+INFO: Now handling startup config maps!!
+Dec 03, 2017 9:53:31 PM io.fabric8.jenkins.openshiftsync.ImageStreamWatcher start
+INFO: Now handling startup image streams!!
+Dec 03, 2017 9:53:31 PM hudson.model.DownloadService$Downloadable load
+INFO: Obtained the updated data file for hudson.plugins.groovy.GroovyInstaller
+Dec 03, 2017 9:53:31 PM jenkins.plugins.slack.SlackNotifier$Migrator onLoaded
+INFO: Starting Settings Migration Process
+Dec 03, 2017 9:53:31 PM jenkins.plugins.slack.SlackNotifier$Migrator onLoaded
+INFO: Completed Settings Migration Process
+Dec 03, 2017 9:53:31 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.ItemListenerImpl onLoaded
+INFO: All jobs have been loaded.
+Dec 03, 2017 9:53:31 PM org.jenkinsci.plugins.rabbitmqconsumer.ItemListenerImpl onLoaded
+INFO: Start bootup process.
+Dec 03, 2017 9:53:31 PM org.jenkinsci.plugins.rabbitmqconsumer.RMQManager update
+INFO: Start to update connections...
+Dec 03, 2017 9:53:31 PM hudson.WebAppMain$3 run
+INFO: Jenkins is fully up and running
+Dec 03, 2017 9:53:31 PM hudson.model.DownloadService$Downloadable load
+INFO: Obtained the updated data file for hudson.plugins.sonar.MsBuildSonarQubeRunnerInstaller
+Dec 03, 2017 9:53:31 PM hudson.model.DownloadService$Downloadable load
+INFO: Obtained the updated data file for hudson.plugins.sonar.SonarRunnerInstaller
+Dec 03, 2017 9:53:32 PM hudson.model.DownloadService$Downloadable load
+INFO: Obtained the updated data file for hudson.tools.JDKInstaller
+Dec 03, 2017 9:53:32 PM hudson.model.AsyncPeriodicWork$1 run
+INFO: Finished Download metadata. 3,756 ms
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.BuildWatcher onInitialBuilds
+INFO: skipping listed new build java-app-pipeline-3 no job at this time
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.ConfigMapWatcher$1 doRun
+INFO: creating ConfigMap watch for namespace jenkins-42276-ci-cd and resource version 3997637
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.BuildWatcher$1 doRun
+INFO: creating Build watch for namespace jenkins-42276-ci-cd and resource version 3997637
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.PipelineJobListener upsertItem
+INFO: Updated WorkflowJob jenkins-42276-ci-cd/java-app-pipeline replicating changes to OpenShift
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.JenkinsUtils removePodTemplate
+INFO: Removing PodTemplate: mvn-build-pod
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.JenkinsUtils addPodTemplate
+INFO: Adding PodTemplate: mvn-build-pod
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.ImageStreamWatcher$1 doRun
+INFO: creating ImageStream watch for namespace jenkins-42276-ci-cd and resource version 3997637
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.BuildConfigWatcher$3 call
+INFO: Created job jenkins-42276-ci-cd-java-app-pipeline from BuildConfig NamespaceName{jenkins-42276-ci-cd:java-app-pipeline} with revision: 3997050
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.BuildConfigWatcher$1 doRun
+INFO: creating BuildConfig watch for namespace jenkins-42276-ci-cd and resource version 3997637
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.BuildWatcher flushBuildsWithNoBCList
+INFO: triggering job run for previously skipped build java-app-pipeline-3
+Dec 03, 2017 9:53:32 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQConnection addMessageToQueue
+INFO: messageQueueThread recreated since it was null or not alive.
+Dec 03, 2017 9:53:32 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQConnection send
+SEVERE: Invalid configuration, exchange must not be null.
+Dec 03, 2017 9:53:32 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQConnection send
+SEVERE: Invalid configuration, exchange must not be null.
+Dec 03, 2017 9:53:32 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQConnection send
+SEVERE: Invalid configuration, exchange must not be null.
+Dec 03, 2017 9:53:32 PM io.fabric8.jenkins.openshiftsync.BuildSyncRunListener onStarted
+INFO: starting polling build job/jenkins-42276-ci-cd-java-app-pipeline/1/
+Dec 03, 2017 9:53:43 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQConnection send
+SEVERE: Invalid configuration, exchange must not be null.
+Dec 03, 2017 9:53:43 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQConnection send
+SEVERE: Invalid configuration, exchange must not be null.
+Dec 03, 2017 9:53:43 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQConnection send
+SEVERE: Invalid configuration, exchange must not be null.
+Dec 03, 2017 9:54:27 PM jenkins.model.RunIdMigrator migrate
+INFO: Migrating build records in /var/lib/jenkins/jobs/jenkins-42276-ci-cd-java-app-pipeline/builds
+Dec 03, 2017 9:54:27 PM jenkins.model.RunIdMigrator migrate
+WARNING: Build record migration (https://wiki.jenkins-ci.org/display/JENKINS/JENKINS-24380+Migration) is one-way. If you need to downgrade Jenkins, run: java -classpath "/var/lib/jenkins/war/WEB-INF/lib/jenkins-core-2.46.3.jar:/var/lib/jenkins/war/WEB-INF/lib/commons-io-2.4.jar:/var/lib/jenkins/war/WEB-INF/lib/stapler-1.250.jar:/var/lib/jenkins/war/WEB-INF/lib/ant-1.8.4.jar:/var/lib/jenkins/war/WEB-INF/lib/commons-lang-2.6.jar" jenkins.model.RunIdMigrator "/var/lib/jenkins"
+Dec 03, 2017 9:54:27 PM io.fabric8.jenkins.openshiftsync.BuildConfigWatcher updateJob
+INFO: Updated job jenkins-42276-ci-cd-java-app-pipeline from BuildConfig NamespaceName{jenkins-42276-ci-cd:java-app-pipeline} with revision: 3997698
+Dec 03, 2017 9:54:31 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm populateDefaults
+INFO: OpenShift OAuth: provider: OpenShiftProviderInfo: issuer: https://console.s6.core.rht-labs.com auth ep: https://console.s6.core.rht-labs.com/oauth/authorize token ep: https://console.s6.core.rht-labs.com/oauth/token
+Dec 03, 2017 9:54:31 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm populateDefaults
+INFO: OpenShift OAuth returning true with namespace jenkins-42276-ci-cd SA dir null default /run/secrets/kubernetes.io/serviceaccount SA name null default jenkins client ID null default system:serviceaccount:jenkins-42276-ci-cd:jenkins secret null default eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJqZW5raW5zLTQyMjc2LWNpLWNkIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImplbmtpbnMtdG9rZW4tN3hidGYiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiamVua2lucyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImFmNWI5MGU2LWQ4NjQtMTFlNy05N2QwLWZhMTYzZWRjYmM0OCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpqZW5raW5zLTQyMjc2LWNpLWNkOmplbmtpbnMifQ.lOQHilbq1_1onFq1evvGC3LAVAZYgzpmZLyAcSl75gaPxu0lfP3FAOdrBHWMCMSrO5HWzdoUTObxtTM5Y4blScpk2SnEXCR9PUCnkfjWvHbkFhi7Pq70SkXYaAwy5kjcKWs2r0wSnLCLbiugla-57vyMwshwhDo7-dYCLB2XDRbJlo2ZG9ne6dbAJ4Tw1uM9i1s74Kgsq2npLoy-B0wD8sBdpZCq_9ZA7MQLerL1WPB_kYE06V4f7WlG-Z3pI7QAimkJcAlsTFUorg3PDPjIBx3L9gjdp8jKwttkD7y0p8IoCKjsTo-GXz4weu-M-jqD4gNjI1EnXuyo1GBTihrq8w redirect null default https://console.s6.core.rht-labs.com server null default https://openshift.default.svc
+Dec 03, 2017 9:54:38 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm populateDefaults
+INFO: OpenShift OAuth: provider: OpenShiftProviderInfo: issuer: https://console.s6.core.rht-labs.com auth ep: https://console.s6.core.rht-labs.com/oauth/authorize token ep: https://console.s6.core.rht-labs.com/oauth/token
+Dec 03, 2017 9:54:38 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm populateDefaults
+INFO: OpenShift OAuth returning true with namespace jenkins-42276-ci-cd SA dir null default /run/secrets/kubernetes.io/serviceaccount SA name null default jenkins client ID null default system:serviceaccount:jenkins-42276-ci-cd:jenkins secret null default eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJqZW5raW5zLTQyMjc2LWNpLWNkIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImplbmtpbnMtdG9rZW4tN3hidGYiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiamVua2lucyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImFmNWI5MGU2LWQ4NjQtMTFlNy05N2QwLWZhMTYzZWRjYmM0OCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpqZW5raW5zLTQyMjc2LWNpLWNkOmplbmtpbnMifQ.lOQHilbq1_1onFq1evvGC3LAVAZYgzpmZLyAcSl75gaPxu0lfP3FAOdrBHWMCMSrO5HWzdoUTObxtTM5Y4blScpk2SnEXCR9PUCnkfjWvHbkFhi7Pq70SkXYaAwy5kjcKWs2r0wSnLCLbiugla-57vyMwshwhDo7-dYCLB2XDRbJlo2ZG9ne6dbAJ4Tw1uM9i1s74Kgsq2npLoy-B0wD8sBdpZCq_9ZA7MQLerL1WPB_kYE06V4f7WlG-Z3pI7QAimkJcAlsTFUorg3PDPjIBx3L9gjdp8jKwttkD7y0p8IoCKjsTo-GXz4weu-M-jqD4gNjI1EnXuyo1GBTihrq8w redirect null default https://console.s6.core.rht-labs.com server null default https://openshift.default.svc
+Dec 03, 2017 9:54:38 PM org.openshift.jenkins.plugins.openshiftlogin.OpenShiftOAuth2SecurityRealm updateAuthorizationStrategy
+INFO: OpenShift OAuth: adding permissions for user jholmes, stored in the matrix as jholmes-admin, based on OpenShift roles [view, edit, admin]
+Dec 03, 2017 9:55:08 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+INFO: Excess workload after pending Spot instances: 1
+Dec 03, 2017 9:55:08 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+INFO: Template: Kubernetes Pod Template
+Dec 03, 2017 9:55:08 PM hudson.slaves.NodeProvisioner$StandardStrategyImpl apply
+INFO: Started provisioning Kubernetes Pod Template from openshift with 1 executors. Remaining excess workload: 0
+Dec 03, 2017 9:55:18 PM hudson.slaves.NodeProvisioner$2 run
+INFO: Kubernetes Pod Template provisioning successfully completed. We have now 2 computer(s)
+Dec 03, 2017 9:55:18 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+INFO: Excess workload after pending Spot instances: 1
+Dec 03, 2017 9:55:18 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+INFO: Template: Kubernetes Pod Template
+Dec 03, 2017 9:55:18 PM hudson.slaves.NodeProvisioner$StandardStrategyImpl apply
+INFO: Started provisioning Kubernetes Pod Template from openshift with 1 executors. Remaining excess workload: -0.387
+Dec 03, 2017 9:55:18 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Created Pod: mvn-build-pod-fpgkh in namespace jenkins-42276-ci-cd
+Dec 03, 2017 9:55:18 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for Pod to be scheduled (0/100): mvn-build-pod-fpgkh
+Dec 03, 2017 9:55:24 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for slave to connect (0/100): mvn-build-pod-fpgkh
+Dec 03, 2017 9:55:25 PM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #1 from /10.128.0.1:36798
+Dec 03, 2017 9:55:25 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for slave to connect (1/100): mvn-build-pod-fpgkh
+Dec 03, 2017 9:55:26 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for slave to connect (2/100): mvn-build-pod-fpgkh
+Dec 03, 2017 9:55:27 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for slave to connect (3/100): mvn-build-pod-fpgkh
+Dec 03, 2017 9:55:28 PM hudson.slaves.NodeProvisioner$2 run
+INFO: Kubernetes Pod Template provisioning successfully completed. We have now 3 computer(s)
+Dec 03, 2017 9:55:28 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+INFO: Excess workload after pending Spot instances: 1
+Dec 03, 2017 9:55:28 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+INFO: Template: Kubernetes Pod Template
+Dec 03, 2017 9:55:28 PM hudson.slaves.NodeProvisioner$StandardStrategyImpl apply
+INFO: Started provisioning Kubernetes Pod Template from openshift with 1 executors. Remaining excess workload: -0.449
+Dec 03, 2017 9:55:28 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Created Pod: mvn-build-pod-zpcbv in namespace jenkins-42276-ci-cd
+Dec 03, 2017 9:55:28 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for Pod to be scheduled (0/100): mvn-build-pod-zpcbv
+Dec 03, 2017 9:55:28 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for slave to connect (4/100): mvn-build-pod-fpgkh
+Dec 03, 2017 9:55:29 PM com.sonymobile.jenkins.plugins.mq.mqnotifier.MQConnection send
+SEVERE: Invalid configuration, exchange must not be null.
+Dec 03, 2017 9:55:32 PM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #2 from /10.129.2.1:57932
+Dec 03, 2017 9:55:34 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for slave to connect (0/100): mvn-build-pod-zpcbv
+Dec 03, 2017 9:55:35 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for slave to connect (1/100): mvn-build-pod-zpcbv
+Dec 03, 2017 9:55:38 PM hudson.slaves.NodeProvisioner$2 run
+INFO: Kubernetes Pod Template provisioning successfully completed. We have now 4 computer(s)
+Dec 03, 2017 9:55:38 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Created Pod: mvn-build-pod-x6hc3 in namespace jenkins-42276-ci-cd
+Dec 03, 2017 9:55:38 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for Pod to be scheduled (0/100): mvn-build-pod-x6hc3
+Dec 03, 2017 9:55:44 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Container is waiting mvn-build-pod-x6hc3 [jnlp]: ContainerStateWaiting(message=null, reason=ContainerCreating, additionalProperties={})
+Dec 03, 2017 9:55:44 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+INFO: Waiting for Pod to be scheduled (1/100): mvn-build-pod-x6hc3
+Dec 03, 2017 9:55:45 PM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #3 from /10.128.0.1:45344

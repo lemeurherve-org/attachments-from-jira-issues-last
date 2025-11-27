@@ -1,0 +1,13 @@
+Index: core/src/main/resources/hudson/matrix/MatrixProject/ajaxMatrix.jelly
+===================================================================
+--- core/src/main/resources/hudson/matrix/MatrixProject/ajaxMatrix.jelly	(revision 33551)
++++ core/src/main/resources/hudson/matrix/MatrixProject/ajaxMatrix.jelly	(working copy)
+@@ -35,7 +35,7 @@
+         </j:when>
+         <j:otherwise>
+           <a href="${p.shortUrl}">
+-            <img src="${imagesURL}/24x24/${p.buildStatusUrl}" tooltip="${p.iconColor.description}" alt="${p.iconColor.description}"/>
++            <img src="${imagesURL}/24x24/${p.buildStatusUrl}" tooltip="${p.iconColor.description}" alt="${p.iconColor.description}"/> (${p.lastBuild.number})
+             <j:if test="${empty(o.x) and empty(o.y)}">
+               ${p.combination.toString(o.z)}
+             </j:if>

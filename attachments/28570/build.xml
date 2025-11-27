@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@1.2">
+  <actions>
+    <hudson.model.ParametersAction>
+      <parameters>
+        <hudson.model.StringParameterValue>
+          <name>Product</name>
+          <description></description>
+          <value>development</value>
+        </hudson.model.StringParameterValue>
+      </parameters>
+    </hudson.model.ParametersAction>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserIdCause/>
+      </causes>
+    </hudson.model.CauseAction>
+  </actions>
+  <number>3</number>
+  <startTime>1423629051761</startTime>
+  <result>SUCCESS</result>
+  <duration>2678</duration>
+  <keepLog>false</keepLog>
+  <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
+    <result>SUCCESS</result>
+    <script>node {
+    writeFile text: &quot;${Product}&quot;, file: &apos;artifact.txt&apos;
+    archive includes: &apos;**/*&apos;
+}
+</script>
+    <loadedScripts class="map"/>
+    <owner class="flow-owner">
+      <job>upstreamWorkflow</job>
+      <id>2015-02-11_13-30-51</id>
+    </owner>
+    <iota>9</iota>
+    <head>1:9</head>
+  </execution>
+  <checkouts class="linked-list"/>
+</flow-build>

@@ -1,0 +1,69 @@
+# defaults for hudson continuous integration server
+
+# pulled in from the init script; makes things easier.
+NAME=hudson
+
+# location of java
+JAVA=/usr/lib/jvm/java-1.5.0-sun/bin/java
+
+# arguments to pass to java
+JAVA_ARGS="-server"
+JAVA_ARGS="$JAVA_ARGS -Duser.timezone=US/Central"
+JAVA_ARGS="$JAVA_ARGS -Xms96m"
+JAVA_ARGS="$JAVA_ARGS -Xmx96m"
+JAVA_ARGS="$JAVA_ARGS -XX:NewSize=34m"
+JAVA_ARGS="$JAVA_ARGS -XX:MaxNewSize=34m"
+JAVA_ARGS="$JAVA_ARGS -XX:+UseParNewGC"
+JAVA_ARGS="$JAVA_ARGS -XX:+UseConcMarkSweepGC"
+JAVA_ARGS="$JAVA_ARGS -XX:+AggressiveOpts"
+JAVA_ARGS="$JAVA_ARGS -XX:+CMSPermGenSweepingEnabled"
+JAVA_ARGS="$JAVA_ARGS -XX:+CMSClassUnloadingEnabled"
+JAVA_ARGS="$JAVA_ARGS -XX:TargetSurvivorRatio=90"
+JAVA_ARGS="$JAVA_ARGS -XX:SurvivorRatio=6"
+JAVA_ARGS="$JAVA_ARGS -verbose:gc"
+JAVA_ARGS="$JAVA_ARGS -Xloggc:/var/log/hudson/gc.log"
+JAVA_ARGS="$JAVA_ARGS -XX:+PrintGCTimeStamps"
+JAVA_ARGS="$JAVA_ARGS -XX:+PrintGCDetails"
+
+PIDFILE=/var/run/hudson/hudson.pid
+
+# user id to be invoked as (otherwise will run as root; not wise!)
+HUDSON_USER=hudson
+
+# location of the hudson war file
+HUDSON_WAR=/usr/share/hudson/hudson.war
+
+# hudson home location
+HUDSON_HOME=/var/lib/hudson
+
+# set this to false if you don't want Hudson to run by itself
+# in this set up, you are expected to provide a servlet containr
+# to host hudson.
+RUN_STANDALONE=true
+
+# log location.  this may be a syslog facility.priority
+HUDSON_LOG=/var/log/hudson/$NAME.log
+#HUDSON_LOG=daemon.info
+
+# OS LIMITS SETUP
+#   comment this out to observe /etc/security/limits.conf
+#   this is on by default because http://github.com/feniix/hudson/commit/d13c08ea8f5a3fa730ba174305e6429b74853927
+#   reported that Ubuntu's PAM configuration doesn't include pam_limits.so, and as a result the # of file
+#   descriptors are forced to 1024 regardless of /etc/security/limits.conf
+MAXOPENFILES=8192
+
+# port for HTTP connector (default 8080; disable with -1)
+HTTP_PORT=8100
+
+# port for AJP connector (disabled by default)
+AJP_PORT=-1
+
+# arguments to pass to hudson.
+# --javahome=$JAVA_HOME
+# --httpPort=$HTTP_PORT (default 8080; disable with -1)
+# --httpsPort=$HTTP_PORT
+# --ajp13Port=$AJP_PORT
+# --argumentsRealm.passwd.$ADMIN_USER=[password]
+# --argumentsRealm.$ADMIN_USER=admin
+# --webroot=~/.hudson/war
+HUDSON_ARGS="--webroot=/var/run/hudson/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT"

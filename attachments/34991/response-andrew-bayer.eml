@@ -1,0 +1,146 @@
+Return-Path: <andrew.bayer@gmail.com>
+Received: from fsun.fe.think ([unix socket])
+	 by fsun.fe.think (Cyrus v2.4.18-Fedora-RPM-2.4.18-2.fc24) with LMTPA;
+	 Sat, 19 Nov 2016 06:21:44 +0100
+X-Sieve: CMU Sieve 2.4
+Received: from listserv.isdn4linux.de (www.fritz-elfert.de [82.165.11.104])
+	by fsun.fe.think (8.15.2/8.15.2) with ESMTPS id uAJ5Lg9T030881
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=OK)
+	for <felfert@lbk.dyn.fritz-elfert.de>; Sat, 19 Nov 2016 06:21:42 +0100
+Received: from mail-qt0-x22e.google.com (mail-qt0-x22e.google.com [IPv6:2607:f8b0:400d:c0d:0:0:0:22e])
+	by listserv.isdn4linux.de (8.15.2/8.15.2) with ESMTPS id uAJ5LZYQ011483
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL)
+	for <fritz@fritz-elfert.de>; Sat, 19 Nov 2016 06:21:37 +0100
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.99.2 at listserv.isdn4linux.de
+Authentication-Results: listserv.isdn4linux.de;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=yWFrlU3g
+Received: by mail-qt0-x22e.google.com with SMTP id n6so171298997qtd.1
+        for <fritz@fritz-elfert.de>; Fri, 18 Nov 2016 21:21:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=2ZJMf94L5Zb89kQSV5mm06DwhDHgEASrLMEmcz78eeY=;
+        b=yWFrlU3g1pWELp6Nx4Mm6k6Wve35AUBPHQwIns0ZD8oEJ38/rNH2hXW+iJ28Y4X4QV
+         qova9PZ9Ki8ROAg8JLlCU+P0kded0HrBejon2nS+CUXTOVG5hy5q21YznmEcq7ie3Eb6
+         40NcGK0nI5V2nmEEJYqV6rT6JPoDIjlMyTXFAJQNj9LkgMahgFCM0LOIasRKbZZ5DoeE
+         sUyFTie0qgI4dlidH/px39K8HwFmho0NojhZ1mfsCkpCPBOlPYtJlLa0YRa0tzYehlbk
+         IrComhKUZfC7nZyJZHgK+TAtVRyJJuF9TJH42EFBGb39OehVi46BVPzhvk0qBGcr3iuP
+         sC3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=2ZJMf94L5Zb89kQSV5mm06DwhDHgEASrLMEmcz78eeY=;
+        b=j3AdiaNT3FKNs5CCwKKA664yn8ibyr7WED16+TXvHrEzzug5jfDLhUJ0iT6bdOv8Z5
+         kjCgo2+STuwmIEFudNVGL1Xyhs2/YJJw3Rx6T6Ou3r3eu/l+6+UnKTzBT/Y90E+ep45A
+         MgkHcXNUfBeHMdW8/Ag4rhqGgczEyQNYaxvUS7gzBfmqHvxal4Qf5A0XtBYY5SdWGLZo
+         mLRWBMSvTn3Z3PsaeucQrol0AXgj0Rzm+B4YN6kgYZPseA6rYH6tRMt3yY+0GHmJdyxU
+         TxeKFt04x1SNPc4/kVW83rJIBeiVPZR+AihWbEvrc01HFynERN7xd4lGUCIaP1+zqLkt
+         r5OQ==
+X-Gm-Message-State: AKaTC03p6Pm3EsFA7rhOh3eMuymkOnnac4EGW6Vu959YD1KFQGH1hDdBSvUOK5dy2/IGWyfxwdzvFW3V4xKcPg==
+X-Received: by 10.28.126.146 with SMTP id z140mr2088955wmc.84.1479532895423;
+ Fri, 18 Nov 2016 21:21:35 -0800 (PST)
+MIME-Version: 1.0
+References: <55ba8045-08a6-8f68-8daf-12b152c432cb@fritz-elfert.de>
+In-Reply-To: <55ba8045-08a6-8f68-8daf-12b152c432cb@fritz-elfert.de>
+From: Andrew Bayer <andrew.bayer@gmail.com>
+Date: Sat, 19 Nov 2016 05:21:24 +0000
+Message-ID: <CAPbPdOYhBFzqPmvotVAUz1mwiUmiRpN93+LrVpY9dwgSPRqOMQ@mail.gmail.com>
+Subject: Re: Licensing decision for jenkins jclouds plugin required
+To: Fritz Elfert <fritz@fritz-elfert.de>, adrian@jclouds.org,
+        m.mavlyutov@gmail.com, mail@vijaykiran.com, mordred@inaugust.com
+Content-Type: multipart/alternative; boundary=001a11417a9aaa53600541a098c8
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.6 (listserv.isdn4linux.de [IPv6:2001:8d8:912:a9e:ab05:ddc6:eb4a:1ffd]); Sat, 19 Nov 2016 06:21:38 +0100 (CET)
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FROM,HTML_MESSAGE,RCVD_IN_DNSWL_LOW,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.1-i4l
+X-Spam-Checker-Version: SpamAssassin 3.4.1-i4l (2015-04-28) on
+	listserv.isdn4linux.de
+
+--001a11417a9aaa53600541a098c8
+Content-Type: text/plain; charset=UTF-8
+
+Either the ASL or MIT license would be fine by me.
+
+A.
+
+On Fri, Nov 18, 2016 at 6:30 PM Fritz Elfert <fritz@fritz-elfert.de> wrote:
+
+> Hi guys,
+>
+> I am writing to you, because you were initiators resp. are
+> co-maintainers or major contributors of the JClouds Jenkins Plugin
+> https://wiki.jenkins-ci.org/display/JENKINS/JClouds+Plugin
+>
+> I am the current maintainer of this plugin and recently was asked about
+> its license. To my surprise, there was *no* licensing information *at*
+> *all* in any of the sources.
+>
+> My thoughts regarding a license were:
+> It uses apache-jclouds as its primary functionality and therefore it
+> should have the same license (Apache 2.0 License)
+>
+> Before officially choosing this license, I just want to ask for your
+> opinion:
+>
+> ==> Are you ok with choosing Apache 2.0 License for this plugin?
+>
+> I will only choose a license, if I get a simple majority (meaning: at
+> least 3 of you should agree). So please just take the time for a short
+> answer.
+>
+> Thanks
+>  -Fritz
+>
+>
+
+--001a11417a9aaa53600541a098c8
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div style=3D"white-space:pre-wrap">Either the ASL or MIT license would be =
+fine by me.<br><br>A.</div><br><div class=3D"gmail_quote"><div dir=3D"ltr">=
+On Fri, Nov 18, 2016 at 6:30 PM Fritz Elfert &lt;<a href=3D"mailto:fritz@fr=
+itz-elfert.de">fritz@fritz-elfert.de</a>&gt; wrote:<br></div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;p=
+adding-left:1ex">Hi guys,<br class=3D"gmail_msg">
+<br class=3D"gmail_msg">
+I am writing to you, because you were initiators resp. are<br class=3D"gmai=
+l_msg">
+co-maintainers or major contributors of the JClouds Jenkins Plugin<br class=
+=3D"gmail_msg">
+<a href=3D"https://wiki.jenkins-ci.org/display/JENKINS/JClouds+Plugin" rel=
+=3D"noreferrer" class=3D"gmail_msg" target=3D"_blank">https://wiki.jenkins-=
+ci.org/display/JENKINS/JClouds+Plugin</a><br class=3D"gmail_msg">
+<br class=3D"gmail_msg">
+I am the current maintainer of this plugin and recently was asked about<br =
+class=3D"gmail_msg">
+its license. To my surprise, there was *no* licensing information *at*<br c=
+lass=3D"gmail_msg">
+*all* in any of the sources.<br class=3D"gmail_msg">
+<br class=3D"gmail_msg">
+My thoughts regarding a license were:<br class=3D"gmail_msg">
+It uses apache-jclouds as its primary functionality and therefore it<br cla=
+ss=3D"gmail_msg">
+should have the same license (Apache 2.0 License)<br class=3D"gmail_msg">
+<br class=3D"gmail_msg">
+Before officially choosing this license, I just want to ask for your<br cla=
+ss=3D"gmail_msg">
+opinion:<br class=3D"gmail_msg">
+<br class=3D"gmail_msg">
+=3D=3D&gt; Are you ok with choosing Apache 2.0 License for this plugin?<br =
+class=3D"gmail_msg">
+<br class=3D"gmail_msg">
+I will only choose a license, if I get a simple majority (meaning: at<br cl=
+ass=3D"gmail_msg">
+least 3 of you should agree). So please just take the time for a short<br c=
+lass=3D"gmail_msg">
+answer.<br class=3D"gmail_msg">
+<br class=3D"gmail_msg">
+Thanks<br class=3D"gmail_msg">
+=C2=A0-Fritz<br class=3D"gmail_msg">
+<br class=3D"gmail_msg">
+</blockquote></div>
+
+--001a11417a9aaa53600541a098c8--

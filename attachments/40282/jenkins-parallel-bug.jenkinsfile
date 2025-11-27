@@ -1,0 +1,282 @@
+#!groovy
+@Library('jenkins-shared@master') _
+
+pipeline {
+  agent none
+  parameters {
+    string(name: 'lib_version',         defaultValue: 'master',                               description: 'Version specifier on library to load, such as branch, tag, etc')
+    string(name: 'codeVersion',         defaultValue: 'master',                               description: 'What version of the repository to check out. This can be the full 40-character SHA-1 hash, the literal string HEAD, a branch name, or a tag name.')
+    string(name: 'packer_vars',         defaultValue: 'bake-azure-base.vars.json',            description: 'Variables file to be used by Packer')
+    string(name: 'packer_tpl',          defaultValue: 'universal-cloud-azure-v1.0.json',      description: 'Primary template Packer will run')
+    string(name: 'vhdCont',             defaultValue: 'vhds',                                 description: 'Default destination container when copying VHDs')
+    string(name: 'tag_role',            defaultValue: 'BaseImage',                            description: 'Azure Role tag assigned to the image created. Should be Central, Studio, etc.')
+    string(name: 'sasUri',              defaultValue: '',                                     description: 'Vhd SaS uri to source existing VHD to copy/create image. Use if doBake is false.')
+    booleanParam(name: 'doBake',        defaultValue: true,                                   description: 'Create a new image.')  
+    booleanParam(name: 'wusCopy',       defaultValue: true,                                   description: 'Whether to copy VHD & image gen to WestUS')
+    booleanParam(name: 'caeCopy',       defaultValue: false,                                  description: 'Whether to copy/create for this region')
+    booleanParam(name: 'easCopy',       defaultValue: false,                                  description: 'Whether to copy/create for this region')
+    booleanParam(name: 'eusCopy',       defaultValue: false,                                  description: 'Whether to copy/create for this region')
+    booleanParam(name: 'scusCopy',      defaultValue: false,                                  description: 'Whether to copy/create for this region')
+    booleanParam(name: 'uksCopy',       defaultValue: false,                                  description: 'Whether to copy/create for this region')
+    booleanParam(name: 'weuCopy',       defaultValue: false,                                  description: 'Whether to copy/create for this region')
+  }
+  options {
+    ansiColor('xterm')
+  }
+  stages {
+    stage('Checkout') {
+      agent { label 'linux' }
+      steps {
+        //Send to #dev-builds by default
+        notifySlack buildStatus:'STARTED'
+
+         checkout([
+           $class: 'GitSCM',
+           clean: true,
+           branches: [[name: '*/master']],
+           userRemoteConfigs: [[
+             url: 'git@bitbucket.org:*****',
+             credentialsId: '4671e2f0-0c18-4b1f-8567-6e79831730c0']]])
+      }
+    }
+    stage('Bake') {
+      when {
+        expression { params.doBake }
+      }
+      agent { label 'linux' }
+      environment {
+        CODE_VERSION = "${params.codeVersion}"
+      }
+      steps {
+        dir('packer') {
+          script {
+            withCredentials([[$class: 'AzureCredentialsBinding', credentialsId: '000f1f21-e4f4-4e24-8a1a-5376ccb80aca',
+                              clientIdVariable:       'ARM_CLIENT_ID',
+                              clientSecretVariable:   'ARM_CLIENT_SECRET',
+                              subscriptionIdVariable: 'ARM_SUBSCRIPTION_ID',
+                              tenantIdVariable:       'ARM_TENANT_ID']]) {
+              def log = 'packer.log'
+              
+              sh script: "packer build -var-file=${params.packer_vars} ${params.packer_tpl} | tee ${log}"
+
+              if (fileExists(log)) {
+                //MUST be SaS format
+                vhdSas = sh(returnStdout: true, script: "grep ^OSDiskUriReadOnlySas: ${log} | cut -d' ' -f2").trim()
+                
+                if (vhdSas == '') {
+                    currentBuild.result = 'FAILURE'
+                    error("Build failed: No VHD SaS string found in log file: ${log}")
+                }
+              }
+              else {
+                echo "Packer log file (${log}) not found."
+                currentBuild.result = 'FAILURE'
+              }
+            }
+          }// end script
+        }// end dir
+
+        //Successful VHD build
+        milestone(1)
+      }
+    } // end stage
+    stage('Processing') {
+      agent { label 'linux' }
+      steps {
+        script {  
+          //Default Storage Container
+          vhdCont     = "${params.vhdCont}"
+
+          //Azure Tags
+          tag_created = env.BUILD_TIMESTAMP
+          tag_role    = params.tag_role
+          tag_creator = 'Auto'
+          tag_info    = env.BUILD_TAG
+
+          if (!params.doBake) {
+            if (sasUri == '') {
+                currentBuild.result = 'FAILURE'
+                error("Build failed: Expected sasUri to have a value set. Check your build parameters")
+            }
+            vhdSas = "${params.sasUri}"
+          }
+          // Extracted full VHD URI
+          vhdUri  = sh(returnStdout: true, script: "echo '${vhdSas}' | cut -d'?' -f1").trim()
+          // Extracted full VHD filename
+          vhdBlob = sh(returnStdout: true, script: "echo '${vhdUri}' | grep -o '[^/]*\$'").trim()
+          // VHD name prefix without .vhd
+          imageName = sh(returnStdout: true, script: "echo ${vhdBlob} | awk '{print substr(\$1,1,length(\$1)-4)}'").trim()
+
+        }// end script
+      }
+    } // end stage
+    stage('Image Create: WestUS') {
+      when {
+        expression { params.wusCopy == true }
+      }
+      agent { label 'linux' }
+      steps {
+        script{
+            def destAcct= '*****'
+            def rg = 'Images-Mgmt-WestUS-Rg'
+
+          //Copy VHD to destAcct & create a managed image in the rg
+          generateImage rg:rg,
+            destAccount:destAcct,
+            storageCredId:'01f065b7-7020-4f23-8d26-95147a46fda2',
+            vhdBlob:vhdBlob,
+            vhdUri:vhdSas,
+            vhdCont:vhdCont,
+            imageName:imageName,
+            tag_role:tag_role,
+            sleepTime:1
+        }
+        //Successful Copy/ImageCreation
+        milestone(2)
+        }
+    } // end stage
+    stage('Image Create: Global') {
+      failFast false
+      parallel {
+        stage('CAE') {
+          when {
+            expression { params.caeCopy == true }
+          }
+          agent { label 'linux' }
+          steps {
+            script{
+                def destAcct= '*****'
+                def rg = 'Images-Mgmt-CanadaEast-Rg'
+
+              //Copy VHD to destAcct & create a managed image in the rg
+              generateImage rg:rg,
+                destAccount:destAcct,
+                storageCredId:'e662a110-765c-4e81-8732-6f6c3e32ad3c',
+                vhdBlob:vhdBlob,
+                vhdUri:vhdSas,
+                vhdCont:vhdCont,
+                imageName:imageName,
+                tag_role:tag_role
+            }
+          }
+        } // end stage
+        stage('EAS') {
+          when {
+            expression { params.easCopy == true }
+          }
+          agent { label 'linux' }
+          steps {
+            script{
+                def destAcct= '*****'
+                def rg = 'Images-Mgmt-EastAsia-Rg'
+
+              //Copy VHD to destAcct & create a managed image in the rg
+              generateImage rg:rg,
+                destAccount:destAcct,
+                storageCredId:'8a6003aa-51fa-4c31-b99e-e3ac217d1fe9',
+                vhdBlob:vhdBlob,
+                vhdUri:vhdSas,
+                vhdCont:vhdCont,
+                imageName:imageName,
+                tag_role:tag_role
+            }
+          }
+        } // end stage
+        stage('EUS') {
+          when {
+            expression { params.eusCopy == true }
+          }
+          agent { label 'linux' }
+          steps {
+            script{
+                def destAcct= '*****'
+                def rg = 'Images-Mgmt-EastUS-Rg'
+
+              //Copy VHD to destAcct & create a managed image in the rg
+              generateImage rg:rg,
+                destAccount:destAcct,
+                storageCredId:'a7ba5e08-26a3-43aa-ad72-92d0bc03b9e4',
+                vhdBlob:vhdBlob,
+                vhdUri:vhdSas,
+                vhdCont:vhdCont,
+                imageName:imageName,
+                tag_role:tag_role
+            }
+          }
+        } // end stage
+        stage('SCUS') {
+          when {
+            expression { params.scusCopy == true }
+          }
+          agent { label 'linux' }
+          steps {
+            script{
+                def destAcct= '*****'
+                def rg = 'Images-Mgmt-SouthCentralUS-Rg'
+
+              //Copy VHD to destAcct & create a managed image in the rg
+              generateImage rg:rg,
+                destAccount:destAcct,
+                storageCredId:'b30be792-3183-4ee4-8a21-71e262f1a6c5',
+                vhdBlob:vhdBlob,
+                vhdUri:vhdSas,
+                vhdCont:vhdCont,
+                imageName:imageName,
+                tag_role:tag_role
+            }
+          }
+        } // end stage
+        stage('UKS') {
+          when {
+            expression { params.uksCopy == true }
+          }
+          agent { label 'linux' }
+          steps {
+            script{
+                def destAcct= '*****'
+                def rg = 'Images-Mgmt-UKSouth-Rg'
+
+              //Copy VHD to destAcct & create a managed image in the rg
+              generateImage rg:rg,
+                destAccount:destAcct,
+                storageCredId:'15b930a1-8f8e-4f03-83f8-48b569e61cce',
+                vhdBlob:vhdBlob,
+                vhdUri:vhdSas,
+                vhdCont:vhdCont,
+                imageName:imageName,
+                tag_role:tag_role
+            }
+          }
+        } // end stage
+        stage('WEU') {
+          when {
+            expression { params.weuCopy == true }
+          }
+          agent { label 'linux' }
+          steps {
+            script{
+                def destAcct= '*****'
+                def rg = 'Images-Mgmt-WestEurope-Rg'
+
+              //Copy VHD to destAcct & create a managed image in the rg
+              generateImage rg:rg,
+                destAccount:destAcct,
+                storageCredId:'48e1aa92-3842-42ea-b462-6f07b9267de5',
+                vhdBlob:vhdBlob,
+                vhdUri:vhdSas,
+                vhdCont:vhdCont,
+                imageName:imageName,
+                tag_role:tag_role
+            }
+          }
+        } // end stage
+      } // end parallel block
+    } // end parent stage
+  } // end stages
+  post { 
+    always { 
+      echo 'Notifying Slack - END'
+      notifySlack buildStatus:currentBuild.result
+    }
+  }
+} // end pipeline

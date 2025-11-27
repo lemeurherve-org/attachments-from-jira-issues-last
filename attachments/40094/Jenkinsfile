@@ -1,0 +1,176 @@
+#!/usr/bin/env groovy
+
+pipeline {
+    agent {label 'master'}
+    parameters {
+        string(name: 'BRANCH',  description: 'Which branch to build',
+               defaultValue: "${env.BRANCH_NAME}")
+    }
+    environment {
+       OWNER = "grant"   // gets emailed
+       SLACK = "@grant_cocks"  // @user or #channel
+       BRANCH = "${env.BRANCH}"
+    }
+    options {
+        timeout(time: 1, unit: 'HOURS')
+        buildDiscarder(logRotator(daysToKeepStr: '30', numToKeepStr: '20',
+                       artifactDaysToKeepStr: '30', artifactNumToKeepStr: '20'))
+
+        disableConcurrentBuilds()
+        timestamps()
+        // declarative pipeline defaults are missing:
+        // submodules, recursively, update to tip-of-branch
+        // so we checkout submodules below
+    }
+
+    stages{
+
+        stage ('Checkout') {
+            steps {
+                sh 'git submodule update --init --remote --recursive'
+            }
+        }
+
+        stage ('Debug') {
+            steps {
+                sh 'env'
+            }
+        }
+
+        stage ('Build') {
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                    sh 'make clean'
+                    sh 'make build'
+                }
+            }
+        }
+
+        stage ('Test') {
+            environment {
+                SPARK_HOME = '/opt/spark220'
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                    sh 'make test'
+                }
+            }
+        }
+
+        stage ('Package') {
+            when {
+                branch "release/*"
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                    sh 'make package'
+                }
+            }
+        }
+
+        stage ('Stag') {
+            environment {
+                ENV = 'stag'
+            }
+            when {
+                branch "release/*"
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                    sh '/usr/local/bin/send_annotation --jenkins --title \"START\" --tags START'
+                    sshagent(credentials: ['backend-team-ssh-credentials']) {
+                        sh 'make deploy'
+                    }
+                }
+            }
+            post {
+                success {
+                    sh '/usr/local/bin/send_annotation --jenkins --title \"SUCCESS\" --tags SUCCESS'
+                }
+                failure {
+                    sh '/usr/local/bin/send_annotation --jenkins --title \"FAILED\" --tags FAILED'
+                }
+            }
+        }
+
+        // Only "release/" branches get past here
+        stage ('Approval') {
+           agent none
+            when {
+                branch "release/*"
+            }
+            steps {
+                emailext to: "${env.OWNER}@example.com",
+                    recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+                    subject: "Approve ${currentBuild.fullDisplayName}?",
+                    body: "Pipeline awaiting approval at ${env.JOB_URL}"
+
+                input message: "Should we release to prod?"
+            }
+        }
+
+        stage ('Prod') {
+            environment {
+                ENV = 'prod'
+            }
+            when {
+                branch "release/*"
+            }
+            steps {
+                sh '/usr/local/bin/send_annotation --jenkins --title \"START\" --tags START'
+
+                sshagent(credentials: ['backend-team-ssh-credentials']) {
+                    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                        sh 'make deploy'
+                    }
+                }
+            }
+            post {
+                success {
+                    sh '/usr/local/bin/send_annotation --jenkins --title \"SUCCESS\" --tags SUCCESS'
+                }
+                failure {
+                    sh '/usr/local/bin/send_annotation --jenkins --title \"FAILED\" --tags FAILED'
+                }
+            }
+        }
+
+    }
+
+   post {
+        failure {
+            // Email requestor, committer on last build
+            emailext to: "${env.OWNER}@example.com",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+                subject: "Pipeline ${currentBuild.result}: ${currentBuild.fullDisplayName}",
+                body: "See: ${env.BUILD_URL}",
+                attachLog: true
+
+            slackSend channel: "${env.SLACK}",
+                color: 'danger',  // good, warning, danger, #RRGGBB
+                message: "The pipeline ${currentBuild.fullDisplayName} <${env.BUILD_URL}|failed>"
+        }
+        success {
+            // Attempt to only email upon success if we've had a failure
+            script {
+                // sadly currentBuild.previousBuild.result isn't available
+                if(hudson.model.Result.FAILURE.equals(currentBuild.rawBuild.getPreviousBuild()?.getResult())) {
+                    echo "Build succeeded"
+                    // Email requestor, committer on last build
+                    // ${currentBuild.result} is sadly null (but _is_ set to FAILURE in other cases!)
+                    emailext to: "${env.OWNER}@example.com",
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+                        subject: "Pipeline successful: ${currentBuild.fullDisplayName}",
+                        body: "See: ${env.BUILD_URL}",
+                        attachLog: true
+
+                    slackSend channel: "${env.SLACK}",
+                        color: 'good',  // good, warning, danger, #RRGGBB
+                        message: "The pipeline ${currentBuild.fullDisplayName} <${env.BUILD_URL}|success>"
+                } else {
+                    echo "last build okay or missing?"
+                }
+            }
+        }
+    }
+}

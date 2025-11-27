@@ -1,0 +1,42 @@
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+index 32f7991..f7361b1 100644
+--- a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+@@ -236,9 +236,18 @@
+             }
+ 
+             private boolean belongsToSubsidiary(List<MavenModule> subsidiaries, String path) {
+-                for (MavenModule sub : subsidiaries)
+-                    if (FilenameUtils.separatorsToUnix(path).startsWith(normalizePath(sub.getRelativePath())))
++                for (MavenModule sub : subsidiaries) {
++                    String affectedPath = normalizePath(path);
++                    FilePath workspace = MavenModuleSetBuild.this.getWorkspace();
++                    FilePath modulePath = MavenModuleSetBuild.this.getModuleRoot().child(normalizePath(sub.getRelativePath()));
++                    String modulePathRel = modulePath.getRemote().substring(workspace.getRemote().length());
++                    if (modulePathRel.startsWith("/")) {
++                        modulePathRel = modulePathRel.substring(1);
++                    }
++                    modulePathRel = normalizePath(modulePathRel);
++                    if (affectedPath.startsWith(modulePathRel))
+                         return true;
++                }
+                 return false;
+             }
+ 
+@@ -246,8 +255,14 @@
+              * Does this change happen somewhere in the given module or its descendants?
+              */
+             private boolean isDescendantOf(ChangeLogSet.Entry e, MavenModule mod) {
+-                for (String path : e.getAffectedPaths()) {
+-                    if (FilenameUtils.separatorsToUnix(path).startsWith(normalizePath(mod.getRelativePath())))
++                for (String affectedPath : e.getAffectedPaths()) {
++                    FilePath workspace = MavenModuleSetBuild.this.getWorkspace();
++                    FilePath modulePath = MavenModuleSetBuild.this.getModuleRoot().child(normalizePath(mod.getRelativePath()));
++                    String modulePathRel = modulePath.getRemote().substring(workspace.getRemote().length());
++                    if (modulePathRel.startsWith("/")) {
++                        modulePathRel = modulePathRel.substring(1);
++                    }
++                    if (affectedPath.startsWith(modulePathRel))
+                         return true;
+                 }
+                 return false;

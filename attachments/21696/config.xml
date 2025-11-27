@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Build branch develop in debug target for Linux.&#xd;
+</description>
+  <logRotator>
+    <daysToKeep>60</daysToKeep>
+    <numToKeep>15</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>BuildName</name>
+          <description>Exact name of the build to copy objects to</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BranchName</name>
+          <description>The name of the mercurial branch to build</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>HGRepository</name>
+          <description>Name of the repository that contains the sources in Mercurial</description>
+          <defaultValue>CES</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>linux&amp;&amp;x64&amp;&amp;build</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>true</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>cp /mnt/buildsjenkins/${BuildName}/BuildFingerprint.txt .</command>
+    </hudson.tasks.Shell>
+    <EnvInjectBuilder>
+      <info>
+        <propertiesFilePath>BuildFingerprint.txt</propertiesFilePath>
+      </info>
+    </EnvInjectBuilder>
+    <hudson.tasks.Shell>
+      <command>JenkinsUpdateHGFiles.py --hgrepo ${HGRepository} --hgrev ${HGRev}</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>LinuxBuild -t:SetupEnvironment -p:BuildTarget=Debug</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>LinuxBuild -t:CompileAllProjects -p:BuildTarget=Debug</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>LinuxBuild -t:CompileUnitTests -p:BuildTarget=Debug</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.warnings.WarningsPublisher>
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <thresholdLimit>low</thresholdLimit>
+      <pluginName>[WARNINGS] </pluginName>
+      <defaultEncoding></defaultEncoding>
+      <canRunOnFailed>true</canRunOnFailed>
+      <useDeltaValues>false</useDeltaValues>
+      <thresholds>
+        <unstableTotalAll></unstableTotalAll>
+        <unstableTotalHigh></unstableTotalHigh>
+        <unstableTotalNormal></unstableTotalNormal>
+        <unstableTotalLow></unstableTotalLow>
+        <unstableNewAll></unstableNewAll>
+        <unstableNewHigh></unstableNewHigh>
+        <unstableNewNormal></unstableNewNormal>
+        <unstableNewLow></unstableNewLow>
+        <failedTotalAll></failedTotalAll>
+        <failedTotalHigh></failedTotalHigh>
+        <failedTotalNormal></failedTotalNormal>
+        <failedTotalLow></failedTotalLow>
+        <failedNewAll></failedNewAll>
+        <failedNewHigh></failedNewHigh>
+        <failedNewNormal></failedNewNormal>
+        <failedNewLow></failedNewLow>
+      </thresholds>
+      <shouldDetectModules>false</shouldDetectModules>
+      <dontComputeNew>false</dontComputeNew>
+      <parserConfigurations/>
+      <consoleLogParsers>
+        <string>GNU compiler 4 (ld)</string>
+        <string>GNU compiler 4 (gcc)</string>
+      </consoleLogParsers>
+    </hudson.plugins.warnings.WarningsPublisher>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>BuildFingerprint.txt</artifacts>
+      <latestOnly>false</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.Fingerprinter>
+      <targets>BuildFingerprint.txt</targets>
+      <recordBuildArtifacts>false</recordBuildArtifacts>
+    </hudson.tasks.Fingerprinter>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+      <template>#${BUILD_NUMBER} ${ENV,var=&quot;BuildName&quot;}</template>
+    </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+  </buildWrappers>
+</project>

@@ -1,0 +1,85 @@
+import groovy.transform.Field
+
+@Field def props = []
+@Field def newParams = []
+
+void setNewProps() {
+
+    try {
+        regenerateJob = (params.RegenerateJob == null) ? true : params.RegenerateJob
+    }
+    catch (MissingPropertyException e) {
+        regenerateJob = true
+    }
+
+    if (regenerateJob) {
+
+      def fallback = 'return "<p>failed to load</p>"'
+        
+      def dropoffList = """
+            if (Input_Box.contains('Time'))
+                [\'${Input_Box}\']
+            else
+                [\'Disabled:disabled\']
+          """
+
+      newParams += [$class: 'StringParameterDefinition',
+        choiceType: 'PT_TEXTBOX',
+        defaultValue : '' ,
+        description: 'The input box where user test the input.',
+        name: 'Input_Box'
+      ]
+
+      newParams += [$class: 'CascadeChoiceParameter',
+          choiceType: 'PT_SINGLE_SELECT',
+          name: 'Output_Dropoff',
+          description: 'The user input should be displayed at the list of Dropoff Menu.',
+          referencedParameters: 'Input_Box',
+          script: [$class: 'GroovyScript',
+              fallbackScript: [
+                  classpath: [],
+                  sandbox: true,
+                  script: fallback
+              ],
+              script: [
+                  classpath: [],
+                  sandbox: true,
+                  script: dropoffList
+              ]
+          ]
+      ]
+
+      props += [$class: 'ParametersDefinitionProperty', parameterDefinitions: newParams]
+      properties( properties: props )
+    }
+}
+
+
+pipeline {
+    agent {
+        node {
+            label 'node'
+        }
+    }
+    options {
+        buildDiscarder(
+            logRotator(
+                numToKeepStr:'20',
+                daysToKeepStr: '20',
+                artifactDaysToKeepStr: '20',
+                artifactNumToKeepStr: '20'
+            )
+        )
+    }
+
+    stages {
+        
+        stage('Set New Props') {
+            steps {
+                script {
+                    setNewProps()
+                }
+            }
+        }
+    }
+}

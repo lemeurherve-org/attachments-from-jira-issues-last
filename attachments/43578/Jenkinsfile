@@ -1,0 +1,39 @@
+#!/usr/bin/groovy
+
+def cps() {
+	println("cps - enter")
+	sh "ls"
+	println("cps - exit")
+}
+
+@NonCPS
+def non_cps() {
+	println("non_cps - enter")
+	sh "ls"
+	println("non_cps - exit")
+}
+
+pipeline {
+	agent any;
+
+	options {
+		timestamps()
+		skipDefaultCheckout()
+	}
+
+	stages {
+
+		stage('one') {
+			agent {
+				label 'master'
+			}
+			steps {
+				println('call cps')
+				cps()
+				println('call non-cps')
+				non_cps()
+				println('exit pipeline')
+			}
+		}
+	}
+}

@@ -1,0 +1,19 @@
+pipeline {
+    agent none
+    stages {
+        stage("top level stage") {
+            agent {label 'abc && def'}
+            stages {
+                stage("Create install package") {
+                    tools { // Moving this tools block up 2 lines so that it is at same level as agent fixes it
+                        jdk "Java 8"
+                    }
+                    steps {
+                        sh('which java')
+                        sh 'java -version'
+                    }
+                }
+            }
+        }
+    }
+}

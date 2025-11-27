@@ -1,0 +1,317 @@
+Generic Cause
+Obtained xxxxxx/public-grp/public-grp/service-biz-ebank.jenkinsfile from git http://10.254.254.62/xxxxxx/auto-deploy-grp/auto-package.git
+Loading library jenkinslib-tools@master
+Attempting to resolve master from remote references...
+ > git --version # timeout=10
+ > git --version # 'git version 2.30.2'
+using GIT_ASKPASS to set credentials ldap-devops-key
+ > git ls-remote -h -- http://10.254.254.62/xxxxxx/devops-grp/jenkinslib-tools.git # timeout=10
+Found match: refs/heads/master revision 8e6dea7ebf963823941542b76e43578d11b06046
+The recommended git tool is: NONE
+using credential ldap-devops-key
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b/.git # timeout=10
+ERROR: Workspace has a .git repository, but it appears to be corrupt.
+hudson.plugins.git.GitException: Error performing git command: git rev-parse --resolve-git-dir /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b/.git
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2679)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2601)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2597)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1968)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1980)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.hasGitRepo(CliGitAPIImpl.java:395)
+	at hudson.plugins.git.GitAPI.hasGitRepo(GitAPI.java:241)
+	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1211)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1308)
+	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:129)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.lambda$doRetrieve$1(SCMSourceRetriever.java:201)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrySCMOperation(SCMSourceRetriever.java:148)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.doRetrieve(SCMSourceRetriever.java:200)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrieve(SCMSourceRetriever.java:137)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.retrieve(LibraryAdder.java:205)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.add(LibraryAdder.java:143)
+	at org.jenkinsci.plugins.workflow.libs.LibraryDecorator$1.call(LibraryDecorator.java:125)
+	at org.codehaus.groovy.control.CompilationUnit.applyToPrimaryClassNodes(CompilationUnit.java:1087)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:624)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:602)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:579)
+	at groovy.lang.GroovyClassLoader.doParseClass(GroovyClassLoader.java:323)
+	at groovy.lang.GroovyClassLoader.parseClass(GroovyClassLoader.java:293)
+	at groovy.lang.GroovyShell.parseClass(GroovyShell.java:677)
+	at groovy.lang.GroovyShell.parse(GroovyShell.java:689)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.doParse(CpsGroovyShell.java:142)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.reparse(CpsGroovyShell.java:127)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.parseScript(CpsFlowExecution.java:561)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.start(CpsFlowExecution.java:513)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:335)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:442)
+Caused by: java.io.IOException: Cannot run program "git" (in directory "/var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b"): error=7, Argument list too long
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1128)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1071)
+	at hudson.Proc$LocalProc.<init>(Proc.java:254)
+	at hudson.Proc$LocalProc.<init>(Proc.java:223)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:997)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:509)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2664)
+	... 31 more
+Caused by: java.io.IOException: error=7, Argument list too long
+	at java.base/java.lang.ProcessImpl.forkAndExec(Native Method)
+	at java.base/java.lang.ProcessImpl.<init>(ProcessImpl.java:340)
+	at java.base/java.lang.ProcessImpl.start(ProcessImpl.java:271)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1107)
+	... 37 more
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository http://10.254.254.62/xxxxxx/devops-grp/jenkinslib-tools.git
+ > git init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b # timeout=10
+ERROR: Error cloning remote repo 'origin'
+hudson.plugins.git.GitException: Could not init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:1042)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$2.execute(CliGitAPIImpl.java:797)
+	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1226)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1308)
+	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:129)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.lambda$doRetrieve$1(SCMSourceRetriever.java:201)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrySCMOperation(SCMSourceRetriever.java:148)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.doRetrieve(SCMSourceRetriever.java:200)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrieve(SCMSourceRetriever.java:137)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.retrieve(LibraryAdder.java:205)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.add(LibraryAdder.java:143)
+	at org.jenkinsci.plugins.workflow.libs.LibraryDecorator$1.call(LibraryDecorator.java:125)
+	at org.codehaus.groovy.control.CompilationUnit.applyToPrimaryClassNodes(CompilationUnit.java:1087)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:624)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:602)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:579)
+	at groovy.lang.GroovyClassLoader.doParseClass(GroovyClassLoader.java:323)
+	at groovy.lang.GroovyClassLoader.parseClass(GroovyClassLoader.java:293)
+	at groovy.lang.GroovyShell.parseClass(GroovyShell.java:677)
+	at groovy.lang.GroovyShell.parse(GroovyShell.java:689)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.doParse(CpsGroovyShell.java:142)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.reparse(CpsGroovyShell.java:127)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.parseScript(CpsFlowExecution.java:561)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.start(CpsFlowExecution.java:513)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:335)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:442)
+Caused by: hudson.plugins.git.GitException: Error performing git command: git init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2679)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2601)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2597)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1968)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:1040)
+	... 26 more
+Caused by: java.io.IOException: Cannot run program "git" (in directory "/var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b"): error=7, Argument list too long
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1128)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1071)
+	at hudson.Proc$LocalProc.<init>(Proc.java:254)
+	at hudson.Proc$LocalProc.<init>(Proc.java:223)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:997)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:509)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2664)
+	... 30 more
+Caused by: java.io.IOException: error=7, Argument list too long
+	at java.base/java.lang.ProcessImpl.forkAndExec(Native Method)
+	at java.base/java.lang.ProcessImpl.<init>(ProcessImpl.java:340)
+	at java.base/java.lang.ProcessImpl.start(ProcessImpl.java:271)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1107)
+	... 36 more
+ERROR: Error cloning remote repo 'origin'
+Retrying after 10 seconds
+The recommended git tool is: NONE
+using credential ldap-devops-key
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository http://10.254.254.62/xxxxxx/devops-grp/jenkinslib-tools.git
+ > git init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b # timeout=10
+ERROR: Error cloning remote repo 'origin'
+hudson.plugins.git.GitException: Could not init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:1042)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$2.execute(CliGitAPIImpl.java:797)
+	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1226)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1308)
+	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:129)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.lambda$doRetrieve$1(SCMSourceRetriever.java:201)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrySCMOperation(SCMSourceRetriever.java:148)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.doRetrieve(SCMSourceRetriever.java:200)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrieve(SCMSourceRetriever.java:137)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.retrieve(LibraryAdder.java:205)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.add(LibraryAdder.java:143)
+	at org.jenkinsci.plugins.workflow.libs.LibraryDecorator$1.call(LibraryDecorator.java:125)
+	at org.codehaus.groovy.control.CompilationUnit.applyToPrimaryClassNodes(CompilationUnit.java:1087)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:624)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:602)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:579)
+	at groovy.lang.GroovyClassLoader.doParseClass(GroovyClassLoader.java:323)
+	at groovy.lang.GroovyClassLoader.parseClass(GroovyClassLoader.java:293)
+	at groovy.lang.GroovyShell.parseClass(GroovyShell.java:677)
+	at groovy.lang.GroovyShell.parse(GroovyShell.java:689)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.doParse(CpsGroovyShell.java:142)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.reparse(CpsGroovyShell.java:127)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.parseScript(CpsFlowExecution.java:561)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.start(CpsFlowExecution.java:513)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:335)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:442)
+Caused by: hudson.plugins.git.GitException: Error performing git command: git init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2679)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2601)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2597)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1968)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:1040)
+	... 26 more
+Caused by: java.io.IOException: Cannot run program "git" (in directory "/var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b"): error=7, Argument list too long
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1128)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1071)
+	at hudson.Proc$LocalProc.<init>(Proc.java:254)
+	at hudson.Proc$LocalProc.<init>(Proc.java:223)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:997)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:509)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2664)
+	... 30 more
+Caused by: java.io.IOException: error=7, Argument list too long
+	at java.base/java.lang.ProcessImpl.forkAndExec(Native Method)
+	at java.base/java.lang.ProcessImpl.<init>(ProcessImpl.java:340)
+	at java.base/java.lang.ProcessImpl.start(ProcessImpl.java:271)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1107)
+	... 36 more
+ERROR: Error cloning remote repo 'origin'
+Retrying after 10 seconds
+The recommended git tool is: NONE
+using credential ldap-devops-key
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository http://10.254.254.62/xxxxxx/devops-grp/jenkinslib-tools.git
+ > git init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b # timeout=10
+ERROR: Error cloning remote repo 'origin'
+hudson.plugins.git.GitException: Could not init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:1042)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$2.execute(CliGitAPIImpl.java:797)
+	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1226)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1308)
+	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:129)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.lambda$doRetrieve$1(SCMSourceRetriever.java:201)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrySCMOperation(SCMSourceRetriever.java:148)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.doRetrieve(SCMSourceRetriever.java:200)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrieve(SCMSourceRetriever.java:137)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.retrieve(LibraryAdder.java:205)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.add(LibraryAdder.java:143)
+	at org.jenkinsci.plugins.workflow.libs.LibraryDecorator$1.call(LibraryDecorator.java:125)
+	at org.codehaus.groovy.control.CompilationUnit.applyToPrimaryClassNodes(CompilationUnit.java:1087)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:624)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:602)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:579)
+	at groovy.lang.GroovyClassLoader.doParseClass(GroovyClassLoader.java:323)
+	at groovy.lang.GroovyClassLoader.parseClass(GroovyClassLoader.java:293)
+	at groovy.lang.GroovyShell.parseClass(GroovyShell.java:677)
+	at groovy.lang.GroovyShell.parse(GroovyShell.java:689)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.doParse(CpsGroovyShell.java:142)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.reparse(CpsGroovyShell.java:127)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.parseScript(CpsFlowExecution.java:561)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.start(CpsFlowExecution.java:513)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:335)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:442)
+Caused by: hudson.plugins.git.GitException: Error performing git command: git init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2679)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2601)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2597)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1968)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:1040)
+	... 26 more
+Caused by: java.io.IOException: Cannot run program "git" (in directory "/var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b"): error=7, Argument list too long
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1128)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1071)
+	at hudson.Proc$LocalProc.<init>(Proc.java:254)
+	at hudson.Proc$LocalProc.<init>(Proc.java:223)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:997)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:509)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2664)
+	... 30 more
+Caused by: java.io.IOException: error=7, Argument list too long
+	at java.base/java.lang.ProcessImpl.forkAndExec(Native Method)
+	at java.base/java.lang.ProcessImpl.<init>(ProcessImpl.java:340)
+	at java.base/java.lang.ProcessImpl.start(ProcessImpl.java:271)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1107)
+	... 36 more
+ERROR: Error cloning remote repo 'origin'
+Retrying after 10 seconds
+The recommended git tool is: NONE
+using credential ldap-devops-key
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository http://10.254.254.62/xxxxxx/devops-grp/jenkinslib-tools.git
+ > git init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b # timeout=10
+ERROR: Error cloning remote repo 'origin'
+hudson.plugins.git.GitException: Could not init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:1042)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$2.execute(CliGitAPIImpl.java:797)
+	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1226)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1308)
+	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:129)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.lambda$doRetrieve$1(SCMSourceRetriever.java:201)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrySCMOperation(SCMSourceRetriever.java:148)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.doRetrieve(SCMSourceRetriever.java:200)
+	at org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever.retrieve(SCMSourceRetriever.java:137)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.retrieve(LibraryAdder.java:205)
+	at org.jenkinsci.plugins.workflow.libs.LibraryAdder.add(LibraryAdder.java:143)
+	at org.jenkinsci.plugins.workflow.libs.LibraryDecorator$1.call(LibraryDecorator.java:125)
+	at org.codehaus.groovy.control.CompilationUnit.applyToPrimaryClassNodes(CompilationUnit.java:1087)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:624)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:602)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:579)
+	at groovy.lang.GroovyClassLoader.doParseClass(GroovyClassLoader.java:323)
+	at groovy.lang.GroovyClassLoader.parseClass(GroovyClassLoader.java:293)
+	at groovy.lang.GroovyShell.parseClass(GroovyShell.java:677)
+	at groovy.lang.GroovyShell.parse(GroovyShell.java:689)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.doParse(CpsGroovyShell.java:142)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.reparse(CpsGroovyShell.java:127)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.parseScript(CpsFlowExecution.java:561)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.start(CpsFlowExecution.java:513)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:335)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:442)
+Caused by: hudson.plugins.git.GitException: Error performing git command: git init /var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2679)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2601)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2597)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1968)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:1040)
+	... 26 more
+Caused by: java.io.IOException: Cannot run program "git" (in directory "/var/jenkins_home/workspace/public-grp/service-biz-ebank-ci@libs/a5175f6804a748f94e8a30d87b95a21b6dc885c4ca92d4820b19bb32fff00e5b"): error=7, Argument list too long
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1128)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1071)
+	at hudson.Proc$LocalProc.<init>(Proc.java:254)
+	at hudson.Proc$LocalProc.<init>(Proc.java:223)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:997)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:509)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2664)
+	... 30 more
+Caused by: java.io.IOException: error=7, Argument list too long
+	at java.base/java.lang.ProcessImpl.forkAndExec(Native Method)
+	at java.base/java.lang.ProcessImpl.<init>(ProcessImpl.java:340)
+	at java.base/java.lang.ProcessImpl.start(ProcessImpl.java:271)
+	at java.base/java.lang.ProcessBuilder.start(ProcessBuilder.java:1107)
+	... 36 more
+ERROR: Error cloning remote repo 'origin'
+ERROR: Maximum checkout retry attempts reached, aborting
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+WorkflowScript: Loading libraries failed
+
+1 error
+
+	at org.codehaus.groovy.control.ErrorCollector.failIfErrors(ErrorCollector.java:309)
+	at org.codehaus.groovy.control.CompilationUnit.applyToPrimaryClassNodes(CompilationUnit.java:1107)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:624)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:602)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:579)
+	at groovy.lang.GroovyClassLoader.doParseClass(GroovyClassLoader.java:323)
+	at groovy.lang.GroovyClassLoader.parseClass(GroovyClassLoader.java:293)
+	at groovy.lang.GroovyShell.parseClass(GroovyShell.java:677)
+	at groovy.lang.GroovyShell.parse(GroovyShell.java:689)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.doParse(CpsGroovyShell.java:142)
+	at org.jenkinsci.plugins.workflow.cps.CpsGroovyShell.reparse(CpsGroovyShell.java:127)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.parseScript(CpsFlowExecution.java:561)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.start(CpsFlowExecution.java:513)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:335)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:442)
+Finished: FAILURE

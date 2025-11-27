@@ -1,0 +1,63 @@
+Started by user Michael Power
+[EnvInject] - Loading node environment variables.
+Building remotely on 65c52ccc (lxc-fedora17 standard m1.large large) in workspace /scratch/jenkins/workspace/sandbox
+[sandbox] $ /bin/sh -xe /tmp/hudson2251195500127916516.sh
++ npm install iocat
+
+> ws@0.4.32 install /scratch/jenkins/workspace/sandbox/node_modules/iocat/node_modules/ws
+> (node-gyp rebuild 2> builderror.log) || (exit 0)
+
+make: Entering directory `/scratch/jenkins/workspace/sandbox/node_modules/iocat/node_modules/ws/build'
+  CXX(target) Release/obj.target/bufferutil/src/bufferutil.o
+  SOLINK_MODULE(target) Release/obj.target/bufferutil.node
+  SOLINK_MODULE(target) Release/obj.target/bufferutil.node: Finished
+  COPY Release/bufferutil.node
+  CXX(target) Release/obj.target/validation/src/validation.o
+  SOLINK_MODULE(target) Release/obj.target/validation.node
+  SOLINK_MODULE(target) Release/obj.target/validation.node: Finished
+  COPY Release/validation.node
+make: Leaving directory `/scratch/jenkins/workspace/sandbox/node_modules/iocat/node_modules/ws/build'
+iocat@0.0.5 node_modules/iocat
+├── commander@1.3.2 (keypress@0.1.0)
+└── ws@0.4.32 (tinycolor@0.0.1, options@0.0.6, commander@2.1.0, nan@1.0.0)
+FATAL: Unable to add version sandbox-86 to jira project IC
+AxisFault
+ faultCode: {http://xml.apache.org/axis/}HTTP
+ faultSubcode: 
+ faultString: (404)Not Found
+ faultActor: 
+ faultNode: 
+ faultDetail: 
+	{}:return code:  404
+&lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;&lt;title&gt;Oops, you&amp;#39;ve found a dead link. - JIRA&lt;/title&gt;&lt;script type=&quot;text/javascript&quot;&gt;contextPath = &quot;&quot;;&lt;/script&gt;&lt;link type='text/css' rel='stylesheet' href='/static-assets/metal-all.css' media='all'&gt;&lt;script src='/static-assets/metal-all.js'&gt;&lt;/script&gt;&lt;!--[if lt IE 9]&gt;&lt;link type='text/css' rel='stylesheet' href='/static-assets/metal-all-ie.css' media='all'&gt;&lt;script src='/static-assets/metal-all-ie.js'&gt;&lt;/script&gt;&lt;![endif]--&gt;&lt;!--[if IE 9]&gt;&lt;link type='text/css' rel='stylesheet' href='/static-assets/metal-all-ie9.css' media='all'&gt;&lt;![endif]--&gt;&lt;meta name=&quot;decorator&quot; content=&quot;none&quot; /&gt;&lt;/head&gt;&lt;body class=&quot; error-page error404&quot;&gt;&lt;script type=&quot;text/javascript&quot;&gt;document.body.className += &quot; js-enabled&quot;;&lt;/script&gt;&lt;div id=&quot;page&quot;&gt;&lt;header id=&quot;header&quot; role=&quot;banner&quot;&gt;&lt;/header&gt;&lt;!-- #header --&gt;&lt;section id=&quot;content&quot; role=&quot;main&quot;&gt;&lt;div class=&quot;aui-page-panel&quot;&gt;&lt;div class=&quot;aui-page-panel-inner&quot;&gt;&lt;section class=&quot;aui-page-panel-content lowerContent&quot;&gt;&lt;div id=&quot;error-state&quot;&gt;&lt;span class=&quot;error-type&quot;&gt;&lt;/span&gt;&lt;h1&gt;Oops, you&amp;#39;ve found a dead link.&lt;/h1&gt;&lt;ul&gt;&lt;li&gt;Go back to the &lt;a href=&quot;javascript:window.history.back()&quot;&gt;previous page&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Go to the &lt;a href=&quot;/secure/MyJiraHome.jspa&quot;&gt;Home Page&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/section&gt;&lt;!-- .aui-page-panel-content --&gt;&lt;/div&gt;&lt;!-- .aui-page-panel-inner --&gt;&lt;/div&gt;&lt;!-- .aui-page-panel --&gt;&lt;/section&gt;&lt;!-- #content --&gt;&lt;footer id=&quot;footer&quot; role=&quot;contentinfo&quot;&gt;&lt;section class=&quot;footer-body&quot;&gt;&lt;div id=&quot;footer-logo&quot;&gt;&lt;a href=&quot;http://www.atlassian.com/&quot;&gt;Atlassian&lt;/a&gt;&lt;/div&gt;&lt;/section&gt;&lt;/footer&gt;&lt;!-- #footer --&gt;&lt;/div&gt;&lt;!-- #page --&gt;&lt;/body&gt;&lt;/html&gt;
+	{http://xml.apache.org/axis/}HttpErrorCode:404
+
+(404)Not Found
+	at org.apache.axis.transport.http.HTTPSender.readFromSocket(HTTPSender.java:744)
+	at org.apache.axis.transport.http.HTTPSender.invoke(HTTPSender.java:144)
+	at org.apache.axis.strategies.InvocationStrategy.visit(InvocationStrategy.java:32)
+	at org.apache.axis.SimpleChain.doVisiting(SimpleChain.java:118)
+	at org.apache.axis.SimpleChain.invoke(SimpleChain.java:83)
+	at org.apache.axis.client.AxisClient.invoke(AxisClient.java:165)
+	at org.apache.axis.client.Call.invokeEngine(Call.java:2784)
+	at org.apache.axis.client.Call.invoke(Call.java:2767)
+	at org.apache.axis.client.Call.invoke(Call.java:2443)
+	at org.apache.axis.client.Call.invoke(Call.java:2366)
+	at org.apache.axis.client.Call.invoke(Call.java:1812)
+	at hudson.plugins.jira.soap.JirasoapserviceV2SoapBindingStub.login(JirasoapserviceV2SoapBindingStub.java:3797)
+	at hudson.plugins.jira.JiraSite.createSession(JiraSite.java:240)
+	at hudson.plugins.jira.JiraSite.getSession(JiraSite.java:211)
+	at hudson.plugins.jira.JiraSite.getVersions(JiraSite.java:436)
+	at hudson.plugins.jira.JiraVersionCreator.perform(JiraVersionCreator.java:77)
+	at hudson.tasks.BuildStepMonitor$3.perform(BuildStepMonitor.java:45)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:771)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:731)
+	at hudson.model.Build$BuildExecution.post2(Build.java:183)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:680)
+	at hudson.model.Run.execute(Run.java:1766)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:381)
+Finished: FAILURE
+Build step 'Create JIRA version' marked build as failure
+Finished: FAILURE

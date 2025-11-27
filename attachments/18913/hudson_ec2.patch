@@ -1,0 +1,37 @@
+Index: src/main/java/hudson/plugins/ec2/EC2Slave.java
+===================================================================
+--- src/main/java/hudson/plugins/ec2/EC2Slave.java	(revision 23764)
++++ src/main/java/hudson/plugins/ec2/EC2Slave.java	(working copy)
+@@ -30,8 +30,8 @@
+      */
+     public final String initScript;
+ 
+-    public EC2Slave(String instanceId, String description, String remoteFS, InstanceType type, String label, String initScript) throws FormException, IOException {
+-        this(instanceId, description, remoteFS, toNumExecutors(type), Mode.NORMAL, label, initScript, Collections.<NodeProperty<?>>emptyList());
++    public EC2Slave(String instanceId, String description, String remoteFS, InstanceType type, int numExecutors, String label, String initScript) throws FormException, IOException {
++        this(instanceId, description, remoteFS, numExecutors, Mode.NORMAL, label, initScript, Collections.<NodeProperty<?>>emptyList());
+     }
+ 
+     @DataBoundConstructor
+Index: src/main/java/hudson/plugins/ec2/SlaveTemplate.java
+===================================================================
+--- src/main/java/hudson/plugins/ec2/SlaveTemplate.java	(revision 23764)
++++ src/main/java/hudson/plugins/ec2/SlaveTemplate.java	(working copy)
+@@ -98,7 +98,7 @@
+                 throw new EC2Exception("No matching keypair found on EC2. Is the EC2 private key a valid one?");
+             Instance inst = ec2.runInstances(ami, 1, 1, Collections.<String>emptyList(), userData, keyPair.getKeyName(), type).getInstances().get(0);
+ 
+-            return new EC2Slave(inst.getInstanceId(),description,remoteFS,type, labels,initScript);
++            return new EC2Slave(inst.getInstanceId(),description,remoteFS,type, getNumExecutors(),labels,initScript);
+         } catch (FormException e) {
+             throw new AssertionError(); // we should have discovered all configuration issues upfront
+         }
+@@ -116,7 +116,7 @@
+             logger.println("Attaching to "+instanceId);
+             Instance inst = ec2.describeInstances(Collections.singletonList(instanceId)).get(0).getInstances().get(0);
+ 
+-            return new EC2Slave(inst.getInstanceId(),description,remoteFS,type, labels,initScript);
++            return new EC2Slave(inst.getInstanceId(),description,remoteFS,type, getNumExecutors(),labels,initScript);
+         } catch (FormException e) {
+             throw new AssertionError(); // we should have discovered all configuration issues upfront
+         }

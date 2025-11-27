@@ -1,0 +1,20 @@
+Index: src/main/java/com/tek42/perforce/parse/ChangelistBuilder.java
+===================================================================
+118c118,122
+< 							details.nextToken(); // by
+---
+> 							
+> 							String possibleUser = details.nextToken(); // by
+> 							String status = "";
+> 							if ("by".equals(possibleUser))
+> 							{
+120c124,130
+< 							job.setStatus(details.nextToken());
+---
+> 							  status = details.nextToken(); // status
+> 							}
+> 							else
+> 							{
+> 							  status = possibleUser;
+> 							}
+> 							job.setStatus(status);

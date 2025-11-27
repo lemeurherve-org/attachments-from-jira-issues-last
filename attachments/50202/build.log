@@ -1,0 +1,117 @@
+Started by user Cyril POTTIERS
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on my-jenkinsagent-alpine-000ehqzkhrv7g on docker-esclave in /workspace/test-maven-plugin
+[Pipeline] {
+[Pipeline] sh
++ docker version
+Client:
+ Version:      17.03.0-ce
+ API version:  1.26
+ Go version:   go1.7.5
+ Git commit:   3a232c8
+ Built:        Tue Feb 28 07:52:04 2017
+ OS/Arch:      linux/amd64
+
+Server:
+ Version:      18.06.1-ce
+ API version:  1.38 (minimum version 1.12)
+ Go version:   go1.10.3
+ Git commit:   e68fc7a
+ Built:        Tue Aug 21 17:25:29 2018
+ OS/Arch:      linux/amd64
+ Experimental: false
+[Pipeline] isUnix
+[Pipeline] sh
++ docker inspect -f . maven
+.
+[Pipeline] withDockerContainer
+my-jenkinsagent-alpine-000ehqzkhrv7g on docker-esclave seems to be running inside container f95b82d0c6419d517aa0a82833da16834ae2da52de2ac45d08eecf255a220902
+$ docker run -t -d -u 10064:10064 -w /workspace/test-maven-plugin --volumes-from f95b82d0c6419d517aa0a82833da16834ae2da52de2ac45d08eecf255a220902 -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** maven cat
+$ docker top d8fc67572e381a6e7fcad4fc90679d5a2f66ab379247964c3bd30fefeb65be9f -eo pid,comm
+ERROR: The container started but didn't run the expected command. Please double check your ENTRYPOINT does execute the command passed as docker run argument, as required by official docker images (see https://github.com/docker-library/official-images#consistency for entrypoint consistency requirements).
+Alternatively you can force image entrypoint to be disabled by adding option `--entrypoint=''`.
+[Pipeline] {
+[Pipeline] withMaven
+[withMaven] Options: []
+[withMaven] Available options: 
+[withMaven] IMPORTANT "withMaven(){...}" step running within a Docker container. See Pipeline Maven Plugin FAQ in case of problem.
+[withMaven] using JDK installation provided by the build agent
+[withMaven] using Maven settings provided by the Jenkins global configuration. Maven settings defined by 'DefaultSettingsProvider', NOT overriding it.
+[withMaven] using Maven global settings provided by the Jenkins Managed Configuration File 'default-maven-settings' 
+[withMaven] using Maven global settings.xml 'default-maven-settings' with NO Maven servers credentials provided by Jenkins
+$ docker exec d8fc67572e381a6e7fcad4fc90679d5a2f66ab379247964c3bd30fefeb65be9f printenv MAVEN_HOME
+$ docker exec d8fc67572e381a6e7fcad4fc90679d5a2f66ab379247964c3bd30fefeb65be9f printenv M2_HOME
+[withMaven] No Maven Installation or MAVEN_HOME found, looking for mvn executable by using which/where command
+$ docker exec d8fc67572e381a6e7fcad4fc90679d5a2f66ab379247964c3bd30fefeb65be9f /bin/sh -c "which mvn"
+[withMaven] Maven installation not specified in the 'withMaven()' step and not found on the build agent but 'mvnw' script found in the workspace.
+[Pipeline] {
+[Pipeline] git
+No credentials specified
+Warning: JENKINS-30600: special launcher org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1@2f9d8685; decorates RemoteLauncher[hudson.remoting.Channel@1d518655:maven3-node8-jdk8-alpine-000ehqzkhrv7g] will be ignored (a typical symptom is the Git executable not being run inside a designated container)
+Fetching changes from the remote Git repository
+ > git rev-parse --is-inside-work-tree # timeout=10
+ > git config remote.origin.url https://github.com/cyrille-leclerc/my-jar.git # timeout=10
+Fetching upstream changes from https://github.com/cyrille-leclerc/my-jar.git
+ > git --version # timeout=10
+ > git fetch --tags --progress -- https://github.com/cyrille-leclerc/my-jar.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+Checking out Revision 368d62e1a8857e7c50726a494fca555ccb25f814 (refs/remotes/origin/master)
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 368d62e1a8857e7c50726a494fca555ccb25f814 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D master # timeout=10
+ > git checkout -b master 368d62e1a8857e7c50726a494fca555ccb25f814 # timeout=10
+Commit message: "bum mvnw to Maven 3.6.0"
+ > git rev-list --no-walk 368d62e1a8857e7c50726a494fca555ccb25f814 # timeout=10
+[Pipeline] sh
++ ls -al /workspace/test-maven-plugin@tmp/withMaven861e50e0
+total 52
+drwxr-xr-x 2 10064 10064    62 Feb 13 14:14 .
+drwxr-xr-x 6 10064 10064   103 Feb 13 14:14 ..
+-rw-r--r-- 1 10064 10064  2572 Feb 13 14:14 globalSettings.xml
+-rw-r--r-- 1 10064 10064 45090 Feb 13 14:14 pipeline-maven-spy.jar
+[Pipeline] sh
++ export PATH=/workspace/test-maven-plugin@tmp/withMaven861e50e0:/usr/local/openjdk-11/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++ mvn clean deploy
+Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/workspace/test-maven-plugin@tmp/withMaven861e50e0/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/workspace/test-maven-plugin@tmp/withMaven861e50e0" 
+[INFO] [jenkins-event-spy] Generate /workspace/test-maven-plugin@tmp/withMaven861e50e0/maven-spy-20200213-141417-38010743186694327637336.log.tmp ...
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< com.example:my-jar >-------------------------
+[INFO] Building my-jar 0.7-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:08 min
+[INFO] Finished at: 2020-02-13T14:16:25Z
+[INFO] ------------------------------------------------------------------------
+[INFO] [jenkins-event-spy] Generated /workspace/test-maven-plugin@tmp/withMaven861e50e0/maven-spy-20200213-141417-38010743186694327637336.log
+[ERROR] Plugin org.apache.maven.plugins:maven-clean-plugin:2.5 or one of its dependencies could not be resolved: Failed to read artifact descriptor for org.apache.maven.plugins:maven-clean-plugin:jar:2.5: Could not transfer artifact org.apache.maven.plugins:maven-clean-plugin:pom:2.5 from/to central (https://repo.maven.apache.org/maven2): Transfer failed for https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.pom: Connect to repo.maven.apache.org:443 [repo.maven.apache.org/151.101.120.215] failed: Connection timed out (Connection timed out) -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException
+[Pipeline] }
+[withMaven] Evaluate Maven Spy logs: /workspace/test-maven-plugin@tmp/withMaven861e50e0/maven-spy-20200213-141417-38010743186694327637336.log
+[withMaven] Maven Publisher Strategy: Explicit
+[withMaven] Maven Publishers: []
+[withMaven] Publishers: 
+[Pipeline] // withMaven
+[Pipeline] }
+$ docker stop --time=1 d8fc67572e381a6e7fcad4fc90679d5a2f66ab379247964c3bd30fefeb65be9f
+$ docker rm -f d8fc67572e381a6e7fcad4fc90679d5a2f66ab379247964c3bd30fefeb65be9f
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+[withMaven] pipelineGraphPublisher - triggerDownstreamPipelines
+[withMaven] Skip triggering downstream jobs for upstream build with ignored result status test-maven-plugin #5: FAILURE
+ERROR: script returned exit code 1
+Finished: FAILURE

@@ -1,0 +1,455 @@
+Label "test-tempalte_38-3vq0z" excess workload: 1, executors: 0
+Jan 23, 2023 1:01:34 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Template for label "test-tempalte_38-3vq0z": test-tempalte_38-3vq0z-vrnj8
+Jan 23, 2023 1:01:34 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Combining pod templates, parent: PodTemplate{id='7894dfd5-2c03-4f7d-8492-65bc40cc56e9', name='xsmall', namespace='devops', label='jenkins-jenkins-agent', serviceAccount='default', nodeSelector='nodetype=jenkins-agent', containers=[ContainerTemplate{name='main', image='ubuntu:18.04', workingDir='/home/jenkins/agent', command='sleep', args='9999999', resourceRequestCpu='', resourceRequestMemory='', resourceRequestEphemeralStorage='', resourceLimitCpu='', resourceLimitMemory='', resourceLimitEphemeralStorage='', livenessProbe=ContainerLivenessProbe{execArgs='', timeoutSeconds=0, initialDelaySeconds=0, failureThreshold=0, periodSeconds=0, successThreshold=0}}]}
+Jan 23, 2023 1:01:34 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Combining pod templates, template: PodTemplate{id='2ee19de2-4462-4ff0-8d08-5c3239f38a60', inheritFrom='xsmall', name='test-tempalte_38-3vq0z-vrnj8', namespace='devops', label='test-tempalte_38-3vq0z', annotations=[PodAnnotation{key='buildUrl', value='http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/'}, PodAnnotation{key='runUrl', value='job/test-tempalte/38/'}]}
+Jan 23, 2023 1:01:34 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Pod templates combined: PodTemplate{id='2ee19de2-4462-4ff0-8d08-5c3239f38a60', inheritFrom='xsmall', name='test-tempalte_38-3vq0z-vrnj8', namespace='devops', label='test-tempalte_38-3vq0z', serviceAccount='default', nodeSelector='nodetype=jenkins-agent', containers=[ContainerTemplate{name='main', image='ubuntu:18.04', workingDir='/home/jenkins/agent', command='sleep', args='9999999', resourceRequestCpu='', resourceRequestMemory='', resourceRequestEphemeralStorage='', resourceLimitCpu='', resourceLimitMemory='', resourceLimitEphemeralStorage='', livenessProbe=ContainerLivenessProbe{execArgs='', timeoutSeconds=0, initialDelaySeconds=0, failureThreshold=0, periodSeconds=0, successThreshold=0}}], annotations=[PodAnnotation{key='buildUrl', value='http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/'}, PodAnnotation{key='runUrl', value='job/test-tempalte/38/'}], yamls=[
+spec:
+  containers:
+  - name: main
+    image: maven:3.8.1-jdk-11
+], unwrapped=true}
+Jan 23, 2023 1:01:34 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Combined parent + template is PodTemplate{id='2ee19de2-4462-4ff0-8d08-5c3239f38a60', inheritFrom='xsmall', name='test-tempalte_38-3vq0z-vrnj8', namespace='devops', label='test-tempalte_38-3vq0z', serviceAccount='default', nodeSelector='nodetype=jenkins-agent', containers=[ContainerTemplate{name='main', image='ubuntu:18.04', workingDir='/home/jenkins/agent', command='sleep', args='9999999', resourceRequestCpu='', resourceRequestMemory='', resourceRequestEphemeralStorage='', resourceLimitCpu='', resourceLimitMemory='', resourceLimitEphemeralStorage='', livenessProbe=ContainerLivenessProbe{execArgs='', timeoutSeconds=0, initialDelaySeconds=0, failureThreshold=0, periodSeconds=0, successThreshold=0}}], annotations=[PodAnnotation{key='buildUrl', value='http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/'}, PodAnnotation{key='runUrl', value='job/test-tempalte/38/'}], yamls=[
+spec:
+  containers:
+  - name: main
+    image: maven:3.8.1-jdk-11
+], unwrapped=true}
+Jan 23, 2023 1:01:34 PM FINEST org.csanchez.jenkins.plugins.kubernetes.KubernetesProvisioningLimits
+kubernetes global limit: 1/2147483647
+Jan 23, 2023 1:01:34 PM FINEST org.csanchez.jenkins.plugins.kubernetes.KubernetesProvisioningLimits
+test-tempalte_38-3vq0z-vrnj8 template limit: 1/2147483647
+Jan 23, 2023 1:01:34 PM FINEST org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Planned 1 Kubernetes agents with template "test-tempalte_38-3vq0z-vrnj8"
+Jan 23, 2023 1:01:35 PM FINEST org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Building connection to Kubernetes kubernetes URL https://kubernetes.default namespace devops
+Jan 23, 2023 1:01:35 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Connected to Kubernetes kubernetes URL https://kubernetes.default/ namespace devops
+Jan 23, 2023 1:01:35 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Parsed pod template from yaml: ---
+apiVersion: "v1"
+kind: "Pod"
+spec:
+  containers:
+  - image: "maven:3.8.1-jdk-11"
+    name: "main"
+
+Jan 23, 2023 1:01:35 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Combining pods, parent: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata: {}
+spec:
+  containers:
+  - image: "maven:3.8.1-jdk-11"
+    name: "main"
+ template: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/"
+    runUrl: "job/test-tempalte/38/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "bcd8905970fc1b472a2263fa76fec6ca2fe10655"
+    jenkins/label: "test-tempalte_38-3vq0z"
+  name: "test-tempalte-38-3vq0z-vrnj8-03653"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "ubuntu:18.04"
+    imagePullPolicy: "IfNotPresent"
+    name: "main"
+    resources:
+      limits: {}
+      requests: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  hostNetwork: false
+  nodeSelector:
+    nodetype: "jenkins-agent"
+  serviceAccountName: "default"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Jan 23, 2023 1:01:35 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Pods combined: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/"
+    runUrl: "job/test-tempalte/38/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "bcd8905970fc1b472a2263fa76fec6ca2fe10655"
+    jenkins/label: "test-tempalte_38-3vq0z"
+  name: "test-tempalte-38-3vq0z-vrnj8-03653"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "ubuntu:18.04"
+    imagePullPolicy: "IfNotPresent"
+    name: "main"
+    resources:
+      limits: {}
+      requests: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  hostNetwork: false
+  nodeSelector:
+    nodetype: "jenkins-agent"
+  serviceAccountName: "default"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Jan 23, 2023 1:01:35 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateBuilder
+Pod built: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/"
+    runUrl: "job/test-tempalte/38/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "bcd8905970fc1b472a2263fa76fec6ca2fe10655"
+    jenkins/label: "test-tempalte_38-3vq0z"
+  name: "test-tempalte-38-3vq0z-vrnj8-03653"
+  namespace: "devops"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "ubuntu:18.04"
+    imagePullPolicy: "IfNotPresent"
+    name: "main"
+    resources:
+      limits: {}
+      requests: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - env:
+    - name: "JENKINS_SECRET"
+      value: "xxxxxxxx"
+    - name: "JENKINS_TUNNEL"
+      value: "jenkins-agent.devops.svc.cluster.local:50004"
+    - name: "JENKINS_AGENT_NAME"
+      value: "test-tempalte-38-3vq0z-vrnj8-03653"
+    - name: "JENKINS_NAME"
+      value: "test-tempalte-38-3vq0z-vrnj8-03653"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/"
+    image: "jenkins/inbound-agent:4.11-1-jdk11"
+    name: "jnlp"
+    resources:
+      limits: {}
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  hostNetwork: false
+  nodeSelector:
+    nodetype: "jenkins-agent"
+  restartPolicy: "Never"
+  serviceAccountName: "default"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Jan 23, 2023 1:01:35 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher
+Creating Pod: kubernetes devops/test-tempalte-38-3vq0z-vrnj8-03653
+Jan 23, 2023 1:01:35 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+Created Pod: kubernetes devops/test-tempalte-38-3vq0z-vrnj8-03653
+Jan 23, 2023 1:01:37 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+Pod is running: kubernetes devops/test-tempalte-38-3vq0z-vrnj8-03653
+Jan 23, 2023 1:01:39 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesComputer
+ Computer KubernetesComputer name: test-tempalte-38-3vq0z-vrnj8-03653 agent: null accepted task PlaceholderExecutable:ExecutorStepExecution.PlaceholderTask{runId=test-tempalte#38,label=test-tempalte-38-3vq0z-vrnj8-03653,context=CpsStepContext[5:node]:Owner[test-tempalte/38:test-tempalte #38],cookie=8b1355e6-5a3f-4d8b-9eb2-f991b1053b6e,auth=null}
+Jan 23, 2023 1:01:39 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Parsed pod template from yaml: ---
+apiVersion: "v1"
+kind: "Pod"
+spec:
+  containers:
+  - image: "maven:3.8.1-jdk-11"
+    name: "main"
+
+Jan 23, 2023 1:01:39 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Combining pods, parent: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata: {}
+spec:
+  containers:
+  - image: "maven:3.8.1-jdk-11"
+    name: "main"
+ template: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/"
+    runUrl: "job/test-tempalte/38/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "bcd8905970fc1b472a2263fa76fec6ca2fe10655"
+    jenkins/label: "test-tempalte_38-3vq0z"
+  name: "test-tempalte-38-3vq0z-vrnj8-03653"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "ubuntu:18.04"
+    imagePullPolicy: "IfNotPresent"
+    name: "main"
+    resources:
+      limits: {}
+      requests: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  hostNetwork: false
+  nodeSelector:
+    nodetype: "jenkins-agent"
+  serviceAccountName: "default"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Jan 23, 2023 1:01:39 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils
+Pods combined: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/"
+    runUrl: "job/test-tempalte/38/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "bcd8905970fc1b472a2263fa76fec6ca2fe10655"
+    jenkins/label: "test-tempalte_38-3vq0z"
+  name: "test-tempalte-38-3vq0z-vrnj8-03653"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "ubuntu:18.04"
+    imagePullPolicy: "IfNotPresent"
+    name: "main"
+    resources:
+      limits: {}
+      requests: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  hostNetwork: false
+  nodeSelector:
+    nodetype: "jenkins-agent"
+  serviceAccountName: "default"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Jan 23, 2023 1:01:39 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateBuilder
+Pod built: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/"
+    runUrl: "job/test-tempalte/38/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "bcd8905970fc1b472a2263fa76fec6ca2fe10655"
+    jenkins/label: "test-tempalte_38-3vq0z"
+  name: "test-tempalte-38-3vq0z-vrnj8-03653"
+  namespace: "devops"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "ubuntu:18.04"
+    imagePullPolicy: "IfNotPresent"
+    name: "main"
+    resources:
+      limits: {}
+      requests: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - env:
+    - name: "JENKINS_SECRET"
+      value: "xxxxxxx"
+    - name: "JENKINS_TUNNEL"
+      value: "jenkins-agent.devops.svc.cluster.local:50004"
+    - name: "JENKINS_AGENT_NAME"
+      value: "test-tempalte-38-3vq0z-vrnj8-03653"
+    - name: "JENKINS_NAME"
+      value: "test-tempalte-38-3vq0z-vrnj8-03653"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/"
+    image: "jenkins/inbound-agent:4.11-1-jdk11"
+    name: "jnlp"
+    resources:
+      limits: {}
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  hostNetwork: false
+  nodeSelector:
+    nodetype: "jenkins-agent"
+  restartPolicy: "Never"
+  serviceAccountName: "default"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Jan 23, 2023 1:01:39 PM FINER org.csanchez.jenkins.plugins.kubernetes.pipeline.SecretsMasker
+inspecting ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/job/test-tempalte/38/"
+    runUrl: "job/test-tempalte/38/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "bcd8905970fc1b472a2263fa76fec6ca2fe10655"
+    jenkins/label: "test-tempalte_38-3vq0z"
+  name: "test-tempalte-38-3vq0z-vrnj8-03653"
+  namespace: "devops"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "ubuntu:18.04"
+    imagePullPolicy: "IfNotPresent"
+    name: "main"
+    resources:
+      limits: {}
+      requests: {}
+    tty: false
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  - env:
+    - name: "JENKINS_SECRET"
+      value: "xxxx"
+    - name: "JENKINS_TUNNEL"
+      value: "jenkins-agent.devops.svc.cluster.local:50004"
+    - name: "JENKINS_AGENT_NAME"
+      value: "test-tempalte-38-3vq0z-vrnj8-03653"
+    - name: "JENKINS_NAME"
+      value: "test-tempalte-38-3vq0z-vrnj8-03653"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://jenkins.devops.svc.cluster.local:8080/devops-jenkins/"
+    image: "jenkins/inbound-agent:4.11-1-jdk11"
+    name: "jnlp"
+    resources:
+      limits: {}
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  hostNetwork: false
+  nodeSelector:
+    nodetype: "jenkins-agent"
+  restartPolicy: "Never"
+  serviceAccountName: "default"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Jan 23, 2023 1:01:39 PM FINE org.csanchez.jenkins.plugins.kubernetes.pipeline.SecretsMasker
+masking 1 values
+Jan 23, 2023 1:01:39 PM FINE org.csanchez.jenkins.plugins.kubernetes.pipeline.SecretsMasker
+Using cached secrets for KubernetesComputer name: test-tempalte-38-3vq0z-vrnj8-03653 agent: null
+Jan 23, 2023 1:01:40 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesComputer
+ Computer KubernetesComputer name: test-tempalte-38-3vq0z-vrnj8-03653 agent: null completed task PlaceholderExecutable:ExecutorStepExecution.PlaceholderTask{runId=test-tempalte#38,label=test-tempalte-38-3vq0z-vrnj8-03653,context=CpsStepContext[5:node]:Owner[test-tempalte/38:test-tempalte #38],cookie=8b1355e6-5a3f-4d8b-9eb2-f991b1053b6e,auth=null}
+Jan 23, 2023 1:01:40 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesSlave _terminate
+Terminating Kubernetes instance for agent test-tempalte-38-3vq0z-vrnj8-03653
+Jan 23, 2023 1:01:40 PM FINEST org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Building connection to Kubernetes kubernetes URL https://kubernetes.default namespace devops
+Jan 23, 2023 1:01:40 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Connected to Kubernetes kubernetes URL https://kubernetes.default/ namespace devops
+Jan 23, 2023 1:01:40 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesSlave deleteSlavePod
+Terminated Kubernetes instance for agent devops/test-tempalte-38-3vq0z-vrnj8-03653
+Jan 23, 2023 1:01:40 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesSlave _terminate
+Disconnected computer test-tempalte-38-3vq0z-vrnj8-03653
+Jan 23, 2023 1:01:40 PM FINEST org.csanchez.jenkins.plugins.kubernetes.KubernetesProvisioningLimits
+kubernetes global limit: 0/2147483647
+Jan 23, 2023 1:01:40 PM FINEST org.csanchez.jenkins.plugins.kubernetes.KubernetesProvisioningLimits
+test-tempalte_38-3vq0z-vrnj8 template limit: 0/2147483647
+Jan 23, 2023 1:01:40 PM FINE org.csanchez.jenkins.plugins.kubernetes.pipeline.PodTemplateStepExecution
+Removing pod template test-tempalte_38-3vq0z-vrnj8 from cloud kubernetes
+Jan 23, 2023 1:01:40 PM FINE org.csanchez.jenkins.plugins.kubernetes.pipeline.PodTemplateMap
+Unregistering template with id=2ee19de2-4462-4ff0-8d08-5c3239f38a60 from kubernetes cloud kubernetes

@@ -1,0 +1,30 @@
+Index: src/main/java/hudson/plugins/phing/PhingInstallation.java
+===================================================================
+--- src/main/java/hudson/plugins/phing/PhingInstallation.java	(revision 31371)
++++ src/main/java/hudson/plugins/phing/PhingInstallation.java	(working copy)
+@@ -67,12 +67,13 @@
+         this.phpCommand = Util.fixEmptyAndTrim(phpCommand);
+     }
+ 
+-    public String getExecutable(final Launcher launcher) throws IOException, InterruptedException {
++    public String getExecutable(Launcher launcher) throws IOException, InterruptedException {
++        final String execName = getExecName(launcher);
+         return launcher.getChannel().call(new Callable<String, IOException>() {
+             private static final long serialVersionUID = 1L;
+ 
+             public String call() throws IOException {
+-                final File exe = getExeFile(launcher);
++                File exe = new File(new File(getPhingHome(), "bin"), execName);
+                 if (exe.exists()) {
+                     return exe.getPath();
+                 }
+@@ -80,9 +81,4 @@
+             }
+         });
+     }
+-
+-    private File getExeFile(final Launcher launcher) {
+-        return new File(getPhingHome(), "bin" + File.separator + getExecName(launcher));
+-    }
+-
+ }

@@ -1,0 +1,32 @@
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.9">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>fork</name>
+        <url>$GIT_FORK_URL</url>
+      </hudson.plugins.git.UserRemoteConfig>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>upstream</name>
+        <url>ssh://git@host.company.com/tools/repo.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>fork/$GIT_FORK_BRANCH</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.IgnoreNotifyCommit/>
+      <hudson.plugins.git.extensions.impl.WipeWorkspace/>
+      <hudson.plugins.git.extensions.impl.PreBuildMerge>
+        <options>
+          <mergeRemote>upstream</mergeRemote>
+          <mergeTarget>master</mergeTarget>
+          <mergeStrategy>default</mergeStrategy>
+        </options>
+      </hudson.plugins.git.extensions.impl.PreBuildMerge>
+    </extensions>
+  </scm>
+

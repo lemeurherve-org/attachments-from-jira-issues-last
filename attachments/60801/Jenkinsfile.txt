@@ -1,0 +1,133 @@
+pipeline {
+	agent {
+		label 'YoctoBuildNode'
+	}
+	
+	environment {
+    			EVCC_APPLICATION_FOLDER = 'evcc_layers/meta-evccapplication/recipes-core/EVCC_Application/files/EVCC_Application'
+			CRC_APPLICATION_FOLDER = 'evcc_layers/meta-evccapplication/recipes-core/CRC_Calculator/files/CRC_Calculator'
+			FOLDERS_TO_IGNORE = ''
+			TEAMS_WEBHOOK = 'https://smartrendmanufacturingroup.webhook.office.com/webhookb2/cd969f08-d5ee-4fd2-922d-f2039cb43402@2418fe9b-4b6c-45b8-aba8-d8127c877cfc/JenkinsCI/f8d29b80ec8f469d9605d21c773bf07c/2d3cb4a8-77d9-42e0-a9b9-69c2b2e7470f'
+	}
+	
+	options {
+		buildDiscarder(logRotator(numToKeepStr: '25'))
+	}
+	
+	stages {
+		stage('Build') {
+			steps {
+				sh "chown -R $USER:$USER ${env.WORKSPACE}"
+				sh "chmod +x -R ${env.WORKSPACE}"
+				sh "${EVCC_APPLICATION_FOLDER}/build_project.sh"
+				script {
+					def appBinary = "${EVCC_APPLICATION_FOLDER}/evccapp"
+						if (!fileExists(appBinary)) {
+							error "Build failed: ${appBinary} not found"
+					}
+				}
+			}
+		}
+		stage('CppCheck') { 
+			steps { 
+				dir("${env.WORKSPACE}/${EVCC_APPLICATION_FOLDER}"){ 
+					sh label: '', returnStatus: true, script: 'cppcheck --addon=misra.json --inline-suppr -itest/ -ivendor/ -isrc/lumissil -isrc/open-plc-utils -isrc/comms/UART/evcc_llm_comms/ -Iinclude -Iinclude/CML_Integration -Iinclude/comms -Iinclude/comms/CAN -Iinclude/comms/PLC -Iinclude/comms/UART -Iinclude/M0_Integration -Iinclude/config_parsing -Iinclude/GPIO -Iinclude/utilities src/ --enable=all --suppressions-list=suppressions.txt --suppress=missingInclude . --inconclusive --xml graphal 2> cppcheck-result.xml' 
+				} 
+			} 
+		}
+		stage('Flaw Finder') {
+			steps {
+				dir("${env.WORKSPACE}/${EVCC_APPLICATION_FOLDER}"){
+					sh 'flawfinder --singleline --context --minlevel 0 src/ > flaw_finder_results.log'
+				}
+			}
+		}
+		stage('Ceedling') {
+			steps {
+				dir("${env.WORKSPACE}/${EVCC_APPLICATION_FOLDER}"){
+					sh 'ceedling clobber gcov:all utils:gcov'	
+				}
+				dir("${env.WORKSPACE}/${CRC_APPLICATION_FOLDER}"){
+					sh 'ceedling clobber gcov:all utils:gcov'	
+				}
+			}
+		}
+		stage('Lizard Code Complexity') {
+			steps {
+				dir("${env.WORKSPACE}/${EVCC_APPLICATION_FOLDER}"){
+					sh 'lizard src -l c -C 15 -L 15 -a 5 -T nloc=30 -o lizard_report.html'
+				}
+			}
+		}
+		stage('Yocto') {
+			steps {
+				script {
+					if (env.BRANCH_NAME == 'master') {
+						sh "chown -R $USER:$USER ${env.WORKSPACE}"
+						sh "chmod -R a+rwx ${env.WORKSPACE}"
+						sh "${env.WORKSPACE}/jenkins_quick_start.sh"
+					} else {
+				    		echo "Skipping Yocto step for branch ${env.BRANCH_NAME}, we only do this for Master"
+				    	}
+				}
+			}
+		}
+		stage('Doxygen') {
+			steps {
+				script { 
+				    if (env.BRANCH_NAME == 'master') {
+				    	dir("${env.WORKSPACE}/${EVCC_APPLICATION_FOLDER}"){        
+						sh "doxygen DoxyConfig"
+					}
+				    } else {
+				    	echo "Skipping Doxygen step for branch ${env.BRANCH_NAME}, we only do this for Master"
+				    }
+				}
+			    }
+		}
+	}
+
+	post {
+		always {
+			xunit tools: [Custom(customXSL: "${EVCC_APPLICATION_FOLDER}/unity.xsl", deleteOutputFiles: true, pattern: "${EVCC_APPLICATION_FOLDER}/build/artifacts/gcov/report.xml", skipNoTestFiles: false, stopProcessingIfError: true)]
+
+
+			
+			dir("${env.WORKSPACE}/${EVCC_APPLICATION_FOLDER}"){
+				// Publish WarningsNext Generation report
+				recordIssues tools: [cppCheck(pattern: 'cppcheck-result.xml'), flawfinder(pattern: "flaw_finder_results.log")]
+				
+				// Publish gcov results
+				cobertura(coberturaReportFile:"build/artifacts/gcov/GcovCoverageCobertura.xml")
+				
+				script {
+					if (env.BRANCH_NAME == 'master') {
+						// Publish Doxygen Report
+						publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "html", reportFiles: '*.html', reportName: 'Doxygen Report', reportTitles: ''])			}
+				}
+			}
+
+			// Publish lizard code complexity results
+			publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: "${EVCC_APPLICATION_FOLDER}", reportFiles: 'lizard_report.html', reportName: 'Code Complexity Report', reportTitles: ''])
+
+			script {
+				if (env.BRANCH_NAME == 'master') {
+					archiveArtifacts artifacts: "${EVCC_APPLICATION_FOLDER}/evccapp"
+					archiveArtifacts artifacts: "${EVCC_APPLICATION_FOLDER}/html/*"
+					archiveArtifacts artifacts: "${EVCC_APPLICATION_FOLDER}/latex/*"
+				} else {
+					echo "Skipping artifact archival step for branch ${env.BRANCH_NAME}"
+				}
+			}
+			deleteDir()
+		}
+		failure {
+			office365ConnectorSend webhookUrl: "${TEAMS_WEBHOOK}", message: "\u2639 '${env.JOB_NAME}' ('${env.BUILD_NUMBER}') has failed", status: 'Failure' 
+		}
+	}
+}
+
+
+def getAgentLabel() {
+    return (env.BRANCH_NAME == 'master') ? 'YoctoBuildNode' : 'Jenkins Controller Built-In Node'
+}

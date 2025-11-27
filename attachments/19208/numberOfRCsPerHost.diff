@@ -1,0 +1,81 @@
+Index: plugins/selenium/src/main/java/hudson/plugins/selenium/PluginImpl.java
+===================================================================
+--- plugins/selenium/src/main/java/hudson/plugins/selenium/PluginImpl.java	(revision 28260)
++++ plugins/selenium/src/main/java/hudson/plugins/selenium/PluginImpl.java	(working copy)
+@@ -66,6 +66,7 @@
+     private String rcFirefoxProfileTemplate;
+     private String rcLog;
+     private String hubLogLevel = "INFO";
++    private Integer numberOfRCsPerHost;
+ 
+     /**
+      * Channel to Selenium Grid JVM.
+@@ -99,6 +100,11 @@
+         rcTrustAllSSLCerts = formData.getBoolean("rcTrustAllSSLCerts");
+         rcFirefoxProfileTemplate = formData.getString("rcFirefoxProfileTemplate");
+         hubLogLevel = formData.getString("hubLogLevel");
++        String numberOfRCsPerHostString = formData.getString("numberOfRCsPerHost");
++        if (numberOfRCsPerHostString != null && numberOfRCsPerHostString.trim().length() != 0) {
++            numberOfRCsPerHost = Integer.valueOf(numberOfRCsPerHostString);
++        }
++
+         try {
+             save();
+         } catch (IOException e) {
+@@ -166,6 +172,11 @@
+         return hubLogLevel != null ? hubLogLevel : "INFO";
+     }
+ 
++    @Exported
++    public Integer getNumberOfRCsPerHost(){
++        return numberOfRCsPerHost;
++    }
++
+     public void stop() throws Exception {
+         channel.close();
+     }
+Index: plugins/selenium/src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java
+===================================================================
+--- plugins/selenium/src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java	(revision 28260)
++++ plugins/selenium/src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java	(working copy)
+@@ -67,7 +67,7 @@
+             return;
+         }
+         final int masterPort = p.getPort();
+-        final int nrc = c.getNumExecutors();
++        final int nrc = p.getNumberOfRCsPerHost() != null ? p.getNumberOfRCsPerHost() : c.getNumExecutors();
+         final StringBuilder labelList = new StringBuilder();
+         for(Label l : c.getNode().getAssignedLabels()) {
+             labelList.append('/');
+@@ -95,7 +95,6 @@
+             userArgs.add(p.getRcFirefoxProfileTemplate());
+         }
+ 
+-
+         // make sure that Selenium Hub is started before we start RCs.
+         try {
+             p.waitForHubLaunch();
+Index: plugins/selenium/src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly
+===================================================================
+--- plugins/selenium/src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly	(revision 28260)
++++ plugins/selenium/src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly	(working copy)
+@@ -22,6 +22,9 @@
+         <f:entry title="${%Set -firefoxProfileTemplate}" field="rcFirefoxProfileTemplate" help="/plugin/selenium/help/rcfirefoxtemplate.html">
+             <f:textbox name="rcFirefoxProfileTemplate" value="${it.rcFirefoxProfileTemplate}" />
+         </f:entry>
++        <f:entry title="${%Set the number of RC's per node}" field="numberOfRCsPerHost" help="/plugin/selenium/help/numberofrcsperhost.html">
++            <f:textbox name="numberOfRCsPerHost" value="${it.numberOfRCsPerHost}" />
++        </f:entry>
+         <f:entry title="${%Set Hub Log Level}" field="hubLogLevel" help="/plugin/selenium/help/hubloglevel.html">
+              <select name="hubLogLevel" value="${it.hubLogLevel}">
+                  <j:forEach var="l" items="OFF,SEVERE,WARNING,CONFIG,INFO,FINE,FINER,FINEST,ALL">
+Index: plugins/selenium/src/main/webapp/help/numberofrcsperhost.html
+===================================================================
+--- plugins/selenium/src/main/webapp/help/numberofrcsperhost.html	(revision 0)
++++ plugins/selenium/src/main/webapp/help/numberofrcsperhost.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++    The number of Remote Controls to start per node. If left empty
++    (or -1) the number of stated Remote Controls will be the same as
++    the number of executors on the connected node.
++</div>

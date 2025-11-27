@@ -1,0 +1,266 @@
+Index: src/main/java/hudson/scm/SubversionSCM.java
+===================================================================
+--- src/main/java/hudson/scm/SubversionSCM.java	(revision 21528)
++++ src/main/java/hudson/scm/SubversionSCM.java	(working copy)
+@@ -193,24 +193,24 @@
+      * @deprecated as of 1.286
+      */
+     public SubversionSCM(String[] remoteLocations, String[] localLocations,
+-                         boolean useUpdate, SubversionRepositoryBrowser browser) {
+-        this(remoteLocations,localLocations, useUpdate, browser, null, null, null);
++                         boolean[] recursives, boolean useUpdate, SubversionRepositoryBrowser browser) {
++        this(remoteLocations, localLocations, recursives, useUpdate, browser, null, null, null);
+     }
+ 
+     /**
+      * @deprecated as of 1.311
+      */
+     public SubversionSCM(String[] remoteLocations, String[] localLocations,
+-                         boolean useUpdate, SubversionRepositoryBrowser browser, String excludedRegions) {
+-        this(ModuleLocation.parse(remoteLocations,localLocations), useUpdate, browser, excludedRegions, null, null);
++                         boolean[] recursives, boolean useUpdate, SubversionRepositoryBrowser browser, String excludedRegions) {
++        this(ModuleLocation.parse(remoteLocations, localLocations, recursives), useUpdate, browser, excludedRegions, null, null);
+     }
+ 
+     /**
+      * @deprecated as of 1.315
+      */
+      public SubversionSCM(String[] remoteLocations, String[] localLocations,
+-                         boolean useUpdate, SubversionRepositoryBrowser browser, String excludedRegions, String excludedUsers, String excludedRevprop) {
+-        this(ModuleLocation.parse(remoteLocations,localLocations), useUpdate, browser, excludedRegions, excludedUsers, excludedRevprop);
++                          boolean[] recursives, boolean useUpdate, SubversionRepositoryBrowser browser, String excludedRegions, String excludedUsers, String excludedRevprop) {
++        this(ModuleLocation.parse(remoteLocations, localLocations, recursives), useUpdate, browser, excludedRegions, excludedUsers, excludedRevprop);
+     }
+ 
+    /**
+@@ -230,7 +230,6 @@
+             if(ml.remote==null) itr.remove();
+         }
+         this.locations = locations.toArray(new ModuleLocation[locations.size()]);
+-
+         this.useUpdate = useUpdate;
+         this.browser = browser;
+         this.excludedRegions = excludedRegions;
+@@ -249,7 +248,7 @@
+      * Convenience constructor, especially during testing.
+      */
+     public SubversionSCM(String svnUrl, String local) {
+-        this(new String[]{svnUrl},new String[]{local},true,null,null,null,null);
++        this(new String[]{svnUrl},new String[]{local},new boolean[]{true},true,null,null,null,null);
+     }
+ 
+     /**
+@@ -266,7 +265,7 @@
+      * @since 1.91
+      */
+     public ModuleLocation[] getLocations() {
+-    	return getLocations(null);
++        return getLocations(null);
+     }
+     
+     /**
+@@ -289,7 +288,7 @@
+                 // the normalized name is always without the trailing '/'
+                 String remoteLoc = Util.removeTrailingSlash(tokens.nextToken());
+ 
+-                oldLocations.add(new ModuleLocation(remoteLoc, null));
++                oldLocations.add(new ModuleLocation(remoteLoc, null, true));
+             }
+ 
+             locations = oldLocations.toArray(new ModuleLocation[oldLocations.size()]);
+@@ -297,12 +296,12 @@
+         }
+ 
+         if(build == null)
+-        	return locations;
++            return locations;
+         
+         ModuleLocation[] outLocations = new ModuleLocation[locations.length];
+         for (int i = 0; i < outLocations.length; i++) {
+-			outLocations[i] = locations[i].getExpandedLocation(build);
+-		}
++            outLocations[i] = locations[i].getExpandedLocation(build);
++        }
+ 
+         return outLocations;
+     }
+@@ -566,14 +565,15 @@
+                 if(update) {
+                     for (final ModuleLocation l : locations) {
+                         try {
+-                            listener.getLogger().println("Updating "+ l.remote);
++                            final boolean recursive = l.getRecursive();
++                            listener.getLogger().println("Updating " + (recursive ? "recursively " : "non-recursively ") + l.remote);
+ 
+                             File local = new File(ws, l.getLocalDir());
+                             svnuc.setEventHandler(new SubversionUpdateEventHandler(listener.getLogger(), externals,local,l.getLocalDir()));
+                             
+                             SVNRevision r = getRevision(l);
+                             
+-                            svnuc.doUpdate(local.getCanonicalFile(), r, true);
++                            svnuc.doUpdate(local.getCanonicalFile(), r, recursive);
+ 
+                         } catch (final SVNException e) {
+                             if(e.getErrorMessage().getErrorCode()== SVNErrorCode.WC_LOCKED) {
+@@ -610,11 +610,12 @@
+ 
+                     for (final ModuleLocation l : locations) {
+                         try {
+-                            listener.getLogger().println("Checking out "+l.remote);
++                            final boolean recursive = l.getRecursive();
++                            listener.getLogger().println("Checking out " + (recursive ? "recursively " : "non-recursively ") + l.remote);
+ 
+                             File local = new File(ws, l.getLocalDir());
+                             svnuc.setEventHandler(new SubversionUpdateEventHandler(new PrintStream(pos), externals, local, l.getLocalDir()));
+-                            svnuc.doCheckout(l.getSVNURL(), local.getCanonicalFile(), SVNRevision.HEAD, getRevision(l), true);
++                            svnuc.doCheckout(l.getSVNURL(), local.getCanonicalFile(), SVNRevision.HEAD, getRevision(l), recursive);
+                         } catch (SVNException e) {
+                             e.printStackTrace(listener.error("Failed to check out "+l.remote));
+                             return null;
+@@ -1921,6 +1922,14 @@
+          *      Code should use {@link #getLocalDir()}. This field is only intended for form binding.
+          */
+         public final String local;
++        /**
++         * Remembers the user-given value.
++         * Define if the SCM checkout/update has to be done recursively or not.
++         *
++         * @deprecated
++         *      Code should use {@link #getRecursive()}. This field is only intended for form binding.
++         */
++        public final boolean recursive;
+ 
+         /**
+          * Cache of the repository UUID.
+@@ -1929,12 +1938,20 @@
+         private transient volatile SVNURL repositoryRoot;
+ 
+         @DataBoundConstructor
+-        public ModuleLocation(String remote, String local) {
++        public ModuleLocation(String remote, String local, boolean recursive) {
+             this.remote = Util.removeTrailingSlash(Util.fixNull(remote).trim());
+             this.local = Util.fixEmptyAndTrim(local);
++            this.recursive = recursive;
+         }
+ 
+         /**
++         * Define if the SCM checkout/update has to be done recursively or not.
++         */
++        public boolean getRecursive() {
++            return recursive;
++        }
++
++        /**
+          * Local directory to place the file to.
+          * Relative to the workspace root.
+          */
+@@ -2036,7 +2053,7 @@
+          *         values.
+          */
+         public ModuleLocation getExpandedLocation(AbstractBuild<?, ?> build) {
+-            return new ModuleLocation(getExpandedRemote(build), getLocalDir());
++            return new ModuleLocation(getExpandedRemote(build), getLocalDir(), getRecursive());
+         }
+         
+         public String toString() {
+@@ -2045,10 +2062,10 @@
+ 
+         private static final long serialVersionUID = 1L;
+ 
+-        public static List<ModuleLocation> parse(String[] remoteLocations, String[] localLocations) {
++        public static List<ModuleLocation> parse(String[] remoteLocations, String[] localLocations, boolean[] recursives) {
+             List<ModuleLocation> modules = new ArrayList<ModuleLocation>();
+-            if (remoteLocations != null && localLocations != null) {
+-                int entries = Math.min(remoteLocations.length, localLocations.length);
++            if (remoteLocations != null && localLocations != null && recursives != null) {
++                final int entries = Math.min(Math.min(remoteLocations.length, localLocations.length), recursives.length);
+ 
+                 for (int i = 0; i < entries; i++) {
+                     // the remote (repository) location
+@@ -2056,7 +2073,7 @@
+ 
+                     if (remoteLoc != null) {// null if skipped
+                         remoteLoc = Util.removeTrailingSlash(remoteLoc.trim());
+-                        modules.add(new ModuleLocation(remoteLoc, Util.nullify(localLocations[i])));
++                        modules.add(new ModuleLocation(remoteLoc, Util.nullify(localLocations[i]), recursives[i]));
+                     }
+                 }
+             }
+Index: src/main/resources/hudson/scm/SubversionSCM/config.jelly
+===================================================================
+--- src/main/resources/hudson/scm/SubversionSCM/config.jelly	(revision 21528)
++++ src/main/resources/hudson/scm/SubversionSCM/config.jelly	(working copy)
+@@ -32,6 +32,9 @@
+         <f:entry title="${%Local module directory} (${%optional})" field="local">
+           <f:textbox value="${loc.local}" />
+         </f:entry>
++        <f:entry title="${%Recursive}" description="${%recursiveDescription}" field="recursive">
++          <f:checkbox default="true" checked="${loc.recursive}"/>
++        </f:entry>
+         <f:entry>
+           <div align="right">
+             <input type="button" value="${%Add more locations...}" class="repeatable-add show-if-last" />
+Index: src/main/resources/hudson/scm/SubversionSCM/config.properties
+===================================================================
+--- src/main/resources/hudson/scm/SubversionSCM/config.properties	(revision 21528)
++++ src/main/resources/hudson/scm/SubversionSCM/config.properties	(working copy)
+@@ -23,3 +23,7 @@
+ updateDescription=\
+   If checked, Hudson will use ''svn update'' whenever possible, making the build faster. \
+   But this causes the artifacts from the previous build to remain when a new build starts.
++
++recursiveDescription=\
++  If checked, Hudson will perform a recursive checkout or update. \
++  Otherwise, if unchecked, a non-recursive checkout or update will be performed, i.e ''svn -N''.
+Index: src/main/resources/hudson/scm/SubversionSCM/config_fr.properties
+===================================================================
+--- src/main/resources/hudson/scm/SubversionSCM/config_fr.properties	(revision 21528)
++++ src/main/resources/hudson/scm/SubversionSCM/config_fr.properties	(working copy)
+@@ -31,4 +31,8 @@
+   Quand cette option est activée, Hudson utilisera ''svn update'' à chaque fois que cela est possible, \
+   ce qui rend le build plus rapide. Attention, les artefacts du build précédent seront conservés au \
+   démarrage d''un nouveau build.
++Recursive=Récursif
++recursiveDescription=\
++  Si l''option est activée, Hudson exécutera un checkout ou update de manière récursive. \
++  Sinon, lorsque l''option est désactivée, un checkout ou update non récursif sera exécuté, c-à-d ''svn -N''.
+ Excluded\ Regions=Régions exclues
+Index: src/test/java/hudson/scm/SubversionSCMTest.java
+===================================================================
+--- src/test/java/hudson/scm/SubversionSCMTest.java	(revision 21528)
++++ src/test/java/hudson/scm/SubversionSCMTest.java	(working copy)
+@@ -286,7 +286,7 @@
+         FreeStyleProject p = createFreeStyleProject();
+         String svnBase = "file://" + new CopyExisting(getClass().getResource("/svn-repo.zip")).allocate().toURI().toURL().getPath();
+         p.setScm(new SubversionSCM(
+-        		Arrays.asList(new ModuleLocation(svnBase + "trunk/a", null), new ModuleLocation(svnBase + "branches", null)), 
++        		Arrays.asList(new ModuleLocation(svnBase + "trunk/a", null, true), new ModuleLocation(svnBase + "branches", null, true)), 
+         		false, null, null, null, null));
+         FreeStyleBuild build = p.scheduleBuild2(0, new Cause.UserCause()).get();
+ 
+@@ -316,13 +316,13 @@
+         FreeStyleProject p = createFreeStyleProject();
+ 
+         SubversionSCM scm = new SubversionSCM(
+-                Arrays.asList(new ModuleLocation("a","c"),new ModuleLocation("b","d")),
+-                true,new Sventon(new URL("http://www.sun.com/"),"test"),"exclude","user","revprop");
++                Arrays.asList(new ModuleLocation("a","c",true),new ModuleLocation("b","d",true)),
++                true, new Sventon(new URL("http://www.sun.com/"),"test"),"exclude","user","revprop");
+         p.setScm(scm);
+         submit(new WebClient().getPage(p,"configure").getFormByName("config"));
+         verify(scm,(SubversionSCM)p.getScm());
+ 
+-        scm = new SubversionSCM(Arrays.asList(new ModuleLocation("a","c")),false,null,"","","");
++        scm = new SubversionSCM(Arrays.asList(new ModuleLocation("a","c",true)),false,null,"","","");
+         p.setScm(scm);
+         submit(new WebClient().getPage(p,"configure").getFormByName("config"));
+         verify(scm,(SubversionSCM)p.getScm());
+@@ -412,7 +412,7 @@
+         setJavaNetCredential();
+         FreeStyleProject p = createFreeStyleProject( "testExcludeByUser" );
+         p.setScm(new SubversionSCM(
+-                Arrays.asList( new ModuleLocation( "https://svn.dev.java.net/svn/hudson/trunk/hudson/test-projects/testSubversionExclusions@19438", null )),
++                Arrays.asList( new ModuleLocation( "https://svn.dev.java.net/svn/hudson/trunk/hudson/test-projects/testSubversionExclusions@19438", null, true )),
+                 true, null, "", "dty", "")
+                 );
+         // Do a build to force the creation of the workspace. This works around

@@ -1,0 +1,91 @@
+Running from: /var/fpwork/jenkins.war
+webroot: EnvVars.masterEnvVars.get("JENKINS_HOME")
+Jan 26, 2016 8:03:39 AM winstone.Logger logInternal
+INFO: Beginning extraction from war file
+Jan 26, 2016 8:03:39 AM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: jetty-winstone-2.8
+Jan 26, 2016 8:03:40 AM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: NO JSP Support for , did not find org.apache.jasper.servlet.JspServlet
+Jenkins home directory: /var/fpwork/jenkins/home found at: EnvVars.masterEnvVars.get("JENKINS_HOME")
+Jan 26, 2016 8:03:41 AM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: Started SelectChannelConnector@0.0.0.0:8080
+Jan 26, 2016 8:03:41 AM winstone.Logger logInternal
+INFO: Winstone Servlet Engine v2.0 running: controlPort=disabled
+Jan 26, 2016 8:03:41 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Started initialization
+Jan 26, 2016 8:03:41 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Listed all plugins
+Jan 26, 2016 8:03:41 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Prepared all plugins
+Jan 26, 2016 8:03:41 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Started all plugins
+Jan 26, 2016 8:03:42 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Augmented all extensions
+Jan 26, 2016 8:03:44 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Loaded all jobs
+Jan 26, 2016 8:03:44 AM hudson.model.AsyncPeriodicWork$1 run
+INFO: Started Download metadata
+Jan 26, 2016 8:03:45 AM org.jenkinsci.main.modules.sshd.SSHD start
+INFO: Started SSHD at port 41118
+Jan 26, 2016 8:03:45 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Completed initialization
+Jan 26, 2016 8:03:45 AM hudson.WebAppMain$3 run
+INFO: Jenkins is fully up and running
+Jan 26, 2016 8:06:53 AM hudson.model.AsyncPeriodicWork$1 run
+INFO: Finished Download metadata. 189,025 ms
+Jan 26, 2016 8:09:06 AM hudson.plugins.ec2.EC2Cloud provision
+WARNING: Exception during provisioning
+com.amazonaws.AmazonServiceException: com.eucalyptus.ws.WebServicesException: Missing required object (Service: AmazonEC2; Status Code: 500; Error Code: InternalFailure; Request ID: 6e57c1bd-8f57-449a-b2d5-d322720ab119)
+        at com.amazonaws.http.AmazonHttpClient.handleErrorResponse(AmazonHttpClient.java:1181)
+        at com.amazonaws.http.AmazonHttpClient.executeOneRequest(AmazonHttpClient.java:766)
+        at com.amazonaws.http.AmazonHttpClient.executeHelper(AmazonHttpClient.java:485)
+        at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:306)
+        at com.amazonaws.services.ec2.AmazonEC2Client.invoke(AmazonEC2Client.java:11901)
+        at com.amazonaws.services.ec2.AmazonEC2Client.describeSpotInstanceRequests(AmazonEC2Client.java:6437)
+        at hudson.plugins.ec2.EC2Cloud.countCurrentEC2Slaves(EC2Cloud.java:303)
+        at hudson.plugins.ec2.EC2Cloud.getPossibleNewSlavesCount(EC2Cloud.java:383)
+        at hudson.plugins.ec2.EC2Cloud.provisionSlaveIfPossible(EC2Cloud.java:399)
+        at hudson.plugins.ec2.EC2Cloud.provision(EC2Cloud.java:422)
+        at hudson.slaves.NodeProvisioner$StandardStrategyImpl.apply(NodeProvisioner.java:678)
+        at hudson.slaves.NodeProvisioner.update(NodeProvisioner.java:284)
+        at hudson.slaves.NodeProvisioner.access$000(NodeProvisioner.java:57)
+        at hudson.slaves.NodeProvisioner$NodeProvisionerInvoker.doRun(NodeProvisioner.java:775)
+        at hudson.triggers.SafeTimerTask.run(SafeTimerTask.java:51)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+        at java.util.concurrent.FutureTask$Sync.innerRunAndReset(FutureTask.java:351)
+        at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:178)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:165)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:267)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+        at java.lang.Thread.run(Thread.java:636)
+Jan 26, 2016 8:11:24 AM hudson.model.AsyncPeriodicWork$1 run
+INFO: Started EC2 alive slaves monitor
+Jan 26, 2016 8:11:24 AM hudson.model.AsyncPeriodicWork$1 run
+INFO: Finished EC2 alive slaves monitor. 0 ms
+Jan 26, 2016 8:12:46 AM hudson.plugins.ec2.EC2Cloud provision
+WARNING: Exception during provisioning
+com.amazonaws.AmazonServiceException: com.eucalyptus.ws.WebServicesException: Missing required object (Service: AmazonEC2; Status Code: 500; Error Code: InternalFailure; Request ID: 2b9144c8-5d0a-49aa-8831-3aee16856e63)
+        at com.amazonaws.http.AmazonHttpClient.handleErrorResponse(AmazonHttpClient.java:1181)
+        at com.amazonaws.http.AmazonHttpClient.executeOneRequest(AmazonHttpClient.java:766)
+        at com.amazonaws.http.AmazonHttpClient.executeHelper(AmazonHttpClient.java:485)
+        at com.amazonaws.http.AmazonHttpClient.execute(AmazonHttpClient.java:306)
+        at com.amazonaws.services.ec2.AmazonEC2Client.invoke(AmazonEC2Client.java:11901)
+        at com.amazonaws.services.ec2.AmazonEC2Client.describeSpotInstanceRequests(AmazonEC2Client.java:6437)
+        at hudson.plugins.ec2.EC2Cloud.countCurrentEC2Slaves(EC2Cloud.java:303)
+        at hudson.plugins.ec2.EC2Cloud.getPossibleNewSlavesCount(EC2Cloud.java:383)
+        at hudson.plugins.ec2.EC2Cloud.provisionSlaveIfPossible(EC2Cloud.java:399)
+        at hudson.plugins.ec2.EC2Cloud.provision(EC2Cloud.java:422)
+        at hudson.slaves.NodeProvisioner$StandardStrategyImpl.apply(NodeProvisioner.java:678)
+        at hudson.slaves.NodeProvisioner.update(NodeProvisioner.java:284)
+        at hudson.slaves.NodeProvisioner.access$000(NodeProvisioner.java:57)
+        at hudson.slaves.NodeProvisioner$NodeProvisionerInvoker.doRun(NodeProvisioner.java:775)
+        at hudson.triggers.SafeTimerTask.run(SafeTimerTask.java:51)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+        at java.util.concurrent.FutureTask$Sync.innerRunAndReset(FutureTask.java:351)
+        at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:178)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:165)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:267)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+        at java.lang.Thread.run(Thread.java:636)

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>GIL</name>
+          <description></description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.2">
+          <name>ERAN</name>
+          <description></description>
+          <randomName>choice-parameter-3268702056306244</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>def options=[]
+if (GIL.equals(&apos;on&apos;)){
+options.add(&apos;true&apos;) }
+else{
+options.add(&apos;false&apos;)
+}
+
+return options</script>
+            <fallbackScript></fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>GIL</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>lms-build-server</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders/>
+  <publishers/>
+  <buildWrappers>
+    <org.jenkinsci.plugins.builduser.BuildUser plugin="build-user-vars-plugin@1.4"/>
+  </buildWrappers>
+</project>

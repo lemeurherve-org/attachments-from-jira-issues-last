@@ -1,0 +1,499 @@
+Index: src/main/java/hudson/plugins/twitter/PluginImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/twitter/PluginImpl.java	(revision 17762)
++++ src/main/java/hudson/plugins/twitter/PluginImpl.java	(working copy)
+@@ -1,6 +1,7 @@
+ package hudson.plugins.twitter;
+ 
+ import hudson.Plugin;
++import hudson.model.UserProperties;
+ import hudson.tasks.BuildStep;
+ 
+ /**
+@@ -9,8 +10,12 @@
+  * @author justinedelson
+  */
+ public class PluginImpl extends Plugin {
++	
++	public static final UserTwitterPropertyDescriptor USER_SCORE_PROPERTY_DESCRIPTOR = new UserTwitterPropertyDescriptor();
++	
+     public void start() throws Exception {
+         BuildStep.PUBLISHERS.addNotifier(TwitterPublisher.DESCRIPTOR);
++        UserProperties.LIST.add(USER_SCORE_PROPERTY_DESCRIPTOR);
+     }
+ 
+     @Override
+Index: src/main/java/hudson/plugins/twitter/TwitterPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/twitter/TwitterPublisher.java	(revision 17762)
++++ src/main/java/hudson/plugins/twitter/TwitterPublisher.java	(working copy)
+@@ -4,17 +4,24 @@
+ import hudson.Launcher;
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
+-import hudson.model.Build;
+ import hudson.model.BuildListener;
+ import hudson.model.Descriptor;
+ import hudson.model.Result;
++import hudson.model.User;
++import hudson.scm.ChangeLogSet;
++import hudson.scm.ChangeLogSet.Entry;
+ import hudson.tasks.Mailer;
+ import hudson.tasks.Publisher;
+ 
++import java.io.BufferedReader;
+ import java.io.IOException;
++import java.io.InputStream;
++import java.io.InputStreamReader;
+ import java.lang.reflect.Constructor;
++import java.util.ArrayList;
+ import java.util.Arrays;
+ import java.util.List;
++import java.util.Set;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
+@@ -27,9 +34,7 @@
+ import org.kohsuke.stapler.StaplerRequest;
+ 
+ import twitter4j.AsyncTwitter;
+-import twitter4j.Status;
+-import twitter4j.TwitterAdapter;
+-import twitter4j.TwitterException;
++import twitter4j.Twitter;
+ 
+ /**
+  * @author cactusman
+@@ -44,6 +49,7 @@
+     private String password;
+     private Boolean onlyOnFailureOrRecovery;
+     private Boolean includeUrl;
++    private String defaultMsg;
+ 
+     /**
+      * {@stapler-constructor}
+@@ -55,6 +61,7 @@
+         this.includeUrl = includeUrl;
+         this.id = id;
+         this.password = password;
++        this.defaultMsg = defaultMsg;
+     }
+ 
+     private static String createTinyUrl(String url) throws IOException {
+@@ -64,7 +71,14 @@
+ 
+         int status = client.executeMethod(gm);
+         if (status == HttpStatus.SC_OK) {
+-            return gm.getResponseBodyAsString();
++        	InputStream in = gm.getResponseBodyAsStream();
++			BufferedReader buf = new BufferedReader(new InputStreamReader(in));
++			StringBuffer resp = new StringBuffer();
++			String line;
++			while ((line = buf.readLine()) != null) {
++				resp.append(line);
++			}
++			return resp.toString();
+         } else {
+             throw new IOException("Non-OK response code back from tinyurl: " + status);
+         }
+@@ -90,52 +104,89 @@
+     public String getPassword() {
+         return password;
+     }
++    
++    public String getDefaultMsg() {
++		return defaultMsg;
++	}
+ 
+     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+     	return _perform(build, launcher, listener);
+     }
+ 
+-    protected <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>> boolean _perform(B build,
+-            Launcher launcher, BuildListener listener) {
+-        if (shouldTweet(build)) {
++    protected <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>> boolean _perform(
++			B build, Launcher launcher, BuildListener listener) {
++		if (shouldTweet(build)) {
+ 
+-            String newStatus = null;
+-            if (shouldIncludeUrl()) {
+-                try {
+-                    newStatus = createStatusWithURL(build);
+-                } catch (IOException e) {
+-                    LOGGER.log(Level.SEVERE, "Unable to tinyfy url", e);
+-                    newStatus = createStatusWithoutURL(build);
+-                }
+-            } else {
+-                newStatus = createStatusWithoutURL(build);
+-            }
++			String newStatus = null;
+ 
+-            try {
+-                DESCRIPTOR.updateTwit(id, password, newStatus);
+-            } catch (Exception e) {
+-                LOGGER.log(Level.SEVERE, "Unable to send tweet.", e);
+-            }
+-        }
+-        return true;
++			try {
++				newStatus = createTwStatus(build);
++			} catch (Exception e) {
++			}
+ 
+-    }
++			try {
++				DESCRIPTOR.updateTwit(id, password, newStatus);
++			} catch (Exception e) {
++				LOGGER.log(Level.SEVERE, "Unable to send tweet.", e);
++			}
++		}
++		return true;
+ 
+-    protected <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>> String createStatusWithoutURL(B build) {
+-        String projectName = build.getProject().getName();
+-        String result = build.getResult().toString();
+-        return String.format("%s:%s #%d", result, projectName, build.number);
+-    }
++	}
+ 
+-    protected <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>> String createStatusWithURL(B build)
+-            throws IOException {
+-        String projectName = build.getProject().getName();
+-        String result = build.getResult().toString();
+-        String absoluteBuildURL = DESCRIPTOR.getUrl() + build.getUrl();
+-        String tinyUrl = createTinyUrl(absoluteBuildURL);
+-        return String.format("%s:%s #%d - %s", result, projectName, build.number, tinyUrl);
+-    }
++	protected <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>> String createTwStatus(
++			B build) throws IOException {
++		String projectName = build.getProject().getName();
++		String result = build.getResult().toString();
++		String toblame = "";
++		try {
++			if (!build.getResult().equals(Result.SUCCESS)) {
++				toblame = updateUserStatus(build);
++			}
++		} catch (Exception e) {
++		}
++		String tinyUrl = "";
++		if (shouldIncludeUrl()) {
++			String absoluteBuildURL = DESCRIPTOR.getUrl() + build.getUrl();
++			try {
++				tinyUrl = createTinyUrl(absoluteBuildURL);
++			} catch (Exception e) {
++				tinyUrl = "?";
++			}
++		}
++		String msg = shouldIncludeMsg();
++		System.out.println("out " + msg);
++		return String.format("%s[%s:%s#%d - %s]%s", toblame, result.substring(
++				0, 4), projectName, build.number, tinyUrl, msg);
++	}
+ 
++	@SuppressWarnings("unchecked")
++	private <B extends AbstractBuild> String updateUserStatus(B build)
++			throws IOException {
++		StringBuffer tid = new StringBuffer("");
++		Set<User> culprits = build.getCulprits();
++		ChangeLogSet<Entry> changeSet = build.getChangeSet();
++		if (culprits != null && culprits.size() > 0) {
++			tid = new StringBuffer("blame:");
++			for (User user : culprits) {
++				UserTwitterProperty follower = user
++						.getProperty(UserTwitterProperty.class);
++				tid.append(follower.getTwitterid());
++				tid.append(" ");
++			}
++		} else if (changeSet != null) {
++			tid = new StringBuffer("blame:");
++			for (Entry entry : changeSet) {
++				User user = entry.getAuthor();
++				UserTwitterProperty follower = user
++						.getProperty(UserTwitterProperty.class);
++				tid.append(follower.getTwitterid());
++				tid.append(" ");
++			}
++		}
++		return tid.toString();
++	}
++
+     /**
+      * Detrmine if this build represents a failure or recovery. A build failure
+      * includes both failed and unstable builds. A recovery is defined as a
+@@ -169,6 +220,16 @@
+         }
+     }
+ 
++    protected String shouldIncludeMsg() {
++		if (defaultMsg != null) {
++			return defaultMsg;
++		} else if (DESCRIPTOR.defaultMsg != null) {
++			return DESCRIPTOR.defaultMsg;
++		} else {
++			return "";
++		}
++	}
++    
+     /**
+      * Determine if this build results should be tweeted. Uses the local
+      * settings if they are provided, otherwise the global settings.
+@@ -201,6 +262,7 @@
+         public String hudsonUrl;
+         public boolean onlyOnFailureOrRecovery;
+         public boolean includeUrl;
++        public String defaultMsg;
+ 
+         private Class<? extends AsyncTwitter> asyncTwitterClass = AsyncTwitter.class;
+ 
+@@ -267,6 +329,10 @@
+         public boolean isOnlyOnFailureOrRecovery() {
+             return onlyOnFailureOrRecovery;
+         }
++        
++        public String getDefaultMsg() {
++			return defaultMsg;
++		}
+ 
+         @Override
+         public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+@@ -288,20 +354,44 @@
+ 
+             LOGGER.info("Attempting to update Twitter status to: " + message);
+ 
+-            AsyncTwitter twitter = createAsyncTwitter(id, password);
+-            twitter.updateAsync(message, new TwitterAdapter() {
+-
+-                @Override
+-                public void onException(TwitterException e, int method) {
+-                    LOGGER.warning("Exception updating Twitter status: " + e.toString());
+-                }
+-
+-                @Override
+-                public void updated(Status statuses) {
+-                    LOGGER.info("Updated Twitter status: " + statuses.getText());
+-                }
+-
+-            });
++            if (message.length() > 140) {
++				String s = message;
++				ArrayList<String> as = new ArrayList<String>();
++				for (int i = 0, j = 0; i < s.length(); i += 137, j++) {
++					String string = "";
++					if (i + 137 < s.length()) {
++						string = s.substring(i, i + 137) + "#" + j;
++						as.add(string);
++					} else {
++						string = s.substring(i, s.length()) + "#" + j;
++						as.add(string);
++					}
++				}
++				for (String string : as) {
++					LOGGER.info("Attempting to update Twitter status to: "
++							+ string + " len: " + string.length());
++					Twitter twitter = createTwitter(id, password);
++					twitter.update(string);
++				}
++			} else {
++				Twitter twitter = createTwitter(id, password);
++				twitter.update(message);
++			}
++            
++//            AsyncTwitter twitter = createAsyncTwitter(id, password);
++//            twitter.updateAsync(message, new TwitterAdapter() {
++//
++//                @Override
++//                public void onException(TwitterException e, int method) {
++//                    LOGGER.warning("Exception updating Twitter status: " + e.toString());
++//                }
++//
++//                @Override
++//                public void updated(Status statuses) {
++//                    LOGGER.info("Updated Twitter status: " + statuses.getText());
++//                }
++//
++//            });
+         }
+ 
+         private AsyncTwitter createAsyncTwitter(String id, String password) throws Exception {
+@@ -310,5 +400,9 @@
+ 
+             return con.newInstance(id, password);
+         }
++        
++        private Twitter createTwitter(String id, String password) throws Exception {
++        	return new Twitter(id, password);
++        }
+     }
+ }
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/twitter/UserTwitterPropertyDescriptor.java
+===================================================================
+--- src/main/java/hudson/plugins/twitter/UserTwitterPropertyDescriptor.java	(revision 0)
++++ src/main/java/hudson/plugins/twitter/UserTwitterPropertyDescriptor.java	(revision 0)
+@@ -0,0 +1,58 @@
++package hudson.plugins.twitter;
++
++import hudson.model.User;
++import hudson.model.UserProperty;
++import hudson.model.UserPropertyDescriptor;
++import net.sf.json.JSONObject;
++
++import org.kohsuke.stapler.StaplerRequest;
++
++/**
++ * Descriptor for the {@link UserTwitterProperty}.
++ * 
++ * @author Erik Ramfelt
++ */
++public class UserTwitterPropertyDescriptor extends UserPropertyDescriptor {
++
++	public UserTwitterPropertyDescriptor() {
++		super(UserTwitterProperty.class);
++	}
++
++	@Override
++	public String getDisplayName() {
++		return "Twitter User";
++	}
++
++	/**
++	 * Method kept for backward compability. Prior to 1.222 the JSONObject
++	 * formdata was always null. This method should be removed in the future.
++	 * 
++	 * @param req
++	 *            request coming from config.jelly
++	 * @return a UserScoreProperty object
++	 */
++	private UserTwitterProperty newInstanceIfJSONIsNull(StaplerRequest req) throws FormException {
++		if (req.getParameter("twitter-hudson.twitterid") != null) {
++			return new UserTwitterProperty(req.getParameter("twitter-hudson.twitterid"));
++		} else {
++			return new UserTwitterProperty();
++		}
++	}
++
++	@Override
++	public UserTwitterProperty newInstance(StaplerRequest req, JSONObject formData) throws hudson.model.Descriptor.FormException {
++		if (formData == null) {
++			return newInstanceIfJSONIsNull(req);
++		}
++		if (formData.has("twitterid")) {
++			return req.bindJSON(UserTwitterProperty.class, formData);
++		} else {
++			return new UserTwitterProperty();
++		}
++	}
++
++	@Override
++	public UserProperty newInstance(User arg0) {
++		return null;
++	}
++}
+Index: src/main/java/hudson/plugins/twitter/UserTwitterProperty.java
+===================================================================
+--- src/main/java/hudson/plugins/twitter/UserTwitterProperty.java	(revision 0)
++++ src/main/java/hudson/plugins/twitter/UserTwitterProperty.java	(revision 0)
+@@ -0,0 +1,45 @@
++package hudson.plugins.twitter;
++
++import hudson.model.User;
++import hudson.model.UserProperty;
++import hudson.model.UserPropertyDescriptor;
++
++import org.kohsuke.stapler.DataBoundConstructor;
++import org.kohsuke.stapler.export.Exported;
++import org.kohsuke.stapler.export.ExportedBean;
++
++/**
++ * 
++ * @author landir
++ */
++@ExportedBean(defaultVisibility = 999)
++public class UserTwitterProperty extends UserProperty {
++
++	private String twitterid;
++
++	public UserTwitterProperty() {
++	}
++
++	@DataBoundConstructor
++	public UserTwitterProperty(String twitterid) {
++		this.twitterid = twitterid;
++	}
++
++	public UserPropertyDescriptor getDescriptor() {
++		return PluginImpl.USER_SCORE_PROPERTY_DESCRIPTOR;
++	}
++
++	@Exported
++	public User getUser() {
++		return user;
++	}
++
++	@Exported
++	public String getTwitterid() {
++		return twitterid;
++	}
++
++	public void setTwitterid(String twitterid) {
++		this.twitterid = twitterid;
++	}
++}
+Index: src/main/resources/hudson/plugins/twitter/TwitterPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/twitter/TwitterPublisher/config.jelly	(revision 17762)
++++ src/main/resources/hudson/plugins/twitter/TwitterPublisher/config.jelly	(working copy)
+@@ -22,5 +22,9 @@
+ 	<f:entry title="Password" help="/plugin/twitter/help-project-password.html">
+ 		<input class="setting-input" name="twitter.password" type="password" value="${instance.password}" />
+ 	</f:entry>
++	
++	<f:entry title="Default Message" help="/plugin/twitter/help-project-msg.html">
++		<input class="setting-input" name="twitter.defaultMsg" type="text" value="${instance.defaultMsg}" />
++	</f:entry>
+   </f:advanced>
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/twitter/TwitterPublisher/global.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/twitter/TwitterPublisher/global.jelly	(revision 17762)
++++ src/main/resources/hudson/plugins/twitter/TwitterPublisher/global.jelly	(working copy)
+@@ -19,5 +19,9 @@
+ 		    <f:checkbox name="twitter.includeUrl" checked="${descriptor.includeUrl}" />
+ 		</f:entry>
+ 		
++		<f:entry title="Default Message" help="/plugin/twitter/help-global-msg.html">
++			<input class="setting-input" name="twitter.defaultMsg" type="text" value="${descriptor.defaultMsg}" />
++		</f:entry>
++		
+ 	</f:section>
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/twitter/UserTwitterProperty/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/twitter/UserTwitterProperty/config.jelly	(revision 0)
++++ src/main/resources/hudson/plugins/twitter/UserTwitterProperty/config.jelly	(revision 0)
+@@ -0,0 +1,5 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
++	<f:entry title="Twitter Id">
++		<f:textbox name="twitter-hudson.twitterid" value="${instance.twitterid}"/>
++	</f:entry>
++</j:jelly>
+\ No newline at end of file
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 17762)
++++ pom.xml	(working copy)
+@@ -23,6 +23,11 @@
+             <version>1.1.0</version>
+         </dependency>
+         <dependency>
++			<groupId>commons-httpclient</groupId>
++			<artifactId>commons-httpclient</artifactId>
++			<version>3.1</version>
++		</dependency>
++        <dependency>
+             <groupId>mockobjects</groupId>
+             <artifactId>mockobjects-core</artifactId>
+             <version>0.09</version>

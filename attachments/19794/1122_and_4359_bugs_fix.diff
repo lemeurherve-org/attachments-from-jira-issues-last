@@ -1,0 +1,185 @@
+Index: main/core/src/main/java/hudson/model/ResourceController.java
+===================================================================
+--- main/core/src/main/java/hudson/model/ResourceController.java	(revision 35302)
++++ main/core/src/main/java/hudson/model/ResourceController.java	(working copy)
+@@ -74,25 +74,7 @@
+      *      the thread can be interrupted while waiting for the available resources.
+      */
+     public void execute( Runnable task, ResourceActivity activity ) throws InterruptedException {
+-        ResourceList resources = activity.getResourceList();
+-        synchronized(this) {
+-            while(inUse.isCollidingWith(resources))
+-                wait();
+-
+-            // we have a go
+-            inProgress.add(activity);
+-            inUse = ResourceList.union(inUse,resources);
+-        }
+-
+-        try {
+-            task.run();
+-        } finally {
+-            synchronized(this) {
+-                inProgress.remove(activity);
+-                inUse = ResourceList.union(resourceView);
+-                notifyAll();
+-            }
+-        }
++        task.run();
+     }
+ 
+     /**
+@@ -132,5 +114,14 @@
+                 return a;
+         return null;
+     }
++
++    public synchronized void lockResource(ResourceActivity activity){
++        inProgress.add(activity);
++        inUse = ResourceList.union(inUse,activity.getResourceList());
++    }
++    public synchronized void unlockResource(ResourceActivity activity){
++         inProgress.remove(activity);
++         inUse = ResourceList.union(resourceView);
++    }
+ }
+ 
+Index: main/core/src/main/java/hudson/model/Queue.java
+===================================================================
+--- main/core/src/main/java/hudson/model/Queue.java	(revision 35302)
++++ main/core/src/main/java/hudson/model/Queue.java	(working copy)
+@@ -788,14 +788,20 @@
+ 
+                 // am I woken up because I have a project to build?
+                 if (offer.workUnit != null) {
+-                    // if so, just build it
+-                    LOGGER.fine("Pop returning " + offer.workUnit + " for " + exec.getName());
+-
+-                    // TODO: I think this has to be done by the last executor that leaves the pop(), not by main executor
+-                    if (offer.workUnit.isMainWork())
++                    if(!canRun(offer.workUnit.work.getResourceList())){
+                         pendings.remove(offer.workUnit.context.item);
++                        blockedProjects.put(offer.workUnit.context.task, new BlockedItem(offer.workUnit.context.item));
++                    } else {
++                        // if so, just build it
++                        LOGGER.fine("Pop returning " + offer.workUnit + " for " + exec.getName());
+ 
+-                    return offer.workUnit;
++                        // TODO: I think this has to be done by the last executor that leaves the pop(), not by main executor
++
++                        if (offer.workUnit.isMainWork())
++                            pendings.remove(offer.workUnit.context.item);
++                        lockResource(offer.workUnit.work);
++                        return offer.workUnit;
++                    }
+                 }
+                 // otherwise run a queue maintenance
+             }
+Index: main/core/src/main/java/hudson/model/Executor.java
+===================================================================
+--- main/core/src/main/java/hudson/model/Executor.java	(revision 35302)
++++ main/core/src/main/java/hudson/model/Executor.java	(working copy)
+@@ -105,54 +105,63 @@
+                 // see issue #1583
+                 if (Thread.interrupted())   continue;
+ 
+-                SubTask task;
++                SubTask task = null;
+                 try {
+-                    // transition from idle to building.
+-                    // perform this state change as an atomic operation wrt other queue operations
+-                    synchronized (queue) {
+-                        workUnit = grabJob();
+-                        workUnit.setExecutor(this);
+-                        task = workUnit.work;
+-                        startTime = System.currentTimeMillis();
+-                        executable = task.createExecutable();
++                    try {
++                        // transition from idle to building.
++                        // perform this state change as an atomic operation wrt other queue operations
++                        synchronized (queue) {
++                            workUnit = grabJob();
++                            workUnit.setExecutor(this);
++                            task = workUnit.work;
++                            startTime = System.currentTimeMillis();
++                            executable = task.createExecutable();
++                        }
++                    } catch (IOException e) {
++                        LOGGER.log(Level.SEVERE, "Executor threw an exception", e);
++                        continue;
++                    } catch (InterruptedException e) {
++                        continue;
+                     }
+-                } catch (IOException e) {
+-                    LOGGER.log(Level.SEVERE, "Executor threw an exception", e);
+-                    continue;
+-                } catch (InterruptedException e) {
+-                    continue;
+-                }
+ 
+-                Throwable problems = null;
+-                final String threadName = getName();
+-                try {
+-                    workUnit.context.synchronizeStart();
++                    Throwable problems = null;
++                    final String threadName = getName();
++                    try {
++                        workUnit.context.synchronizeStart();
+ 
+-                    if (executable instanceof Actionable) {
+-                        for (Action action: workUnit.context.actions) {
+-                            ((Actionable) executable).addAction(action);
++                        if (executable instanceof Actionable) {
++                            for (Action action: workUnit.context.actions) {
++                                ((Actionable) executable).addAction(action);
++                            }
+                         }
+-                    }
+-                    setName(threadName+" : executing "+executable.toString());
+-                    queue.execute(executable, task);
+-                } catch (Throwable e) {
+-                    // for some reason the executor died. this is really
+-                    // a bug in the code, but we don't want the executor to die,
+-                    // so just leave some info and go on to build other things
+-                    LOGGER.log(Level.SEVERE, "Executor threw an exception", e);
+-                    workUnit.context.abort(e);
+-                    problems = e;
+-                } finally {
+-                    setName(threadName);
+-                    finishTime = System.currentTimeMillis();
+-                    try {
+-                        workUnit.context.synchronizeEnd(executable,problems,finishTime - startTime);
+-                    } catch (InterruptedException e) {
++                        setName(threadName+" : executing "+executable.toString());
++                        queue.execute(executable, task);
++                    } catch (Throwable e) {
++                        // for some reason the executor died. this is really
++                        // a bug in the code, but we don't want the executor to die,
++                        // so just leave some info and go on to build other things
++                        LOGGER.log(Level.SEVERE, "Executor threw an exception", e);
+                         workUnit.context.abort(e);
+-                        continue;
++                        problems = e;
+                     } finally {
+-                        workUnit.setExecutor(null);
++                        setName(threadName);
++                        finishTime = System.currentTimeMillis();
++                        try {
++                            workUnit.context.synchronizeEnd(executable,problems,finishTime - startTime);
++                        } catch (InterruptedException e) {
++                            workUnit.context.abort(e);
++                            continue;
++                        } finally {
++                            workUnit.setExecutor(null);
++                        }
+                     }
++                }finally{
++                    synchronized(queue){
++                        if(task!=null){
++                            queue.unlockResource(task);
++                        }
++                        queue.notifyAll();
++                    }
+                 }
+             }
+         } catch(RuntimeException e) {

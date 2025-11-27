@@ -1,0 +1,36 @@
+Building remotely on hudson-slave
+Using remote perforce client: hudson::jobname-1486123677
+[sourcesync] $ p4 workspace -o hudson::jobname-1486123677
+Caught exception communicating with perforce. No output for: p4 workspace -o hudson::jobname-1486123677 com.tek42.perforce.PerforceException: No output for: p4 workspace -o hudson::jobname-1486123677 
+	at com.tek42.perforce.parse.AbstractPerforceTemplate.getPerforceResponse(AbstractPerforceTemplate.java:341)
+	at com.tek42.perforce.parse.Workspaces.getWorkspace(Workspaces.java:53)
+	at hudson.plugins.perforce.PerforceSCM.getPerforceWorkspace(PerforceSCM.java:973)
+	at hudson.plugins.perforce.PerforceSCM.checkout(PerforceSCM.java:504)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1082)
+	at hudson.model.AbstractBuild$AbstractRunner.checkout(AbstractBuild.java:479)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:411)
+	at hudson.model.Run.run(Run.java:1280)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:137)
+
+
+Building remotely on hudson-slave
+Using remote perforce client: hudson::jobname-1486123677
+[sourcesync] $ p4 workspace -o hudson::jobname-1486123677
+Saving modified client hudson::jobname-1486123677
+[sourcesync] $ p4 -s client -i
+Last sync'd change: 311665
+[sourcesync] $ p4 counter change
+Caught exception communicating with perforce. No output for: p4 counter change com.tek42.perforce.PerforceException: No output for: p4 counter change 
+	at com.tek42.perforce.parse.AbstractPerforceTemplate.getPerforceResponse(AbstractPerforceTemplate.java:341)
+	at com.tek42.perforce.parse.Counters.getCounter(Counters.java:60)
+	at hudson.plugins.perforce.PerforceSCM.checkout(PerforceSCM.java:533)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1082)
+	at hudson.model.AbstractBuild$AbstractRunner.checkout(AbstractBuild.java:479)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:411)
+	at hudson.model.Run.run(Run.java:1280)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:137)
+

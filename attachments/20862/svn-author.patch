@@ -1,0 +1,85 @@
+Index: src/main/java/hudson/scm/SubversionSCM.java
+===================================================================
+--- src/main/java/hudson/scm/SubversionSCM.java	(revision 39940)
++++ src/main/java/hudson/scm/SubversionSCM.java	(working copy)
+@@ -53,7 +53,9 @@
+ import hudson.remoting.DelegatingCallable;
+ import hudson.remoting.VirtualChannel;
+ import static hudson.scm.PollingResult.*;
++import hudson.scm.ChangeLogSet.Entry;
+ import hudson.scm.UserProvidedCredential.AuthenticationManagerImpl;
++import hudson.scm.SubversionChangeLogSet.LogEntry;
+ import hudson.scm.subversion.CheckoutUpdater;
+ import hudson.scm.subversion.Messages;
+ import hudson.scm.subversion.UpdateUpdater;
+@@ -141,7 +143,6 @@
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Map;
+-import java.util.Map.Entry;
+ import java.util.Random;
+ import java.util.Set;
+ import java.util.StringTokenizer;
+@@ -517,17 +518,11 @@
+             Map<String,Long> revisions = parseRevisionFile(build);
+             if(svnLocations.length==1) {
+                 Long rev = revisions.get(getUrlWithoutRevision(svnLocations[0].remote));
+-                if(rev!=null) {
+-                    env.put("SVN_REVISION",rev.toString());
+-                    env.put("SVN_URL",svnLocations[0].getURL());
+-                }
++                addEnvVars(build, env, "", rev, svnLocations[0].getURL());
+             } else if(svnLocations.length>1) {
+                 for(int i=0;i<svnLocations.length;i++) {
+                     Long rev = revisions.get(getUrlWithoutRevision(svnLocations[i].remote));
+-                    if(rev!=null) {
+-                        env.put("SVN_REVISION_"+(i+1),rev.toString());
+-                        env.put("SVN_URL_"+(i+1),svnLocations[i].getURL());
+-                    }
++                    addEnvVars(build, env, "_" + (i+1), rev, svnLocations[i].getURL());
+                 }
+             }
+ 
+@@ -535,6 +530,33 @@
+             // ignore this error
+         }
+     }
++    
++    private void addEnvVars(AbstractBuild<?, ?> build, Map<String, String> env, String suffix, Long revision, String url) {
++        if (revision != null) {
++            env.put("SVN_REVISION" + suffix, revision.toString());
++            env.put("SVN_URL" + suffix, url);
++            Entry changeSetEntry = getChangeSetEntry(build, revision);
++            if (changeSetEntry != null) {
++                env.put("SVN_AUTHOR" + suffix, changeSetEntry.getAuthor().getId());
++                env.put("SVN_COMMIT_MSG" + suffix, changeSetEntry.getMsg());
++            }
++        }
++    }
++    
++    private Entry getChangeSetEntry(AbstractBuild<?, ?> build, long revision) {
++        while (build != null) {
++            for (Entry entry : build.getChangeSet()) {
++                long entryRevision = ((LogEntry)entry).getRevision();
++                
++                if (entryRevision == revision) {
++                    return entry;
++                }
++            }
++            build = build.getPreviousBuild();
++        }
++        
++        return null;
++    }
+ 
+     /**
+      * Called after checkout/update has finished to compute the changelog.
+@@ -2410,7 +2432,7 @@
+      */
+     private static Map describeBean(Object o) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+         Map<?,?> m = PropertyUtils.describe(o);
+-        for (Entry e : m.entrySet()) {
++        for (Map.Entry e : m.entrySet()) {
+             Object v = e.getValue();
+             if (v instanceof char[]) {
+                 char[] chars = (char[]) v;

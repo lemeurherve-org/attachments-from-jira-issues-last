@@ -1,0 +1,292 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>&lt;p style=&quot;font-size:120%&quot;&gt;Runs the tests on any available RH5 64-bit machine. Triggered (by Jenkins job Subversion.post-commit) after every subversion commit.&lt;/p&gt;&#xd;
+&lt;span style=&quot;font-size:120%&quot;&gt;&#xd;
+&lt;ul&gt;&#xd;
+&lt;li&gt;Builds (compiles) the beamline.all-feature&lt;/li&gt;&#xd;
+&lt;li&gt;Runs the unit tests&lt;/li&gt;&#xd;
+&lt;li&gt;Checks that the base configuration servers start correctly&lt;/li&gt;&#xd;
+&lt;/ul&gt;&#xd;
+&lt;/span&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.trac.TracProjectProperty>
+      <tracWebsite>https://trac.diamond.ac.uk/gda/</tracWebsite>
+    </hudson.plugins.trac.TracProjectProperty>
+    <hudson.security.AuthorizationMatrixProperty>
+      <permission>hudson.model.Item.Workspace:anonymous</permission>
+      <permission>hudson.model.Item.Read:anonymous</permission>
+      <permission>hudson.model.Item.Build:anonymous</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <hudson.queueSorter.PrioritySorterJobProperty>
+      <priority>120</priority>
+    </hudson.queueSorter.PrioritySorterJobProperty>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.diamond.ac.uk/subversion/gda/trunk/builders.dawn</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.diamond.ac.uk/subversion/gda/thirdparty</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.diamond.ac.uk/subversion/gda/trunk/configurations/example-config</remote>
+        <local>configurations/example-config</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.diamond.ac.uk/subversion/gda/trunk/builder</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.diamond.ac.uk/subversion/gda/trunk/configurations/diamond/base</remote>
+        <local>configurations/diamond/base</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <browser class="hudson.plugins.trac.TracRepositoryBrowser"/>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.UpdateWithCleanUpdater"/>
+  </scm>
+  <quietPeriod>30</quietPeriod>
+  <assignedNode>dasc &amp;&amp; diamond &amp;&amp; fast &amp;&amp; 64bit</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>${JENKINS_WORKSPACE_PARENT}/${JOB_NAME}</customWorkspace>
+  <builders>
+    <hudson.tasks.Shell>
+      <command># build and run unit tests
+###
+### GDA.tests-build_step_1
+### Build step 1 for all Jenkins GDA.tests on Linux machines
+### For Jenkins on Linux, &quot;the build is considered a failure if any of the commands exits with a non-zero exit code&quot;
+###
+control_c () {
+  echo -en &quot;\n*** Keyboard interrupt caught - Exiting ***\n&quot;
+  exit 1
+  }
+# trap keyboard interrupt (control-c)
+trap control_c SIGINT
+#------------------------------------#
+build_step_1 () {
+  # Determine our context
+  if [ -z &quot;${materialize_workspace_path}&quot; ]; then
+    if [ -z &quot;$WORKSPACE&quot; ]; then
+      export materialize_workspace_path=`pwd`/materialize_workspace
+    else
+      export materialize_workspace_path=${WORKSPACE}/materialize_workspace
+    fi
+  else
+    export materialize_workspace_path
+  fi
+  export materialize_workspace_name=`basename ${materialize_workspace_path}`
+  # Point to a recent version of Python
+  if [ -z &quot;$GDA_PYTHON_COMMAND&quot; ]; then
+    if [ -f &quot;/dls_sw/apps/python/2.6.2/bin/python&quot; ]; then
+      export GDA_PYTHON_COMMAND=&quot;/dls_sw/apps/python/2.6.2/bin/python&quot;
+    else
+      export GDA_PYTHON_COMMAND=&quot;python&quot;
+    fi
+  else
+    export GDA_PYTHON_COMMAND
+  fi
+  # For unit test jobs, we should not look like we&apos;re on a beamline
+  unset BEAMLINE
+  # If possible, set the environment, and if possible use the copy of tools on /scratch/ as it faster
+  # Don&apos;t generate an error if tools not available (eg on our Ubuntu test machine)
+  if [ &quot;${GDA_SET_TOOLS}&quot; == &quot;true&quot; ]; then
+    if [ -d &quot;/scratch/tools_versions/&quot; ]; then
+        . builder/set_tools.sh
+    else
+        if [ -d &quot;/dls_sw/dasc/tools_versions/&quot; ]; then
+            . builder/set_tools.sh
+        fi
+    fi
+  fi
+  builders.dawn/dawn.py --delete --workspace ${materialize_workspace_path} setup
+  builders.dawn/dawn.py -w ${materialize_workspace_path} --keyring ~/.gda/.keyring materialize builder gda
+  builders.dawn/dawn.py -w ${materialize_workspace_path} --keyring ~/.gda/.keyring materialize ${materialize_component} ${materialize_category} ${materialize_version}
+  builders.dawn/dawn.py -w ${materialize_workspace_path} target
+  builders.dawn/dawn.py -w ${materialize_workspace_path} sites
+  builders.dawn/dawn.py -w ${materialize_workspace_path} clean
+  builders.dawn/dawn.py -w ${materialize_workspace_path} build
+  # Create a file whose content signals Jenkins that this build is to be marked UNSTABLE.
+  # After the build and tests are run, clear the content if no problems are found.
+  # If major errors (eg crash, timeout) occur during the build / tests, the file content is left there for the Jenkins Text-finder plugin.
+  # This ensures that the build is, at best, UNSTABLE.
+  #
+  # Why do this? Jenkins (on Linux) will mark a build as SUCCESS if all the job steps have an exit code of zero, and if no tests report as failed in the JUnit test report XML.
+  # The purpose of this process is to identify the case where a test fails in such a way that no JUnit test report XML is written, and the exit code is zero.
+  # This scenario, though very unusual, can happen (and has occurred previously in GDA testing), and results in the build being incorrectly marked as SUCCESS.
+  #
+  echo &quot;`date +&quot;%a %d/%b/%Y %H:%M:%S&quot;` (start of job) MARK_BUILD_AS_UNSTABLE (this text will be cleared if no problems found)&quot; &gt; post_build_status_marker.txt
+  # mimic old directory structure
+  cd ${materialize_workspace_path}
+  ln -s ../thirdparty thirdparty
+  if [ -d &quot;${GDALargeTestFiles}&quot; ]; then
+    ln -s ${GDALargeTestFiles} GDALargeTestFiles
+  fi
+  #cd ${materialize_workspace_path}/features
+  #find ../../${materialize_workspace_name}_git/scisoft -type d -name &quot;*.feature&quot; -exec ln -s &apos;{}&apos; $(basename &apos;{}&apos; | echo) \;
+  #cd ${materialize_workspace_path}/plugins
+  #find ../../${materialize_workspace_name}_git/scisoft -mindepth 2 -maxdepth 2 -type d ! -name &quot;*.feature&quot; ! -name &quot;*.git&quot; ! -name &quot;*.site&quot; -exec ln -s &apos;{}&apos; $(basename &apos;{}&apos; | echo) \;
+  #find ../../${materialize_workspace_name}_git -mindepth 2 -maxdepth 2 -type d ! -name &quot;*.feature&quot; ! -name &quot;*.git&quot; ! -name &quot;*.site&quot; -exec ln -s &apos;{}&apos; $(basename &apos;{}&apos; | echo) \;
+  #cd ${materialize_workspace_path}
+  # Run JUnit tests
+  ${GDA_PYTHON_COMMAND} builder/gda-build.py --exclude=uk.ac.diamond.sda.navigator.test,uk.ac.gda.common.rcp,uk.ac.gda.devices.prosilica,uk.ac.gda.hrpd,uk.ac.gda.libs,uk.ac.gda.oe --GDALargeTestFilesLocation=${GDALargeTestFiles} junit-tests
+  # If we get this far, clear the signal that tells Jenkins that this build is to be marked UNSTABLE
+  echo &quot;`date +&quot;%a %d/%b/%Y %H:%M:%S&quot;` (after build and tests) no need for Jenkins Text-finder plugin to override the build status&quot; &gt; post_build_status_marker.txt
+  # If any JVM abended, write text to console log (for reporting) and create the status file (so that Jenkins will mark the build as unstable)
+  [[ $- = *e* ]]; olderrexit=$?  # Save errexit state (1=was not set, 0=was set)
+  set +e  # Turn off errexit
+  ${GDA_PYTHON_COMMAND} builder/hudson/job_scripts/check_if_JVM_abend.py ${materialize_workspace_path} ${materialize_workspace_path}_git
+  RETVAL=$?
+  $([ $olderrexit == &quot;0&quot; ]) &amp;&amp; set -e  # Turn errexit back on if it was previously on
+  if [ &quot;${RETVAL}&quot; != &quot;0&quot; ]; then
+    echo -e &quot;`date +&quot;%a %d/%b/%Y %H:%M:%S&quot;` (after build and tests) MARK_BUILD_AS_UNSTABLE (set by check_if_JVM_abend.py)&quot; &gt; post_build_status_marker.txt
+  fi
+  # Delete symbolic links just used for the tests
+  #cd ${materialize_workspace_path}/feature
+  #find -mindepth 1 -maxdepth 1 -type l -delete
+  #cd ${materialize_workspace_path}/plugins
+  #find -mindepth 1 -maxdepth 1 -type l -delete
+  # Check that everything was compiled (but don&apos;t fail if not, just record a test failure, hence the &quot;|| true&quot;)
+  ${GDA_PYTHON_COMMAND} builder/build_utilities/all_postbuild_checks.py || true
+  }
+echo &quot;`date` ==== Starting build_step_1 ====&quot;
+build_step_1
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>###
+### serverTest.sh
+### Start servers, Stop servers, check result.
+###
+control_c () {
+  echo -en &quot;\n*** Keyboard interrupt caught - Exiting ***\n&quot;
+  exit 1
+  }
+# trap keyboard interrupt (control-c)
+trap control_c SIGINT
+build_step_2 () {
+  # Determine our context
+  if [ -z &quot;${materialize_workspace_path}&quot; ]; then
+    if [ -z &quot;$WORKSPACE&quot; ]; then
+      export materialize_workspace_path=`pwd`/materialize_workspace
+    else
+      export materialize_workspace_path=${WORKSPACE}/materialize_workspace
+    fi
+  else
+    export materialize_workspace
+  fi
+  export materialize_workspace_name=`basename ${materialize_workspace_path}`
+  # Point to a recent version of Python
+  if [ -z &quot;$GDA_PYTHON_COMMAND&quot; ]; then
+    if [ -f &quot;/dls_sw/apps/python/2.6.2/bin/python&quot; ]; then
+      export GDA_PYTHON_COMMAND=&quot;/dls_sw/apps/python/2.6.2/bin/python&quot;
+    else
+      export GDA_PYTHON_COMMAND=&quot;python&quot;
+    fi
+  else
+    export GDA_PYTHON_COMMAND
+  fi
+  # For unit test jobs, we should not look like we&apos;re on a beamline
+  unset BEAMLINE
+  # If possible, set the environment, and if possible use the copy of tools on /scratch/ as it faster
+  # Don&apos;t generate an error if tools not available (eg on our Ubuntu test machine)
+  if [ &quot;${GDA_SET_TOOLS}&quot; == &quot;true&quot; ]; then
+    if [ -d &quot;/scratch/tools_versions/&quot; ]; then
+        . builder/set_tools.sh
+    else
+        if [ -d &quot;/dls_sw/dasc/tools_versions/&quot; ]; then
+            . builder/set_tools.sh
+        fi
+    fi
+  fi
+  # Set server test environment variables
+  if [ -z &quot;$GDA_SERVER_TEST_WORKSPACE&quot; ]; then
+    export GDA_SERVER_TEST_WORKSPACE=${materialize_workspace_path}
+  fi
+  if [ -z &quot;$GDA_SERVER_TEST_OPTIONS&quot; ]; then
+    export GDA_SERVER_TEST_OPTIONS=&quot;--config=${WORKSPACE}/configurations/diamond/base&quot;
+  fi
+  # Run server test (start and stop servers)
+  cd ${materialize_workspace_path}
+  . builder/test/server_start.sh
+  . builder/test/server_stop.sh
+  
+  ### Check server test log files
+  cd ${materialize_workspace_path}
+  ${GDA_PYTHON_COMMAND} builder/test/all_server_checks.py  || true
+  }
+
+build_step_2
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>materialize_workspace/server_test_logs/**</artifacts>
+      <latestOnly>false</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.plugins.textfinder.TextFinderPublisher>
+      <fileSet>materialize_workspace/post_build_status_marker.txt</fileSet>
+      <regexp>MARK_BUILD_AS_UNSTABLE</regexp>
+      <succeedIfFound>false</succeedIfFound>
+      <unstableIfFound>true</unstableIfFound>
+      <alsoCheckConsoleOutput>false</alsoCheckConsoleOutput>
+    </hudson.plugins.textfinder.TextFinderPublisher>
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>materialize_workspace/plugins/*/test-reports/TEST-*.xml,materialize_workspace_git/**/test-reports/TEST-*.xml,materialize_workspace/builder/test-reports/TEST-*.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <testDataPublishers/>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.plugins.descriptionsetter.DescriptionSetterPublisher>
+      <regexp>(?:.*)==Description-for-Jenkins-START==(.+?)(?:==Description-for-Jenkins-END==|$).*</regexp>
+      <regexpForFailed>(?:.*)==Description-for-Jenkins-START==(.+?)(?:==Description-for-Jenkins-END==|$).*</regexpForFailed>
+      <description>\1</description>
+      <descriptionForFailed>\1</descriptionForFailed>
+      <setForMatrix>false</setForMatrix>
+    </hudson.plugins.descriptionsetter.DescriptionSetterPublisher>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <timeoutMinutes>90</timeoutMinutes>
+      <failBuild>true</failBuild>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <EnvInjectBuildWrapper>
+      <info>
+        <propertiesContentMap class="linked-hash-map">
+          <entry>
+            <string>ISpyBTest_optional_skip</string>
+            <string>TRUE</string>
+          </entry>
+          <entry>
+            <string>materialize_component</string>
+            <string>uk.ac.gda.test.feature</string>
+          </entry>
+          <entry>
+            <string>materialize_category</string>
+            <string>gda</string>
+          </entry>
+          <entry>
+            <string>materialize_version</string>
+            <string>trunk</string>
+          </entry>
+          <entry>
+            <string>materialize_workspace_path</string>
+            <string>${WORKSPACE}/materialize_workspace</string>
+          </entry>
+        </propertiesContentMap>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+    </EnvInjectBuildWrapper>
+  </buildWrappers>
+</project>

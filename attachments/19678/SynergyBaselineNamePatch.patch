@@ -1,0 +1,127 @@
+Index: src/main/java/hudson/plugins/synergy/SynergyPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/synergy/SynergyPublisher.java	(revision 33992)
++++ src/main/java/hudson/plugins/synergy/SynergyPublisher.java	(working copy)
+@@ -50,7 +50,9 @@
+ 		public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+ 			return new SynergyPublisher(
+ 				req.getParameter("synergyPublisher.time"),
+-				Boolean.parseBoolean(req.getParameter("synergyPublisher.publish"))
++				Boolean.parseBoolean(req.getParameter("synergyPublisher.publish")),
++						req.getParameter("synergy.baselineNameSyntax")
++				
+ 			);
+ 		}
+ 
+@@ -65,11 +67,19 @@
+ 	 * Should the baseline be published
+ 	 */
+ 	private boolean publish;
++
++	/**
++	 * Name of the baseline
++	 */
++	private String baselineNameSyntax;
+ 	
++	private static final String[] CHECK_HUDSON_VARIABLES = {"BUILD_NUMBER", "BUILD_ID", "JOB_NAME", "BUILD_TAG", "EXECUTOR_NUMBER"};
++	
+ 	@DataBoundConstructor
+-	public SynergyPublisher(String time, boolean publish) {
++	public SynergyPublisher(String time, boolean publish, String baselineNameSyntax) {
+ 		this.time = time;
+ 		this.publish = publish;
++		this.baselineNameSyntax = baselineNameSyntax;
+ 	}
+ 
+ 	public BuildStepMonitor getRequiredMonitorService() {
+@@ -124,20 +134,29 @@
+ 				SetRoleCommand setRoleCommand = new SetRoleCommand(SetRoleCommand.BUILD_MANAGER);
+ 				commands.executeSynergyCommand(path, setRoleCommand);
+ 				
+-				// Compute baseline name.
+-				Date date = build.getTimestamp().getTime();
+-				DateFormat format = new SimpleDateFormat("yyyyMMdd-hhmm");
+-				String name = build.getProject().getName() + "-" + format.format(date);
++				String baselineName;
++				
++				if (baselineNameSyntax == null){
++				    //Compute baseline name.
++					Date date = build.getTimestamp().getTime();
++					DateFormat format = new SimpleDateFormat("yyyyMMdd-hhmm");
+ 
++					baselineName = build.getProject().getName() + "-" + format.format(date);
++				} else {
++					baselineName = baselineNameSyntax;
++					for (String hudsonVariable : CHECK_HUDSON_VARIABLES)
++						baselineName = baselineName.replace("${" + hudsonVariable+"}", build.getEnvironment(launcher.getListener()).get(hudsonVariable));
++				}
++
+ 				// Create baseline.
+ 				if (createBaseline) {
+-					CreateProjectBaselineCommand createCommand = new CreateProjectBaselineCommand(name, project, release, purpose);
++					CreateProjectBaselineCommand createCommand = new CreateProjectBaselineCommand(baselineName, project, release, purpose);
+ 					commands.executeSynergyCommand(path, createCommand);
+ 				}
+ 
+ 				// Publish baseline.
+ 				if (publishBaseline) {
+-					PublishBaselineCommand publishCommand = new PublishBaselineCommand(name);
++					PublishBaselineCommand publishCommand = new PublishBaselineCommand(baselineName);
+ 					commands.executeSynergyCommand(path, publishCommand);
+ 				}
+ 
+Index: src/main/resources/hudson/plugins/synergy/SynergyPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/synergy/SynergyPublisher/config.jelly	(revision 33992)
++++ src/main/resources/hudson/plugins/synergy/SynergyPublisher/config.jelly	(working copy)
+@@ -11,4 +11,7 @@
+ 	<f:entry title="Publish the baseline if the build is successful">
+ 		<f:checkbox name="synergyPublisher.publish" value="true" checked="${instance.isPublish()}"/>
+ 	</f:entry>
++	<f:entry title="Baseline name syntax" help="/plugin/synergy/baselineNameSyntax.html">
++		<f:textbox name="synergy.baselineNameSyntax" value="${instance.baselineNameSyntax}" />
++	</f:entry>
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/webapp/baselineNameSyntax.html
+===================================================================
+--- src/main/webapp/baselineNameSyntax.html	(revision 0)
++++ src/main/webapp/baselineNameSyntax.html	(revision 0)
+@@ -0,0 +1,15 @@
++<div>
++While creating the baseline, use this format.
++</div>
++<br/>
++<div>
++If you leave that empty the default is: [job-name]-[yyyyMMdd-hhmm]. You can inject the following Hudson build variables: 
++<ul>
++  <li>BUILD_NUMBER</li>
++  <li>BUILD_ID</li>
++  <li>JOB_NAME</li>
++  <li>BUILD_TAG</li>
++  <li>EXECUTOR_NUMBER</li>
++</ul>
++e.g. ${JOB_NAME}-${BUILD_NUMBER}
++</div>
+\ No newline at end of file
+Index: src/main/webapp/baselineNameSyntax_de.html
+===================================================================
+--- src/main/webapp/baselineNameSyntax_de.html	(revision 0)
++++ src/main/webapp/baselineNameSyntax_de.html	(revision 0)
+@@ -0,0 +1,15 @@
++<div>
++Welches Format soll bei der Baselineerzeugung genutzt werden?
++</div>
++<br/>
++<div>
++Wird nichts angegeben, ist der Standartwert: [job-name]-[yyyyMMdd-hhmm]. Es können folgenden Hudson Build Variablen benutzt werden: 
++<ul>
++  <li>BUILD_NUMBER</li>
++  <li>BUILD_ID</li>
++  <li>JOB_NAME</li>
++  <li>BUILD_TAG</li>
++  <li>EXECUTOR_NUMBER</li>
++</ul>
++z.B. ${JOB_NAME}-${BUILD_NUMBER}
++</div>
+\ No newline at end of file

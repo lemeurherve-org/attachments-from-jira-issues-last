@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>When an Active Choice reactive reference is rendered as a Jenkins File Chooser, the name of the selected file is not cascaded to other active choices that reference it.</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>2</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <job-metadata plugin="metadata@1.1.0b">
+      <values class="linked-list">
+        <metadata-string>
+          <name>job-type</name>
+          <description>Options: visualization,data-source
+Galaxy: tool.tool_type</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <value>visualization</value>
+        </metadata-string>
+        <metadata-string>
+          <name>output-format</name>
+          <description>This is the data type of the output file. It can be one of the supported data types ( e.g., &quot;tabular&quot; ) or the format of the tool&apos;s input dataset ( e.g., format=&quot;input&quot; ). 
+It can also be an image type if the output is destined for visualization</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <value>csv,rds,png</value>
+        </metadata-string>
+        <metadata-string>
+          <name>metadata-source</name>
+          <description>This reads the metadata information from the tool&apos;s input dataset properties file(named with the extension.properties)</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>true</exposedToEnvironment>
+          <value>properties</value>
+        </metadata-string>
+        <metadata-string>
+          <name>project-revision</name>
+          <description>Last SVN revision number that this is based on. If modifications are made then add -mod to this revision number</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>true</exposedToEnvironment>
+          <value></value>
+        </metadata-string>
+        <metadata-string>
+          <name>deprecated</name>
+          <description>A flag (true/false) to indicate whether a job is deprecated or active</description>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <value>false</value>
+        </metadata-string>
+        <metadata-tree>
+          <name>stats-engine</name>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>false</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <children class="linked-list">
+            <metadata-string>
+              <name>library</name>
+              <description>comma separated list of stat-engine libraries required for the job.</description>
+              <parent class="metadata-tree" reference="../../.."/>
+              <generated>false</generated>
+              <exposedToEnvironment>true</exposedToEnvironment>
+              <value>caret,sm</value>
+            </metadata-string>
+            <metadata-string>
+              <name>export-session</name>
+              <description>Options: true/false If the code supports it, it will export session data from the stat engine for debugging purposes</description>
+              <parent class="metadata-tree" reference="../../.."/>
+              <generated>false</generated>
+              <exposedToEnvironment>true</exposedToEnvironment>
+              <value>false</value>
+            </metadata-string>
+          </children>
+        </metadata-tree>
+        <metadata-tree>
+          <name>job-info</name>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>true</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <children class="linked-list">
+            <metadata-tree>
+              <name>last-saved</name>
+              <description></description>
+              <parent class="metadata-tree" reference="../../.."/>
+              <generated>true</generated>
+              <exposedToEnvironment>false</exposedToEnvironment>
+              <children class="linked-list">
+                <metadata-date>
+                  <name>time</name>
+                  <description></description>
+                  <parent class="metadata-tree" reference="../../.."/>
+                  <generated>true</generated>
+                  <exposedToEnvironment>false</exposedToEnvironment>
+                  <value>
+                    <time>1499290452435</time>
+                    <timezone>America/New_York</timezone>
+                  </value>
+                  <checked>false</checked>
+                </metadata-date>
+                <metadata-tree>
+                  <name>user</name>
+                  <parent class="metadata-tree" reference="../../.."/>
+                  <generated>true</generated>
+                  <exposedToEnvironment>false</exposedToEnvironment>
+                  <children class="linked-list">
+                    <metadata-string>
+                      <name>display-name</name>
+                      <description></description>
+                      <parent class="metadata-tree" reference="../../.."/>
+                      <generated>true</generated>
+                      <exposedToEnvironment>false</exposedToEnvironment>
+                      <value>Ioannis Moutsatsos</value>
+                    </metadata-string>
+                    <metadata-string>
+                      <name>full-name</name>
+                      <description></description>
+                      <parent class="metadata-tree" reference="../../.."/>
+                      <generated>true</generated>
+                      <exposedToEnvironment>false</exposedToEnvironment>
+                      <value>Ioannis Moutsatsos</value>
+                    </metadata-string>
+                  </children>
+                </metadata-tree>
+              </children>
+            </metadata-tree>
+          </children>
+        </metadata-tree>
+      </values>
+    </job-metadata>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.FileParameterDefinition>
+          <name>AFILE</name>
+          <description>File Parameter Pick a file </description>
+        </hudson.model.FileParameterDefinition>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@1.5.3">
+          <name>AC_FROMAFILE</name>
+          <description></description>
+          <randomName>choice-parameter-1776719762959538</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.27">
+              <script>return &quot;&quot;&quot;
+&lt;input name=&quot;value&quot; type=&quot;text&quot; class=&quot;setting-input   &quot; value=&quot;$AFILE&quot;&gt;
+&quot;&quot;&quot;</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.27">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>ISSUE_38893</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>AFILE</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>false</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@1.5.3">
+          <name>AC_RENDERED</name>
+          <description></description>
+          <randomName>choice-parameter-1776719769033773</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.27">
+              <script>return &quot;&quot;&quot;
+&lt;input name=&quot;value&quot; type=&quot;file&quot; jsonaware=&quot;true&quot;&gt;
+&quot;&quot;&quot;</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.27">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>ISSUE_38893</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters></referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>false</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@1.5.3">
+          <name>AC_FROMRENDERED</name>
+          <description></description>
+          <randomName>choice-parameter-1776719774793723</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.27">
+              <script>return &quot;&quot;&quot;
+&lt;input name=&quot;value&quot; type=&quot;text&quot; class=&quot;setting-input   &quot; value=&quot;$AC_RENDERED&quot;&gt;
+&quot;&quot;&quot;</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.27">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>ISSUE_38893</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>AC_RENDERED</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>false</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders/>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>A*</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+    </hudson.tasks.ArtifactArchiver>
+  </publishers>
+  <buildWrappers/>
+</project>

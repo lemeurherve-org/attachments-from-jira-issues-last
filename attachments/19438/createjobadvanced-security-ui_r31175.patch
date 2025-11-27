@@ -1,0 +1,38 @@
+Index: src/main/resources/hudson/plugins/createjobadvanced/CreateJobAdvancedPlugin/config.properties
+===================================================================
+--- src/main/resources/hudson/plugins/createjobadvanced/CreateJobAdvancedPlugin/config.properties	(revision 31175)
++++ src/main/resources/hudson/plugins/createjobadvanced/CreateJobAdvancedPlugin/config.properties	(working copy)
+@@ -1,5 +1,5 @@
+ CJAInstallations=Create Job Advanced
+-security=Security
++security=Grant creator full control
+ securitydesc=If security is activated, automatically set owner rights
+ jobspacesinname=Replace spaces in the job name with "-"
+ logrotator=Define default log rotator value
+Index: src/main/resources/hudson/plugins/createjobadvanced/CreateJobAdvancedPlugin/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/createjobadvanced/CreateJobAdvancedPlugin/config.jelly	(revision 31175)
++++ src/main/resources/hudson/plugins/createjobadvanced/CreateJobAdvancedPlugin/config.jelly	(working copy)
+@@ -2,7 +2,7 @@
+          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  
+   <f:section title="${%CJAInstallations}">
+-    <f:entry title="${%security}" description="${%securitydesc}">
++    <f:entry title="${%security}" help="/plugin/createjobadvanced/security.html">
+         <f:checkbox name="cja.security"  checked="${it.autoOwnerRights}"/> 
+     </f:entry>
+      <f:entry title="${%jobspacesinname}">
+Index: src/main/webapp/security.html
+===================================================================
+--- src/main/webapp/security.html	(revision 0)
++++ src/main/webapp/security.html	(revision 0)
+@@ -0,0 +1,9 @@
++<div>
++  If checked, the job creator will be granted full control over the job
++  when using "Project-based Matrix Authorization Strategy" (including
++  <tt>Configure</tt>, 
++  <tt>Delete</tt>, 
++  <tt>Build</tt>, 
++  <tt>Read</tt>, and
++  <tt>Workspace</tt> permissions).
++</div> 

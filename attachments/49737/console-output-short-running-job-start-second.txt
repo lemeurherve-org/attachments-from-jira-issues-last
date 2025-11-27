@@ -1,0 +1,120 @@
+Started by user Hull, Ryan
+[EnvInject] - Loading node environment variables.
+Building remotely on VUFTRT-001 (win10_gui) in workspace D:\Jenkins\workspace\Test Automation\Test Automation - GUI
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Done
+[EnvInject] - Executing scripts and injecting environment variables after the SCM step.
+[EnvInject] - Evaluating the Groovy script content
+Evaluated macro: '#606: [Repo: FirstViewCallCenterApplication User: jrhull]'
+Setting build name to '#606: [Repo: FirstViewCallCenterApplication User: jrhull]'
+[Test Automation - GUI] $ cmd /c call D:\Jenkins\tmp\jenkins5478604974971366973.bat
+###### PREPARE BUILD FOLDER ######
+###### CLONE REPOSITORIES ######
+Cloning into 'C:\build\ApplicationTesting-CommonGUI'...
+Cloning into 'C:\build\ApplicationTesting-FirstViewCallCenterApplication'...
+Cloning into 'C:\build\BDD-ServicesAndSolutions'...
+###### START LFTRUNTIME ###### 
+### ALM_UPLOAD_PATH is "Jenkins External Run Results\2019\Dec" ####
+### ALM_Project is "FirstView" ####
+Process leaked file descriptors. See https://jenkins.io/redirect/troubleshooting/process-leaked-file-descriptors for more information
+[EnvInject] - Injecting environment variables from a build step.
+[EnvInject] - Injecting as environment variables the properties content 
+DB_ENV=TEST
+ENV=TEST
+BROWSER=Internet Explorer
+
+[EnvInject] - Variables injected successfully.
+[ApplicationTesting-FirstViewCallCenterApplication] $ cmd.exe /C "D:\Jenkins\apache-ant-1.10.1\bin\ant.bat -file build.xml -DALM_Project=FirstView -DRepository=FirstViewCallCenterApplication -DCommonGUI=master -DBDD=master -DBranch=master -DENV=TEST -DDatabase_Env=TEST '"-DBrowser=Internet Explorer"' '"-DScenarioTagsToRun=@safeboxActionList "' -DTagOrBranch=master -DBDD-ServicesAndSolutionsTagOrBranch=master -DCommonGUITagOrBranch=master '"-DJOB_NAME=Test Automation/Test Automation - GUI"' '"-DScenarioTagsToRun=@safeboxActionList "' junit && exit %%ERRORLEVEL%%"
+Unable to locate tools.jar. Expected to find it in C:\Program Files (x86)\Java\jre8\lib\tools.jar
+Buildfile: C:\build\ApplicationTesting-FirstViewCallCenterApplication\build.xml
+
+compile:
+    [mkdir] Created dir: c:\build\stage
+     [copy] Copying 12 files to C:\build\stage
+     [copy] Copying 76 files to C:\build\ApplicationTesting-FirstViewCallCenterApplication\lib
+     [copy] Copying 10 files to c:\build\stage\properties
+     [echo] Before Common compile
+    [javac] C:\build\ApplicationTesting-FirstViewCallCenterApplication\build.xml:34: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 45 source files to c:\build\stage
+    [javac] C:\build\ApplicationTesting-FirstViewCallCenterApplication\build.xml:41: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 54 source files to c:\build\stage
+    [javac] Note: c:\build\ApplicationTesting-FirstViewCallCenterApplication\test\com\efirstbank\at\spa\stepdefinitions\beneficialowner\BeneficialOwnerStepDefinitions.java uses unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+
+checkstyle:
+[checkstyle] Running Checkstyle 8.4 on 60 files
+
+junit:
+     [echo] Calling JUNIT
+    [junit] Running unittesting.TestSuiteRunner
+    [junit] 2019-12-11 08:50:44 DEBUG  [FirstViewUtil]: Util
+    [junit] 2019-12-11 08:50:44 DEBUG  [CommonUtil]: project path: C:\\build\\ApplicationTesting-CommonGUI
+    [junit] 2019-12-11 08:50:44 DEBUG  [CommonUtil]: Jenkins ENV: TEST
+    [junit] 2019-12-11 08:50:44 DEBUG  [CommonUtil]: Jenkins DB ENV: TEST
+    [junit] 2019-12-11 08:50:44 DEBUG  [CommonUtil]: Jenkins BROWSER: INTERNET EXPLORER
+    [junit] 2019-12-11 08:50:44 DEBUG  going to scan these urls:
+    
+
+  ****
+   TRIMMED TEST OUTPUT
+  ****
+
+    [junit] 
+    [junit]   @regression @acctSummary @smoke @safeboxActionList
+    [junit]   Scenario: [@safeboxActionList] A branch rep successfully views the account action box list page for a safebox acct # firstview/accounts/AccountSummary.feature:5
+    [junit]     Given "LDAPRandomSelection" user "AUTH-APPROVAL-LIMIT3" logs in with location "ARVA"                             # LoginStepDefinitions.userLogsInWithLocation(String,String,String)
+    [junit]     And user searches by "Customer #" using sql "USER_OPEN_SAFEBOX"                                                  # SearchScreenDefinitions.userSearchesByUsingSql(String,String)
+    [junit]     When the "Safe Box" account is selected and verified with                                                        # AccountsSummaryScreenDefinitions.theAccountIsSelectedAndVerifiedWith(String,VerifiedOptionsVO>)
+    [junit]     Then the  "Safe Box" account summary action list is validated                                                    # AccountsSummaryScreenDefinitions.theAccountSummaryActionListIsValidated(String)
+    [junit] 
+    [junit] 1 Scenarios (1 passed)
+    [junit] 4 Steps (4 passed)
+    [junit] 0m46.642s
+    [junit] 
+    [junit] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 50.439 sec
+    [junit] Picked up JAVA_TOOL_OPTIONS: -agentlib:jvmhook
+    [junit] Picked up _JAVA_OPTIONS: -Xrunjvmhook -Xbootclasspath/a:"C:\Program Files (x86)\HPE\Unified Functional Testing\bin\java_shared\classes\jasmine.jar"
+    [junit] Picked up JAVA_TOOL_OPTIONS: -agentlib:jvmhook
+     [echo] COPYING TEST FILES
+     [copy] Copying 6 files to D:\Jenkins\workspace\Test Automation\Test Automation - GUI\JunitResults
+     [copy] Copying 7 files to D:\Jenkins\workspace\Test Automation\Test Automation - GUI\JunitResults
+     [copy] Copied 3 empty directories to 1 empty directory under D:\Jenkins\workspace\Test Automation\Test Automation - GUI\JunitResults
+
+BUILD SUCCESSFUL
+Total time: 1 minute 16 seconds
+Picked up JAVA_TOOL_OPTIONS: -agentlib:jvmhook
+Picked up _JAVA_OPTIONS: -Xrunjvmhook -Xbootclasspath/a:"C:\Program Files (x86)\HPE\Unified Functional Testing\bin\java_shared\classes\jasmine.jar"
+[htmlpublisher] Archiving HTML reports...
+[htmlpublisher] Archiving at BUILD level D:\Jenkins\workspace\Test Automation\Test Automation - GUI\JunitResults to /opt/Jenkins/jobs/Test Automation/jobs/Test Automation - GUI/builds/606/htmlreports/Cucumber_20LeanFT_20Report
+Recording test results
+[CucumberReport] Preparing Cucumber Reports
+[CucumberReport] JSON report directory is "C:\build\ApplicationTesting-FirstViewCallCenterApplication\output\"
+[CucumberReport] Copied 1 json files from workspace "C:\build\ApplicationTesting-FirstViewCallCenterApplication\output" to reports directory "/opt/Jenkins/jobs/Test Automation/jobs/Test Automation - GUI/builds/606/cucumber-html-reports/.cache"
+[CucumberReport] Copied 0 properties files from workspace "C:\build\ApplicationTesting-FirstViewCallCenterApplication\output" to reports directory "/opt/Jenkins/jobs/Test Automation/jobs/Test Automation - GUI/builds/606/cucumber-html-reports/.cache"
+[CucumberReport] Processing 1 json files:
+[CucumberReport] /opt/Jenkins/jobs/Test Automation/jobs/Test Automation - GUI/builds/606/cucumber-html-reports/.cache/cucumberFirstView.json
+Archiving artifacts
+Upload test result to ALM is waiting for a checkpoint on Test Automation ? Test Automation - GUI #605: [Repo: FirstViewCallCenterApplication User: jrhull]
+INFO: 'Upload test result to ALM' Post Build Step is being invoked by jenkins_alm.
+INFO: 1 test result file found.
+INFO: Start to upload /opt/Jenkins/jobs/Test Automation/jobs/Test Automation - GUI/builds/606/archive/JunitResults/firstviewJunit.xml
+INFO: Start to parse file: /opt/Jenkins/jobs/Test Automation/jobs/Test Automation - GUI/builds/606/archive/JunitResults/firstviewJunit.xml
+INFO: parse resut file succeed.
+INFO: Start to login to ALM Server.
+Start login to ALM server...
+User jenkins_alm unauthorized.
+Got authenticate point:https://alm.fb:443/qcbin/authentication-point/authenticate
+Authenticate point schema or port is different with server's. Please check with ALM site admin.
+Try to authenticate through: https://alm.fb/qcbin/authentication-point/authenticate
+Logged in successfully to ALM Server https://alm.fb/qcbin/ using jenkins_alm
+Creating session...
+Session created.
+INFO: Checking test folder...
+INFO: Checking testset folder...
+INFO: Uploading ALM Entities...
+INFO: Uploaded /opt/Jenkins/jobs/Test Automation/jobs/Test Automation - GUI/builds/606/archive/JunitResults/firstviewJunit.xml.
+INFO: 'Upload test result to ALM' Completed.
+Sending e-mails to: Ryan.Hull@efirstbank.com
+Triggering a new build of Test Automation ? Archiver
+Finished: SUCCESS
+

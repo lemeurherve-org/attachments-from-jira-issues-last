@@ -1,0 +1,23 @@
+diff --git a/src/main/java/hudson/plugins/analysis/graph/PriorityGraph.java b/src/main/java/hudson/plugins/analysis/graph/PriorityGraph.java
+index da2e1c7..d2ff43d 100644
+--- a/src/main/java/hudson/plugins/analysis/graph/PriorityGraph.java
++++ b/src/main/java/hudson/plugins/analysis/graph/PriorityGraph.java
+@@ -19,6 +19,8 @@ import hudson.plugins.analysis.util.ToolTipBuilder;
+ import hudson.plugins.analysis.util.ToolTipProvider;
+ import hudson.plugins.analysis.util.model.Priority;
+ 
++import org.kohsuke.stapler.Stapler;
++
+ /**
+  * Builds a graph showing all warnings by priority.
+  *
+@@ -59,7 +61,8 @@ public class PriorityGraph extends CategoryBuildResultGraph {
+     @SuppressWarnings("SIC")
+     @Override
+     protected CategoryItemRenderer createRenderer(final GraphConfiguration configuration, final String pluginName, final ToolTipProvider toolTipProvider) {
+-        CategoryUrlBuilder url = new UrlBuilder(getRootUrl(), pluginName);
++        String base = Stapler.getCurrentRequest().getOriginalRequestURI().indexOf("/trendDetails/") == -1 ? "" : "../../";
++        CategoryUrlBuilder url = new UrlBuilder(base + getRootUrl(), pluginName);
+         ToolTipBuilder toolTip = new ToolTipBuilder(toolTipProvider) {
+                     @Override
+             protected String getShortDescription(final int row) {

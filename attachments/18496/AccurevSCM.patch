@@ -1,0 +1,26 @@
+Index: src/main/java/hudson/plugins/accurev/AccurevSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/accurev/AccurevSCM.java	(revision 15128)
++++ src/main/java/hudson/plugins/accurev/AccurevSCM.java	(working copy)
+@@ -1002,9 +1002,18 @@
+          * {@inheritDoc}
+          */
+         @Override
+-        public SCM newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+-            return req.bindJSON(AccurevSCM.class, formData);
+-        }
++        public SCM newInstance(final StaplerRequest req,
++				final JSONObject formData) throws FormException {
++			return new AccurevSCM( //
++					req.getParameter("accurev.serverName"), //
++					req.getParameter("accurev.depot"), //
++					req.getParameter("accurev.stream"), (//
++					req.getParameter("accurev.useWorkspace") != null), //
++					req.getParameter("accurev.workspace"), //
++					req.getParameter("accurev.workspaceSubPath"), //
++					req.getParameter("accurev.synctime") != null, //
++					req.getParameter("accurev.useUpdate") != null);
++		}
+ 
+         /**
+          * Getter for property 'servers'.

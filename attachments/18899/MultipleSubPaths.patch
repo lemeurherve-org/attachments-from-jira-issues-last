@@ -1,0 +1,28 @@
+Index: AccurevSCM.java
+===================================================================
+--- AccurevSCM.java	(revision 24002)
++++ AccurevSCM.java	(working copy)
+@@ -405,7 +405,10 @@
+             if ((workspaceSubPath == null) || (workspaceSubPath.trim().length() == 0)) {
+                 cmd.add(".");
+             } else {
+-                cmd.add(workspaceSubPath);
++                for(String subPath : workspaceSubPath.split(" "))
++                {
++                   cmd.add(subPath);
++                }
+             }
+             rv = launchAccurev(launcher, cmd, accurevEnv, null, listener.getLogger(), workspace);
+             if (rv != 0) {
+@@ -427,7 +430,10 @@
+             if ((workspaceSubPath == null) || (workspaceSubPath.trim().length() == 0)) {
+                 cmd.add(".");
+             } else {
+-                cmd.add(workspaceSubPath);
++                for(String subPath : workspaceSubPath.split(" "))
++                {
++                   cmd.add(subPath);
++                }
+             }
+             int rv;
+             rv = launchAccurev(launcher, cmd, accurevEnv, null, listener.getLogger(), workspace);

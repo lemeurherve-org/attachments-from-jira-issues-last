@@ -1,0 +1,19 @@
+node("master") {
+
+    stage("checkout") {
+        checkout scm
+    }
+    
+    docker.image('maven:3.5.0-jdk-8').inside("--network host") {
+    stage("test") {
+            sh "mvn test"
+            junit "target/surefire-reports/TEST-*.xml"
+    }
+    
+    stage('SonarQube analysis') {
+      sh 'mvn sonar:sonar -Dsonar.host.url=http://localhost:9000'
+      sh 'mvn jacoco:report'
+      archiveArtifacts '**/target/site/jacoco/jacoco.xml'
+  }
+    }
+}

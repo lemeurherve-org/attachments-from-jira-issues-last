@@ -1,0 +1,412 @@
+Started by user Ugandar Jangiti - Contractor
+[JTE] Obtained Pipeline Configuration File
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] -- file path: pipeline/pipeline_config.groovy
+[JTE] Pipeline Configuration Modifications
+[JTE] Configurations Added:
+[JTE] - jte.allow_scm_jenkinsfile set to false
+[JTE] - libraries.build_environment.region set to us-west-2
+[JTE] - libraries.build_environment.account set to 382209070917
+[JTE] - libraries.build_environment.secret set to legacy_prod_aws
+[JTE] - libraries.build_environment.repoPrefix set to jenkins-build-environment/pipelines
+[JTE] - libraries.build_environment.nestedDockerEnabled set to true
+[JTE] - libraries.build_environment.sharedNetworkEnabled set to false
+[JTE] - libraries.build_environment.dockerfilePath set to 
+[JTE] - libraries.fortify.url set to https://api.ams.fortify.com
+[JTE] - libraries.fortify.apiKey set to ed937c44-742b-4cee-918a-db220da9bf89
+[JTE] - libraries.fortify.apiSecretId set to FoD_api_key_secret
+[JTE] - libraries.sonatype.failBuildOnNetworkError set to false
+[JTE] - libraries.sonatype.enableDebugLogging set to false
+[JTE] - libraries.datadog_api.uri set to https://api.datadoghq.com/api/v2
+[JTE] - libraries.datadog_api.appKey set to FORTIFY_APP_KEY_KPI_DEVOPS
+[JTE] - libraries.datadog_api.apiKey set to FORTIFY_API_KEY_KPI_DEVOPS
+[JTE] - libraries.jira.domain set to https://rehrig.atlassian.net
+[JTE] - libraries.jira.credentialsId set to jira-api-token-prod
+[JTE] - libraries.jira.startTimeField set to customfield_10831
+[JTE] - libraries.jira.endTimeField set to customfield_10832
+[JTE] - libraries.teams.webhookUrl set to 
+[JTE] - libraries.pipeline_utils.additionalRepos set to []
+[JTE] - libraries.pipeline_utils.codequalityAppName set to 
+[JTE] - application_environments.dev.short_name set to Dev
+[JTE] - application_environments.dev.long_name set to Development
+[JTE] - application_environments.qa.short_name set to QA
+[JTE] - application_environments.qa.long_name set to Quality assurance
+[JTE] - application_environments.staging.short_name set to Staging
+[JTE] - application_environments.staging.long_name set to Staging
+[JTE] - application_environments.prod.short_name set to Prod
+[JTE] - application_environments.prod.long_name set to Production
+[JTE] - keywords.pre_stage_build_enabled set to false
+[JTE] - keywords.application_name set to 
+[JTE] - keywords.service set to 
+[JTE] - keywords.dev_leads set to 
+[JTE] - keywords.qa_leads set to 
+[JTE] - keywords.devops_team set to ITES-DEVOPS
+[JTE] - keywords.approval_timeout.time set to 7
+[JTE] - keywords.approval_timeout.unit set to DAYS
+[JTE] - keywords.pull_request set to ^PR-[0-9]{1,}$
+[JTE] - keywords.bitbucket_merge_message set to Merged in .*?(?=\s\(pull request) \(pull request #[0-9]{1,}\)
+[JTE] - keywords.feature set to ^[Ff]eature/[0-9a-zA-Z]{1,}(.*)
+[JTE] - keywords.master set to ^([Mm]aster|[Mm]ain)$
+[JTE] - keywords.develop set to ^[Dd]evelop(ment|)$
+[JTE] - keywords.hotfix set to ^[Hh]otfix/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+[JTE] - keywords.release set to ^[Rr]elease/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+[JTE] - keywords.approved_staging_bypass set to [VOR DevOps Pipelines/Edge/*, VOR DevOps Pipelines/Cloud/inference-cloud-service, VOR DevOps Pipelines/Cloud/instore-delivery, VOR DevOps Pipelines/Cloud/vor-cloud-data-sync-up]
+[JTE] - keywords.fortify_enabled set to true
+[JTE] - keywords.sonatype_enabled set to true
+[JTE] Configurations Deleted: None
+[JTE] Configurations Changed: None
+[JTE] Configurations Duplicated: None
+[JTE] Configurations Ignored: None
+[JTE] Subsequent May Merge:
+[JTE] - libraries
+[JTE] - libraries.build_environment
+[JTE] - libraries.fortify
+[JTE] - libraries.sonatype
+[JTE] - application_environments
+[JTE] - application_environments.dev
+[JTE] - application_environments.qa
+[JTE] - application_environments.staging
+[JTE] - application_environments.prod
+[JTE] - keywords
+[JTE] Subsequent May Override:
+[JTE] - libraries.build_environment.nestedDockerEnabled
+[JTE] - libraries.build_environment.sharedNetworkEnabled
+[JTE] - libraries.build_environment.dockerfilePath
+[JTE] - libraries.sonatype.failBuildOnNetworkError
+[JTE] - libraries.sonatype.enableDebugLogging
+[JTE] - libraries.teams.webhookUrl
+[JTE] - libraries.pipeline_utils.additionalRepos
+[JTE] - libraries.pipeline_utils.codequalityAppName
+[JTE] - keywords.pre_stage_build_enabled
+[JTE] - keywords.application_name
+[JTE] - keywords.service
+[JTE] - keywords.dev_leads
+[JTE] - keywords.qa_leads
+[JTE] Obtained Template Configuration File
+[JTE] -- scm: git https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git
+[JTE] -- file path: pipeline_config.groovy
+[JTE] Pipeline Configuration Modifications
+[JTE] Configurations Added:
+[JTE] - libraries.build_environment.os set to linux
+[JTE] - libraries.build_environment.arch set to x86
+[JTE] - libraries.fortify.app set to devops-poc-jenkins-example-app
+[JTE] - libraries.fortify.technologyStack set to PYTHON
+[JTE] - libraries.fortify.languageLevel set to 3
+[JTE] - libraries.sonatype.iqApplication set to devops-poc-jenkins-example-app
+[JTE] - libraries.sonatype.iqScanPatterns set to [
+[JTE]             "**/requirements/*.txt",
+[JTE]             "**/requirements.txt"
+[JTE]         ]
+[JTE] - libraries.custom_build set to [:]
+[JTE] - libraries.custom_test set to [:]
+[JTE] - libraries.s3_deploy.source set to build/**
+[JTE] - libraries.s3_deploy.target set to bucket_folder/
+[JTE] - libraries.s3_deploy.exclude set to **/ignorable.txt
+[JTE] - libraries.shell_pre_stage_build.script set to jenkins/scripts/pre_stage_build.sh
+[JTE] - application_environments.dev.s3_deploy.credentials set to legacy_prod_aws
+[JTE] - application_environments.dev.s3_deploy.region set to us-west-2
+[JTE] - application_environments.dev.s3_deploy.bucket set to devops-testing-jenkins-bucket
+[JTE] - application_environments.qa.s3_deploy.credentials set to legacy_prod_aws
+[JTE] - application_environments.qa.s3_deploy.region set to us-west-2
+[JTE] - application_environments.qa.s3_deploy.bucket set to devops-testing-jenkins-bucket
+[JTE] - application_environments.staging.s3_deploy.credentials set to legacy_prod_aws
+[JTE] - application_environments.staging.s3_deploy.region set to us-west-2
+[JTE] - application_environments.staging.s3_deploy.bucket set to devops-testing-jenkins-bucket
+[JTE] - application_environments.prod.s3_deploy.credentials set to legacy_prod_aws
+[JTE] - application_environments.prod.s3_deploy.region set to us-west-2
+[JTE] - application_environments.prod.s3_deploy.bucket set to devops-testing-jenkins-bucket
+[JTE] - application_environments.test.s3_deploy.credentials set to legacy_prod_aws
+[JTE] - application_environments.test.s3_deploy.region set to us-west-2
+[JTE] - application_environments.test.s3_deploy.bucket set to devops-testing-jenkins-bucket
+[JTE] Configurations Deleted: None
+[JTE] Configurations Changed:
+[JTE] - libraries.build_environment.dockerfilePath changed from  to jenkins/build_env
+[JTE] - libraries.pipeline_utils.codequalityAppName changed from  to devops-poc-jenkins-example-app
+[JTE] - keywords.application_name changed from  to ExampleApplication
+[JTE] - keywords.service changed from  to Web
+[JTE] - keywords.dev_leads changed from  to josephmelendez@rehrig.com,akathasagaram@rehrig.com,kkumar@rehrig.com,hkeshwani@rehrig.com,ujangiti@rehrig.com
+[JTE] - keywords.qa_leads changed from  to josephmelendez@rehrig.com,akathasagaram@rehrig.com,kkumar@rehrig.com,hkeshwani@rehrig.com,ujangiti@rehrig.com
+[JTE] Configurations Duplicated: None
+[JTE] Configurations Ignored: None
+[JTE] Subsequent May Merge: None
+[JTE] Subsequent May Override: None
+[JTE] Obtained Template
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] -- file path: pipeline/Jenkinsfile
+[JTE] Loading Library build_environment
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] Loading Library fortify
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] Loading Library sonatype
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] Loading Library datadog_api
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] Loading Library jira
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] Loading Library teams
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] Loading Library pipeline_utils
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] Loading Library custom_build
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git
+[JTE] Loading Library custom_test
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git
+[JTE] Loading Library s3_deploy
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[JTE] Loading Library shell_pre_stage_build
+[JTE] -- scm: git https://svc-bitbucket-cloud@bitbucket.org/rehrigdev/devops-poc-jenkins-template-engine.git
+[Pipeline] Start of Pipeline
+[JTE][@Validate - build_environment/initialize_build_env_internal_config.call]
+[JTE][Step - build_environment/set_cred.call()]
+[JTE][Step - build_environment/set_url.call()]
+[JTE][Step - build_environment/get_docker_flags.call()]
+[JTE][@Validate - fortify/initialize_fortify_internal_config.call]
+[JTE][@Validate - sonatype/initialize_sonatype_internal_config.call]
+[JTE][Step - build_environment/set_os.call()]
+[JTE][Step - build_environment/set_arch.call()]
+[JTE][Step - pipeline_utils/triggered_by.call(String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] datadog
+[Datadog] Logging is already enabled globally, you do not need to specify 'collectLogs: true'
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Source Control)
+[Pipeline] node
+Still waiting to schedule task
+All nodes of label ‘x86&&linux’ are offline
+Running on EC2 (devops-ec2) - ubuntu-x86 (i-08c029a63c0aafc77) in /home/ubuntu/workspace/ins-example-linux-x86-app_PR-108
+[Pipeline] {
+[Pipeline] checkout
+The recommended git tool is: NONE
+using credential svc-bitbucket-cloud
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git
+ > /usr/bin/git init /home/ubuntu/workspace/ins-example-linux-x86-app_PR-108 # timeout=10
+Fetching upstream changes from https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git
+ > /usr/bin/git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+using GIT_ASKPASS to set credentials Service account credentials for Bitbucket Cloud access
+ > /usr/bin/git fetch --no-tags --force --progress -- https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git +refs/heads/feature/ESD-149_Integrating-Code-Coverage:refs/remotes/origin/feature/ESD-149_Integrating-Code-Coverage # timeout=10
+Avoid second fetch
+Checking out Revision a12b302b5efd933c92d5198515261bc44bb448fb (PR-108)
+ > /usr/bin/git config remote.origin.url https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git # timeout=10
+ > /usr/bin/git config --add remote.origin.fetch +refs/heads/feature/ESD-149_Integrating-Code-Coverage:refs/remotes/origin/feature/ESD-149_Integrating-Code-Coverage # timeout=10
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f a12b302b5efd933c92d5198515261bc44bb448fb # timeout=10
+Commit message: "Adding metric visualizations to the pipeline"
+ > /usr/bin/git rev-list --no-walk a12b302b5efd933c92d5198515261bc44bb448fb # timeout=10
+[Bitbucket] Notifying pull request build result
+The recommended git tool is: NONE
+using credential svc-bitbucket-cloud
+The recommended git tool is: NONE
+using credential svc-bitbucket-cloud
+ > /usr/bin/git rev-parse HEAD^{commit} # timeout=10
+[GitCheckoutListener] Recording commits of 'git https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git'
+[GitCheckoutListener] Found previous build 'Example DevOps Pipelines/jenkins-example-linux-x86-app/PR-108 #18' that contains recorded Git commits
+[GitCheckoutListener] -> Starting recording of new commits since 'a12b302'
+[GitCheckoutListener] -> Single parent commit found - branch is already descendant of target branch head
+[GitCheckoutListener] -> Using head commit 'a12b302' as starting point
+[GitCheckoutListener] -> No new commits found
+[GitCheckoutListener] -> Git commit decorator successfully obtained 'hudson.plugins.git.browser.BitbucketWeb@2d324ef' to render commit links
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is disabled by the job configuration...
+[WS-CLEANUP] done
+[JTE][Step - pipeline_utils/checkout_scm.call()]
+[Pipeline] checkout
+The recommended git tool is: NONE
+using credential svc-bitbucket-cloud
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git
+ > /usr/bin/git init /home/ubuntu/workspace/ins-example-linux-x86-app_PR-108 # timeout=10
+Fetching upstream changes from https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git
+ > /usr/bin/git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+using GIT_ASKPASS to set credentials Service account credentials for Bitbucket Cloud access
+ > /usr/bin/git fetch --no-tags --force --progress -- https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git +refs/heads/feature/ESD-149_Integrating-Code-Coverage:refs/remotes/origin/feature/ESD-149_Integrating-Code-Coverage # timeout=10
+Avoid second fetch
+Checking out Revision a12b302b5efd933c92d5198515261bc44bb448fb (PR-108)
+Commit message: "Adding metric visualizations to the pipeline"
+[GitCheckoutListener] Skipping recording, since SCM 'git https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git' already has been processed
+[Pipeline] stash
+ > /usr/bin/git config remote.origin.url https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git # timeout=10
+ > /usr/bin/git config --add remote.origin.fetch +refs/heads/feature/ESD-149_Integrating-Code-Coverage:refs/remotes/origin/feature/ESD-149_Integrating-Code-Coverage # timeout=10
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f a12b302b5efd933c92d5198515261bc44bb448fb # timeout=10
+Stashed 25 file(s) to https://rpc-jenkins-stashed-artifacts.s3.us-west-2.amazonaws.com/Example%20DevOps%20Pipelines/jenkins-example-linux-x86-app/PR-108/19/stashes/source.tgz
+[Pipeline] script
+[Pipeline] {
+[JTE][Step - pipeline_utils/get_scm_variable.call(String)]
+[JTE][Step - pipeline_utils/run_sh.call(LinkedHashMap)]
+[Pipeline] sh
++ git log --format=format:%ce -1 a12b302b5efd933c92d5198515261bc44bb448fb
+[Pipeline] echo
+Committer email: ujangiti@rehrig.com
+[JTE][Step - pipeline_utils/get_merged_branch.call()]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[JTE][Step - pipeline_utils/set_branch_and_trigger_variables.call()]
+[JTE][Step - pipeline_utils/triggered_by.call(String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[JTE][Step - pipeline_utils/triggered_by.call(String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Validation)
+[Pipeline] script
+[Pipeline] {
+[JTE][Step - pipeline_utils/print_build_details.call()]
+[Pipeline] echo
+Trigger: pull request, Source: feature/ESD-149_Integrating-Code-Coverage, Target: develop
+[JTE][Step - pipeline_utils/validate_build_details.call()]
+[JTE][Step - pipeline_utils/triggered_by.call(String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[JTE][Step - pipeline_utils/triggered_by.call(String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[JTE][Step - pipeline_utils/on_merge.call(LinkedHashMap, CpsClosure2)]
+[JTE][Step - pipeline_utils/triggered_by.call(LinkedHashMap, String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[JTE][Step - pipeline_utils/on_merge.call(LinkedHashMap, CpsClosure2)]
+[JTE][Step - pipeline_utils/triggered_by.call(LinkedHashMap, String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[JTE][Step - pipeline_utils/on_pull_request.call(LinkedHashMap, CpsClosure2)]
+[JTE][Step - pipeline_utils/triggered_by.call(LinkedHashMap, String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[JTE][Step - pipeline_utils/on_pull_request.call(LinkedHashMap, CpsClosure2)]
+[JTE][Step - pipeline_utils/triggered_by.call(LinkedHashMap, String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Jira Ticket)
+[JTE][Step - pipeline_utils/triggered_by.call(LinkedHashMap, String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+Stage "Jira Ticket" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] stage
+[Pipeline] { (Input Ticket)
+Stage "Jira Ticket" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Get Ticket)
+Stage "Jira Ticket" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Environment)
+[Pipeline] node
+Running on EC2 (devops-ec2) - ubuntu-x86 (i-08c029a63c0aafc77) in /home/ubuntu/workspace/ins-example-linux-x86-app_PR-108
+[Pipeline] {
+[Pipeline] checkout
+The recommended git tool is: NONE
+using credential svc-bitbucket-cloud
+Fetching changes from the remote Git repository
+Fetching without tags
+Checking out Revision a12b302b5efd933c92d5198515261bc44bb448fb (PR-108)
+Commit message: "Adding metric visualizations to the pipeline"
+[GitCheckoutListener] Skipping recording, since SCM 'git https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git' already has been processed
+ > /usr/bin/git rev-parse --resolve-git-dir /home/ubuntu/workspace/ins-example-linux-x86-app_PR-108/.git # timeout=10
+ > /usr/bin/git config remote.origin.url https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git # timeout=10
+Fetching upstream changes from https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git
+ > /usr/bin/git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+using GIT_ASKPASS to set credentials Service account credentials for Bitbucket Cloud access
+ > /usr/bin/git fetch --no-tags --force --progress -- https://bitbucket.org/rehrigdev/devops-poc-jenkins-example-app.git +refs/heads/feature/ESD-149_Integrating-Code-Coverage:refs/remotes/origin/feature/ESD-149_Integrating-Code-Coverage # timeout=10
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f a12b302b5efd933c92d5198515261bc44bb448fb # timeout=10
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] unstash
+Unstashed file(s) from https://rpc-jenkins-stashed-artifacts.s3.us-west-2.amazonaws.com/Example%20DevOps%20Pipelines/jenkins-example-linux-x86-app/PR-108/19/stashes/source.tgz
+[Pipeline] script
+[Pipeline] {
+[JTE][Step - build_environment/create_ecr_repo.call()]
+[Pipeline] withAWS
+Constructing AWS CredentialsSetting AWS region us-west-2 
+[Pipeline] {
+[Pipeline] sh
++ aws ecr describe-repositories --repository-names jenkins-build-environment/pipelines/jenkins-example-linux-x86-app
+[Pipeline] }
+[Pipeline] // withAWS
+[Pipeline] echo
+ECR repository 'jenkins-build-environment/pipelines/jenkins-example-linux-x86-app' is ready.
+[JTE][Step - build_environment/set_tag.call()]
+[Pipeline] sh
++ awk { print $1 }
++ shasum -a 256 jenkins/build_env/Dockerfile
+[JTE][Step - build_environment/get_build_environment.call()]
+[Pipeline] stage
+[Pipeline] { (Build Environment: Get)
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withDockerRegistry
+$ docker login -u AWS -p ******** https://382209070917.dkr.ecr.us-west-2.amazonaws.com
+WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+WARNING! Your password will be stored unencrypted in /home/ubuntu/workspace/ins-example-linux-x86-app_PR-108@tmp/e7d56910-3a27-4b1f-b04c-3cfb268932f4/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+
+Login Succeeded
+[Pipeline] {
+[JTE][Step - pipeline_utils/run_sh.call(LinkedHashMap)]
+[Pipeline] sh
++ docker pull 382209070917.dkr.ecr.us-west-2.amazonaws.com/jenkins-build-environment/pipelines/jenkins-example-linux-x86-app:070ed0caa32b78922b82986a4e6aacf9df57a1e2b5b61fd651248c66052b7215
+[Pipeline] echo
+Image Name: 382209070917.dkr.ecr.us-west-2.amazonaws.com/jenkins-build-environment/pipelines/jenkins-example-linux-x86-app:070ed0caa32b78922b82986a4e6aacf9df57a1e2b5b61fd651248c66052b7215
+[Pipeline] echo
+Docker image exists with the matching SHA256 in the tag.
+[Pipeline] }
+[Pipeline] // withDockerRegistry
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] echo
+No image update necessary.
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Pre-Stage Checks)
+[JTE][Step - pipeline_utils/is_nonstandard_branch.call()]
+[JTE][Step - pipeline_utils/triggered_by.call(String)]
+[JTE][Step - pipeline_utils/is_pr_build.call()]
+[JTE][Step - pipeline_utils/is_tag_build.call()]
+[Pipeline] node
+Running on EC2 (devops-ec2) - ubuntu-x86 (i-08c029a63c0aafc77) in /home/ubuntu/workspace/ins-example-linux-x86-app_PR-108
+[Pipeline] {

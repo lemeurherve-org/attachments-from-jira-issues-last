@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="org.jenkinsci.plugins.p4.PerforceScm" plugin="p4@1.0.15">
+    <credential>7201233e-61f7-4943-95db-cd62196272ee</credential>
+    <workspace class="org.jenkinsci.plugins.p4.workspace.ManualWorkspaceImpl">
+      <charset>auto</charset>
+      <name>uc_vj_ci</name>
+      <spec>
+        <allwrite>false</allwrite>
+        <clobber>true</clobber>
+        <compress>false</compress>
+        <locked>false</locked>
+        <modtime>false</modtime>
+        <rmdir>false</rmdir>
+        <streamName></streamName>
+        <line>LOCAL</line>
+        <view>//VJenkins/Software/... //uc_vj_ci/Software/...</view>
+      </spec>
+    </workspace>
+    <populate class="org.jenkinsci.plugins.p4.populate.AutoCleanImpl">
+      <have>true</have>
+      <force>false</force>
+      <pin></pin>
+      <replace>true</replace>
+      <delete>true</delete>
+    </populate>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>H * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+      <hudson.tasks.Shell>
+      <command>cd &quot;$WORKSPACE/VJenkins/Software/code/vj_mgr/main/&quot;
+gmake
+cd unittests
+gmake
+cd &quot;$WORKSPACE/VJenkins/Software/code/mvj_mgr/main/vj_sw/&quot;
+autoreconf --install
+./configure
+gmake
+gmake check-TESTS
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

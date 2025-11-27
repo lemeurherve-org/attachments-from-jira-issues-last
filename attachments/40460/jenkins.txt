@@ -1,0 +1,31 @@
+Building in workspace C:\Program Files (x86)\Jenkins\workspace\TestingV2.0
+[TestingV2.0] $ cleartool desc -fmt %[found_bls]Xp stream:pTesting_Integration@\Testing_PVOB
+baseline:Testing_INITIAL@\Testing_PVOB
+[TestingV2.0] $ cleartool lsbl -fmt %[depends_on_closure]Xp baseline:Testing_INITIAL@\Testing_PVOB
+
+[TestingV2.0] $ cleartool desc -fmt %[found_bls]Xp stream:pTesting_Integration@\Testing_PVOB
+baseline:Testing_INITIAL@\Testing_PVOB
+[TestingV2.0] $ cleartool lsview Jenkins_MachineName$_master_TestingV2.0
+cleartool: Error: No matching entries found for view tag "Jenkins_ITINNOH-DW0203$_master_TestingV2.0".
+
+FATAL: UCM ClearCase failed. exit code=1
+[INFO] computeChangeLogBeforeCheckout = false
+[INFO] computeChangeLogAfterCheckout  = true
+[TestingV2.0] $ cleartool startview Jenkins_MachineName$_master_TestingV2.0
+cleartool: Error: View tag not found: "Jenkins_MachineName$_master_TestingV2.0".
+
+FATAL: UCM ClearCase failed. exit code=1
+java.io.IOException: cleartool did not return the expected exit code. Command line="startview Jenkins_MachineName$_master_TestingV2.0", actual exit code=1
+	at hudson.plugins.clearcase.HudsonClearToolLauncher.run(HudsonClearToolLauncher.java:152)
+	at hudson.plugins.clearcase.ClearToolExec.startView(ClearToolExec.java:820)
+	at hudson.plugins.clearcase.action.UcmDynamicCheckoutAction.checkout(UcmDynamicCheckoutAction.java:93)
+	at hudson.plugins.clearcase.AbstractClearCaseScm.checkout(AbstractClearCaseScm.java:390)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1202)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:574)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:86)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:499)
+	at hudson.model.Run.execute(Run.java:1724)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:97)
+	at hudson.model.Executor.run(Executor.java:421)
+Finished: FAILURE

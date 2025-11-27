@@ -1,0 +1,59 @@
+Mar 18, 2015 10:54:54 AM INFO hudson.plugins.jabber.im.transport.JabberIMConnection createConnection
+Trying to connect to XMPP on /xxx.xxx.edu
+Mar 18, 2015 10:54:54 AM FINE hudson.plugins.jabber.im.transport.JabberConnectionDebugger
+SENT: <stream:stream to="xxx.xxx.edu" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams" version="1.0">
+Mar 18, 2015 10:54:54 AM FINE hudson.plugins.jabber.im.transport.JabberConnectionDebugger
+RECV: <?xml version='1.0' encoding='UTF-8'?><stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client" from="xxx.xxx.edu" id="120ec789" xml:lang="en" version="1.0">
+Mar 18, 2015 10:54:54 AM FINE hudson.plugins.jabber.im.transport.JabberConnectionDebugger
+RECV: <stream:features><starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"><required/></starttls><mechanisms xmlns="urn:ietf:params:xml:ns:xmpp-sasl"><mechanism>GSSAPI</mechanism><mechanism>PLAIN</mechanism></mechanisms></stream:features>
+Mar 18, 2015 10:54:54 AM FINE hudson.plugins.jabber.im.transport.JabberConnectionDebugger
+SENT: <starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"/>
+Mar 18, 2015 10:54:54 AM FINE hudson.plugins.jabber.im.transport.JabberConnectionDebugger
+RECV: <proceed xmlns="urn:ietf:params:xml:ns:xmpp-tls"/>
+Mar 18, 2015 10:54:54 AM FINE hudson.plugins.jabber.im.transport.JabberConnectionDebugger
+SENT: <stream:stream to="xxx.xxx.edu" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams" version="1.0">
+Mar 18, 2015 10:54:54 AM FINE hudson.plugins.jabber.im.transport.JabberConnectionDebugger
+RECV: <?xml version='1.0' encoding='UTF-8'?><stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client" from="xxx.xxx.edu" id="120ec789" xml:lang="en" version="1.0"><stream:features><mechanisms xmlns="urn:ietf:params:xml:ns:xmpp-sasl"><mechanism>GSSAPI</mechanism><mechanism>PLAIN</mechanism></mechanisms><compression xmlns="http://jabber.org/features/compress"><method>zlib</method></compression><auth xmlns="http://jabber.org/features/iq-auth"/></stream:features>
+Mar 18, 2015 10:54:54 AM WARNING hudson.plugins.jabber.im.transport.JabberIMConnection connect
+java.lang.SecurityException: gss.conf (No such file or directory)
+    at com.sun.security.auth.login.ConfigFile.<init>(ConfigFile.java:110)
+    at sun.reflect.GeneratedConstructorAccessor85.newInstance(Unknown Source)
+    at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+    at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+    at java.lang.Class.newInstance(Class.java:379)
+    at javax.security.auth.login.Configuration$2.run(Configuration.java:258)
+    at javax.security.auth.login.Configuration$2.run(Configuration.java:250)
+    at java.security.AccessController.doPrivileged(Native Method)
+    at javax.security.auth.login.Configuration.getConfiguration(Configuration.java:249)
+    at sun.security.jgss.LoginConfigImpl$1.run(LoginConfigImpl.java:65)
+    at sun.security.jgss.LoginConfigImpl$1.run(LoginConfigImpl.java:63)
+    at java.security.AccessController.doPrivileged(Native Method)
+    at sun.security.jgss.LoginConfigImpl.<init>(LoginConfigImpl.java:62)
+    at sun.security.jgss.GSSUtil.login(GSSUtil.java:253)
+    at sun.security.jgss.krb5.Krb5Util.getTicket(Krb5Util.java:161)
+    at sun.security.jgss.krb5.Krb5InitCredential$1.run(Krb5InitCredential.java:346)
+    at sun.security.jgss.krb5.Krb5InitCredential$1.run(Krb5InitCredential.java:344)
+    at java.security.AccessController.doPrivileged(Native Method)
+    at sun.security.jgss.krb5.Krb5InitCredential.getTgt(Krb5InitCredential.java:343)
+    at sun.security.jgss.krb5.Krb5InitCredential.getInstance(Krb5InitCredential.java:145)
+    at sun.security.jgss.krb5.Krb5MechFactory.getCredentialElement(Krb5MechFactory.java:121)
+    at sun.security.jgss.krb5.Krb5MechFactory.getMechanismContext(Krb5MechFactory.java:187)
+    at sun.security.jgss.GSSManagerImpl.getMechanismContext(GSSManagerImpl.java:223)
+    at sun.security.jgss.GSSContextImpl.initSecContext(GSSContextImpl.java:212)
+    at sun.security.jgss.GSSContextImpl.initSecContext(GSSContextImpl.java:179)
+    at com.sun.security.sasl.gsskerb.GssKrb5Client.evaluateChallenge(GssKrb5Client.java:193)
+    at org.jivesoftware.smack.sasl.SASLMechanism.authenticate(SASLMechanism.java:171)
+    at org.jivesoftware.smack.sasl.SASLMechanism.authenticate(SASLMechanism.java:148)
+    at org.jivesoftware.smack.SASLAuthentication.authenticate(SASLAuthentication.java:333)
+    at org.jivesoftware.smack.tcp.XMPPTCPConnection.login(XMPPTCPConnection.java:244)
+    at hudson.plugins.jabber.im.transport.JabberIMConnection.createConnection(JabberIMConnection.java:427)
+    at hudson.plugins.jabber.im.transport.JabberIMConnection.connect(JabberIMConnection.java:189)
+    at hudson.plugins.jabber.im.transport.JabberIMConnectionProvider.createConnection(JabberIMConnectionProvider.java:42)
+    at hudson.plugins.im.IMConnectionProvider.create(IMConnectionProvider.java:65)
+    at hudson.plugins.im.IMConnectionProvider.access$600(IMConnectionProvider.java:22)
+    at hudson.plugins.im.IMConnectionProvider$ConnectorRunnable.run(IMConnectionProvider.java:183)
+    at java.lang.Thread.run(Thread.java:745)
+Caused by: java.io.IOException: gss.conf (No such file or directory)
+    at com.sun.security.auth.login.ConfigFile.init(ConfigFile.java:212)
+    at com.sun.security.auth.login.ConfigFile.<init>(ConfigFile.java:108)
+    ... 36 more

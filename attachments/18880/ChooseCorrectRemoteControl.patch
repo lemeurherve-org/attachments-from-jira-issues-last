@@ -1,0 +1,15 @@
+Index: src/main/java/hudson/plugins/selenium/HudsonRemoteControlPool.java
+===================================================================
+--- src/main/java/hudson/plugins/selenium/HudsonRemoteControlPool.java	(revision 17524)
++++ src/main/java/hudson/plugins/selenium/HudsonRemoteControlPool.java	Tue Nov 03 14:56:37 CET 2009
+@@ -58,7 +58,9 @@
+         while(true) {
+             boolean hadMatch=false;
+             for (RemoteControlProxy rc : all) {
+-                if((hadMatch|=matches(rc,keys)) && rc.canHandleNewSession()) {
++                boolean doesMatch = matches(rc, keys);
++                hadMatch |= doesMatch;
++                if (doesMatch && rc.canHandleNewSession()) {
+                     rc.registerNewSession();
+                     return rc;
+                 }

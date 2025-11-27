@@ -1,0 +1,26 @@
+INFO: define repo: [Repository id=central, type=default, url=http://repo1.maven.org/maven2, isRepositoryManager=false]
+failed collecting dependency info for [Artifact my.test.ear:test-ear:ear::[34,)]
+org.sonatype.aether.collection.DependencyCollectionException: Failed to collect dependencies for my.test.ear:test-ear:ear::[34,) (provided)
+	at org.sonatype.aether.impl.internal.DefaultDependencyCollector.collectDependencies(DefaultDependencyCollector.java:171)
+	at org.sonatype.aether.impl.internal.DefaultRepositorySystem.collectDependencies(DefaultRepositorySystem.java:308)
+	at org.jvnet.hudson.plugins.repositoryconnector.aether.Aether.resolve(Aether.java:154)
+	at org.jvnet.hudson.plugins.repositoryconnector.ArtifactResolver.download(ArtifactResolver.java:129)
+	at org.jvnet.hudson.plugins.repositoryconnector.ArtifactResolver.perform(ArtifactResolver.java:101)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:772)
+	at hudson.model.Build$BuildExecution.build(Build.java:199)
+	at hudson.model.Build$BuildExecution.doRun(Build.java:160)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:535)
+	at hudson.model.Run.execute(Run.java:1732)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:234)
+Caused by: org.sonatype.aether.resolution.VersionRangeResolutionException: No versions available for my.test.ear:test-ear:ear::[34,) within specified range
+	at org.sonatype.aether.impl.internal.DefaultDependencyCollector.collectDependencies(DefaultDependencyCollector.java:164)
+	... 13 more
+Build step 'Artifact Resolver' marked build as failure
+Sending e-mails to: xxx
+[BFA] Scanning build for known causes...
+
+[BFA] Done. 0s
+Finished: FAILURE

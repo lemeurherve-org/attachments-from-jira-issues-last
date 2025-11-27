@@ -1,0 +1,537 @@
+2014-05-15 09:05:03
+Full thread dump Java HotSpot(TM) Client VM (24.55-b03 mixed mode, sharing):
+
+"RequestHandlerThread[#49]" daemon prio=6 tid=0x3ba2f400 nid=0x1038 waiting on condition [0x3d97f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12c89b58> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(Unknown Source)
+	at java.util.concurrent.SynchronousQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"Executor #0 for DE-DD-0414 : executing srm_dev_unit_tests #2159" prio=6 tid=0x3afae400 nid=0x13e4 in Object.wait() [0x3db5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:503)
+	at org.jenkinsci.remoting.nio.FifoBuffer.write(FifoBuffer.java:336)
+	- locked <0x16b61528> (a org.jenkinsci.remoting.nio.FifoBuffer)
+	at org.jenkinsci.remoting.nio.NioChannelHub$NioTransport.writeBlock(NioChannelHub.java:196)
+	at hudson.remoting.AbstractByteArrayCommandTransport.write(AbstractByteArrayCommandTransport.java:83)
+	at hudson.remoting.Channel.send(Channel.java:545)
+	- locked <0x16b43950> (a hudson.remoting.Channel)
+	at hudson.remoting.ProxyOutputStream._write(ProxyOutputStream.java:163)
+	- locked <0x16f1eb48> (a hudson.remoting.ProxyOutputStream)
+	at hudson.remoting.ProxyOutputStream.write(ProxyOutputStream.java:109)
+	at hudson.remoting.RemoteOutputStream.write(RemoteOutputStream.java:110)
+	at java.security.DigestOutputStream.write(Unknown Source)
+	at hudson.remoting.RemoteOutputStream.write(RemoteOutputStream.java:110)
+	at hudson.Util.copyStream(Util.java:448)
+	at hudson.FilePath$37.invoke(FilePath.java:1827)
+	at hudson.FilePath$37.invoke(FilePath.java:1821)
+	at hudson.FilePath.act(FilePath.java:920)
+	at hudson.FilePath.act(FilePath.java:893)
+	at hudson.FilePath.copyTo(FilePath.java:1821)
+	at hudson.plugins.copyartifact.FingerprintingCopyMethod.copyOne(FingerprintingCopyMethod.java:79)
+	at hudson.plugins.copyartifact.FingerprintingCopyMethod.copyAll(FingerprintingCopyMethod.java:68)
+	at hudson.plugins.copyartifact.CopyArtifact.perform(CopyArtifact.java:368)
+	at hudson.plugins.copyartifact.CopyArtifact.perform(CopyArtifact.java:306)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:745)
+	at hudson.model.Build$BuildExecution.build(Build.java:198)
+	at hudson.model.Build$BuildExecution.doRun(Build.java:159)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:518)
+	at hudson.model.Run.execute(Run.java:1706)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:231)
+
+"Computer.threadPoolForRemoting [#875]" daemon prio=6 tid=0x3ba80c00 nid=0x1070 waiting on condition [0x3dabf000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12ec1008> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(Unknown Source)
+	at java.util.concurrent.SynchronousQueue.poll(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"Computer.threadPoolForRemoting [#872]" daemon prio=6 tid=0x3b572c00 nid=0x344 waiting on condition [0x3d73f000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12ec1008> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(Unknown Source)
+	at java.util.concurrent.SynchronousQueue.poll(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"RMI TCP Connection(4)-192.168.201.53" daemon prio=6 tid=0x39036400 nid=0x8c8 in Object.wait() [0x3d9ce000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at com.sun.jmx.remote.internal.ArrayNotificationBuffer.fetchNotifications(Unknown Source)
+	- locked <0x16e5cbf0> (a com.sun.jmx.remote.internal.ArrayNotificationBuffer)
+	at com.sun.jmx.remote.internal.ArrayNotificationBuffer$ShareBuffer.fetchNotifications(Unknown Source)
+	at com.sun.jmx.remote.internal.ServerNotifForwarder.fetchNotifs(Unknown Source)
+	at javax.management.remote.rmi.RMIConnectionImpl$3.run(Unknown Source)
+	at javax.management.remote.rmi.RMIConnectionImpl$3.run(Unknown Source)
+	at javax.management.remote.rmi.RMIConnectionImpl.fetchNotifications(Unknown Source)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at sun.rmi.server.UnicastServerRef.dispatch(Unknown Source)
+	at sun.rmi.transport.Transport$1.run(Unknown Source)
+	at sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at sun.rmi.transport.Transport.serviceCall(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"RMI TCP Connection(2)-192.168.201.53" daemon prio=6 tid=0x3bda0c00 nid=0xb5c runnable [0x3d92f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at java.io.BufferedInputStream.fill(Unknown Source)
+	at java.io.BufferedInputStream.read(Unknown Source)
+	- locked <0x16e5eff8> (a java.io.BufferedInputStream)
+	at java.io.FilterInputStream.read(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"JMX server connection timeout 1567" daemon prio=6 tid=0x3b8bf400 nid=0x10d0 in Object.wait() [0x3d8df000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at com.sun.jmx.remote.internal.ServerCommunicatorAdmin$Timeout.run(Unknown Source)
+	- locked <0x16e5f220> (a [I)
+	at java.lang.Thread.run(Unknown Source)
+
+"RMI Scheduler(0)" daemon prio=6 tid=0x3a67e400 nid=0x9b4 waiting on condition [0x3d88f000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x16e5f2a8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"RMI TCP Connection(1)-192.168.201.53" daemon prio=6 tid=0x3b898c00 nid=0x10d8 runnable [0x3d69f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at java.io.BufferedInputStream.fill(Unknown Source)
+	at java.io.BufferedInputStream.read(Unknown Source)
+	- locked <0x16e61428> (a java.io.BufferedInputStream)
+	at java.io.FilterInputStream.read(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"RMI TCP Accept-0" daemon prio=6 tid=0x3a28ec00 nid=0xdb0 runnable [0x3a10f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.TwoStacksPlainSocketImpl.socketAccept(Native Method)
+	at java.net.AbstractPlainSocketImpl.accept(Unknown Source)
+	at java.net.PlainSocketImpl.accept(Unknown Source)
+	- locked <0x16e61750> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(Unknown Source)
+	at java.net.ServerSocket.accept(Unknown Source)
+	at sun.management.jmxremote.LocalRMIServerSocketFactory$1.accept(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.executeAcceptLoop(Unknown Source)
+	at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"Ping thread for channel hudson.remoting.Channel@4d9c08:DE-DD-0414" daemon prio=6 tid=0x3bc0c800 nid=0xe18 waiting on condition [0x3d64f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"RequestHandlerThread[#45]" daemon prio=6 tid=0x3abbb400 nid=0x1634 waiting on condition [0x3d6ef000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12c89b58> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(Unknown Source)
+	at java.util.concurrent.SynchronousQueue.poll(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"RequestHandlerThread[#35]" daemon prio=6 tid=0x39b95400 nid=0x14a4 waiting on condition [0x39c0f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12c89b58> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(Unknown Source)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(Unknown Source)
+	at java.util.concurrent.SynchronousQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"pool-11-thread-1" prio=6 tid=0x3afebc00 nid=0x17a8 waiting on condition [0x3a15f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x137218c0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.LinkedBlockingQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"AWT-Windows" daemon prio=6 tid=0x3b899800 nid=0x1754 runnable [0x39e2f000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.awt.windows.WToolkit.eventLoop(Native Method)
+	at sun.awt.windows.WToolkit.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"Thread-10" daemon prio=6 tid=0x39549c00 nid=0x1080 waiting on condition [0x3a0bf000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x13fca050> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"JmDNS(4bob.local.).State.Timer" prio=6 tid=0x3abf4c00 nid=0xfa8 in Object.wait() [0x3d5ff000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.util.TimerThread.mainLoop(Unknown Source)
+	- locked <0x13c3d4c8> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Unknown Source)
+
+"JmDNS(4bob.local.).Timer" daemon prio=6 tid=0x3ac09400 nid=0xde0 in Object.wait() [0x3d5af000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.util.TimerThread.mainLoop(Unknown Source)
+	- locked <0x13c3d548> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Unknown Source)
+
+"SocketListener(4bob.local.)" daemon prio=6 tid=0x3ac12400 nid=0x1058 runnable [0x3d55f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.TwoStacksPlainDatagramSocketImpl.receive0(Native Method)
+	- locked <0x13c3f920> (a java.net.TwoStacksPlainDatagramSocketImpl)
+	at java.net.TwoStacksPlainDatagramSocketImpl.receive(Unknown Source)
+	- locked <0x13c3f920> (a java.net.TwoStacksPlainDatagramSocketImpl)
+	at java.net.DatagramSocket.receive(Unknown Source)
+	- locked <0x13c3f960> (a java.net.DatagramPacket)
+	- locked <0x13c3f980> (a java.net.MulticastSocket)
+	at javax.jmdns.impl.SocketListener.run(SocketListener.java:41)
+
+"NioChannelHub keys=1 gen=1280943: Computer.threadPoolForRemoting [#2]" daemon prio=6 tid=0x3abda400 nid=0x12f0 runnable [0x39f6f000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(Unknown Source)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(Unknown Source)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(Unknown Source)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(Unknown Source)
+	- locked <0x13e58190> (a sun.nio.ch.Util$2)
+	- locked <0x13e581a0> (a java.util.Collections$UnmodifiableSet)
+	- locked <0x13e58118> (a sun.nio.ch.WindowsSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(Unknown Source)
+	at sun.nio.ch.SelectorImpl.select(Unknown Source)
+	at org.jenkinsci.remoting.nio.NioChannelHub.run(NioChannelHub.java:478)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"Jenkins UDP 33848 monitoring thread" prio=6 tid=0x394e4400 nid=0x594 runnable [0x39ecf000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.TwoStacksPlainDatagramSocketImpl.receive0(Native Method)
+	- locked <0x13c40458> (a java.net.TwoStacksPlainDatagramSocketImpl)
+	at java.net.TwoStacksPlainDatagramSocketImpl.receive(Unknown Source)
+	- locked <0x13c40458> (a java.net.TwoStacksPlainDatagramSocketImpl)
+	at java.net.DatagramSocket.receive(Unknown Source)
+	- locked <0x13c40498> (a java.net.DatagramPacket)
+	- locked <0x13c404b8> (a java.net.MulticastSocket)
+	at hudson.UDPBroadcastThread.run(UDPBroadcastThread.java:82)
+
+"TCP slave agent listener port=1180" prio=6 tid=0x394e1400 nid=0x1130 runnable [0x39e7f000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(Unknown Source)
+	- locked <0x13c40558> (a java.lang.Object)
+	at hudson.TcpSlaveAgentListener.run(TcpSlaveAgentListener.java:96)
+
+"NioSocketAcceptor-1" prio=6 tid=0x392ef400 nid=0x148c runnable [0x3d50f000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(Unknown Source)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(Unknown Source)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(Unknown Source)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(Unknown Source)
+	- locked <0x13bfeb90> (a sun.nio.ch.Util$2)
+	- locked <0x13bfeba0> (a java.util.Collections$UnmodifiableSet)
+	- locked <0x13bfeb18> (a sun.nio.ch.WindowsSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(Unknown Source)
+	at sun.nio.ch.SelectorImpl.select(Unknown Source)
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.select(NioSocketAcceptor.java:238)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor$Acceptor.run(AbstractPollingIoAcceptor.java:432)
+	at org.apache.mina.util.NamePreservingRunnable.run(NamePreservingRunnable.java:64)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#10]" daemon prio=6 tid=0x3a675800 nid=0x60c waiting on condition [0x3b3df000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#9]" daemon prio=6 tid=0x3a673c00 nid=0x1144 waiting on condition [0x3b38f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#8]" daemon prio=6 tid=0x3a66d400 nid=0x143c waiting on condition [0x3b33f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#7]" daemon prio=6 tid=0x3a680800 nid=0x12e8 waiting on condition [0x3b2ef000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#6]" daemon prio=6 tid=0x3a669400 nid=0x488 waiting on condition [0x3b29f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#5]" daemon prio=6 tid=0x3a641000 nid=0x16d8 waiting on condition [0x3b24f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#4]" daemon prio=6 tid=0x39856000 nid=0xe24 waiting on condition [0x3a1ff000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#3]" daemon prio=6 tid=0x38e25800 nid=0x12f4 waiting on condition [0x3a1af000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#2]" daemon prio=6 tid=0x395bac00 nid=0x620 waiting on condition [0x3a06f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"jenkins.util.Timer [#1]" daemon prio=6 tid=0x3940d400 nid=0x16fc waiting on condition [0x39ddf000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x12e6a788> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"Jenkins cron thread" prio=6 tid=0x393f1c00 nid=0x1190 in Object.wait() [0x39d8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	- waiting on <0x12e6a8f8> (a java.util.TaskQueue)
+	at java.lang.Object.wait(Object.java:503)
+	at java.util.TimerThread.mainLoop(Unknown Source)
+	- locked <0x12e6a8f8> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Unknown Source)
+
+"DestroyJavaVM" prio=6 tid=0x006c9c00 nid=0xb8c waiting on condition [0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"LauncherControlThread[ControlPort=-1]" prio=6 tid=0x393ea800 nid=0x1704 waiting on condition [0x39d3f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at winstone.Launcher.run(Launcher.java:245)
+	at java.lang.Thread.run(Unknown Source)
+
+"RequestHandlerThread[#2] Acceptor0 SelectChannelConnector@0.0.0.0:9999" daemon prio=6 tid=0x393e9000 nid=0x11b8 runnable [0x39cef000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(Unknown Source)
+	- locked <0x12e4a370> (a java.lang.Object)
+	at org.eclipse.jetty.server.nio.SelectChannelConnector.accept(SelectChannelConnector.java:109)
+	at org.eclipse.jetty.server.AbstractConnector$Acceptor.run(AbstractConnector.java:938)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"RequestHandlerThread[#1] Selector0" daemon prio=6 tid=0x393e7c00 nid=0x1448 runnable [0x39c9f000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(Unknown Source)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(Unknown Source)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(Unknown Source)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(Unknown Source)
+	- locked <0x12e4d510> (a sun.nio.ch.Util$2)
+	- locked <0x12e4d520> (a java.util.Collections$UnmodifiableSet)
+	- locked <0x12e4d498> (a sun.nio.ch.WindowsSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(Unknown Source)
+	at org.eclipse.jetty.io.nio.SelectorManager$SelectSet.doSelect(SelectorManager.java:569)
+	at org.eclipse.jetty.io.nio.SelectorManager$1.run(SelectorManager.java:290)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"Java2D Disposer" daemon prio=10 tid=0x392da400 nid=0xa30 in Object.wait() [0x393bf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	- locked <0x12e2cbe8> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	at sun.java2d.Disposer.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+"HashSessionScavenger-0" daemon prio=6 tid=0x39104400 nid=0xa8 in Object.wait() [0x3936f000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.util.TimerThread.mainLoop(Unknown Source)
+	- locked <0x12d85bf0> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Unknown Source)
+
+"Service Thread" daemon prio=6 tid=0x0294f400 nid=0xc58 runnable [0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C1 CompilerThread0" daemon prio=10 tid=0x02949800 nid=0x13e0 waiting on condition [0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Attach Listener" daemon prio=10 tid=0x02948000 nid=0x13c0 waiting on condition [0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" daemon prio=8 tid=0x028e0400 nid=0xa20 in Object.wait() [0x38bcf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	- locked <0x12b3bc30> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Unknown Source)
+
+"Reference Handler" daemon prio=10 tid=0x028db400 nid=0xb40 in Object.wait() [0x38b7f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:503)
+	at java.lang.ref.Reference$ReferenceHandler.run(Unknown Source)
+	- locked <0x12b3bcb8> (a java.lang.ref.Reference$Lock)
+
+"VM Thread" prio=10 tid=0x028d9800 nid=0x125c runnable 
+
+"VM Periodic Task Thread" prio=10 tid=0x0296b400 nid=0x14bc waiting on condition 
+
+JNI global references: 509
+ 

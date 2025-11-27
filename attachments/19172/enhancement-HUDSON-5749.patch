@@ -1,0 +1,34 @@
+Index: disk-usage/src/main/resources/hudson/plugins/disk_usage/DiskUsagePlugin/index.jelly
+===================================================================
+--- disk-usage/src/main/resources/hudson/plugins/disk_usage/DiskUsagePlugin/index.jelly	(revision 12539)
++++ disk-usage/src/main/resources/hudson/plugins/disk_usage/DiskUsagePlugin/index.jelly	Tue Feb 23 17:24:39 HST 2010
+@@ -16,11 +16,6 @@
+         
+      <j:set var="projects" value="${it.getProjectList()}" />     
+      
+-     <!-- sum of values -->
+-     <j:set var="diskUsageSum" value="${it.diskUsageSum}" />
+-     
+-     <b>Builds: </b>${diskUsageSum.getBuildUsageString()}<b> Workspace: </b>${diskUsageSum.getWsUsageString()}<br/><p/>
+-     
+      <!-- project table -->
+      <table id="projectstatus" class="pane bigtable">
+       <tr>
+@@ -36,6 +31,17 @@
+           <td>${usage.getWsUsageString()}</td>
+         </tr>
+       </j:forEach>
++
++      <!-- sum of values -->
++      <tr>
++          <td colspan="3"/>
++      </tr>
++      <tr>
++        <j:set var="diskUsageSum" value="${it.diskUsageSum}" />
++        <td><b>total</b> </td>
++        <td>${diskUsageSum.getBuildUsageString()}</td>
++        <td>${diskUsageSum.getWsUsageString()}</td>
++      </tr>
+     </table>
+     
+     <p />

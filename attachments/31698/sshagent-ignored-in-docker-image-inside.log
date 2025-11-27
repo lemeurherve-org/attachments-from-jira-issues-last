@@ -1,0 +1,142 @@
+Started by user admin
+[Pipeline] Allocate node : Start
+Running on docker-agent.beesshop.org in /home/ubuntu/jenkins-aws-home/workspace/tests/ssh-with-private-key
+[Pipeline] node {
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ docker inspect -f . cloudbees/java-build-tools:0.0.7.1
+.
+[Pipeline] Run build steps inside a Docker container : Start
+$ docker run -t -d -u 1000:1000 -w /home/ubuntu/jenkins-aws-home/workspace/tests/ssh-with-private-key -v /home/ubuntu/jenkins-aws-home/workspace/tests/ssh-with-private-key:/home/ubuntu/jenkins-aws-home/workspace/tests/ssh-with-private-key:rw -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** cloudbees/java-build-tools:0.0.7.1 cat
+[Pipeline] withDockerContainer {
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ whoami
+jenkins
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ ls -al /home/jenkins/.ssh/
+ls: cannot access /home/jenkins/.ssh/: No such file or directory
++ true
+[Pipeline] SSH Agent : Start
+[ssh-agent] Using credentials ubuntu (cleclerc-us-east.pem)
+[ssh-agent] Looking for ssh-agent implementation...
+[ssh-agent]   Java/JNR ssh-agent
+[ssh-agent] Started.
+[Pipeline] sshagent {
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ echo SSH_AUTH_SOCK=/tmp/jenkins816098675435379381.jnr
+SSH_AUTH_SOCK=/tmp/jenkins816098675435379381.jnr
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ ls -al /tmp/jenkins816098675435379381.jnr
+ls: cannot access /tmp/jenkins816098675435379381.jnr: No such file or directory
++ true
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ ssh -vvv -o StrictHostKeyChecking=no ubuntu@docker-agent.beesshop.org uname -a
+OpenSSH_6.7p1 Ubuntu-5ubuntu1.4, OpenSSL 1.0.1f 6 Jan 2014
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: Applying options for *
+debug2: ssh_connect: needpriv 0
+debug1: Connecting to docker-agent.beesshop.org [52.90.177.155] port 22.
+debug1: Connection established.
+debug1: SELinux support disabled
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/jenkins/.ssh/id_rsa type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/jenkins/.ssh/id_rsa-cert type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/jenkins/.ssh/id_dsa type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/jenkins/.ssh/id_dsa-cert type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/jenkins/.ssh/id_ecdsa type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/jenkins/.ssh/id_ecdsa-cert type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/jenkins/.ssh/id_ed25519 type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/jenkins/.ssh/id_ed25519-cert type -1
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_6.7p1 Ubuntu-5ubuntu1.4
+debug1: Remote protocol version 2.0, remote software version OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.4
+debug1: match: OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.4 pat OpenSSH_6.6.1* compat 0x04000000
+debug2: fd 3 setting O_NONBLOCK
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug2: kex_parse_kexinit: curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1
+debug2: kex_parse_kexinit: ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,ssh-dss-cert-v01@openssh.com,ssh-rsa-cert-v00@openssh.com,ssh-dss-cert-v00@openssh.com,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,ssh-rsa,ssh-dss
+debug2: kex_parse_kexinit: aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,arcfour256,arcfour128,aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,arcfour,rijndael-cbc@lysator.liu.se
+debug2: kex_parse_kexinit: aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,arcfour256,arcfour128,aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,arcfour,rijndael-cbc@lysator.liu.se
+debug2: kex_parse_kexinit: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1,hmac-md5-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-md5,hmac-ripemd160,hmac-ripemd160@openssh.com,hmac-sha1-96,hmac-md5-96
+debug2: kex_parse_kexinit: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1,hmac-md5-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-md5,hmac-ripemd160,hmac-ripemd160@openssh.com,hmac-sha1-96,hmac-md5-96
+debug2: kex_parse_kexinit: none,zlib@openssh.com,zlib
+debug2: kex_parse_kexinit: none,zlib@openssh.com,zlib
+debug2: kex_parse_kexinit: 
+debug2: kex_parse_kexinit: 
+debug2: kex_parse_kexinit: first_kex_follows 0 
+debug2: kex_parse_kexinit: reserved 0 
+debug2: kex_parse_kexinit: curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1
+debug2: kex_parse_kexinit: ssh-rsa,ssh-dss,ecdsa-sha2-nistp256,ssh-ed25519
+debug2: kex_parse_kexinit: aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,arcfour,rijndael-cbc@lysator.liu.se
+debug2: kex_parse_kexinit: aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,arcfour,rijndael-cbc@lysator.liu.se
+debug2: kex_parse_kexinit: hmac-md5-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-md5,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160,hmac-ripemd160@openssh.com,hmac-sha1-96,hmac-md5-96
+debug2: kex_parse_kexinit: hmac-md5-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-md5,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160,hmac-ripemd160@openssh.com,hmac-sha1-96,hmac-md5-96
+debug2: kex_parse_kexinit: none,zlib@openssh.com
+debug2: kex_parse_kexinit: none,zlib@openssh.com
+debug2: kex_parse_kexinit: 
+debug2: kex_parse_kexinit: 
+debug2: kex_parse_kexinit: first_kex_follows 0 
+debug2: kex_parse_kexinit: reserved 0 
+debug2: mac_setup: setup umac-64-etm@openssh.com
+debug1: kex: server->client aes128-ctr umac-64-etm@openssh.com none
+debug2: mac_setup: setup umac-64-etm@openssh.com
+debug1: kex: client->server aes128-ctr umac-64-etm@openssh.com none
+debug1: sending SSH2_MSG_KEX_ECDH_INIT
+debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+debug1: Server host key: ECDSA 5e:42:24:9d:b9:f1:7b:eb:fd:a0:45:d2:8d:94:fa:1c
+Warning: Permanently added 'docker-agent.beesshop.org,52.90.177.155' (ECDSA) to the list of known hosts.
+debug2: kex_derive_keys
+debug2: set_newkeys: mode 1
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug2: set_newkeys: mode 0
+debug1: SSH2_MSG_NEWKEYS received
+debug1: SSH2_MSG_SERVICE_REQUEST sent
+debug2: service_accept: ssh-userauth
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug2: key: /home/jenkins/.ssh/id_rsa ((nil)),
+debug2: key: /home/jenkins/.ssh/id_dsa ((nil)),
+debug2: key: /home/jenkins/.ssh/id_ecdsa ((nil)),
+debug2: key: /home/jenkins/.ssh/id_ed25519 ((nil)),
+debug1: Authentications that can continue: publickey
+debug3: start over, passed a different list publickey
+debug3: preferred gssapi-keyex,gssapi-with-mic,publickey,keyboard-interactive,password
+debug3: authmethod_lookup publickey
+debug3: remaining preferred: keyboard-interactive,password
+debug3: authmethod_is_enabled publickey
+debug1: Next authentication method: publickey
+debug1: Trying private key: /home/jenkins/.ssh/id_rsa
+debug3: no such identity: /home/jenkins/.ssh/id_rsa: No such file or directory
+debug1: Trying private key: /home/jenkins/.ssh/id_dsa
+debug3: no such identity: /home/jenkins/.ssh/id_dsa: No such file or directory
+debug1: Trying private key: /home/jenkins/.ssh/id_ecdsa
+debug3: no such identity: /home/jenkins/.ssh/id_ecdsa: No such file or directory
+debug1: Trying private key: /home/jenkins/.ssh/id_ed25519
+debug3: no such identity: /home/jenkins/.ssh/id_ed25519: No such file or directory
+debug2: we did not send a packet, disable method
+debug1: No more authentication methods to try.
+Permission denied (publickey).
+[Pipeline] } //sshagent
+[Pipeline] SSH Agent : End
+[Pipeline] } //withDockerContainer
+$ docker stop 4604b8610fc8a575bd7839d2a7cfdb1a5e000ff013f9ee6deb27e809409f201c
+$ docker rm -f 4604b8610fc8a575bd7839d2a7cfdb1a5e000ff013f9ee6deb27e809409f201c
+[Pipeline] Run build steps inside a Docker container : End
+[Pipeline] } //node
+[Pipeline] Allocate node : End
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 255
+Finished: FAILURE

@@ -1,0 +1,89 @@
+--- AccurevTransaction.java	2011-10-18 12:54:06.697133600 -0400
++++ /home/jlouie/accurev-plugin/src/main/java/hudson/plugins/accurev/AccurevTransaction.java	2011-10-18 12:55:19.443284000 -0400
+@@ -4,6 +4,9 @@
+ import hudson.scm.ChangeLogSet;
+ import hudson.scm.EditType;
+ 
++import org.kohsuke.stapler.export.Exported;
++import org.kohsuke.stapler.export.ExportedBean;
++
+ import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.Date;
+@@ -12,6 +15,7 @@
+ /**
+  * One commit.
+  */
++@ExportedBean(defaultVisibility=999)
+ public final class AccurevTransaction extends ChangeLogSet.Entry {
+     private String revision;
+     private User author;
+@@ -21,6 +25,7 @@
+     private List<String> affectedPaths = new ArrayList<String>();
+     private int id;
+ 
++    @Exported
+     public String getRevision() {
+         return revision;
+     }
+@@ -29,6 +34,7 @@
+         this.revision = revision;
+     }
+ 
++    @Exported
+     public User getAuthor() {
+         return author;
+     }
+@@ -43,6 +49,7 @@
+      *
+      * @return never null.
+      */
++    @Exported
+     public Collection<String> getAffectedPaths() {
+         return affectedPaths;
+     }
+@@ -51,10 +58,12 @@
+         this.author = User.get(author);
+     }
+ 
++    @Exported
+     public String getUser() {// digester wants read/write property, even though it never reads. Duh.
+         return author.getDisplayName();
+     }
+ 
++    @Exported
+     public Date getDate() {
+         return date;
+     }
+@@ -63,6 +72,7 @@
+         this.date = date;
+     }
+ 
++    @Exported
+     public String getMsg() {
+         return (null == msg ? "" : msg);
+     }
+@@ -82,6 +92,7 @@
+         super.setParent(parent);    //To change body of overridden methods use File | Settings | File Templates.
+     }
+ 
++    @Exported
+     public EditType getEditType() {
+         if (action.equals("promote"))
+             return EditType.EDIT;
+@@ -102,6 +113,7 @@
+      * Enables accurate filtering by AccuRev transaction type since the metod getEditType censors the actual type.
+      * @return transaction type of the AccuRev transaction
+      */
++    @Exported
+     public String getAction() {
+         return action;
+     }
+@@ -111,6 +123,7 @@
+      * Enables logging with AccuRev transaction id
+      * @return transaction id of the AccuRev transaction
+      */
++    @Exported
+     public int getId() {
+         return id;
+     }

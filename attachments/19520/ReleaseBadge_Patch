@@ -1,0 +1,120 @@
+Index: plugin/pom.xml
+===================================================================
+--- plugin/pom.xml	(revision 31948)
++++ plugin/pom.xml	(working copy)
+@@ -29,7 +29,7 @@
+ 	<parent>
+ 		<groupId>org.jvnet.hudson.plugins</groupId>
+ 		<artifactId>plugin</artifactId>
+-		<version>1.356</version>
++		<version>1.362</version>
+ 	</parent>
+ 
+ 	<licenses>
+Index: plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java
+===================================================================
+--- plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java	(revision 31798)
++++ plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java	(working copy)
+@@ -203,7 +203,7 @@
+ 		
+ 		// schedule release build
+ 		synchronized (project) {
+-			if (project.scheduleBuild(0, new ReleaseCause())) {
++			if (project.scheduleBuild(0, new ReleaseCause(), new ReleaseBadgeAction())) {
+ 				m2Wrapper.enableRelease();
+ 				m2Wrapper.setVersions(versions);
+ 				m2Wrapper.setAppendHudsonBuildNumber(appendHudsonBuildNumber);
+Index: plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java
+===================================================================
+--- plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java	(revision 31798)
++++ plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java	(working copy)
+@@ -157,6 +157,8 @@
+ 			}
+ 			mavenOpts = mmSet.getMavenOpts();
+ 			
++			ReleaseBadgeAction releaseBuildIcon = build.getAction(ReleaseBadgeAction.class);
++			releaseBuildIcon.setTooltip(getIconTooltip(mmSet));
+ 		}
+ 		
+ 		return new Environment() {
+@@ -280,6 +282,27 @@
+ 	public void setHudsonUserName(String hudsonUserName) {
+ 		this.hudsonUserName = hudsonUserName;
+ 	}
++	
++    /**
++     * Prepares the tooltip for the icon in the UI.
++     * 
++     * @param mmSet the modules to compute the string from
++     * @return the formated tooltip
++     */
++    private String getIconTooltip(MavenModuleSet mmSet) {
++        StringBuilder sb = new StringBuilder("ReleaseBuild - ");
++        for (MavenModule module : mmSet.getModules()) {
++            sb.append(module.getModuleName());
++// 			TODO get the correct release version for each module, the modules contain the last known build version only! 
++//        	String moduleVersion = module.getVersion();
++//            if (!StringUtils.isEmpty(moduleVersion)) {
++//                sb.append(": ");
++//                sb.append(moduleVersion);
++//            }
++            sb.append(" | ");
++        }
++        return sb.toString();
++    }
+ 
+ 	private String generateVersionString(int buildNumber) {
+ 		// -Dproject.rel.org.mycompany.group.project=version ....
+Index: plugin/src/main/java/org/jvnet/hudson/plugins/m2release/ReleaseBadgeAction.java
+===================================================================
+--- plugin/src/main/java/org/jvnet/hudson/plugins/m2release/ReleaseBadgeAction.java	(revision 0)
++++ plugin/src/main/java/org/jvnet/hudson/plugins/m2release/ReleaseBadgeAction.java	(revision 0)
+@@ -0,0 +1,37 @@
++package org.jvnet.hudson.plugins.m2release;
++
++import hudson.model.BuildBadgeAction;
++
++/**
++ * Used to mark a release build with an icon.
++ *
++ * @author domi
++ */
++public class ReleaseBadgeAction implements BuildBadgeAction {
++
++        private String tooltip = "N/A";
++
++        public ReleaseBadgeAction() {
++        }
++
++        public String getIconFileName() {
++            return null;
++        }
++
++        public String getDisplayName() {
++            return null;
++        }
++
++        public String getUrlName() {
++            return null;
++        }
++
++		public String getTooltip() {
++			return tooltip;
++		}
++
++		public void setTooltip(String tooltip) {
++			this.tooltip = tooltip;
++		}
++
++}
+Index: plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/ReleaseBadgeAction/badge.jelly
+===================================================================
+--- plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/ReleaseBadgeAction/badge.jelly	(revision 0)
++++ plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/ReleaseBadgeAction/badge.jelly	(revision 0)
+@@ -0,0 +1,5 @@
++<j:jelly xmlns:j="jelly:core">
++        <img width="16" height="16"
++             title="${it.tooltip}"
++             src="${imagesURL}/16x16/package.gif"/>
++</j:jelly>  
+\ No newline at end of file

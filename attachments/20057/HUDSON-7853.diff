@@ -1,0 +1,46 @@
+Index: src/main/java/hudson/plugins/logparser/LogParserPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/logparser/LogParserPublisher.java	(revision 37111)
++++ src/main/java/hudson/plugins/logparser/LogParserPublisher.java	(working copy)
+@@ -26,11 +26,13 @@
+ 
+ public class LogParserPublisher extends Recorder implements Serializable {
+     
++	public final boolean unstableOnWarning;
+ 	public final boolean failBuildOnError;
+     public final String parsingRulesPath;
+ 
+     @DataBoundConstructor
+-    public LogParserPublisher(final boolean failBuildOnError, final String parsingRulesPath) {
++    public LogParserPublisher(final boolean unstableOnWarning, final boolean failBuildOnError, final String parsingRulesPath) {
++    	this.unstableOnWarning = unstableOnWarning;
+     	this.failBuildOnError = failBuildOnError;
+     	this.parsingRulesPath =  parsingRulesPath;
+    }
+@@ -52,6 +54,10 @@
+ 	        	// Parse the build's log according to these rules and get the result 
+ 	    		result = parser.parseLog(build);
+ 	        
++	    		// Mark build as instable if necessary
++	    		if (this.unstableOnWarning && result.getTotalWarnings() > 0) {
++	    			build.setResult(Result.UNSTABLE);
++	    		}
+ 	    		
+ 	    		// Mark build as failed if necessary
+ 	    		if (this.failBuildOnError && result.getTotalErrors() > 0) {
+Index: src/main/resources/hudson/plugins/logparser/LogParserPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/logparser/LogParserPublisher/config.jelly	(revision 37111)
++++ src/main/resources/hudson/plugins/logparser/LogParserPublisher/config.jelly	(working copy)
+@@ -1,6 +1,10 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+ 
+ 
++    	<f:entry title="Make Build unstable on Warning" help="/plugin/log-parser/unstable_on_warning.html">
++    		<f:checkbox name="log-parser.unstableOnWarning" checked="${instance.unstableOnWarning}"/>
++    	</f:entry>
++    	
+     	<f:entry title="Fail Build on Error" help="/plugin/log-parser/fail_on_error.html">
+     		<f:checkbox name="log-parser.failBuildOnError" checked="${instance.failBuildOnError}"/>
+     	</f:entry>
+ 

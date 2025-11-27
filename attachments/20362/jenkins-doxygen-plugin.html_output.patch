@@ -1,0 +1,28 @@
+diff -rupN jenkinsci-doxygen-plugin-bf7f689/src/main/java/hudson/plugins/doxygen/DoxygenDirectoryParser.java jenkinsci-doxygen-plugin-patch/src/main/java/hudson/plugins/doxygen/DoxygenDirectoryParser.java
+--- jenkinsci-doxygen-plugin-bf7f689/src/main/java/hudson/plugins/doxygen/DoxygenDirectoryParser.java	2011-03-13 18:27:33.000000000 +0200
++++ jenkinsci-doxygen-plugin-patch/src/main/java/hudson/plugins/doxygen/DoxygenDirectoryParser.java	2011-04-07 16:08:47.176060000 +0300
+@@ -139,17 +139,13 @@ public class DoxygenDirectoryParser impl
+     		outputHTML = "html";
+     		LOGGER.log(Level.INFO,"The "+DOXYGEN_KEY_HTML_OUTPUT+" tag is not present or is left blank." + DOXYGEN_DEFAULT_HTML_OUTPUT+ " will be used as the default path.");
+     	}
+-    	else {
+-    		// Check if folderWhereYouRunDoxygen is specified, because then the gen dir is calculated relative to it 
+-    		if ((null != this.folderWhereYouRunDoxygen) && (!this.folderWhereYouRunDoxygen.isEmpty())){
+-    			doxyGenDir = (folderWhereYouRunDoxygen+ File.separator + outputHTML);
+-    		}else{
+-    			doxyGenDir = (doxyGenDir!=null)?(doxyGenDir+ File.separator + outputHTML):outputHTML;
+-    		}
+-    		return new FilePath(base, doxyGenDir);
+-    	}    	
+-    	
+-    	return null;
++    	// Check if folderWhereYouRunDoxygen is specified, because then the gen dir is calculated relative to it 
++    	if ((null != this.folderWhereYouRunDoxygen) && (!this.folderWhereYouRunDoxygen.isEmpty())){
++    		doxyGenDir = (folderWhereYouRunDoxygen+ File.separator + outputHTML);
++    	}else{
++    		doxyGenDir = (doxyGenDir!=null)?(doxyGenDir+ File.separator + outputHTML):outputHTML;
++    	}
++    	return new FilePath(base, doxyGenDir);
+     }  
+     
+     /**

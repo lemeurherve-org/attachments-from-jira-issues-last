@@ -1,0 +1,325 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserIdCause/>
+      </causes>
+    </hudson.model.CauseAction>
+    <hudson.scm.SubversionTagAction plugin="subversion@1.45">
+      <build class="build" reference="../../.."/>
+      <tags class="hudson.util.CopyOnWriteMap$Tree">
+        <entry>
+          <hudson.scm.SubversionSCM_-SvnInfo>
+            <url>file:///D:/repo/spo131031/svn/Tools/testlink/trunk</url>
+            <revision>5</revision>
+          </hudson.scm.SubversionSCM_-SvnInfo>
+          <list/>
+        </entry>
+      </tags>
+    </hudson.scm.SubversionTagAction>
+    <hudson.scm.SVNRevisionState plugin="subversion@1.45">
+      <revisions>
+        <entry>
+          <string>file:///D:/repo/spo131031/svn/Tools/testlink/trunk</string>
+          <long>5</long>
+        </entry>
+      </revisions>
+    </hudson.scm.SVNRevisionState>
+    <hudson.plugins.testlink.TestLinkBuilder_-1 plugin="testlink@3.7">
+      <val_-iterativeEnvVars serialization="custom">
+        <unserializable-parents/>
+        <tree-map>
+          <default>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </default>
+          <int>4</int>
+          <string>TESTLINK_BUILD_NAME</string>
+          <string>Build Name</string>
+          <string>TESTLINK_TESTCASE_TOTAL</string>
+          <string>2</string>
+          <string>TESTLINK_TESTPLAN_NAME</string>
+          <string>Test Plan 1</string>
+          <string>TESTLINK_TESTPROJECT_NAME</string>
+          <string>Sandbox</string>
+        </tree-map>
+      </val_-iterativeEnvVars>
+      <outer-class>
+        <testLinkName>Local Sandbox testlink</testLinkName>
+        <testProjectName>Sandbox</testProjectName>
+        <testPlanName>Test Plan 1</testPlanName>
+        <buildName>Build Name</buildName>
+        <platformName></platformName>
+        <customFields>Python Class</customFields>
+        <executionStatusNotRun>false</executionStatusNotRun>
+        <executionStatusPassed>false</executionStatusPassed>
+        <executionStatusFailed>false</executionStatusFailed>
+        <executionStatusBlocked>false</executionStatusBlocked>
+        <singleBuildSteps>
+          <hudson.tasks.BatchFile>
+            <command>@echo Single Build Steps...
+@echo TESTLINK_BUILD_NAME=%TESTLINK_BUILD_NAME%
+@echo TESTLINK_TESTPLAN_NAME=%TESTLINK_TESTPLAN_NAME%
+@echo TESTLINK_TESTPROJECT_NAME=%TESTLINK_TESTPROJECT_NAME%
+@echo TESTLINK_TESTCASE_TOTAL=%TESTLINK_TESTCASE_TOTAL%
+@echo Single Build Steps End</command>
+          </hudson.tasks.BatchFile>
+        </singleBuildSteps>
+        <iterativeBuildSteps>
+          <hudson.tasks.BatchFile>
+            <command>@echo Iterative Test Build Steps...
+
+@echo TESTLINK_TESTCASE_ID= %TESTLINK_TESTCASE_ID%
+@echo TESTLINK_TESTCASE_NAME= %TESTLINK_TESTCASE_NAME%
+@echo TESTLINK_TESTCASE_TESTSUITEID= %TESTLINK_TESTCASE_TESTSUITEID%
+@echo TESTLINK_TESTCASE_TESTPROJECTID= %TESTLINK_TESTCASE_TESTPROJECTID%
+@echo TESTLINK_TESTCASE_AUTHOR= %TESTLINK_TESTCASE_AUTHOR%
+@echo TESTLINK_TESTCASE_SUMMARY= %TESTLINK_TESTCASE_SUMMARY%
+@echo TESTLINK_BUILD_NAME= %TESTLINK_BUILD_NAME%
+@echo TESTLINK_TESTPLAN_NAME= %TESTLINK_TESTPLAN_NAME%
+@echo TESTLINK_TESTPROJECT_NAME= %TESTLINK_TESTPROJECT_NAME%
+@echo TESTLINK_TESTCASE_PYTHON_CLASS= %TESTLINK_TESTCASE_PYTHON_CLASS%
+
+@echo Iterative Test Build Steps End</command>
+          </hudson.tasks.BatchFile>
+          <hudson.tasks.BatchFile>
+            <command>@echo Executing python...
+python tl000.py
+@echo Executing python Done...</command>
+          </hudson.tasks.BatchFile>
+          <hudson.tasks.BatchFile>
+            <command>@echo Executing nose...
+n.bat
+@echo Executing nose Done...</command>
+          </hudson.tasks.BatchFile>
+          <hudson.tasks.BatchFile>
+            <command>:: cd target\NoseXUnit\core
+:: copy lalala.xml /B+,,/Y
+:: cd ..\..\..</command>
+          </hudson.tasks.BatchFile>
+        </iterativeBuildSteps>
+        <transactional>false</transactional>
+        <failedTestsMarkBuildAsFailure>false</failedTestsMarkBuildAsFailure>
+        <failIfNoResults>false</failIfNoResults>
+        <failOnNotRun>false</failOnNotRun>
+        <executionOrderComparator/>
+        <failure>true</failure>
+        <resultSeekers>
+          <hudson.plugins.testlink.result.JUnitCaseClassNameResultSeeker>
+            <includePattern>target/NoseXUnit/core/TEST-tl001.xml</includePattern>
+            <keyCustomField>Python Class</keyCustomField>
+            <includeNotes>true</includeNotes>
+            <attachJUnitXML>true</attachJUnitXML>
+          </hudson.plugins.testlink.result.JUnitCaseClassNameResultSeeker>
+        </resultSeekers>
+      </outer-class>
+    </hudson.plugins.testlink.TestLinkBuilder_-1>
+    <hudson.plugins.testlink.TestLinkBuilder_-2 plugin="testlink@3.7">
+      <val_-iterativeEnvVars serialization="custom">
+        <unserializable-parents/>
+        <tree-map>
+          <default>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.testlink.TestLinkBuilder_-1/val_-iterativeEnvVars/tree-map/default/comparator"/>
+          </default>
+          <int>11</int>
+          <string>TESTLINK_BUILD_NAME</string>
+          <string>Build Name</string>
+          <string>TESTLINK_TESTCASE_AUTHOR</string>
+          <string>null</string>
+          <string>TESTLINK_TESTCASE_ID</string>
+          <string>14</string>
+          <string>TESTLINK_TESTCASE_NAME</string>
+          <string>Test Case 3</string>
+          <string>TESTLINK_TESTCASE_PYTHON_CLASS</string>
+          <string>tl001.test_223</string>
+          <string>TESTLINK_TESTCASE_STEP_TOTAL</string>
+          <string>0</string>
+          <string>TESTLINK_TESTCASE_SUMMARY</string>
+          <string></string>
+          <string>TESTLINK_TESTCASE_TESTPROJECTID</string>
+          <string>1</string>
+          <string>TESTLINK_TESTCASE_TESTSUITEID</string>
+          <string>null</string>
+          <string>TESTLINK_TESTPLAN_NAME</string>
+          <string>Test Plan 1</string>
+          <string>TESTLINK_TESTPROJECT_NAME</string>
+          <string>Sandbox</string>
+        </tree-map>
+      </val_-iterativeEnvVars>
+      <outer-class reference="../../hudson.plugins.testlink.TestLinkBuilder_-1/outer-class"/>
+    </hudson.plugins.testlink.TestLinkBuilder_-2>
+    <hudson.plugins.testlink.TestLinkBuilder_-2 plugin="testlink@3.7">
+      <val_-iterativeEnvVars serialization="custom">
+        <unserializable-parents/>
+        <tree-map>
+          <default>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../hudson.plugins.testlink.TestLinkBuilder_-1/val_-iterativeEnvVars/tree-map/default/comparator"/>
+          </default>
+          <int>11</int>
+          <string>TESTLINK_BUILD_NAME</string>
+          <string>Build Name</string>
+          <string>TESTLINK_TESTCASE_AUTHOR</string>
+          <string>null</string>
+          <string>TESTLINK_TESTCASE_ID</string>
+          <string>19</string>
+          <string>TESTLINK_TESTCASE_NAME</string>
+          <string>tl001</string>
+          <string>TESTLINK_TESTCASE_PYTHON_CLASS</string>
+          <string>tl001.test_224</string>
+          <string>TESTLINK_TESTCASE_STEP_TOTAL</string>
+          <string>0</string>
+          <string>TESTLINK_TESTCASE_SUMMARY</string>
+          <string></string>
+          <string>TESTLINK_TESTCASE_TESTPROJECTID</string>
+          <string>1</string>
+          <string>TESTLINK_TESTCASE_TESTSUITEID</string>
+          <string>null</string>
+          <string>TESTLINK_TESTPLAN_NAME</string>
+          <string>Test Plan 1</string>
+          <string>TESTLINK_TESTPROJECT_NAME</string>
+          <string>Sandbox</string>
+        </tree-map>
+      </val_-iterativeEnvVars>
+      <outer-class reference="../../hudson.plugins.testlink.TestLinkBuilder_-1/outer-class"/>
+    </hudson.plugins.testlink.TestLinkBuilder_-2>
+    <hudson.plugins.testlink.TestLinkBuildAction plugin="testlink@3.7">
+      <build class="build" reference="../../.."/>
+      <result>
+        <report>
+          <passed>1</passed>
+          <failed>1</failed>
+          <blocked>0</blocked>
+          <notRun>0</notRun>
+          <buildId>3</buildId>
+          <buildName>Build Name</buildName>
+          <testCases class="linked-list">
+            <hudson.plugins.testlink.result.TestCaseWrapper>
+              <customFieldAndStatus>
+                <entry>
+                  <string>tl001.test_223</string>
+                  <br.eti.kinoshita.testlinkjavaapi.constants.ExecutionStatus>FAILED</br.eti.kinoshita.testlinkjavaapi.constants.ExecutionStatus>
+                </entry>
+              </customFieldAndStatus>
+              <attachments class="linked-list"/>
+              <notes>classname: tl001.test_223
+time: null
+</notes>
+              <testCase>
+                <id>14</id>
+                <name>Test Case 3</name>
+                <testProjectId>1</testProjectId>
+                <steps/>
+                <executionType>AUTOMATED</executionType>
+                <executionOrder>1000</executionOrder>
+                <fullExternalId>sbx-3</fullExternalId>
+                <versionId>15</versionId>
+                <version>1</version>
+                <customFields>
+                  <br.eti.kinoshita.testlinkjavaapi.model.CustomField>
+                    <id>2</id>
+                    <name>Python Class</name>
+                    <label>Python Class</label>
+                    <type>0</type>
+                    <possibleValues></possibleValues>
+                    <defaultValue></defaultValue>
+                    <validRegexp></validRegexp>
+                    <lengthMin>0</lengthMin>
+                    <lengthMax>0</lengthMax>
+                    <showOnDesign>true</showOnDesign>
+                    <enableOnDesign>true</enableOnDesign>
+                    <showOnExecution>false</showOnExecution>
+                    <enableOnExecution>false</enableOnExecution>
+                    <showOnTestPlanDesign>false</showOnTestPlanDesign>
+                    <enableOnTestPlanDesign>false</enableOnTestPlanDesign>
+                    <displayOrder>1</displayOrder>
+                    <location>1</location>
+                    <value>tl001.test_223</value>
+                  </br.eti.kinoshita.testlinkjavaapi.model.CustomField>
+                </customFields>
+                <executionStatus>FAILED</executionStatus>
+                <platform>
+                  <id>0</id>
+                  <name></name>
+                </platform>
+                <featureId>2</featureId>
+              </testCase>
+            </hudson.plugins.testlink.result.TestCaseWrapper>
+            <hudson.plugins.testlink.result.TestCaseWrapper>
+              <customFieldAndStatus>
+                <entry>
+                  <string>tl001.test_224</string>
+                  <br.eti.kinoshita.testlinkjavaapi.constants.ExecutionStatus>PASSED</br.eti.kinoshita.testlinkjavaapi.constants.ExecutionStatus>
+                </entry>
+              </customFieldAndStatus>
+              <attachments class="linked-list"/>
+              <notes>classname: tl001.test_224
+time: null
+</notes>
+              <testCase>
+                <id>19</id>
+                <name>tl001</name>
+                <testProjectId>1</testProjectId>
+                <steps/>
+                <executionType>AUTOMATED</executionType>
+                <executionOrder>1010</executionOrder>
+                <fullExternalId>sbx-4</fullExternalId>
+                <versionId>20</versionId>
+                <version>1</version>
+                <customFields>
+                  <br.eti.kinoshita.testlinkjavaapi.model.CustomField>
+                    <id>2</id>
+                    <name>Python Class</name>
+                    <label>Python Class</label>
+                    <type>0</type>
+                    <possibleValues></possibleValues>
+                    <defaultValue></defaultValue>
+                    <validRegexp></validRegexp>
+                    <lengthMin>0</lengthMin>
+                    <lengthMax>0</lengthMax>
+                    <showOnDesign>true</showOnDesign>
+                    <enableOnDesign>true</enableOnDesign>
+                    <showOnExecution>false</showOnExecution>
+                    <enableOnExecution>false</enableOnExecution>
+                    <showOnTestPlanDesign>false</showOnTestPlanDesign>
+                    <enableOnTestPlanDesign>false</enableOnTestPlanDesign>
+                    <displayOrder>1</displayOrder>
+                    <location>1</location>
+                    <value>tl001.test_224</value>
+                  </br.eti.kinoshita.testlinkjavaapi.model.CustomField>
+                </customFields>
+                <executionStatus>PASSED</executionStatus>
+                <platform>
+                  <id>0</id>
+                  <name></name>
+                </platform>
+                <featureId>3</featureId>
+              </testCase>
+            </hudson.plugins.testlink.result.TestCaseWrapper>
+          </testCases>
+        </report>
+        <build class="build" reference="../../../.."/>
+      </result>
+    </hudson.plugins.testlink.TestLinkBuildAction>
+    <hudson.tasks.junit.TestResultAction>
+      <owner class="build" reference="../../.."/>
+      <descriptions class="concurrent-hash-map"/>
+      <failCount>2</failCount>
+      <skipCount>0</skipCount>
+      <totalCount>3</totalCount>
+      <testData/>
+    </hudson.tasks.junit.TestResultAction>
+  </actions>
+  <number>54</number>
+  <startTime>1384506335292</startTime>
+  <result>UNSTABLE</result>
+  <duration>15764</duration>
+  <charset>windows-1252</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>D:\ext\Jenkins\jobs\TestLink SandBox\workspace</workspace>
+  <hudsonVersion>1.539</hudsonVersion>
+  <scm class="hudson.scm.SubversionChangeLogParser" plugin="subversion@1.45">
+    <ignoreDirPropChanges>false</ignoreDirPropChanges>
+  </scm>
+  <culprits class="com.google.common.collect.EmptyImmutableSortedSet"/>
+</build>

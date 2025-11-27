@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><flow-definition plugin="workflow-job">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps">
+    <script>@Library('common') _
+   
+   // ... cutted, some helper groovy here
+
+timeout(time: 10, unit: 'MINUTES') {
+    stage('Stage XYZ') {
+        dir('somerepo') {
+            ... mixture of sh and pipeline steps
+        }
+    }
+}
+</script>
+    <sandbox>false</sandbox>
+  </definition>
+  <actions/>
+  <description>Managed by Jenkins Job Builder. Do not edit via web.
+The configuration for this job stored in blahblah project.
+&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>true</concurrentBuild>
+  <canRoam>true</canRoam>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>-1</numToKeep>
+        <artifactDaysToKeep>14</artifactDaysToKeep>
+        <artifactNumToKeep>14</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>DISABLE_CLEANUP</name>
+          <description>Disable cleanup of the enviornment</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GERRIT_BRANCH</name>
+          <description>The branch of the component</description>
+          <defaultValue>branch-with-patches</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GERRIT_REFSPEC</name>
+          <description>The REFSPEC of the component. Example: refs/changes/30/123430/1</description>
+          <defaultValue>+refs/heads/$GERRIT_BRANCH:refs/remotes/origin/$GERRIT_BRANCH</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>ANSIBLE_VERBOSITY</name>
+          <description>Controls Ansible verbosity level [0-4], number of 'v' params.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>1</string>
+              <string>0</string>
+              <string>1</string>
+              <string>2</string>
+              <string>3</string>
+              <string>4</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <com.tikal.hudson.plugins.notification.HudsonNotificationProperty>
+      <endpoints>
+        <com.tikal.hudson.plugins.notification.Endpoint>
+          <format>JSON</format>
+          <protocol>HTTP</protocol>
+          <event>all</event>
+          <timeout>30000</timeout>
+          <url>http://some.other.host.com/jenkins_notifications</url>
+          <loglines>0</loglines>
+        </com.tikal.hudson.plugins.notification.Endpoint>
+      </endpoints>
+    </com.tikal.hudson.plugins.notification.HudsonNotificationProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <triggers class="vector">
+    <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.GerritTrigger>
+      <spec/>
+      <gerritProjects>
+        <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.data.GerritProject>
+          <compareType>PLAIN</compareType>
+          <pattern>gitreponame</pattern>
+          <branches>
+            <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.data.Branch>
+              <compareType>REG_EXP</compareType>
+              <pattern>branch-with-patches</pattern>
+            </com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.data.Branch>
+          </branches>
+          <disableStrictForbiddenFileVerification>false</disableStrictForbiddenFileVerification>
+        </com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.data.GerritProject>
+      </gerritProjects>
+      <skipVote>
+        <onSuccessful>false</onSuccessful>
+        <onFailed>false</onFailed>
+        <onUnstable>false</onUnstable>
+        <onNotBuilt>false</onNotBuilt>
+      </skipVote>
+      <silentMode>false</silentMode>
+      <silentStartMode>true</silentStartMode>
+      <escapeQuotes>true</escapeQuotes>
+      <noNameAndEmailParameters>false</noNameAndEmailParameters>
+      <readableMessage>false</readableMessage>
+      <dependencyJobsNames/>
+      <notificationLevel/>
+      <dynamicTriggerConfiguration>False</dynamicTriggerConfiguration>
+      <triggerConfigURL/>
+      <allowTriggeringUnreviewedPatches>false</allowTriggeringUnreviewedPatches>
+      <triggerOnEvents>
+        <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.events.PluginPatchsetCreatedEvent/>
+        <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.events.PluginDraftPublishedEvent/>
+        <com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.events.PluginCommentAddedContainsEvent>
+          <commentAddedCommentContains>(?i)^(Patch Set [0-9]+:)?( [\w\\+-]*)*(\n\n)?\s*(recheck|recheck unit)$</commentAddedCommentContains>
+        </com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.events.PluginCommentAddedContainsEvent>
+      </triggerOnEvents>
+      <gerritBuildStartedVerifiedValue>0</gerritBuildStartedVerifiedValue>
+      <gerritBuildSuccessfulVerifiedValue>1</gerritBuildSuccessfulVerifiedValue>
+      <gerritBuildFailedVerifiedValue>-1</gerritBuildFailedVerifiedValue>
+      <gerritBuildUnstableVerifiedValue>1</gerritBuildUnstableVerifiedValue>
+      <buildStartMessage/>
+      <buildFailureMessage>unit tests failed! Click on the link for more information. To retrigger unit tests tests, post the comment "recheck unit"</buildFailureMessage>
+      <buildSuccessfulMessage>unit tests ran successfully!</buildSuccessfulMessage>
+      <buildUnstableMessage/>
+      <buildNotBuiltMessage/>
+      <buildUnsuccessfulFilepath/>
+      <customUrl/>
+      <serverName>some.gerrit.server.com</serverName>
+    </com.sonyericsson.hudson.plugins.gerrit.trigger.hudsontrigger.GerritTrigger>
+  </triggers>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper/>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter/>
+      <externalDelete/>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+  </buildWrappers>

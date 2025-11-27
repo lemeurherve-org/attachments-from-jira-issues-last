@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <builders class="vector">
+    <hudson.tasks.Maven>
+      <targets>integration-test</targets>
+      <mavenName>Maven2</mavenName>
+    </hudson.tasks.Maven>
+  </builders>
+  <publishers class="vector">
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>target/surefire-reports/*.xml</testResults>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.plugins.japex.JapexPublisher>
+      <includes>target/japex/last/report.xml</includes>
+      <trackRegressions>false</trackRegressions>
+      <regressionThreshold>0.0</regressionThreshold>
+    </hudson.plugins.japex.JapexPublisher>
+  </publishers>
+  <buildWrappers class="vector"/>
+  <scm class="hudson.plugins.mercurial.MercurialSCM">
+    <source>http://localhost:8000/japextest/</source>
+    <browser>
+      <url>http://localhost:8000/japextest/</url>
+    </browser>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <triggers class="vector"/>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <description></description>
+  <actions class="vector"/>
+</project>

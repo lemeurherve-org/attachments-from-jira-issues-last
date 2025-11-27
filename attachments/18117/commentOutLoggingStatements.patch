@@ -1,0 +1,146 @@
+Index: FindBugsPublisher.java
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/findbugs/src/main/java/hudson/plugins/findbugs/FindBugsPublisher.java,v
+retrieving revision 1.27
+diff -u -r1.27 FindBugsPublisher.java
+--- FindBugsPublisher.java	27 Feb 2008 22:20:21 -0000	1.27
++++ FindBugsPublisher.java	27 Mar 2008 14:31:31 -0000
+@@ -79,7 +79,7 @@
+             final BuildListener listener) throws InterruptedException, IOException {
+         PrintStream logger = listener.getLogger();
+         try {
+-            logger.println("Collecting findbugs analysis files...");
++//            logger.println("Collecting findbugs analysis files...");
+ 
+             JavaProject project = parseAllWorkspaceFiles(build, logger);
+             FindBugsResult result = createResult(build, project);
+@@ -92,7 +92,7 @@
+             return true;
+         }
+         catch (AbortException exception) {
+-            logger.println(exception.getMessage());
++//            logger.println(exception.getMessage());
+             build.setResult(Result.FAILURE);
+             return false;
+         }
+@@ -112,15 +112,15 @@
+     private void evaluateBuildResult(final AbstractBuild<?, ?> build, final PrintStream logger, final JavaProject project) {
+         int warnings = project.getNumberOfAnnotations();
+         if (warnings > 0) {
+-            logger.println(
+-                    "A total of " + warnings + " potential bugs have been found.");
++//            logger.println(
++//                    "A total of " + warnings + " potential bugs have been found.");
+             if (isThresholdEnabled() && warnings >= getMinimumAnnotations()) {
+                 build.setResult(Result.UNSTABLE);
+             }
+         }
+-        else {
+-            logger.println("No potential bugs have been found.");
+-        }
++//        else {
++//            logger.println("No potential bugs have been found.");
++//        }
+     }
+ 
+     /**
+Index: FindBugsReporter.java
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/findbugs/src/main/java/hudson/plugins/findbugs/FindBugsReporter.java,v
+retrieving revision 1.4
+diff -u -r1.4 FindBugsReporter.java
+--- FindBugsReporter.java	27 Feb 2008 22:20:21 -0000	1.4
++++ FindBugsReporter.java	27 Mar 2008 14:26:12 -0000
+@@ -174,15 +174,15 @@
+ 
+         int warnings = project.getNumberOfAnnotations();
+         if (warnings > 0) {
+-            listener.getLogger().println(
+-                    "A total of " + warnings + " potential bugs have been found.");
++//            listener.getLogger().println(
++//                    "A total of " + warnings + " potential bugs have been found.");
+             if (thresholdEnabled && warnings >= minimumAnnotations) {
+                 build.setResult(Result.UNSTABLE);
+             }
+         }
+-        else {
+-            listener.getLogger().println("No potential bugs have been found.");
+-        }
++//        else {
++//            listener.getLogger().println("No potential bugs have been found.");
++//        }
+ 
+         return true;
+     }
+Index: parser/FindBugsCollector.java
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/findbugs/src/main/java/hudson/plugins/findbugs/parser/FindBugsCollector.java,v
+retrieving revision 1.10
+diff -u -r1.10 FindBugsCollector.java
+--- parser/FindBugsCollector.java	7 Mar 2008 17:54:28 -0000	1.10
++++ parser/FindBugsCollector.java	27 Mar 2008 14:17:54 -0000
+@@ -73,19 +73,19 @@
+ 
+                 if (SKIP_OLD_FILES && findbugsFile.lastModified() < buildTime) {
+                     String message = Messages.FindBugs_FindBugsCollector_Error_FileNotUpToDate(findbugsFile);
+-                    logger.println(message);
++//                    logger.println(message);
+                     module.setError(message);
+                     continue;
+                 }
+                 if (!findbugsFile.canRead()) {
+                     String message = Messages.FindBugs_FindBugsCollector_Error_NoPermission(findbugsFile);
+-                    logger.println(message);
++//                    logger.println(message);
+                     module.setError(message);
+                     continue;
+                 }
+                 if (new FilePath(findbugsFile).length() <= 0) {
+                     String message = Messages.FindBugs_FindBugsCollector_Error_EmptyFile(findbugsFile);
+-                    logger.println(message);
++//                    logger.println(message);
+                     module.setError(message);
+                     continue;
+                 }
+@@ -95,7 +95,7 @@
+             }
+         }
+         catch (InterruptedException exception) {
+-            logger.println("Parsing has been canceled.");
++//            logger.println("Parsing has been canceled.");
+         }
+         return project;
+     }
+@@ -121,18 +121,18 @@
+             FilePath filePath = new FilePath(findbugsFile);
+             MavenFindBugsParser mavenFindBugsParser = new MavenFindBugsParser();
+             if (mavenFindBugsParser.accepts(filePath.read())) {
+-                logger.println("Activating parser for maven-findbugs-plugin <= 1.1.1.");
++//                logger.println("Activating parser for maven-findbugs-plugin <= 1.1.1.");
+                 module = mavenFindBugsParser.parse(filePath.read(), emptyModule.getName(), workspace);
+                 module.setError(Messages.FindBugs_FindBugsCollector_Error_OldMavenPlugin(findbugsFile));
+             }
+             else {
+-                logger.println("Activating parser for findbugs ant task, batch script, or maven-findbugs-plugin > 1.1.1.");
++//                logger.println("Activating parser for findbugs ant task, batch script, or maven-findbugs-plugin > 1.1.1.");
+                 NativeFindBugsParser parser = new NativeFindBugsParser();
+                 String moduleRoot = StringUtils.substringBefore(findbugsFile.getPath().replace('\\', '/'), "/target/");
+                 module = parser.parse(filePath.read(), moduleRoot, emptyModule.getName());
+             }
+-            logger.println("Successfully parsed findbugs file " + findbugsFile + " of module "
+-                    + module.getName() + " with " + module.getNumberOfAnnotations() + " warnings.");
++//            logger.println("Successfully parsed findbugs file " + findbugsFile + " of module "
++//                    + module.getName() + " with " + module.getNumberOfAnnotations() + " warnings.");
+         }
+         catch (IOException e) {
+             exception = e;
+@@ -146,7 +146,7 @@
+         if (exception != null) {
+             String errorMessage = Messages.FindBugs_FindBugsCollector_Error_Exception(findbugsFile)
+                     + "\n\n" + ExceptionUtils.getStackTrace(exception);
+-            logger.println(errorMessage);
++//            logger.println(errorMessage);
+             module.setError(errorMessage);
+         }
+         return module;
+

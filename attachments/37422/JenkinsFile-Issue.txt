@@ -1,0 +1,55 @@
+import hudson.model.*;
+
+pipeline {
+    agent any
+    
+	stages {
+	    
+		stage('Full Stop') {
+			steps {
+				script { 
+					if (params.FULL_STOP == 'YES') {
+						echo 'The application '+params.APPLICATION+' in '+params.ENVIRONMENT+' will now be stopped'
+					} else {
+						echo 'Skipped'
+					}		
+				}
+			}
+        }
+
+		stage('MQ') {
+			steps {
+				script { 
+					if (params.MQ == 'YES') {
+						echo 'Deployment of MQ for '+params.PACKAGE_DELIVERY_TAG
+					} else {
+						echo 'Skipped'
+					}		
+				}
+			}
+        }
+
+
+		stage('Full Start') {
+			steps {
+				script { 
+					if (params.FULL_START == 'YES') {
+						echo 'The application '+params.APPLICATION+' in '+params.ENVIRONMENT+' will now be started'
+					} else {
+						echo 'Skipped'
+					}		
+				}
+			}
+        }
+    }
+	
+	post { 
+        success { 
+            echo 'Sending the Success notification by email'
+        }
+		failure {
+			echo 'Sending the Failure notification by email'
+		}
+    }
+	
+}

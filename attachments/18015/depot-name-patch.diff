@@ -1,0 +1,18 @@
+Index: src/main/java/hudson/plugins/perforce/PerforceSCM.java
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/perforce/src/main/java/hudson/plugins/perforce/PerforceSCM.java,v
+retrieving revision 1.9
+diff -u -r1.9 PerforceSCM.java
+--- src/main/java/hudson/plugins/perforce/PerforceSCM.java	9 Oct 2007 20:53:21 -0000	1.9
++++ src/main/java/hudson/plugins/perforce/PerforceSCM.java	22 Oct 2007 04:46:49 -0000
+@@ -306,8 +306,8 @@
+         }
+         
+     	public String isValidProjectPath(String path) {
+-    		if(!path.startsWith("//depot/")) {
+-    			return "Path must start with //depot/";
++    		if(!path.startsWith("//")) {
++    			return "Path must start with //";
+     		}
+     		if(!path.endsWith("/...")) {
+     			return "Path must end with Perforce wildcard: '/...'";

@@ -1,0 +1,54 @@
+Index: plugins/git/src/main/java/hudson/plugins/git/GitChangeSet.java
+===================================================================
+--- plugins/git/src/main/java/hudson/plugins/git/GitChangeSet.java	(version 14397)
++++ plugins/git/src/main/java/hudson/plugins/git/GitChangeSet.java	(workcopy)
+@@ -1,11 +1,13 @@
+ package hudson.plugins.git;
+ 
+ import hudson.model.User;
++import hudson.tasks.Mailer;
+ import hudson.scm.ChangeLogSet;
+ 
+ import java.util.Collection;
+ import java.util.HashSet;
+ import java.util.List;
++import java.io.IOException;
+ 
+ /**
+  * Represents a change set.
+@@ -14,6 +16,7 @@
+ public class GitChangeSet extends ChangeLogSet.Entry {
+ 
+ 	String author;
++	String authorEmail;
+ 	String msg;
+ 	String id;
+ 	
+@@ -37,8 +40,9 @@
+ 				} else if (line.startsWith("parent")) {
+ 					// parent
+ 				} else if (line.startsWith("committer")) {
+-					
+-					this.author = line.substring(10, line.indexOf(" <"));
++					int authorEnd = line.indexOf(" <");
++					this.author = line.substring(10, authorEnd);
++					this.authorEmail = line.substring(authorEnd+2, line.indexOf(">",authorEnd+2));
+ 
+ 				} else if (line.startsWith("author ")) {
+ 
+@@ -153,7 +157,14 @@
+ 	public User getAuthor() {
+ 		if (this.author == null)
+ 			throw new RuntimeException("No author in this changeset!");
+-		return User.get(this.author, true);
++		User user = User.get(this.author, true);
++		if (this.authorEmail != null) {
++			try {
++				user.addProperty(new Mailer.UserProperty(this.authorEmail));
++			} catch (IOException e)  {
++			}
++		}
++		return user;
+ 	}
+ 
+ 	@Override

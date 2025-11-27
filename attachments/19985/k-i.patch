@@ -1,0 +1,443 @@
+commit 2c35d65e91e58e528d491a995026e53117cf76bb
+Author: Mykola Nikishov <mn@mn.com.ua>
+Date:   Mon Nov 15 07:20:05 2010 +0200
+
+    HUDSON-7941: implement 'keyboard-interactive' authentication method
+    
+    Squashed commit of the following:
+    
+    commit 9c7145e909d56adc4b8717d3a469ddf451c45d79
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Mon Oct 25 14:12:48 2010 +0300
+    
+        Extract method to report usage of non-interactive login
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit 237646ee47d07b21629a4150c698b26e3d50a10c
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Mon Oct 25 12:32:13 2010 +0300
+    
+        Log a message about non interactive login to job's log
+    
+            [SCP] Connecting to 192.168.2.2
+            [SCP] Server requires 'keyboard-interactive' authentication method to be used
+            [SCP] uploading file: '/home/scp/scp-1.0-SNAPSHOT-sources.jar'
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit 54386e370aae9acae8138d0e72f5cb00a720580a
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Sat Oct 23 23:06:35 2010 +0300
+    
+        Write a message to Hudson's log about using non-interactive login
+    
+            23 Oct 2010 23:05:00 hudson.model.Run run
+            INFO: scp-job #26 main build action completed: SUCCESS
+            23 Oct 2010 23:05:11 be.certipost.hudson.plugin.SCPUserInfo promptKeyboardInteractive
+            WARNING: Server requires keyboard-interactive authentication method to be used
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit 6d3cc17aadd92e43e5e8310cf94c882c7fbcf141
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Sat Oct 23 22:58:04 2010 +0300
+    
+        Utilize Hudson's i18n support for exception's message.
+    
+        java.text.MessageFormat requires single quote (') be escaped using
+        double ('')
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit e146771197254bc9960db88b3d8d57a322b21f2f
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Sat Oct 23 22:11:47 2010 +0300
+    
+        Swap parameters
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit 2d8c0c1a84a868972c249806c3059bba39611921
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Mon Oct 18 23:43:20 2010 +0300
+    
+        Invert condition: honorKeyboardInteractive to forceNonInteractiveLogin
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit 8234efdd6784f8d6c457e313585568a96f6de72b
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Sat Oct 9 17:13:36 2010 +0300
+    
+        Add a help page for new option
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit 25ec569ee97c87f4a162c2badbeeea65b6b214d1
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Tue Oct 5 08:16:25 2010 +0300
+    
+        Enable 'honor keyboard-interactive' in the global configuration
+    
+        It's not possible to use default field's value as a default for a
+        checkbox so use a 'default' attribute.
+    
+        Support for login check when configuring SCP site added by extending
+        SCPRepositoryPublisher.DescriptorImpl's doLoginCheck(StaplerRequest)
+        with a parameter. It's SCPRepositoryPublisher.DescriptorImpl's
+        doLoginCheck(StaplerRequest) method responsibility to convert
+        parameter values from string to boolean.
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit e1898c409e0c3bb545a9a78c3b00645d43764f05
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Sun Oct 3 12:57:19 2010 +0300
+    
+        Implement support for 'keyboard-interactive' authentication method
+    
+        Actual implementation was borrowed from a solution suggested by Jsch's
+        developer Atsuhiko Yamanaka for exactly the same problem with Ant
+        tasks [1].
+    
+        [1] http://marc.info/?l=ant-dev&m=111959408515300&q=raw
+    
+        Cc: Atsuhiko Yamanaka <ymnk@jcraft.com>
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit 41dd4170ef982c30406bc9a5fdfd37c7f4ec18f9
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Sun Oct 3 16:52:02 2010 +0300
+    
+        Honor keyboard-interactive
+    
+        Throw an exception when remote server requires 'keyboard-interactive'
+    
+            [SCP] Connecting to 192.168.2.2
+            ERROR: Server requires 'keyboard-interactive' authentication method to be used
+            be.certipost.hudson.plugin.HonorKeyboardInteractiveException: Server requires 'keyboard-interactive' authentication method to be used
+        	    at be.certipost.hudson.plugin.SCPUserInfo.promptKeyboardInteractive(SCPUserInfo.java:52)
+        	    at com.jcraft.jsch.UserAuthKeyboardInteractive.start(UserAuthKeyboardInteractive.java:130)
+        	    at com.jcraft.jsch.Session.connect(Session.java:419)
+        	    at com.jcraft.jsch.Session.connect(Session.java:150)
+        	    at be.certipost.hudson.plugin.SCPSite.createSession(SCPSite.java:156)
+    
+        Otherwise return null, this will end up with an unstable build and a
+        stacktrace:
+    
+            ERROR: Failed to upload files
+            com.jcraft.jsch.JSchException: Auth cancel
+        	    at com.jcraft.jsch.Session.connect(Session.java:451)
+        	    at com.jcraft.jsch.Session.connect(Session.java:150)
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit fad3bdc2e8e3eab5451ca34fd8ce8128f8760e1b
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Tue Oct 5 08:09:35 2010 +0300
+    
+        Add a parameter to specify should we honor 'keyboard-interactive'
+    
+        Push this parameter down to SCPUserInfo who is responsible for
+        providing credentials.
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+    
+    commit c194af13916d731db863c51420fcb7b5e288c980
+    Author: Mykola Nikishov <mn@mn.com.ua>
+    Date:   Sun Oct 3 12:55:44 2010 +0300
+    
+        Implement UIKeyboardInteractive interface
+    
+        In order to support 'keyboard-interactive' authentication method
+        SCPUserInfo must implement com.jcraft.jsch.UIKeyboardInteractive.
+        Just implement it and return null for now when asked for interactive
+        password. This will mark build as unstable with an exception like
+    
+            [SCP] Connecting to 192.168.2.2
+            ERROR: Failed to upload files
+            com.jcraft.jsch.JSchException: Auth cancel
+                    at com.jcraft.jsch.Session.connect(Session.java:451)
+                    at com.jcraft.jsch.Session.connect(Session.java:150)
+                    at be.certipost.hudson.plugin.SCPSite.createSession(SCPSite.java:156)
+                    ...
+            Finished: UNSTABLE
+    
+        Signed-off-by: Mykola Nikishov <mn@mn.com.ua>
+
+diff --git a/scp/src/main/java/be/certipost/hudson/plugin/HonorKeyboardInteractiveException.java b/scp/src/main/java/be/certipost/hudson/plugin/HonorKeyboardInteractiveException.java
+new file mode 100644
+index 0000000..97819dc
+--- /dev/null
++++ b/scp/src/main/java/be/certipost/hudson/plugin/HonorKeyboardInteractiveException.java
+@@ -0,0 +1,11 @@
++package be.certipost.hudson.plugin;
++
++public class HonorKeyboardInteractiveException extends RuntimeException {
++
++	private static final long serialVersionUID = 8615315397225372396L;
++
++	@Override
++	public String getMessage() {
++		return Messages.SCP_keyboardInteractiveRequired();
++	}
++}
+diff --git a/scp/src/main/java/be/certipost/hudson/plugin/SCPRepositoryPublisher.java b/scp/src/main/java/be/certipost/hudson/plugin/SCPRepositoryPublisher.java
+index 7501677..aed15de 100644
+--- a/scp/src/main/java/be/certipost/hudson/plugin/SCPRepositoryPublisher.java
++++ b/scp/src/main/java/be/certipost/hudson/plugin/SCPRepositoryPublisher.java
+@@ -224,6 +224,9 @@ public final class SCPRepositoryPublisher extends Notifier {
+ 		} catch (IOException e) {
+ 			e.printStackTrace(listener.error("Failed to upload files"));
+ 			build.setResult(Result.UNSTABLE);
++		} catch (HonorKeyboardInteractiveException e) {
++			e.printStackTrace(listener.error(e.getMessage()));
++			build.setResult(Result.UNSTABLE);
+ 		} catch (JSchException e) {
+ 			e.printStackTrace(listener.error("Failed to upload files"));
+ 			build.setResult(Result.UNSTABLE);
+@@ -323,9 +326,11 @@ public final class SCPRepositoryPublisher extends Notifier {
+ 			if (hostname == null) {// hosts is not entered yet
+ 				return FormValidation.ok();
+ 			}
++			final boolean honorKeyboardInteractive = Boolean.parseBoolean(request
++					.getParameter("forceNonInteractiveLogin"));
+ 			SCPSite site = new SCPSite(hostname, request.getParameter("port"),
+ 					request.getParameter("user"), request.getParameter("pass"),
+-					request.getParameter("keyfile"));
++					honorKeyboardInteractive, request.getParameter("keyfile"));
+ 			try {
+ 				try {
+ 					Session session = site.createSession(new PrintStream(
+@@ -339,6 +344,9 @@ public final class SCPRepositoryPublisher extends Notifier {
+ 			} catch (IOException e) {
+ 				LOGGER.log(Level.SEVERE, e.getMessage());
+ 				return FormValidation.error(e.getMessage());
++			} catch (HonorKeyboardInteractiveException e) {
++				LOGGER.log(Level.SEVERE, e.getMessage());
++				return FormValidation.error(e.getMessage());
+ 			}
+ 			return FormValidation.ok();
+ 		}
+@@ -353,7 +361,13 @@ public final class SCPRepositoryPublisher extends Notifier {
+ 		this.siteName = siteName;
+ 	};
+ 
+-	protected void log(final PrintStream logger, final String message) {
++	/**
++	 * Write a message to job's log
++	 * 
++	 * @param logger
++	 * @param message
++	 */
++	protected static void log(final PrintStream logger, final String message) {
+ 		logger.println(StringUtils.defaultString(DESCRIPTOR.getShortName())
+ 				+ message);
+ 	}
+diff --git a/scp/src/main/java/be/certipost/hudson/plugin/SCPSite.java b/scp/src/main/java/be/certipost/hudson/plugin/SCPSite.java
+index 61924bd..e60bf75 100644
+--- a/scp/src/main/java/be/certipost/hudson/plugin/SCPSite.java
++++ b/scp/src/main/java/be/certipost/hudson/plugin/SCPSite.java
+@@ -16,6 +16,7 @@ import java.util.Map;
+ import java.util.logging.Logger;
+ 
+ import org.apache.commons.lang.StringUtils;
++import org.kohsuke.stapler.DataBoundConstructor;
+ 
+ import com.jcraft.jsch.ChannelSftp;
+ import com.jcraft.jsch.JSch;
+@@ -23,7 +24,6 @@ import com.jcraft.jsch.JSchException;
+ import com.jcraft.jsch.Session;
+ import com.jcraft.jsch.SftpATTRS;
+ import com.jcraft.jsch.SftpException;
+-import com.jcraft.jsch.UserInfo;
+ 
+ /**
+  * 
+@@ -37,6 +37,7 @@ public class SCPSite {
+ 	String password;
+ 	String keyfile;
+ 	String rootRepositoryPath;
++	public boolean nonInteractiveLogin = false;
+ 
+ 	public static final Logger LOGGER = Logger.getLogger(SCPSite.class
+ 			.getName());
+@@ -45,17 +46,19 @@ public class SCPSite {
+ 
+ 	}
+ 
++	@DataBoundConstructor
+ 	public SCPSite(String hostname, int port, String username, String password,
+-			String rootRepositoryPath) {
++			String rootRepositoryPath, final boolean forceNonInteractiveLogin) {
+ 		this.hostname = hostname;
+ 		this.port = port;
+ 		this.username = username;
+ 		this.password = password;
+ 		this.rootRepositoryPath = rootRepositoryPath.trim();
++		this.nonInteractiveLogin = forceNonInteractiveLogin;
+ 	}
+ 
+ 	public SCPSite(String hostname, String port, String username,
+-			String password) {
++			String password, final boolean useNonInteractiveLogin) {
+ 		this.hostname = hostname;
+ 		try {
+ 			this.port = Integer.parseInt(port);
+@@ -64,11 +67,13 @@ public class SCPSite {
+ 		}
+ 		this.username = username;
+ 		this.password = password;
++		this.nonInteractiveLogin = useNonInteractiveLogin;
+ 	}
+ 
+ 	public SCPSite(String hostname, String port, String username,
+-			String passphrase, String keyfile) {
+-		this(hostname, port, username, passphrase);
++			String passphrase, final boolean useNonInteractiveLogin,
++			String keyfile) {
++		this(hostname, port, username, passphrase, useNonInteractiveLogin);
+ 
+ 		this.keyfile = keyfile;
+ 	}
+@@ -143,13 +148,16 @@ public class SCPSite {
+ 			session.setPassword(password);
+ 		}
+ 
+-		UserInfo ui = new SCPUserInfo(password);
++		final SCPUserInfo ui = new SCPUserInfo(password, nonInteractiveLogin);
+ 		session.setUserInfo(ui);
+ 
+ 		java.util.Properties config = new java.util.Properties();
+ 		config.put("StrictHostKeyChecking", "no");
+ 		session.setConfig(config);
+ 		session.connect();
++		if (ui.isNonInteractiveUsed()) {
++			SCPRepositoryPublisher.log(logger, Messages.SCP_keyboardInteractiveRequired());
++		}
+ 
+ 		return session;
+ 
+diff --git a/scp/src/main/java/be/certipost/hudson/plugin/SCPUserInfo.java b/scp/src/main/java/be/certipost/hudson/plugin/SCPUserInfo.java
+index 32d2e61..a613f36 100644
+--- a/scp/src/main/java/be/certipost/hudson/plugin/SCPUserInfo.java
++++ b/scp/src/main/java/be/certipost/hudson/plugin/SCPUserInfo.java
+@@ -1,21 +1,26 @@
+ package be.certipost.hudson.plugin;
+ 
++import com.jcraft.jsch.UIKeyboardInteractive;
+ import com.jcraft.jsch.UserInfo;
+ import java.util.logging.Logger;;
+ 
+  
+ 
+-public class SCPUserInfo implements UserInfo {
++public class SCPUserInfo implements UserInfo, UIKeyboardInteractive {
+ 
+ 	public static final Logger LOGGER = Logger.getLogger(SCPUserInfo.class.getName());
+ 	
+ 	String password;
+ 	String passphrase;
++
++	final private boolean forceNonInteractiveLogin;
++
++	private boolean nonInteractiveUsed = false;
+ 	
+-	public SCPUserInfo(String password){
++	public SCPUserInfo(String password, final boolean isForceNonInteractiveLogin) {
+ 		this.password=password;
+ 		this.passphrase=password;
+-		
++		this.forceNonInteractiveLogin = isForceNonInteractiveLogin;
+ 	}
+ 		
+ 	public String getPassphrase() {
+@@ -42,4 +47,40 @@ public class SCPUserInfo implements UserInfo {
+ 		LOGGER.info(arg0);
+ 	}
+ 
++	/**
++	 * @throws HonorKeyboardInteractiveException
++	 * @see com.jcraft.jsch.UIKeyboardInteractive#promptKeyboardInteractive(java.lang.String,
++	 *      java.lang.String, java.lang.String, java.lang.String[], boolean[])
++	 */
++	public String[] promptKeyboardInteractive(final String destination,
++		final String name, final String instruction, final String[] prompt,
++		final boolean[] echo) {
++		if (prompt.length != 1 || echo[0] != false || this.password == null) {
++			return null;
++		}
++		if (!forceNonInteractiveLogin) {
++			throw new HonorKeyboardInteractiveException();
++		}
++		reportNonInteractiveLoginUsage();
++		return new String[] { this.password };
++	}
++
++	/**
++	 * Reports the fact that non-interactive login was used. Result is available
++	 * to caller through {@link #isNonInteractiveUsed()}
++	 */
++	private void reportNonInteractiveLoginUsage() {
++		LOGGER.warning(Messages.SCP_keyboardInteractiveRequired());
++		this.nonInteractiveUsed = true;
++	}
++
++	/**
++	 * @return <code>true</code> if server requested
++	 *         <code>keyboard-interactive</code> but non-interactive login was
++	 *         used
++	 */
++	public boolean isNonInteractiveUsed() {
++		return nonInteractiveUsed;
++	}
++
+ }
+diff --git a/scp/src/main/resources/be/certipost/hudson/plugin/Messages.properties b/scp/src/main/resources/be/certipost/hudson/plugin/Messages.properties
+new file mode 100644
+index 0000000..0bfd59b
+--- /dev/null
++++ b/scp/src/main/resources/be/certipost/hudson/plugin/Messages.properties
+@@ -0,0 +1 @@
++SCP.keyboardInteractiveRequired=Server requires ''keyboard-interactive'' authentication method to be used
+diff --git a/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/global.jelly b/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/global.jelly
+index 009b3da..b328653 100644
+--- a/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/global.jelly
++++ b/scp/src/main/resources/be/certipost/hudson/plugin/SCPRepositoryPublisher/global.jelly
+@@ -11,13 +11,16 @@
+           <f:entry title="Port" help="/plugin/scp/help-port.html">
+             <f:textbox name="scp.port" value="${site.port}"/>
+           </f:entry>
++          <f:entry title="Don't honor 'keyboard-interactive'" field="forceNonInteractiveLogin" help="/plugin/scp/help-keyboard-interactive.html">
++            <f:checkbox name="scp.forceNonInteractiveLogin" default="false" checked="${site.nonInteractiveLogin}"/>
++          </f:entry>
+           <f:entry title="Root Repository Path" help="/plugin/scp/help-rootpath.html">
+             <f:textbox name="scp.rootRepositoryPath" value="${site.rootRepositoryPath}"/>
+           </f:entry>
+           <f:entry title="User Name" help="/plugin/scp/help-login.html">
+             <f:textbox name="scp.username" value="${site.username}"
+ 				checkMethod="post"
+-				checkUrl="'${rootURL}/publisher/SCPRepositoryPublisher/loginCheck?hostname='+escape(Form.findMatchingInput(this,'scp.hostname').value)+'&amp;port='+escape(Form.findMatchingInput(this,'scp.port').value)+'&amp;user='+escape(this.value)+'&amp;pass='+escape(Form.findMatchingInput(this,'scp.password').value)+'&amp;keyfile='+escape(Form.findMatchingInput(this,'scp.keyfile').value)"
++				checkUrl="'${rootURL}/publisher/SCPRepositoryPublisher/loginCheck?hostname='+escape(Form.findMatchingInput(this,'scp.hostname').value)+'&amp;port='+escape(Form.findMatchingInput(this,'scp.port').value)+'&amp;user='+escape(this.value)+'&amp;pass='+escape(Form.findMatchingInput(this,'scp.password').value)+'&amp;forceNonInteractiveLogin='+escape(Form.findMatchingInput(this,'scp.forceNonInteractiveLogin').checked)+'&amp;keyfile='+escape(Form.findMatchingInput(this,'scp.keyfile').value)"
+ 			/>
+           </f:entry>
+           <f:entry title="Password/Passphrase" help="/plugin/scp/help-password.html">
+@@ -44,4 +47,4 @@
+   </f:section>
+ 
+ 
+-</j:jelly>
+\ No newline at end of file
++</j:jelly>
+diff --git a/scp/src/main/webapp/help-keyboard-interactive.html b/scp/src/main/webapp/help-keyboard-interactive.html
+new file mode 100644
+index 0000000..94bc328
+--- /dev/null
++++ b/scp/src/main/webapp/help-keyboard-interactive.html
+@@ -0,0 +1,5 @@
++<div>SSH server may be configured to require user's password to be entered interactively (eg., from a keyboard) and SCP plugin wouldn't provide a password to SSH server in such case.
++<p>This option forces non-interactive login to be used even if SSH server asked for interactive login explicitly. Use it if when loging in your SSH server with <code>ssh -v</code> gives you</p>
++<pre><code>debug1: Authentications that can continue: publickey,keyboard-interactive</code></pre>
++<p>without mentioning <code>password</code> authentication method.</p>
++</div>

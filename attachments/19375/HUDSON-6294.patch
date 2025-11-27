@@ -1,0 +1,131 @@
+Index: src/main/java/hudson/model/RadiatorView.java
+===================================================================
+--- src/main/java/hudson/model/RadiatorView.java	(revision 30123)
++++ src/main/java/hudson/model/RadiatorView.java	(revision )
+@@ -62,6 +62,11 @@
+      */
+     private Boolean highVis = true;
+ 
++    /*
++     * Prevent disabled jobs from appearing in the list
++     */
++    private Boolean excludeDisabledJobs = true;
++
+     /**
+      * @param name
+      *            view name.
+@@ -71,14 +76,17 @@
+      *            if detail should be shown for stable builds.
+      * @param highVis
+      *            high visibility mode.
++     * @param excludeDisabledJobs
++     *            if disabled builds should be shown.
+      */
+     @DataBoundConstructor
+-    public RadiatorView(String name, Boolean showStable, Boolean showStableDetail, Boolean highVis)
++    public RadiatorView(String name, Boolean showStable, Boolean showStableDetail, Boolean highVis, Boolean excludeDisabledJobs)
+     {
+         super(name);
+         this.showStable = showStable;
+         this.showStableDetail = showStableDetail;
+         this.highVis = highVis;
++        this.excludeDisabledJobs = excludeDisabledJobs;
+     }
+ 
+     /**
+@@ -97,20 +105,22 @@
+     public synchronized List<TopLevelItem> getItems()
+     {
+         List<TopLevelItem> items = super.getItems();
++        if(excludeDisabledJobs.booleanValue()){
+-        // Find any disabled projects and exclude them from the view.
+-        ArrayList<AbstractProject> disabledProjects = new ArrayList<AbstractProject>();
+-        for (TopLevelItem item : items)
+-        {
+-            if (item instanceof AbstractProject)
+-            {
+-                AbstractProject project = (AbstractProject) item;
+-                if (project.isDisabled())
+-                {
+-                    disabledProjects.add(project);
+-                }
+-            }
+-        }
+-        items.removeAll(disabledProjects);
++            // Find any disabled projects and exclude them from the view.
++            ArrayList<AbstractProject> disabledProjects = new ArrayList<AbstractProject>();
++            for (TopLevelItem item : items)
++            {
++                if (item instanceof AbstractProject)
++                {
++                    AbstractProject project = (AbstractProject) item;
++                    if (project.isDisabled())
++                    {
++                        disabledProjects.add(project);
++                    }
++                }
++            }
++            items.removeAll(disabledProjects);
++        }
+         return items;
+     }
+ 
+@@ -168,6 +178,7 @@
+         this.showStable = Boolean.parseBoolean(req.getParameter("showStable"));
+         this.showStableDetail = Boolean.parseBoolean(req.getParameter("showStableDetail"));
+         this.highVis = Boolean.parseBoolean(req.getParameter("highVis"));
++        this.excludeDisabledJobs = Boolean.parseBoolean(req.getParameter("excludeDisabledJobs"));
+     }
+ 
+     public Boolean getShowStable()
+@@ -185,6 +196,11 @@
+         return highVis;
+     }
+ 
++    public Boolean getExcludeDisabledJobs()
++    {
++		return excludeDisabledJobs;
++	}
++    
+     public Collection<ViewEntry> sortFailing(Collection<Job> jobs)
+     {
+         return sort(jobs, false);
+Index: src/main/resources/hudson/model/RadiatorView/configure-entries.jelly
+===================================================================
+--- src/main/resources/hudson/model/RadiatorView/configure-entries.jelly	(revision 29605)
++++ src/main/resources/hudson/model/RadiatorView/configure-entries.jelly	(revision )
+@@ -17,6 +17,11 @@
+     </f:entry>
+   </f:optionalBlock>
+ 
++
++  <f:entry title="${%Exclude disabled jobs?}" field="excludeDisabledJobs"  help="/plugin/radiatorviewplugin/help/excludeDisabledJobs.html">
++    <f:checkbox name="excludeDisabledJobs" checked="${it.excludeDisabledJobs}" value="true" field="excludeDisabledJobs" />
++  </f:entry>
++
+ 	<f:entry title="${%Show stable builds?}" field="showStable"  help="/plugin/radiatorviewplugin/help/showstable.html">
+ 		<f:checkbox name="showStable" checked="${it.showStable}" value="true" field="showStable" />
+ 	</f:entry>
+Index: src/main/java/hudson/model/ViewEntry.java
+===================================================================
+--- src/main/java/hudson/model/ViewEntry.java	(revision 30126)
++++ src/main/java/hudson/model/ViewEntry.java	(revision )
+@@ -346,6 +346,9 @@
+             this.color = getColors().getBrokenFG();
+             this.broken = true;
+         }
++        // Override BG color is the job is disabled
++        if (!job.isBuildable())
++            this.backgroundColor = getColors().getOtherBG();
+ 
+         switch (this.job.getIconColor())
+         {
+Index: src/main/webapp/help/excludeDisabledJobs.html
+===================================================================
+--- src/main/webapp/help/excludeDisabledJobs.html	(revision )
++++ src/main/webapp/help/excludeDisabledJobs.html	(revision )
+@@ -0,0 +1,3 @@
++<div>
++<p>When checked, disabled jobs aren't displayed.</p>
++</div>
+\ No newline at end of file

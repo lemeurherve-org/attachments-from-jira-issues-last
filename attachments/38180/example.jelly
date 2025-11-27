@@ -1,0 +1,105 @@
+
+import com.microsoft.azure.util.AzureCredentials
+import com.cloudbees.plugins.credentials.*
+import com.cloudbees.plugins.credentials.domains.*
+import com.microsoft.azure.vmagent.AzureVMAgentTemplate
+import com.microsoft.azure.vmagent.AzureVMCloud
+import com.cloudbees.plugins.credentials.impl.*
+
+// first, populate credentials
+
+SystemCredentialsProvider system_creds = SystemCredentialsProvider.getInstance()
+Boolean foundId=false
+system_creds.getCredentials().each{
+    if('jenkins-azure-cloud-credentials'.equals(it.getId())) {
+        foundId=true
+    }
+}
+
+if(!foundId) {
+    AzureCredentials creds =
+            new AzureCredentials(
+                    CredentialsScope.SYSTEM,
+                    'jenkins-azure-cloud-credentials',
+                    'jenkins azure cloud credentials',
+                    '00000000-c439-4f05-8801-000000000000',
+                    '00000000-1a24-4a71-8fde-000000000000',
+                    '0000000000000000000000000000000',
+                    'https://login.microsoftonline.com/00000000-3f3f-40de-856d-000000000000/oauth2/token',
+                    'https://management.core.windows.net/',
+                    'https://login.microsoftonline.com/',
+                    'https://management.azure.com/',
+                    'https://graph.windows.net/')
+
+    SystemCredentialsProvider.getInstance().getStore().addCredentials(Domain.global(), creds)
+
+}
+
+// Add Azure VM Cloud
+
+ArrayList<AzureVMCloud> clouds = new ArrayList<AzureVMCloud>()
+
+// Linux AzureVMCloud
+String id = "linux-packer-current"
+String azureCredentialsId = "jenkins-azure-cloud-credentials"
+String maxVirtualMachinesLimit = new String("10")
+String deploymentTimeout = new String("1200")
+String resourceGroupName = new String("dev-msdn-eastus2-jenkins")
+
+// Linux AzureVMAgentTemplate
+String templateName = new String("devjnklnx")
+String templateDesc = new String("linux dev jenkins")
+String labels = new String("linux east dev")
+String location = new String("East US")
+String virtualMachineSize = new String("Standard_D3_v2")
+String storageAccountName = new String("jenkinsimages")
+String noOfParallelJobs = new String("5")
+String usageMode = new String("NORMAL")
+String imageReferenceType = new String("custom")
+String image = new String("https://jenkinsimages.blob.core.windows.net/system/Microsoft.Compute/Images/images/packer-osDisk.vhd")
+String osType = new String("Linux")
+boolean imageReference = true
+String imagePublisher = new String("")
+String imageOffer = new String("")
+String imageSku = new String("")
+String imageVersion = new String("latest")
+String agentLaunchMethod = new String("SSH")
+String initScript = new String("")
+String credentialsId = id
+String virtualNetworkName = new String("dev-msdn-eastus2-vn")
+String virtualNetworkResourceGroupName = new String("dev-msdn-eastus2-rg")
+String subnetName = new String("default")
+boolean usePrivateIP = true
+String nsgName = new String("")
+String agentWorkspace = new String("/srv/jenkins-slave")
+String jvmOptions = new String("")
+String retentionTimeInMin = new String("60")
+boolean shutdownOnIdle = false
+boolean templateDisabled = false
+String templateStatusDetails = new String("")
+boolean executeInitScriptAsRoot = false
+boolean doNotUseMachineIfInitFails = false
+
+// Credentials for root user
+SystemCredentialsProvider.getInstance().getCredentials().add(
+        new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "cred", "cred", "user", "somepassword")
+);
+
+AzureVMAgentTemplate linuxclouddev = new AzureVMAgentTemplate(templateName, templateDesc, labels, location, virtualMachineSize, storageAccountName, noOfParallelJobs, usageMode, imageReferenceType, image, osType, imageReference, imagePublisher,
+        imageOffer, imageSku, imageVersion, agentLaunchMethod, initScript, credentialsId, virtualNetworkName, virtualNetworkResourceGroupName, subnetName, usePrivateIP,
+        nsgName, agentWorkspace, jvmOptions, retentionTimeInMin, shutdownOnIdle, templateDisabled, templateStatusDetails, executeInitScriptAsRoot, doNotUseMachineIfInitFails)
+
+linuxclouddev.setTemplateVerified(true)
+
+List<AzureVMAgentTemplate> templates = new ArrayList<AzureVMAgentTemplate>()
+
+templates.add(linuxclouddev)
+
+Jenkins.instance.clouds.removeAll(AzureVMCloud)
+// package up Azure VM Cloud
+clouds.add(new AzureVMCloud(id, azureCredentialsId, maxVirtualMachinesLimit, deploymentTimeout, resourceGroupName, templates))
+Jenkins.instance.clouds.addAll(clouds)
+clouds*.name.each { cloudName ->
+    println "Configured Azure cloud ${cloudName}"
+}
+Jenkins.instance.save()

@@ -1,0 +1,58 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>cat &gt; junit-output.xml &lt;&lt;EOF
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;testsuites time=&quot;15.682687&quot;&gt;
+    &lt;testsuite name=&quot;Tests.Registration&quot; time=&quot;6.605871&quot;&gt;
+        &lt;testcase name=&quot;testCase1&quot; classname=&quot;Tests.Registration&quot; time=&quot;2.113871&quot; /&gt;
+        &lt;testcase name=&quot;testCase2&quot; classname=&quot;Tests.Registration&quot; time=&quot;1.051&quot; /&gt;
+        &lt;testcase name=&quot;testCase3&quot; classname=&quot;Tests.Registration&quot; time=&quot;3.441&quot; /&gt;
+    &lt;/testsuite&gt;
+    &lt;testsuite name=&quot;Tests.Authentication&quot; time=&quot;9.076816&quot;&gt;
+        &lt;testsuite name=&quot;Tests.Authentication.Login&quot; time=&quot;4.356&quot;&gt;
+            &lt;testcase name=&quot;testCase4&quot; classname=&quot;Tests.Authentication.Login&quot; time=&quot;2.244&quot; /&gt;
+            &lt;testcase name=&quot;testCase5&quot; classname=&quot;Tests.Authentication.Login&quot; time=&quot;0.781&quot; /&gt;
+            &lt;testcase name=&quot;testCase6&quot; classname=&quot;Tests.Authentication.Login&quot; time=&quot;1.331&quot; /&gt;
+        &lt;/testsuite&gt;
+        &lt;testcase name=&quot;testCase7&quot; classname=&quot;Tests.Authentication&quot; time=&quot;2.508&quot; /&gt;
+        &lt;testcase name=&quot;testCase8&quot; classname=&quot;Tests.Authentication&quot; time=&quot;1.230816&quot; /&gt;
+        &lt;testcase name=&quot;testCase9&quot; classname=&quot;Tests.Authentication&quot; time=&quot;0.982&quot;&gt;
+            &lt;failure message=&quot;Assertion error message&quot; type=&quot;AssertionError&quot;&gt;
+                &lt;!-- Call stack printed here --&gt;
+            &lt;/failure&gt;            
+        &lt;/testcase&gt;
+    &lt;/testsuite&gt;
+&lt;/testsuites&gt;
+EOF
+</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.junit.JUnitResultArchiver plugin="junit@1240.vf9529b_881428">
+      <testResults>*.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <keepProperties>false</keepProperties>
+      <healthScaleFactor>1.0</healthScaleFactor>
+      <allowEmptyResults>false</allowEmptyResults>
+      <skipPublishingChecks>false</skipPublishingChecks>
+      <checksName></checksName>
+      <skipMarkingBuildUnstable>false</skipMarkingBuildUnstable>
+      <skipOldReports>false</skipOldReports>
+    </hudson.tasks.junit.JUnitResultArchiver>
+  </publishers>
+  <buildWrappers/>
+</project>

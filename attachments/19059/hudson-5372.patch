@@ -1,0 +1,60 @@
+Index: src/main/java/hudson/plugins/selenium/PluginImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/selenium/PluginImpl.java	(revision 26353)
++++ src/main/java/hudson/plugins/selenium/PluginImpl.java	(working copy)
+@@ -61,6 +61,7 @@
+     private String exclusionPatterns;
+     private boolean rcBrowserSideLog;
+     private boolean rcDebug;
++    private boolean rcTrustAllSSLCerts;
+     private String rcFirefoxProfileTemplate;
+     private String rcLog;
+ 
+@@ -92,6 +96,7 @@
+         rcLog = formData.getString("rcLog");
+         rcDebug = formData.getBoolean("rcDebug");
+         rcBrowserSideLog = formData.getBoolean("rcBrowserSideLog");
++        rcTrustAllSSLCerts = formData.getBoolean("rcTrustAllSSLCerts");
+         rcFirefoxProfileTemplate = formData.getString("rcFirefoxProfileTemplate");
+         try {
+             save();
+@@ -146,6 +151,11 @@
+     }
+ 
+     @Exported
++    public boolean getRcTrustAllSSLCerts() {
++        return rcTrustAllSSLCerts;
++    }
++
++    @Exported
+     public String getRcFirefoxProfileTemplate(){
+         return rcFirefoxProfileTemplate;
+     }
+Index: src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java	(revision 26353)
++++ src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java	(working copy)
+@@ -84,6 +91,9 @@
+         if (Hudson.getInstance().getPlugin(PluginImpl.class).getRcDebug()){
+             userArgs.add("-debug");
+         }
++        if (Hudson.getInstance().getPlugin(PluginImpl.class).getRcTrustAllSSLCerts()){
++            userArgs.add("-trustAllSSLCertificates");
++        }
+         if (hasText(Hudson.getInstance().getPlugin(PluginImpl.class).getRcFirefoxProfileTemplate())){
+             userArgs.add("-firefoxProfileTemplate");
+             userArgs.add(Hudson.getInstance().getPlugin(PluginImpl.class).getRcFirefoxProfileTemplate());
+Index: src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly	(revision 26353)
++++ src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly	(working copy)
+@@ -13,6 +13,9 @@
+         <f:entry title="${%Enable -debug}" field="rcDebug" help="/plugin/selenium/help/rcdebug.html">
+             <f:checkbox name="rcDebug" checked="${it.rcDebug}" />
+         </f:entry>
++        <f:entry title="${%Enable -trustAllSSLCertificates}" field="rcTrustAllSSLCerts" help="/plugin/selenium/help/rctrustallssl.html">
++            <f:checkbox name="rcTrustAllSSLCerts" checked="${it.rcTrustAllSSLCerts}" />
++        </f:entry>
+         <f:entry title="${%Set -log}" field="rcLog" help="/plugin/selenium/help/rclog.html">
+             <f:textbox name="rcLog" value="${it.rcLog}" />
+         </f:entry>

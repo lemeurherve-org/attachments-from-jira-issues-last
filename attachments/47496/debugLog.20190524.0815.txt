@@ -1,0 +1,51 @@
+07:49:37 Started by user Daniel Stratton
+07:49:37 [EnvInject] - Loading node environment variables.
+07:49:38 Building remotely on DFW01-051WS (java windows rcp eclipse) in workspace D:\Data\Jenkins\Slave01\workspace\Infrastructure\Chuck CA Gen License Job
+07:49:52 using credential GitDanielStratton
+07:49:52  > C:\Program Files\Git\cmd\git.exe rev-parse --is-inside-work-tree # timeout=10
+07:49:53 Fetching changes from the remote Git repository
+07:49:53  > C:\Program Files\Git\cmd\git.exe config remote.origin.url ssh://dfw01-015sv:22/DefaultCollection/_git/Infrastructure # timeout=10
+07:49:54 Fetching upstream changes from ssh://dfw01-015sv:22/DefaultCollection/_git/Infrastructure
+07:49:54  > C:\Program Files\Git\cmd\git.exe --version # timeout=10
+07:49:54 using GIT_SSH to set credentials Private key for accessing the TFS Git repository
+07:49:54  > C:\Program Files\Git\cmd\git.exe fetch --tags --force --progress ssh://dfw01-015sv:22/DefaultCollection/_git/Infrastructure +refs/heads/*:refs/remotes/origin/*
+07:49:56  > C:\Program Files\Git\cmd\git.exe rev-parse "refs/remotes/origin/master^{commit}" # timeout=10
+07:49:56  > C:\Program Files\Git\cmd\git.exe rev-parse "refs/remotes/origin/origin/master^{commit}" # timeout=10
+07:49:56 Checking out Revision 9fc47a2636d2ab3f0b779d7672bca3e69e872f87 (refs/remotes/origin/master)
+07:49:56  > C:\Program Files\Git\cmd\git.exe config core.sparsecheckout # timeout=10
+07:49:56  > C:\Program Files\Git\cmd\git.exe checkout -f 9fc47a2636d2ab3f0b779d7672bca3e69e872f87
+07:49:59 Commit message: "xcopy folder must not have \"
+07:49:59  > C:\Program Files\Git\cmd\git.exe rev-list --no-walk 9fc47a2636d2ab3f0b779d7672bca3e69e872f87 # timeout=10
+07:50:00 FTP: connected to 172.29.122.117:21
+07:50:00 220-FTPSERVE IBM FTP CS V2R2 at <host>, 21:56:27 on 2019-05-23.
+07:50:00 220 Connection will close if idle for more than 5 minutes.
+07:55:00 relogon: IOException: org.apache.commons.net.ftp.FTPConnectionClosedException: Connection closed without indication.
+07:55:00 ERROR: Could not relogon to server.
+07:55:00 Job [] processing failed. Reason: [COULD_NOT_CONNECT]
+07:55:00 ERROR: z/OS job failed with CC COULD_NOT_CONNECT
+07:55:01 Sending e-mails to: <email>
+07:55:12 ERROR: 535 5.7.3 Authentication unsuccessful [Office365]
+07:55:12 
+07:55:12 javax.mail.AuthenticationFailedException: 535 5.7.3 Authentication unsuccessful [Office365]
+07:55:12 
+07:55:12 	at com.sun.mail.smtp.SMTPTransport$Authenticator.authenticate(SMTPTransport.java:809)
+07:55:12 	at com.sun.mail.smtp.SMTPTransport.authenticate(SMTPTransport.java:752)
+07:55:12 	at com.sun.mail.smtp.SMTPTransport.protocolConnect(SMTPTransport.java:669)
+07:55:12 	at javax.mail.Service.connect(Service.java:317)
+07:55:12 	at javax.mail.Service.connect(Service.java:176)
+07:55:12 	at javax.mail.Service.connect(Service.java:125)
+07:55:12 	at javax.mail.Transport.send0(Transport.java:194)
+07:55:12 	at javax.mail.Transport.send(Transport.java:124)
+07:55:12 	at hudson.tasks.MailSender.run(MailSender.java:131)
+07:55:12 	at hudson.tasks.Mailer.perform(Mailer.java:173)
+07:55:12 	at hudson.tasks.Mailer.perform(Mailer.java:136)
+07:55:12 	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+07:55:12 	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:744)
+07:55:12 	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:690)
+07:55:12 	at hudson.model.Build$BuildExecution.post2(Build.java:186)
+07:55:12 	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:635)
+07:55:12 	at hudson.model.Run.execute(Run.java:1841)
+07:55:12 	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+07:55:12 	at hudson.model.ResourceController.execute(ResourceController.java:97)
+07:55:12 	at hudson.model.Executor.run(Executor.java:429)
+07:55:12 Finished: FAILURE

@@ -1,0 +1,131 @@
+Dec 05, 2018 3:24:34 PM hudson.plugins.swarm.Client main
+INFO: Client.main invoked with: [-master http://jenkins.dubai-18-105.dubai.thales/ -mode exclusive -name windows -labels dotnet -username _TUP_Jenkins -password xfFSe2qX0* -executors 1 -deleteExistingClients -disableClientsUniqueId -disableSslVerification]
+Dec 05, 2018 3:24:34 PM hudson.plugins.swarm.Client run
+INFO: Discovering Jenkins master
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+Dec 05, 2018 3:24:35 PM hudson.plugins.swarm.Client run
+INFO: Attempting to connect to http://jenkins.dubai-18-105.dubai.thales/ 1681a94a-96b8-4d13-8971-bfd401692a23 with ID 
+Dec 05, 2018 3:24:35 PM hudson.remoting.jnlp.Main createEngine
+INFO: Setting up agent: windows
+Dec 05, 2018 3:24:35 PM hudson.remoting.jnlp.Main$CuiListener <init>
+INFO: Jenkins agent is running in headless mode.
+Dec 05, 2018 3:24:35 PM hudson.remoting.Engine startEngine
+INFO: Using Remoting version: 3.26
+Dec 05, 2018 3:24:35 PM hudson.remoting.Engine startEngine
+WARNING: No Working Directory. Using the legacy JAR Cache location: C:\Users\jenkins\.jenkins\cache\jars
+Dec 05, 2018 3:24:35 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Locating server among [http://jenkins.dubai-18-105.dubai.thales/]
+Dec 05, 2018 3:24:36 PM org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve
+INFO: Remoting server accepts the following protocols: [JNLP4-connect, Ping]
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Agent discovery successful
+  Agent address: jenkins.dubai-18-105.dubai.thales
+  Agent port:    50000
+  Identity:      64:be:c7:d5:41:0e:f4:d4:30:28:54:f8:95:e6:4d:ab
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Handshaking
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connecting to jenkins.dubai-18-105.dubai.thales:50000
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Trying protocol: JNLP4-connect
+Dec 05, 2018 3:24:36 PM org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv
+SEVERE: [JNLP4-connect connection to jenkins.dubai-18-105.dubai.thales/192.168.24.113:50000] 
+javax.net.ssl.SSLHandshakeException: General SSLEngine problem
+	at sun.security.ssl.Handshaker.checkThrown(Handshaker.java:1529)
+	at sun.security.ssl.SSLEngineImpl.checkTaskThrown(SSLEngineImpl.java:535)
+	at sun.security.ssl.SSLEngineImpl.writeAppRecord(SSLEngineImpl.java:1214)
+	at sun.security.ssl.SSLEngineImpl.wrap(SSLEngineImpl.java:1186)
+	at javax.net.ssl.SSLEngine.wrap(SSLEngine.java:469)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.processRead(SSLEngineFilterLayer.java:392)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.onRecv(SSLEngineFilterLayer.java:117)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecv(ProtocolStack.java:669)
+	at org.jenkinsci.remoting.protocol.NetworkLayer.onRead(NetworkLayer.java:136)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer.access$2200(BIONetworkLayer.java:48)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader.run(BIONetworkLayer.java:283)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:93)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: javax.net.ssl.SSLHandshakeException: General SSLEngine problem
+	at sun.security.ssl.Alerts.getSSLException(Alerts.java:192)
+	at sun.security.ssl.SSLEngineImpl.fatal(SSLEngineImpl.java:1728)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:330)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:322)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1614)
+	at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:216)
+	at sun.security.ssl.Handshaker.processLoop(Handshaker.java:1052)
+	at sun.security.ssl.Handshaker$1.run(Handshaker.java:992)
+	at sun.security.ssl.Handshaker$1.run(Handshaker.java:989)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at sun.security.ssl.Handshaker$DelegatedTask.run(Handshaker.java:1467)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.processRead(SSLEngineFilterLayer.java:382)
+	... 9 more
+Caused by: java.security.cert.CertificateException: Public key of the first certificate in chain (subject: C=US, OU=jenkins.io, O=instances, CN=445e61f799b16ab2b5150a3947959998) is not in the list of trusted keys
+	at org.jenkinsci.remoting.protocol.cert.PublicKeyMatchingX509ExtendedTrustManager.checkPublicKey(PublicKeyMatchingX509ExtendedTrustManager.java:217)
+	at org.jenkinsci.remoting.protocol.cert.PublicKeyMatchingX509ExtendedTrustManager.checkServerTrusted(PublicKeyMatchingX509ExtendedTrustManager.java:263)
+	at org.jenkinsci.remoting.protocol.cert.DelegatingX509ExtendedTrustManager.checkServerTrusted(DelegatingX509ExtendedTrustManager.java:148)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1601)
+	... 16 more
+
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Protocol JNLP4-connect encountered an unexpected exception
+java.util.concurrent.ExecutionException: javax.net.ssl.SSLHandshakeException: General SSLEngine problem
+	at org.jenkinsci.remoting.util.SettableFuture.get(SettableFuture.java:223)
+	at hudson.remoting.Engine.innerRun(Engine.java:614)
+	at hudson.remoting.Engine.run(Engine.java:474)
+Caused by: javax.net.ssl.SSLHandshakeException: General SSLEngine problem
+	at sun.security.ssl.Handshaker.checkThrown(Handshaker.java:1529)
+	at sun.security.ssl.SSLEngineImpl.checkTaskThrown(SSLEngineImpl.java:535)
+	at sun.security.ssl.SSLEngineImpl.writeAppRecord(SSLEngineImpl.java:1214)
+	at sun.security.ssl.SSLEngineImpl.wrap(SSLEngineImpl.java:1186)
+	at javax.net.ssl.SSLEngine.wrap(SSLEngine.java:469)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.processRead(SSLEngineFilterLayer.java:392)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.onRecv(SSLEngineFilterLayer.java:117)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecv(ProtocolStack.java:669)
+	at org.jenkinsci.remoting.protocol.NetworkLayer.onRead(NetworkLayer.java:136)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer.access$2200(BIONetworkLayer.java:48)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader.run(BIONetworkLayer.java:283)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:93)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: javax.net.ssl.SSLHandshakeException: General SSLEngine problem
+	at sun.security.ssl.Alerts.getSSLException(Alerts.java:192)
+	at sun.security.ssl.SSLEngineImpl.fatal(SSLEngineImpl.java:1728)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:330)
+	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:322)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1614)
+	at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:216)
+	at sun.security.ssl.Handshaker.processLoop(Handshaker.java:1052)
+	at sun.security.ssl.Handshaker$1.run(Handshaker.java:992)
+	at sun.security.ssl.Handshaker$1.run(Handshaker.java:989)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at sun.security.ssl.Handshaker$DelegatedTask.run(Handshaker.java:1467)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.processRead(SSLEngineFilterLayer.java:382)
+	... 9 more
+Caused by: java.security.cert.CertificateException: Public key of the first certificate in chain (subject: C=US, OU=jenkins.io, O=instances, CN=445e61f799b16ab2b5150a3947959998) is not in the list of trusted keys
+	at org.jenkinsci.remoting.protocol.cert.PublicKeyMatchingX509ExtendedTrustManager.checkPublicKey(PublicKeyMatchingX509ExtendedTrustManager.java:217)
+	at org.jenkinsci.remoting.protocol.cert.PublicKeyMatchingX509ExtendedTrustManager.checkServerTrusted(PublicKeyMatchingX509ExtendedTrustManager.java:263)
+	at org.jenkinsci.remoting.protocol.cert.DelegatingX509ExtendedTrustManager.checkServerTrusted(DelegatingX509ExtendedTrustManager.java:148)
+	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1601)
+	... 16 more
+
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connecting to jenkins.dubai-18-105.dubai.thales:50000
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Server reports protocol JNLP4-plaintext not supported, skipping
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Server reports protocol JNLP3-connect not supported, skipping
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Server reports protocol JNLP2-connect not supported, skipping
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Server reports protocol JNLP-connect not supported, skipping
+Dec 05, 2018 3:24:36 PM hudson.remoting.jnlp.Main$CuiListener error
+SEVERE: The server rejected the connection: None of the protocols were accepted
+java.lang.Exception: The server rejected the connection: None of the protocols were accepted
+	at hudson.remoting.Engine.onConnectionRejected(Engine.java:675)
+	at hudson.remoting.Engine.innerRun(Engine.java:639)
+	at hudson.remoting.Engine.run(Engine.java:474)
+

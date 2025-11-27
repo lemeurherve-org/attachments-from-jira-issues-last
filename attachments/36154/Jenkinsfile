@@ -1,0 +1,83 @@
+pipeline {
+  agent any
+  stages {
+    stage('Dependencies') {
+      steps {
+        parallel(
+          "Dependencies": {
+            sh 'composer install'
+
+          },
+          "Troposphere": {
+            script {
+              checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']],
+              doGenerateSubmoduleConfigurations: false, extensions:
+              [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'cloudformation']],
+              submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'BitbucketGlobal',
+              url: 'ssh://git@ecom.oceanx.com:7999/dev/cloudformation.git']]]
+            }
+
+            sh 'rm -rf ../cloudformation; mv cloudformation ../'
+
+          }
+        )
+      }
+    }
+    stage('Unit Tests') {
+      steps {
+        parallel(
+          "PHP Unit Test": {
+            sh 'phpunit -c tests/DevSupport/phpunit.dev.xml tests/app/Libraries/HealthSummaryTest.php '
+            junit 'tests/build/logs/junit.xml'
+
+          },
+          "Python Unit Test": {
+            echo 'Run Tests Here'
+
+          }
+        )
+      }
+    }
+    stage('Docs') {
+      steps {
+        parallel(
+          "APIGen": {
+            echo 'Run APIGEN'
+
+          },
+          "Sphinx": {
+            echo 'Run Sphinx'
+
+          },
+          "RAML Docs": {
+            echo 'RAML Docs'
+
+          }
+        )
+      }
+    }
+    stage('Cloudformation') {
+      steps {
+        echo 'Download Troposphere'
+        echo 'Run Tests'
+        echo 'Generate Cloudformation JSON'
+      }
+    }
+    stage('Launch New Stack') {
+      steps {
+        echo 'Launching Cloudformation'
+        input(message: 'Does the stack look good', id: '1')
+      }
+    }
+    stage('Blue/Green') {
+      steps {
+        echo 'Attaching To Blue ELB'
+      }
+    }
+    stage('Remove Old Stack') {
+      steps {
+        echo 'Removing Old Blue Stack From The Autoscale Group'
+      }
+    }
+  }
+}

@@ -1,0 +1,801 @@
+From 6a2ff0fa6c237ce8ba1f2fb80f5e6fedb213b2a4 Mon Sep 17 00:00:00 2001
+From: Christoph Kutzinski <kutzi@gmx.de>
+Date: Sat, 19 Nov 2011 16:33:29 +0100
+Subject: [PATCH 1/4] Minimized serialization profile of FilterImpl
+
+---
+ .../java/hudson/maven/AbstractMavenBuilder.java    |   19 +++++++++++--
+ .../src/main/java/hudson/maven/Maven2Builder.java  |   10 +++---
+ .../src/main/java/hudson/maven/Maven3Builder.java  |   28 ++++++++++---------
+ .../src/main/java/hudson/maven/MavenBuild.java     |    1 -
+ 4 files changed, 36 insertions(+), 22 deletions(-)
+
+diff --git a/maven-plugin/src/main/java/hudson/maven/AbstractMavenBuilder.java b/maven-plugin/src/main/java/hudson/maven/AbstractMavenBuilder.java
+index be97000..f8c4677 100644
+--- a/maven-plugin/src/main/java/hudson/maven/AbstractMavenBuilder.java
++++ b/maven-plugin/src/main/java/hudson/maven/AbstractMavenBuilder.java
+@@ -61,11 +61,13 @@ public abstract class AbstractMavenBuilder implements DelegatingCallable<Result,
+      */
+     protected final BuildListener listener;
+     
++    protected Map<ModuleName,FilterImpl> proxies;
++    
+     /**
+      * Record all asynchronous executions as they are scheduled,
+      * to make sure they are all completed before we finish.
+      */
+-    private transient /*final*/ List<Future<?>> futures;
++    protected transient /*final*/ List<Future<?>> futures;
+     
+     protected AbstractMavenBuilder(BuildListener listener, List<String> goals, Map<String, String> systemProps) {
+         this.listener = listener;
+@@ -119,6 +121,11 @@ public abstract class AbstractMavenBuilder implements DelegatingCallable<Result,
+      */
+     protected void initializeAsynchronousExecutions() {
+         futures = new CopyOnWriteArrayList<Future<?>>();
++        if (this.proxies != null) {
++            for(FilterImpl proxy : this.proxies.values()) {
++                proxy.setFutures(futures);
++            }
++        }
+     }
+     
+     /**
+@@ -160,7 +167,7 @@ public abstract class AbstractMavenBuilder implements DelegatingCallable<Result,
+         }
+     }
+     
+-    protected class FilterImpl extends MavenBuildProxy2.Filter<MavenBuildProxy2> implements Serializable {
++    protected static class FilterImpl extends MavenBuildProxy2.Filter<MavenBuildProxy2> implements Serializable {
+         
+         private MavenBuildInformation mavenBuildInformation;
+ 
+@@ -173,6 +180,8 @@ public abstract class AbstractMavenBuilder implements DelegatingCallable<Result,
+          */
+         private transient Channel channel;
+ 
++        private transient List<Future<?>> futures;
++
+         public FilterImpl(MavenBuildProxy2 core, MavenBuildInformation mavenBuildInformation) {
+             super(core);
+             this.mavenBuildInformation = mavenBuildInformation;
+@@ -189,7 +198,7 @@ public abstract class AbstractMavenBuilder implements DelegatingCallable<Result,
+ 
+         @Override
+         public void executeAsync(final BuildCallable<?,?> program) throws IOException {
+-            recordAsynchronousExecution(
++            futures.add(
+                     channel.callAsync(
+                             new AsyncInvoker(core,program)));
+         }
+@@ -197,6 +206,10 @@ public abstract class AbstractMavenBuilder implements DelegatingCallable<Result,
+         public MavenBuildInformation getMavenBuildInformation() {
+             return mavenBuildInformation;
+         }
++        
++        public void setFutures(List<Future<?>> futures) {
++            this.futures = futures;
++        }
+ 
+         public Object readResolve() {
+             channel = Channel.current();
+diff --git a/maven-plugin/src/main/java/hudson/maven/Maven2Builder.java b/maven-plugin/src/main/java/hudson/maven/Maven2Builder.java
+index 5c20a79..cce2f82 100644
+--- a/maven-plugin/src/main/java/hudson/maven/Maven2Builder.java
++++ b/maven-plugin/src/main/java/hudson/maven/Maven2Builder.java
+@@ -53,7 +53,6 @@ import org.apache.maven.project.MavenProject;
+  */
+ @SuppressWarnings("deprecation") // as we're restricted to Maven 2.x API here, but compile against Maven 3.x, we cannot avoid deprecations
+ final class Maven2Builder extends MavenBuilder {
+-    private final Map<ModuleName,MavenBuildProxy2> proxies;
+     private final Map<ModuleName,List<MavenReporter>> reporters = new HashMap<ModuleName,List<MavenReporter>>();
+     private final Map<ModuleName,List<ExecutedMojo>> executedMojos = new HashMap<ModuleName,List<ExecutedMojo>>();
+     private long mojoStartTime;
+@@ -68,9 +67,10 @@ final class Maven2Builder extends MavenBuilder {
+     public Maven2Builder(BuildListener listener,Map<ModuleName,ProxyImpl2> proxies, Collection<MavenModule> modules, List<String> goals, Map<String,String> systemProps,  MavenBuildInformation mavenBuildInformation) {
+         super(listener,goals,systemProps);
+         this.sourceProxies = proxies;
+-        this.proxies = new HashMap<ModuleName, MavenBuildProxy2>(proxies);
+-        for (Entry<ModuleName,MavenBuildProxy2> e : this.proxies.entrySet())
+-            e.setValue(new FilterImpl(e.getValue(), mavenBuildInformation));
++        this.proxies = new HashMap<ModuleName, FilterImpl>();
++        for (Entry<ModuleName,ProxyImpl2> e : this.sourceProxies.entrySet()) {
++            this.proxies.put(e.getKey(), new FilterImpl(e.getValue(), mavenBuildInformation));
++        }
+ 
+         for (MavenModule m : modules)
+             reporters.put(m.getModuleName(),m.createReporters());
+@@ -116,7 +116,7 @@ final class Maven2Builder extends MavenBuilder {
+             buildingProjects.add(new ModuleName(p));
+         }
+         
+-        for (Entry<ModuleName,MavenBuildProxy2> e : this.proxies.entrySet()) {
++        for (Entry<ModuleName,FilterImpl> e : this.proxies.entrySet()) {
+             if (! buildingProjects.contains(e.getKey())) {
+                 MavenBuildProxy2 proxy = e.getValue();
+                 proxy.start();
+diff --git a/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java b/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
+index 4a6530f..b641cc4 100644
+--- a/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
++++ b/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
+@@ -24,6 +24,7 @@
+ package hudson.maven;
+ 
+ import hudson.Launcher;
++import hudson.maven.AbstractMavenBuilder.FilterImpl;
+ import hudson.maven.MavenBuild.ProxyImpl2;
+ import hudson.maven.util.ExecutionEventLogger;
+ import hudson.model.BuildListener;
+@@ -37,13 +38,14 @@ import java.io.PrintStream;
+ import java.io.Serializable;
+ import java.lang.reflect.InvocationTargetException;
+ import java.text.NumberFormat;
++import java.util.Collection;
+ import java.util.Date;
+ import java.util.HashMap;
+ import java.util.HashSet;
+ import java.util.List;
+ import java.util.Map;
+-import java.util.Set;
+ import java.util.Map.Entry;
++import java.util.Set;
+ import java.util.concurrent.ConcurrentHashMap;
+ import java.util.concurrent.CopyOnWriteArrayList;
+ import java.util.logging.Logger;
+@@ -77,7 +79,6 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+     
+     HudsonMavenExecutionResult mavenExecutionResult;    
+     
+-    private final Map<ModuleName,MavenBuildProxy2> proxies;
+     private final Map<ModuleName,ProxyImpl2> sourceProxies;
+     private final Map<ModuleName,List<MavenReporter>> reporters = new HashMap<ModuleName,List<MavenReporter>>();
+     
+@@ -87,19 +88,20 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         super( listener, goals, systemProps );
+         this.mavenBuildInformation = mavenBuildInformation;
+         sourceProxies = new HashMap<ModuleName, ProxyImpl2>(proxies);
+-        this.proxies = new HashMap<ModuleName, MavenBuildProxy2>(proxies);
+-        for (Entry<ModuleName,MavenBuildProxy2> e : this.proxies.entrySet())
+-            e.setValue(new FilterImpl(e.getValue(), this.mavenBuildInformation));
++        this.proxies = new HashMap<ModuleName, FilterImpl>();
++        for (Entry<ModuleName,ProxyImpl2> e : this.sourceProxies.entrySet()) {
++            this.proxies.put(e.getKey(), new FilterImpl(e.getValue(), mavenBuildInformation));
++        }
+ 
+         this.reporters.putAll( reporters );
+     }    
+     
+     public Result call() throws IOException {
+ 
+-        MavenExecutionListener mavenExecutionListener = new MavenExecutionListener( this );
+         try {
+             initializeAsynchronousExecutions();
+-            
++        
++            MavenExecutionListener mavenExecutionListener = new MavenExecutionListener( this );
+             Maven3Launcher.setMavenExecutionListener( mavenExecutionListener );
+             
+             markAsSuccess = false;
+@@ -195,7 +197,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         long overheadTime;
+         
+        
+-        private final Map<ModuleName,MavenBuildProxy2> proxies;
++        private final Map<ModuleName,FilterImpl> proxies;
+         
+         private final Map<ModuleName,List<ExecutedMojo>> executedMojosPerModule = new ConcurrentHashMap<ModuleName, List<ExecutedMojo>>();
+         
+@@ -207,10 +209,10 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+ 
+         public MavenExecutionListener(Maven3Builder maven3Builder) {
+             this.maven3Builder = maven3Builder;
+-            this.proxies = new ConcurrentHashMap<ModuleName, MavenBuildProxy2>(maven3Builder.proxies);
+-            for (Entry<ModuleName,MavenBuildProxy2> e : this.proxies.entrySet())
++            this.proxies = new ConcurrentHashMap<ModuleName, FilterImpl>(maven3Builder.proxies);
++            for (Entry<ModuleName,FilterImpl> e : this.proxies.entrySet())
+             {
+-                e.setValue(maven3Builder.new FilterImpl(e.getValue(), maven3Builder.mavenBuildInformation, Channel.current()));
++                e.setValue(new FilterImpl(e.getValue(), maven3Builder.mavenBuildInformation, Channel.current()));
+                 executedMojosPerModule.put( e.getKey(), new CopyOnWriteArrayList<ExecutedMojo>() );
+             }
+             this.reporters.putAll( new ConcurrentHashMap<ModuleName, List<MavenReporter>>(maven3Builder.reporters) );
+@@ -218,7 +220,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         }
+         
+         private MavenBuildProxy2 getMavenBuildProxy2(MavenProject mavenProject) {
+-            for (Entry<ModuleName,MavenBuildProxy2> entry : proxies.entrySet()) {   
++            for (Entry<ModuleName,FilterImpl> entry : proxies.entrySet()) {   
+                if (entry.getKey().compareTo( new ModuleName( mavenProject ) ) == 0) {
+                    return entry.getValue();
+                }
+@@ -267,7 +269,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+                 buildingProjects.add(new ModuleName(p));
+             }
+             
+-            for (Entry<ModuleName,MavenBuildProxy2> e : this.proxies.entrySet()) {
++            for (Entry<ModuleName,FilterImpl> e : this.proxies.entrySet()) {
+                 if (! buildingProjects.contains(e.getKey())) {
+                     //maven3Builder.listener.getLogger().println("Project " + e.getKey() + " needs not be build");
+                     MavenBuildProxy2 proxy = e.getValue();
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenBuild.java b/maven-plugin/src/main/java/hudson/maven/MavenBuild.java
+index 6d759d7..04799eb 100644
+--- a/maven-plugin/src/main/java/hudson/maven/MavenBuild.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenBuild.java
+@@ -50,7 +50,6 @@ import hudson.util.ArgumentListBuilder;
+ import hudson.util.DescribableList;
+ import hudson.util.IOUtils;
+ import org.apache.maven.BuildFailureException;
+-import org.apache.maven.artifact.versioning.ComparableVersion;
+ import org.apache.maven.execution.MavenSession;
+ import org.apache.maven.execution.ReactorManager;
+ import org.apache.maven.lifecycle.LifecycleExecutionException;
+-- 
+1.7.5.4
+
+
+From 47179b3f25d1ecc51ecd797e5ef751b19d5786fc Mon Sep 17 00:00:00 2001
+From: Christoph Kutzinski <kutzi@gmx.de>
+Date: Sat, 19 Nov 2011 16:45:47 +0100
+Subject: [PATCH 2/4] some minor optimization
+
+---
+ .../src/main/java/hudson/maven/Maven3Builder.java  |   30 ++++++++------------
+ .../java/hudson/maven/MavenModuleSetBuild.java     |    8 +----
+ 2 files changed, 13 insertions(+), 25 deletions(-)
+
+diff --git a/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java b/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
+index b641cc4..fac08df 100644
+--- a/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
++++ b/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
+@@ -24,7 +24,6 @@
+ package hudson.maven;
+ 
+ import hudson.Launcher;
+-import hudson.maven.AbstractMavenBuilder.FilterImpl;
+ import hudson.maven.MavenBuild.ProxyImpl2;
+ import hudson.maven.util.ExecutionEventLogger;
+ import hudson.model.BuildListener;
+@@ -39,7 +38,6 @@ import java.io.Serializable;
+ import java.lang.reflect.InvocationTargetException;
+ import java.text.NumberFormat;
+ import java.util.Collection;
+-import java.util.Date;
+ import java.util.HashMap;
+ import java.util.HashSet;
+ import java.util.List;
+@@ -82,18 +80,16 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+     private final Map<ModuleName,ProxyImpl2> sourceProxies;
+     private final Map<ModuleName,List<MavenReporter>> reporters = new HashMap<ModuleName,List<MavenReporter>>();
+     
+-    private final MavenBuildInformation mavenBuildInformation;
+-    
+-    protected Maven3Builder(BuildListener listener,Map<ModuleName,ProxyImpl2> proxies, Map<ModuleName,List<MavenReporter>> reporters, List<String> goals, Map<String, String> systemProps, MavenBuildInformation mavenBuildInformation) {
++    protected Maven3Builder(BuildListener listener,Map<ModuleName,ProxyImpl2> proxies, Collection<MavenModule> modules, List<String> goals, Map<String, String> systemProps, MavenBuildInformation mavenBuildInformation) {
+         super( listener, goals, systemProps );
+-        this.mavenBuildInformation = mavenBuildInformation;
+         sourceProxies = new HashMap<ModuleName, ProxyImpl2>(proxies);
+         this.proxies = new HashMap<ModuleName, FilterImpl>();
+         for (Entry<ModuleName,ProxyImpl2> e : this.sourceProxies.entrySet()) {
+             this.proxies.put(e.getKey(), new FilterImpl(e.getValue(), mavenBuildInformation));
+         }
+ 
+-        this.reporters.putAll( reporters );
++        for (MavenModule m : modules)
++            reporters.put(m.getModuleName(),m.createReporters());
+     }    
+     
+     public Result call() throws IOException {
+@@ -201,7 +197,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         
+         private final Map<ModuleName,List<ExecutedMojo>> executedMojosPerModule = new ConcurrentHashMap<ModuleName, List<ExecutedMojo>>();
+         
+-        private final Map<ModuleName,List<MavenReporter>> reporters = new ConcurrentHashMap<ModuleName,List<MavenReporter>>();
++        private final Map<ModuleName,List<MavenReporter>> reporters;
+         
+         private final Map<ModuleName, Long> currentMojoStartPerModuleName = new ConcurrentHashMap<ModuleName, Long>();
+         
+@@ -210,12 +206,10 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         public MavenExecutionListener(Maven3Builder maven3Builder) {
+             this.maven3Builder = maven3Builder;
+             this.proxies = new ConcurrentHashMap<ModuleName, FilterImpl>(maven3Builder.proxies);
+-            for (Entry<ModuleName,FilterImpl> e : this.proxies.entrySet())
+-            {
+-                e.setValue(new FilterImpl(e.getValue(), maven3Builder.mavenBuildInformation, Channel.current()));
+-                executedMojosPerModule.put( e.getKey(), new CopyOnWriteArrayList<ExecutedMojo>() );
++            for (ModuleName name : this.proxies.keySet()) {
++                executedMojosPerModule.put( name, new CopyOnWriteArrayList<ExecutedMojo>() );
+             }
+-            this.reporters.putAll( new ConcurrentHashMap<ModuleName, List<MavenReporter>>(maven3Builder.reporters) );
++            this.reporters = new ConcurrentHashMap<ModuleName, List<MavenReporter>>(maven3Builder.reporters);
+             this.eventLogger = new ExecutionEventLogger( new PrintStreamLogger( maven3Builder.listener.getLogger() ) );
+         }
+         
+@@ -239,7 +233,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         private void initMojoStartTime( MavenProject mavenProject) {
+             this.currentMojoStartPerModuleName.put( new ModuleName( mavenProject.getGroupId(),
+                                                                     mavenProject.getArtifactId() ),
+-                                                    Long.valueOf( new Date().getTime() ) );
++                                                    Long.valueOf( System.currentTimeMillis() ) );
+         }
+         
+         private Long getMojoStartTime(MavenProject mavenProject) {
+@@ -497,7 +491,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         
+         private void recordMojoSucceeded(ExecutionEvent event) {
+             Long startTime = getMojoStartTime( event.getProject() );
+-            Date endTime = new Date();
++            long endTime = System.currentTimeMillis();
+             MavenProject mavenProject = event.getProject();
+             XmlPlexusConfiguration xmlPlexusConfiguration = new XmlPlexusConfiguration( event.getMojoExecution().getConfiguration() );
+ 
+@@ -509,7 +503,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+ 
+             try {
+                 ExecutedMojo executedMojo =
+-                    new ExecutedMojo( mojoInfo, startTime == null ? 0 : endTime.getTime() - startTime.longValue() );
++                    new ExecutedMojo( mojoInfo, startTime == null ? 0 : endTime - startTime.longValue() );
+                 this.executedMojosPerModule.get( new ModuleName( mavenProject.getGroupId(),
+                                                                  mavenProject.getArtifactId() ) ).add( executedMojo );
+                 
+@@ -559,7 +553,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         
+         private void recordMojoFailed(ExecutionEvent event) {
+             Long startTime = getMojoStartTime( event.getProject() );
+-            Date endTime = new Date();
++            long endTime = System.currentTimeMillis();
+             MavenProject mavenProject = event.getProject();
+             XmlPlexusConfiguration xmlPlexusConfiguration = new XmlPlexusConfiguration( event.getMojoExecution().getConfiguration() );
+ 
+@@ -571,7 +565,7 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+ 
+             try {
+                 ExecutedMojo executedMojo =
+-                    new ExecutedMojo( mojoInfo, startTime == null ? 0 : endTime.getTime() - startTime.longValue() );
++                    new ExecutedMojo( mojoInfo, startTime == null ? 0 : endTime - startTime.longValue() );
+                 this.executedMojosPerModule.get( new ModuleName( mavenProject.getGroupId(),
+                                                                  mavenProject.getArtifactId() ) ).add( executedMojo );
+             } catch ( Exception e ) {
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+index 32f7991..f07fecf 100644
+--- a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+@@ -780,14 +780,8 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+                         
+                         if (maven3orLater)
+                         {   
+-                            
+-                            Map<ModuleName,List<MavenReporter>> reporters = new HashMap<ModuleName, List<MavenReporter>>(project.sortedActiveModules.size());
+-                            for (MavenModule mavenModule : project.sortedActiveModules)
+-                            {
+-                                reporters.put( mavenModule.getModuleName(), mavenModule.createReporters() );
+-                            }
+                             Maven3Builder maven3Builder = 
+-                                new Maven3Builder( slistener, proxies, reporters, margs.toList(), envVars, mavenBuildInformation );
++                                new Maven3Builder( slistener, proxies, project.sortedActiveModules, margs.toList(), envVars, mavenBuildInformation );
+                             MavenProbeAction mpa=null;
+                             try {
+                                 mpa = new MavenProbeAction(project,process.channel);
+-- 
+1.7.5.4
+
+
+From 88cfac626e3b5180c8388c5ca85ab87f325705b5 Mon Sep 17 00:00:00 2001
+From: Christoph Kutzinski <kutzi@gmx.de>
+Date: Sat, 19 Nov 2011 18:38:10 +0100
+Subject: [PATCH 3/4] Removed unnecessary code duplication in the Maven
+ builders
+
+---
+ .../java/hudson/maven/AbstractMavenBuilder.java    |   34 ++++++++++++++-
+ .../src/main/java/hudson/maven/Maven2Builder.java  |   30 +-----------
+ .../src/main/java/hudson/maven/Maven3Builder.java  |   26 +----------
+ .../src/main/java/hudson/maven/MavenBuild.java     |   24 +++++-----
+ .../src/main/java/hudson/maven/MavenBuilder.java   |    5 +-
+ .../java/hudson/maven/MavenModuleSetBuild.java     |   47 ++++++++------------
+ 6 files changed, 71 insertions(+), 95 deletions(-)
+
+diff --git a/maven-plugin/src/main/java/hudson/maven/AbstractMavenBuilder.java b/maven-plugin/src/main/java/hudson/maven/AbstractMavenBuilder.java
+index f8c4677..cc89334 100644
+--- a/maven-plugin/src/main/java/hudson/maven/AbstractMavenBuilder.java
++++ b/maven-plugin/src/main/java/hudson/maven/AbstractMavenBuilder.java
+@@ -23,6 +23,8 @@
+  */
+ package hudson.maven;
+ 
++import hudson.Launcher;
++import hudson.maven.MavenBuild.ProxyImpl2;
+ import hudson.model.BuildListener;
+ import hudson.model.Executor;
+ import hudson.model.Result;
+@@ -33,6 +35,8 @@ import hudson.remoting.Future;
+ import java.io.IOException;
+ import java.io.Serializable;
+ import java.text.NumberFormat;
++import java.util.Collection;
++import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+ import java.util.concurrent.CopyOnWriteArrayList;
+@@ -42,6 +46,7 @@ import jenkins.model.Jenkins;
+ 
+ /**
+  * @author Olivier Lamy
++ * @author Christoph Kutzinski
+  *
+  */
+ public abstract class AbstractMavenBuilder implements DelegatingCallable<Result,IOException> {
+@@ -64,15 +69,42 @@ public abstract class AbstractMavenBuilder implements DelegatingCallable<Result,
+     protected Map<ModuleName,FilterImpl> proxies;
+     
+     /**
++     * Kept so that we can finalize them in the end method.
++     */
++    protected final transient Map<ModuleName,ProxyImpl2> sourceProxies = new HashMap<ModuleName, MavenBuild.ProxyImpl2>();
++
++    protected final Map<ModuleName,List<MavenReporter>> reporters = new HashMap<ModuleName,List<MavenReporter>>();
++    
++    /**
+      * Record all asynchronous executions as they are scheduled,
+      * to make sure they are all completed before we finish.
+      */
+     protected transient /*final*/ List<Future<?>> futures;
+     
+-    protected AbstractMavenBuilder(BuildListener listener, List<String> goals, Map<String, String> systemProps) {
++    protected AbstractMavenBuilder(BuildListener listener, Collection<MavenModule> modules, List<String> goals, Map<String, String> systemProps) {
+         this.listener = listener;
+         this.goals = goals;
+         this.systemProps = systemProps;
++        
++        for (MavenModule m : modules) {
++            reporters.put(m.getModuleName(),m.createReporters());
++        }
++    }
++    
++    /**
++     * Invoked after the maven has finished running, and in the master, not in the maven process.
++     */
++    void end(Launcher launcher) throws IOException, InterruptedException {
++        for (Map.Entry<ModuleName,ProxyImpl2> e : sourceProxies.entrySet()) {
++            ProxyImpl2 p = e.getValue();
++            for (MavenReporter r : reporters.get(e.getKey())) {
++                // we'd love to do this when the module build ends, but doing so requires
++                // we know how many task segments are in the current build.
++                r.end(p.owner(),launcher,listener);
++                p.appendLastLog();
++            }
++            p.close();
++        }
+     }
+     
+     protected String formatArgs(List<String> args) {
+diff --git a/maven-plugin/src/main/java/hudson/maven/Maven2Builder.java b/maven-plugin/src/main/java/hudson/maven/Maven2Builder.java
+index cce2f82..ee77f09 100644
+--- a/maven-plugin/src/main/java/hudson/maven/Maven2Builder.java
++++ b/maven-plugin/src/main/java/hudson/maven/Maven2Builder.java
+@@ -24,7 +24,6 @@
+  */
+ package hudson.maven;
+ 
+-import hudson.Launcher;
+ import hudson.maven.MavenBuild.ProxyImpl2;
+ import hudson.model.BuildListener;
+ import hudson.model.Result;
+@@ -53,43 +52,20 @@ import org.apache.maven.project.MavenProject;
+  */
+ @SuppressWarnings("deprecation") // as we're restricted to Maven 2.x API here, but compile against Maven 3.x, we cannot avoid deprecations
+ final class Maven2Builder extends MavenBuilder {
+-    private final Map<ModuleName,List<MavenReporter>> reporters = new HashMap<ModuleName,List<MavenReporter>>();
+     private final Map<ModuleName,List<ExecutedMojo>> executedMojos = new HashMap<ModuleName,List<ExecutedMojo>>();
+     private long mojoStartTime;
+ 
+     private MavenBuildProxy2 lastProxy;
+ 
+-    /**
+-     * Kept so that we can finalize them in the end method.
+-     */
+-    private final transient Map<ModuleName,ProxyImpl2> sourceProxies;
++    
+ 
+     public Maven2Builder(BuildListener listener,Map<ModuleName,ProxyImpl2> proxies, Collection<MavenModule> modules, List<String> goals, Map<String,String> systemProps,  MavenBuildInformation mavenBuildInformation) {
+-        super(listener,goals,systemProps);
+-        this.sourceProxies = proxies;
++        super(listener,modules,goals,systemProps);
++        this.sourceProxies.putAll(proxies);
+         this.proxies = new HashMap<ModuleName, FilterImpl>();
+         for (Entry<ModuleName,ProxyImpl2> e : this.sourceProxies.entrySet()) {
+             this.proxies.put(e.getKey(), new FilterImpl(e.getValue(), mavenBuildInformation));
+         }
+-
+-        for (MavenModule m : modules)
+-            reporters.put(m.getModuleName(),m.createReporters());
+-    }
+-
+-    /**
+-     * Invoked after the maven has finished running, and in the master, not in the maven process.
+-     */
+-    void end(Launcher launcher) throws IOException, InterruptedException {
+-        for (Map.Entry<ModuleName,ProxyImpl2> e : sourceProxies.entrySet()) {
+-            ProxyImpl2 p = e.getValue();
+-            for (MavenReporter r : reporters.get(e.getKey())) {
+-                // we'd love to do this when the module build ends, but doing so requires
+-                // we know how many task segments are in the current build.
+-                r.end(p.owner(),launcher,listener);
+-                p.appendLastLog();
+-            }
+-            p.close();
+-        }
+     }
+ 
+     @Override
+diff --git a/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java b/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
+index fac08df..f51abe9 100644
+--- a/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
++++ b/maven-plugin/src/main/java/hudson/maven/Maven3Builder.java
+@@ -77,19 +77,13 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+     
+     HudsonMavenExecutionResult mavenExecutionResult;    
+     
+-    private final Map<ModuleName,ProxyImpl2> sourceProxies;
+-    private final Map<ModuleName,List<MavenReporter>> reporters = new HashMap<ModuleName,List<MavenReporter>>();
+-    
+     protected Maven3Builder(BuildListener listener,Map<ModuleName,ProxyImpl2> proxies, Collection<MavenModule> modules, List<String> goals, Map<String, String> systemProps, MavenBuildInformation mavenBuildInformation) {
+-        super( listener, goals, systemProps );
+-        sourceProxies = new HashMap<ModuleName, ProxyImpl2>(proxies);
++        super( listener, modules, goals, systemProps );
++        this.sourceProxies.putAll(proxies);
+         this.proxies = new HashMap<ModuleName, FilterImpl>();
+         for (Entry<ModuleName,ProxyImpl2> e : this.sourceProxies.entrySet()) {
+             this.proxies.put(e.getKey(), new FilterImpl(e.getValue(), mavenBuildInformation));
+         }
+-
+-        for (MavenModule m : modules)
+-            reporters.put(m.getModuleName(),m.createReporters());
+     }    
+     
+     public Result call() throws IOException {
+@@ -165,22 +159,6 @@ public class Maven3Builder extends AbstractMavenBuilder implements DelegatingCal
+         }
+     }
+ 
+-    /**
+-     * Invoked after the maven has finished running, and in the master, not in the maven process.
+-     */
+-    void end(Launcher launcher) throws IOException, InterruptedException {
+-        for (Map.Entry<ModuleName,ProxyImpl2> e : sourceProxies.entrySet()) {
+-            ProxyImpl2 p = e.getValue();
+-            for (MavenReporter r : reporters.get(e.getKey())) {
+-                // we'd love to do this when the module build ends, but doing so requires
+-                // we know how many task segments are in the current build.
+-                r.end(p.owner(),launcher,listener);
+-                p.appendLastLog();
+-            }
+-            p.close();
+-        }
+-    }      
+-
+     private static final class MavenExecutionListener extends AbstractExecutionListener implements Serializable, ExecutionListener {
+ 
+         private static final long serialVersionUID = 4942789836756366116L;
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenBuild.java b/maven-plugin/src/main/java/hudson/maven/MavenBuild.java
+index 04799eb..cfe23ce 100644
+--- a/maven-plugin/src/main/java/hudson/maven/MavenBuild.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenBuild.java
+@@ -296,19 +296,19 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
+      */
+     private static final class Builder extends MavenBuilder {
+         private final MavenBuildProxy buildProxy;
+-        private final MavenReporter[] reporters;
+ 
+         /**
+          * Records of what was executed.
+          */
+         private final List<ExecutedMojo> executedMojos = new ArrayList<ExecutedMojo>();
++        private final ModuleName moduleName;
+ 
+         private long startTime;
+ 
+-        public Builder(BuildListener listener,MavenBuildProxy buildProxy,MavenReporter[] reporters, List<String> goals, Map<String,String> systemProps) {
+-            super(listener,goals,systemProps);
++        public Builder(BuildListener listener,MavenBuildProxy buildProxy,MavenModule module, List<String> goals, Map<String,String> systemProps) {
++            super(listener,Collections.singleton(module),goals,systemProps);
+             this.buildProxy = new FilterImpl(buildProxy);
+-            this.reporters = reporters;
++            this.moduleName = module.getModuleName();
+         }
+ 
+         private class FilterImpl extends MavenBuildProxy.Filter<MavenBuildProxy> implements Serializable {
+@@ -326,20 +326,20 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
+ 
+         @Override
+         void preBuild(MavenSession session, ReactorManager rm, EventDispatcher dispatcher) throws BuildFailureException, LifecycleExecutionException, IOException, InterruptedException {
+-            for (MavenReporter r : reporters)
++            for (MavenReporter r : reporters.get(moduleName))
+                 r.preBuild(buildProxy,rm.getTopLevelProject(),listener);
+         }
+ 
+         @Override
+         void postBuild(MavenSession session, ReactorManager rm, EventDispatcher dispatcher) throws BuildFailureException, LifecycleExecutionException, IOException, InterruptedException {
+             buildProxy.setExecutedMojos(executedMojos);
+-            for (MavenReporter r : reporters)
++            for (MavenReporter r : reporters.get(moduleName))
+                 r.postBuild(buildProxy,rm.getTopLevelProject(),listener);
+         }
+ 
+         @Override
+         void preExecute(MavenProject project, MojoInfo info) throws IOException, InterruptedException, AbortException {
+-            for (MavenReporter r : reporters)
++            for (MavenReporter r : reporters.get(moduleName))
+                 if(!r.preExecute(buildProxy,project,info,listener))
+                     throw new AbortException(r+" failed");
+ 
+@@ -350,28 +350,28 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
+         void postExecute(MavenProject project, MojoInfo info, Exception exception) throws IOException, InterruptedException, AbortException {
+             executedMojos.add(new ExecutedMojo(info,System.currentTimeMillis()-startTime));
+ 
+-            for (MavenReporter r : reporters)
++            for (MavenReporter r : reporters.get(moduleName))
+                 if(!r.postExecute(buildProxy,project,info,listener,exception))
+                     throw new AbortException(r+" failed");
+         }
+ 
+         @Override
+         void onReportGenerated(MavenProject project, MavenReportInfo report) throws IOException, InterruptedException, AbortException {
+-            for (MavenReporter r : reporters)
++            for (MavenReporter r : reporters.get(moduleName))
+                 if(!r.reportGenerated(buildProxy,project,report,listener))
+                     throw new AbortException(r+" failed");
+         }
+ 
+         @Override
+         void preModule(MavenProject project) throws InterruptedException, IOException, AbortException {
+-            for (MavenReporter r : reporters)
++            for (MavenReporter r : reporters.get(moduleName))
+                 if(!r.enterModule(buildProxy,project,listener))
+                     throw new AbortException(r+" failed");
+         }
+ 
+         @Override
+         void postModule(MavenProject project) throws InterruptedException, IOException, AbortException {
+-            for (MavenReporter r : reporters)
++            for (MavenReporter r : reporters.get(moduleName))
+                 if(!r.leaveModule(buildProxy,project,listener))
+                     throw new AbortException(r+" failed");
+         }
+@@ -705,7 +705,7 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
+                 try {
+                     Result r = process.call(new Builder(
+                         listener,new ProxyImpl(),
+-                        reporters.toArray(new MavenReporter[reporters.size()]), margs.toList(), systemProps));
++                        getProject(), margs.toList(), systemProps));
+                     normalExit = true;
+                     return r;
+                 } finally {
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenBuilder.java b/maven-plugin/src/main/java/hudson/maven/MavenBuilder.java
+index 7cef424..95d3268 100644
+--- a/maven-plugin/src/main/java/hudson/maven/MavenBuilder.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenBuilder.java
+@@ -40,6 +40,7 @@ import java.io.PrintStream;
+ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+ import java.text.NumberFormat;
++import java.util.Collection;
+ import java.util.List;
+ import java.util.Map;
+ import org.apache.maven.BuildFailureException;
+@@ -79,8 +80,8 @@ public abstract class MavenBuilder extends AbstractMavenBuilder implements Deleg
+      */
+     private final boolean profile = MavenProcessFactory.profile;
+ 
+-    protected MavenBuilder(BuildListener listener, List<String> goals, Map<String, String> systemProps) {
+-        super( listener, goals, systemProps );
++    protected MavenBuilder(BuildListener listener, Collection<MavenModule> modules, List<String> goals, Map<String, String> systemProps) {
++        super( listener, modules, goals, systemProps );
+     }
+ 
+     /**
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+index f07fecf..bc74e14 100644
+--- a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+@@ -699,7 +699,7 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+                             pom = parentLoc;
+ 
+                         
+-                        ProcessCache.MavenProcess process = null;
++                        final ProcessCache.MavenProcess process;
+                         
+                         boolean maven3orLater = mavenBuildInformation.isMaven3OrLater(); 
+                         if ( maven3orLater )
+@@ -778,38 +778,27 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+ 							}
+ 						}                        
+                         
+-                        if (maven3orLater)
+-                        {   
+-                            Maven3Builder maven3Builder = 
++                        final AbstractMavenBuilder builder;
++                        if (maven3orLater) {
++                            builder =
+                                 new Maven3Builder( slistener, proxies, project.sortedActiveModules, margs.toList(), envVars, mavenBuildInformation );
+-                            MavenProbeAction mpa=null;
+-                            try {
+-                                mpa = new MavenProbeAction(project,process.channel);
+-                                addAction(mpa);
+-                                r = process.call(maven3Builder);
+-                                return r;
+-                            } finally {
+-                                maven3Builder.end(launcher);
+-                                getActions().remove(mpa);
+-                                process.discard();
+-                            }                            
+-                            
+                         } else {
+-                         
+-                            Maven2Builder builder = 
++                            builder = 
+                                 new Maven2Builder(slistener, proxies, project.sortedActiveModules, margs.toList(), envVars, mavenBuildInformation);
+-                            MavenProbeAction mpa=null;
+-                            try {
+-                                mpa = new MavenProbeAction(project,process.channel);
+-                                addAction(mpa);
+-                                r = process.call(builder);
+-                                return r;
+-                            } finally {
+-                                builder.end(launcher);
+-                                getActions().remove(mpa);
+-                                process.discard();
+-                            }
+                         }
++                        
++                        MavenProbeAction mpa=null;
++                        try {
++                            mpa = new MavenProbeAction(project,process.channel);
++                            addAction(mpa);
++                            r = process.call(builder);
++                            return r;
++                        } finally {
++                            builder.end(launcher);
++                            getActions().remove(mpa);
++                            process.discard();
++                        }                            
++                        
+                     } catch (InterruptedException e) {
+                         r = Executor.currentExecutor().abortResult();
+                         throw e;
+-- 
+1.7.5.4
+
+
+From 8cd1d49dda72ed8f0176e398688f9bb2cbb05195 Mon Sep 17 00:00:00 2001
+From: Christoph Kutzinski <kutzi@gmx.de>
+Date: Sat, 26 Nov 2011 14:10:34 +0100
+Subject: [PATCH 4/4] reduced memory footprint of MavenModuleSetBuild
+
+---
+ .../java/hudson/maven/MavenModuleSetBuild.java     |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+index bc74e14..e4a481c 100644
+--- a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+@@ -388,7 +388,7 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+     }
+ 
+     public void setMavenVersionUsed( String mavenVersionUsed ) throws IOException {
+-        this.mavenVersionUsed = mavenVersionUsed;
++        this.mavenVersionUsed = Util.intern(mavenVersionUsed);
+         save();
+     }
+ 
+@@ -480,6 +480,7 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+     public void run() {
+         run(new RunnerImpl());
+         getProject().updateTransientActions();
++        this.notifyModuleBuildLock = null;
+     }
+ 
+     @Override
+-- 
+1.7.5.4
+

@@ -1,0 +1,19 @@
+diff --git a/src/main/resources/jenkins/plugins/gerrit/workflow/Gerrit.groovy b/src/main/resources/jenkins/plugins/gerrit/workflow/Gerrit.groovy
+index 68690af..bebd202 100644
+--- a/src/main/resources/jenkins/plugins/gerrit/workflow/Gerrit.groovy
++++ b/src/main/resources/jenkins/plugins/gerrit/workflow/Gerrit.groovy
+@@ -74,10 +74,11 @@ class Gerrit implements Serializable {
+     }
+ 
+     private def gerritApiPost(URIish uri, String path, String username, String password, String jsonPayload) {
+-        script.echo "Posting Gerrit Review ${jsonPayload} to ${uri}/${path}"
+-        GerritAuthData.Basic authData = new GerritAuthData.Basic(uri.setRawPath("/").toString(), script.USERNAME, script.PASSWORD);
++        String restUri = uri.toString().replaceAll('/a/[^/]*$', '')
++        script.echo "Posting Gerrit Review ${jsonPayload} to ${restUri}${path}"
++        GerritAuthData.Basic authData = new GerritAuthData.Basic(restUri, script.USERNAME, script.PASSWORD);
+         GerritRestApi gerritApi = new GerritRestApiFactory().create(authData, SSLNoVerifyCertificateManagerClientBuilderExtension.INSTANCE)
+-        JsonElement result = gerritApi.restClient().postRequest(path, jsonPayload)
++        def result = gerritApi.restClient().postRequest(path, jsonPayload)
+         script.echo "Result: ${result}"
+         return result
+     }

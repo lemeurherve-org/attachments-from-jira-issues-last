@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://localhost/svn/projects/MemoryLeaksCoverageProfiling</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <useUpdate>false</useUpdate>
+    <doRevert>false</doRevert>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>PATH=$PATH:/opt/cmake/v2_8_2/bin
+cd MemoryLeaksCoverageProfiling
+/opt/cppcheck/v1.44/bin/cppcheck -v -a -s --xml . 2&gt; cppcheck-result.xml
+sloccount --duplicates --wide --details . &gt; sloccount.sc
+find . -name \*.cpp | xargs -t /tmp/cccc
+cmake .
+make</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.sloccount.SloccountPublisher>
+      <pattern></pattern>
+      <encoding></encoding>
+    </hudson.plugins.sloccount.SloccountPublisher>
+    <com.thalesgroup.hudson.plugins.cccc.CcccPublisher>
+      <metricFilePath>.cccc/cccc.xml</metricFilePath>
+    </com.thalesgroup.hudson.plugins.cccc.CcccPublisher>
+    <com.thalesgroup.hudson.plugins.cppcheck.CppcheckPublisher>
+      <cppcheckConfig>
+        <cppcheckReportPattern></cppcheckReportPattern>
+        <configSeverityEvaluation>
+          <threshold></threshold>
+          <newThreshold></newThreshold>
+          <failureThreshold></failureThreshold>
+          <newFailureThreshold></newFailureThreshold>
+          <healthy></healthy>
+          <unHealthy></unHealthy>
+          <severityError>true</severityError>
+          <severityPossibleError>true</severityPossibleError>
+          <severityStyle>true</severityStyle>
+          <severityPossibleStyle>true</severityPossibleStyle>
+        </configSeverityEvaluation>
+        <configGraph>
+          <xSize>500</xSize>
+          <ySize>200</ySize>
+          <diplayAllError>true</diplayAllError>
+          <displaySeverityError>true</displaySeverityError>
+          <displaySeverityPossibleError>true</displaySeverityPossibleError>
+          <displaySeverityStyle>true</displaySeverityStyle>
+          <displaySeverityPossibleStyle>true</displaySeverityPossibleStyle>
+        </configGraph>
+      </cppcheckConfig>
+    </com.thalesgroup.hudson.plugins.cppcheck.CppcheckPublisher>
+  </publishers>
+  <buildWrappers/>
+</project>

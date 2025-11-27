@@ -1,0 +1,80 @@
+diff --exclude CVS --exclude '*~' --exclude target -rP -u xvnc/src/main/java/hudson/plugins/xvnc/DisplayAllocator.java xvnc.updated/src/main/java/hudson/plugins/xvnc/DisplayAllocator.java
+--- xvnc/src/main/java/hudson/plugins/xvnc/DisplayAllocator.java	2006-11-22 20:03:35.000000000 -0500
++++ xvnc.updated/src/main/java/hudson/plugins/xvnc/DisplayAllocator.java	2007-10-15 18:35:26.435852033 -0400
+@@ -14,8 +14,8 @@
+      */
+     private final Set<Integer> numbers = new HashSet<Integer>();
+ 
+-    public synchronized int allocate() {
+-        int i = 10;
++    public synchronized int allocate(int baseDisplayNumber) {
++        int i = baseDisplayNumber; 
+         while(numbers.contains(i))
+             i++;
+         numbers.add(i);
+diff --exclude CVS --exclude '*~' --exclude target -rP -u xvnc/src/main/java/hudson/plugins/xvnc/Xvnc.java xvnc.updated/src/main/java/hudson/plugins/xvnc/Xvnc.java
+--- xvnc/src/main/java/hudson/plugins/xvnc/Xvnc.java	2007-06-21 21:12:56.000000000 -0400
++++ xvnc.updated/src/main/java/hudson/plugins/xvnc/Xvnc.java	2007-10-15 18:38:04.938127294 -0400
+@@ -26,10 +26,11 @@
+         final PrintStream logger = listener.getLogger();
+ 
+         String cmd = Util.nullify(DESCRIPTOR.xvnc);
++        int baseDisplayNumber = DESCRIPTOR.baseDisplayNumber; 
+         if(cmd==null)
+             cmd = "vncserver :$DISPLAY_NUMBER";
+ 
+-        final int displayNumber = allocator.allocate();
++        final int displayNumber = allocator.allocate(baseDisplayNumber);
+         final String actualCmd = Util.replaceMacro(cmd, Collections.singletonMap("DISPLAY_NUMBER",String.valueOf(displayNumber)));
+ 
+         logger.println("Starting xvnc");
+@@ -92,6 +93,11 @@
+          */
+         public String xvnc;
+ 
++        /**
++         * Base X display number. 
++         */
++        public int baseDisplayNumber = 10;
++
+         DescriptorImpl() {
+             super(Xvnc.class);
+             load();
+diff --exclude CVS --exclude '*~' --exclude target -rP -u xvnc/src/main/resources/hudson/plugins/xvnc/Xvnc/global.jelly xvnc.updated/src/main/resources/hudson/plugins/xvnc/Xvnc/global.jelly
+--- xvnc/src/main/resources/hudson/plugins/xvnc/Xvnc/global.jelly	2006-11-19 19:07:43.000000000 -0500
++++ xvnc.updated/src/main/resources/hudson/plugins/xvnc/Xvnc/global.jelly	2007-10-15 18:39:19.939173782 -0400
+@@ -1,8 +1,12 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <f:section title="Xvnc">
+-    <f:entry title="command line" help="/plugin/xvnc/help-commandline.html">
++    <f:entry title="Command line" help="/plugin/xvnc/help-commandline.html">
+       <input class="setting-input" name="xvnc.xvnc"
+         type="text" value="${descriptor.xvnc}"/>
+     </f:entry>
++    <f:entry title="Base display number" help="/plugin/xvnc/help-baseDisplayNumber.html">
++      <input class="setting-input" name="xvnc.baseDisplayNumber"
++        type="text" value="${descriptor.baseDisplayNumber}"/>
++    </f:entry>
+   </f:section>
+-</j:jelly>
+\ No newline at end of file
++</j:jelly>
+diff --exclude CVS --exclude '*~' --exclude target -rP -u xvnc/src/main/webapp/help-baseDisplayNumber.html xvnc.updated/src/main/webapp/help-baseDisplayNumber.html
+--- xvnc/src/main/webapp/help-baseDisplayNumber.html	1969-12-31 19:00:00.000000000 -0500
++++ xvnc.updated/src/main/webapp/help-baseDisplayNumber.html	2007-10-15 18:41:08.440642184 -0400
+@@ -0,0 +1,5 @@
++<div>
++  Base X display number to use when starting Xvnc. Leave it empty to let Hudson figures things out.
++  <br>
++  Default is 10. This means the first display will be :10, the second :11, the third :12, and so on. Use a number only, don't prepend the colon (:).
++</div>
+diff --exclude CVS --exclude '*~' --exclude target -rP -u xvnc/src/main/webapp/help-commandline.html xvnc.updated/src/main/webapp/help-commandline.html
+--- xvnc/src/main/webapp/help-commandline.html	2006-11-20 09:55:50.000000000 -0500
++++ xvnc.updated/src/main/webapp/help-commandline.html	2007-10-15 18:47:51.946105882 -0400
+@@ -8,4 +8,4 @@
+   for more details. Hudson remembers what display numbers are in use, and when it launches
+   a new vncserver process, it picks the available number and replace <tt>$DISPLAY_NUMBER</tt>
+   by that number.
+-</div>
+\ No newline at end of file
++</div>

@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Bla bla</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.InheritParentStrategy"/>
+      <permission>hudson.model.Item.Build:hk_org_ww</permission>
+      <permission>hudson.model.Item.Build:id_ww_grp</permission>
+      <permission>hudson.model.Item.Build:ju_org_ww</permission>
+      <permission>hudson.model.Item.Build:nm_org_ww</permission>
+      <permission>hudson.model.Item.Build:pc_org_ww</permission>
+      <permission>hudson.model.Item.Build:ps_org_ww</permission>
+      <permission>hudson.model.Item.Cancel:hk_org_ww</permission>
+      <permission>hudson.model.Item.Cancel:id_ww_grp</permission>
+      <permission>hudson.model.Item.Cancel:ju_org_ww</permission>
+      <permission>hudson.model.Item.Cancel:nm_org_ww</permission>
+      <permission>hudson.model.Item.Cancel:pc_org_ww</permission>
+      <permission>hudson.model.Item.Cancel:ps_org_ww</permission>
+      <permission>hudson.model.Item.Read:hk_org_ww</permission>
+      <permission>hudson.model.Item.Read:id_ww_grp</permission>
+      <permission>hudson.model.Item.Read:ju_org_ww</permission>
+      <permission>hudson.model.Item.Read:nm_org_ww</permission>
+      <permission>hudson.model.Item.Read:pc_org_ww</permission>
+      <permission>hudson.model.Item.Read:ps_org_ww</permission>
+      <permission>hudson.model.Run.Replay:hk_org_ww</permission>
+      <permission>hudson.model.Run.Replay:id_ww_grp</permission>
+      <permission>hudson.model.Run.Replay:ju_org_ww</permission>
+      <permission>hudson.model.Run.Replay:nm_org_ww</permission>
+      <permission>hudson.model.Run.Replay:pc_org_ww</permission>
+      <permission>hudson.model.Run.Replay:ps_org_ww</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>JP_EM_URL</name>
+          <description>.</description>
+          <defaultValue>http://host:7202/em</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <com.cloudbees.plugins.credentials.CredentialsParameterDefinition plugin="credentials@2.1.16">
+          <name>JP_EM_CRED</name>
+          <description></description>
+          <defaultValue>em-sysman</defaultValue>
+          <credentialType>com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl</credentialType>
+          <required>true</required>
+        </com.cloudbees.plugins.credentials.CredentialsParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>JP_CMD</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>list_templates</string>
+              <string>import_template</string>
+              <string>apply_template</string>
+              <string>list_elk_patterns</string>
+              <string>import_elk_patterns</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>JP_ZIP_PATH_TYPE</name>
+          <description>A.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>SFTP</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JP_ZIP_PATH</name>
+          <description>Ap</description>
+          <defaultValue>28054864</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JP_EM_FILTER</name>
+          <description>A</description>
+          <defaultValue>%version%</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>JP_DRY_RUN</name>
+          <description>Tr.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>YES</string>
+              <string>NO</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e # Any command failures should abort script
+
+echo "hello world"
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper plugin="credentials-binding@1.14">
+      <bindings>
+        <org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+          <credentialsId>${JP_EM_CRED}</credentialsId>
+          <usernameVariable>JP_EMCLI_USER</usernameVariable>
+          <passwordVariable>JP_EMCLI_PWD</passwordVariable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+        <org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+          <credentialsId>bugdb-idcsbugs_ww</credentialsId>
+          <usernameVariable>JP_BUGDB_USER</usernameVariable>
+          <passwordVariable>JP_BUGDB_PWD</passwordVariable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+      </bindings>
+    </org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+  </buildWrappers>
+</project>

@@ -1,0 +1,120 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<jenkins.branch.OrganizationFolder plugin="branch-api@2.7.0">
+  <actions/>
+  <description>Everything in https://github.MYCOMPANY.com/MYORG</description>
+  <displayName>GHES - MYORG - Alternate</displayName>
+  <properties>
+    <jenkins.branch.OrganizationChildHealthMetricsProperty>
+      <templates>
+        <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric plugin="cloudbees-folder@6.16">
+          <nonRecursive>false</nonRecursive>
+        </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+      </templates>
+    </jenkins.branch.OrganizationChildHealthMetricsProperty>
+    <jenkins.branch.OrganizationChildOrphanedItemsProperty>
+      <strategy class="jenkins.branch.OrganizationChildOrphanedItemsProperty$Inherit"/>
+    </jenkins.branch.OrganizationChildOrphanedItemsProperty>
+    <jenkins.branch.OrganizationChildTriggersProperty>
+      <templates>
+        <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger plugin="cloudbees-folder@6.16">
+          <spec>* * * * *</spec>
+          <interval>60000</interval>
+        </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
+      </templates>
+    </jenkins.branch.OrganizationChildTriggersProperty>
+    <org.jenkinsci.plugins.docker.workflow.declarative.FolderConfig plugin="docker-workflow@1.26">
+      <dockerLabel></dockerLabel>
+      <registry plugin="docker-commons@1.17"/>
+    </org.jenkinsci.plugins.docker.workflow.declarative.FolderConfig>
+    <org.csanchez.jenkins.plugins.kubernetes.KubernetesFolderProperty plugin="kubernetes@1.30.10">
+      <permittedClouds/>
+    </org.csanchez.jenkins.plugins.kubernetes.KubernetesFolderProperty>
+    <jenkins.branch.NoTriggerOrganizationFolderProperty>
+      <branches>.*</branches>
+    </jenkins.branch.NoTriggerOrganizationFolderProperty>
+  </properties>
+  <folderViews class="jenkins.branch.OrganizationFolderViewHolder">
+    <owner reference="../.."/>
+  </folderViews>
+  <healthMetrics>
+    <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric plugin="cloudbees-folder@6.16">
+      <nonRecursive>false</nonRecursive>
+    </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+  </healthMetrics>
+  <icon class="jenkins.branch.MetadataActionFolderIcon">
+    <owner class="jenkins.branch.OrganizationFolder" reference="../.."/>
+  </icon>
+  <orphanedItemStrategy class="com.cloudbees.hudson.plugins.folder.computed.DefaultOrphanedItemStrategy" plugin="cloudbees-folder@6.16">
+    <pruneDeadBranches>true</pruneDeadBranches>
+    <daysToKeep>7</daysToKeep>
+    <numToKeep>-1</numToKeep>
+  </orphanedItemStrategy>
+  <triggers>
+    <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger plugin="cloudbees-folder@6.16">
+      <spec>H/15 * * * *</spec>
+      <interval>3600000</interval>
+    </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
+  </triggers>
+  <disabled>false</disabled>
+  <navigators>
+    <org.jenkinsci.plugins.github__branch__source.GitHubSCMNavigator plugin="github-branch-source@2.11.3">
+      <repoOwner>MYORG</repoOwner>
+      <apiUri>https://github.MYCOMPANY.com/api/v3</apiUri>
+      <credentialsId>ghes-app-myorg</credentialsId>
+      <traits>
+        <org.jenkinsci.plugins.github__branch__source.BranchDiscoveryTrait>
+          <strategyId>3</strategyId>
+        </org.jenkinsci.plugins.github__branch__source.BranchDiscoveryTrait>
+        <org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait>
+          <strategyId>1</strategyId>
+        </org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait>
+        <org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait>
+          <strategyId>1</strategyId>
+          <trust class="org.jenkinsci.plugins.github_branch_source.ForkPullRequestDiscoveryTrait$TrustPermission"/>
+        </org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait>
+        <jenkins.plugins.git.traits.CloneOptionTrait plugin="git@4.10.0">
+          <extension class="hudson.plugins.git.extensions.impl.CloneOption">
+            <shallow>true</shallow>
+            <noTags>false</noTags>
+            <reference></reference>
+            <timeout>5</timeout>
+            <depth>1</depth>
+            <honorRefspec>false</honorRefspec>
+          </extension>
+        </jenkins.plugins.git.traits.CloneOptionTrait>
+        <jenkins.plugins.git.traits.SubmoduleOptionTrait plugin="git@4.10.0">
+          <extension class="hudson.plugins.git.extensions.impl.SubmoduleOption">
+            <disableSubmodules>false</disableSubmodules>
+            <recursiveSubmodules>true</recursiveSubmodules>
+            <trackingSubmodules>false</trackingSubmodules>
+            <reference></reference>
+            <parentCredentials>true</parentCredentials>
+            <timeout>5</timeout>
+            <shallow>false</shallow>
+          </extension>
+        </jenkins.plugins.git.traits.SubmoduleOptionTrait>
+        <jenkins.plugins.git.traits.CleanBeforeCheckoutTrait plugin="git@4.10.0">
+          <extension class="hudson.plugins.git.extensions.impl.CleanBeforeCheckout">
+            <deleteUntrackedNestedRepositories>false</deleteUntrackedNestedRepositories>
+          </extension>
+        </jenkins.plugins.git.traits.CleanBeforeCheckoutTrait>
+        <org.jenkinsci.plugins.githubScmTraitNotificationContext.NotificationContextTrait plugin="github-scm-trait-notification-context@1.2-SNAPSHOT">
+          <contextLabel>continuous-integration/jenkins-alternate-${JOB_NAME}</contextLabel>
+          <typeSuffix>true</typeSuffix>
+        </org.jenkinsci.plugins.githubScmTraitNotificationContext.NotificationContextTrait>
+        <jenkins.plugins.git.traits.GitToolSCMSourceTrait plugin="git@4.10.0">
+          <gitTool>jgit</gitTool>
+        </jenkins.plugins.git.traits.GitToolSCMSourceTrait>
+      </traits>
+    </org.jenkinsci.plugins.github__branch__source.GitHubSCMNavigator>
+  </navigators>
+  <projectFactories>
+    <org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProjectFactory plugin="workflow-multibranch@2.26">
+      <scriptPath>Jenkinsfile-alternate</scriptPath>
+    </org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProjectFactory>
+  </projectFactories>
+  <buildStrategies/>
+  <strategy class="jenkins.branch.DefaultBranchPropertyStrategy">
+    <properties class="empty-list"/>
+  </strategy>
+</jenkins.branch.OrganizationFolder>

@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.5.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <org.jenkins.ci.plugins.html5__notifier.JobPropertyImpl plugin="html5-notifier-plugin@1.2">
+      <skip>false</skip>
+    </org.jenkins.ci.plugins.html5__notifier.JobPropertyImpl>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@1.7.2">
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>zzz_ayljchapmandt2</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.groovy.Groovy plugin="groovy@1.14">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>for (int i; i &lt; 25; i++) {
+    println &quot;Ignore this line, number ${i}, it&apos;s just for testing.&quot;
+}</command>
+      </scriptSource>
+      <groovyName>Groovy_2.1.5</groovyName>
+      <parameters></parameters>
+      <scriptParameters></scriptParameters>
+      <properties></properties>
+      <javaOpts></javaOpts>
+      <classPath></classPath>
+    </hudson.plugins.groovy.Groovy>
+    <hudson.plugins.groovy.Groovy plugin="groovy@1.14">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>for (int i; i &lt; 25; i++) {
+    println &quot;More data to ignore, line number ${i}.&quot;
+}</command>
+      </scriptSource>
+      <groovyName>Groovy_2.1.5</groovyName>
+      <parameters></parameters>
+      <scriptParameters></scriptParameters>
+      <properties></properties>
+      <javaOpts></javaOpts>
+      <classPath></classPath>
+    </hudson.plugins.groovy.Groovy>
+    <hudson.plugins.groovy.Groovy plugin="groovy@1.14">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>assert false</command>
+      </scriptSource>
+      <groovyName>Groovy_2.1.5</groovyName>
+      <parameters></parameters>
+      <scriptParameters></scriptParameters>
+      <properties></properties>
+      <javaOpts></javaOpts>
+      <classPath></classPath>
+    </hudson.plugins.groovy.Groovy>
+  </builders>
+  <publishers>
+    <hudson.plugins.emailext.ExtendedEmailPublisher plugin="email-ext@2.30.2">
+      <recipientList>james_chapman@mcafee.com</recipientList>
+      <configuredTriggers>
+        <hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+          <email>
+            <recipientList>james_chapman@mcafee.com</recipientList>
+            <subject>[JAMES FOO] $DEFAULT_SUBJECT</subject>
+            <body>${JENKINS_URL}
+
+--------------------------------------------------------------------------
+*** maxlines should be maxLines (upper case L) ***
+${BUILD_LOG, maxlines=10, escapeHtml=true}
+
+--------------------------------------------------------------------------
+
+${BUILD_LOG_EXCERPT, start=&quot;^Ignore this line, number 3, it&apos;s just for test.+&quot;, end=&quot;More data to ignore, line number 6.+&quot;}
+
+--------------------------------------------------------------------------
+
+${BUILD_LOG_REGEX, regex=&quot;^More data to ignore, line number 24.+&quot;, linesAfter=6, showTruncatedLines=false, escapeHtml=true}
+
+--------------------------------------------------------------------------
+
+
+
+
+</body>
+            <sendToDevelopers>false</sendToDevelopers>
+            <sendToRequester>false</sendToRequester>
+            <includeCulprits>false</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+            <attachmentsPattern></attachmentsPattern>
+            <attachBuildLog>false</attachBuildLog>
+            <compressBuildLog>false</compressBuildLog>
+            <replyTo></replyTo>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+      </configuredTriggers>
+      <contentType>text/plain</contentType>
+      <defaultSubject>[JAMES FOO] $DEFAULT_SUBJECT</defaultSubject>
+      <defaultContent>BLANK</defaultContent>
+      <attachmentsPattern></attachmentsPattern>
+      <presendScript></presendScript>
+      <attachBuildLog>false</attachBuildLog>
+      <compressBuildLog>false</compressBuildLog>
+      <replyTo>$DEFAULT_REPLYTO</replyTo>
+      <saveOutput>true</saveOutput>
+    </hudson.plugins.emailext.ExtendedEmailPublisher>
+  </publishers>
+  <buildWrappers/>
+</project>

@@ -1,0 +1,143 @@
+$ ./jstack 3176
+2008-05-02 12:30:39
+Full thread dump Java HotSpot(TM) Client VM (10.0-b19 mixed mode):
+
+"pool-1-thread-1" prio=6 tid=0x44c7e800 nid=0xbb8 in Object.wait() [0x44d3f000..0x44d3fd14]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x0284a8f8> (a hudson.remoting.UserRequest)
+        at java.lang.Object.wait(Object.java:485)
+        at hudson.remoting.Request.call(Request.java:88)
+        - locked <0x0284a8f8> (a hudson.remoting.UserRequest)
+        at hudson.remoting.Channel.call(Channel.java:390)
+        at hudson.remoting.RemoteInvocationHandler.invoke(RemoteInvocationHandler.java:126)
+        at hudson.maven.$Proxy1.end(Unknown Source)
+        at hudson.maven.MavenBuildProxy2$Filter.end(MavenBuildProxy2.java:44)
+        at hudson.maven.MavenModuleSetBuild$Builder.postModule(MavenModuleSetBuild.java:522)
+        at hudson.maven.MavenBuilder$Adapter.fireLeaveModule(MavenBuilder.java:261)
+        at hudson.maven.MavenBuilder$Adapter.endModule(MavenBuilder.java:232)
+        at org.apache.maven.lifecycle.LifecycleExecutorInterceptor$EventMonitorImpl.endEvent(LifecycleExecutorIntercepto
+r.java:69)
+        at org.apache.maven.monitor.event.DefaultEventDispatcher.dispatchEnd(DefaultEventDispatcher.java:54)
+        at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:284)
+        at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:143)
+        at org.apache.maven.lifecycle.LifecycleExecutorInterceptor.execute(LifecycleExecutorInterceptor.java:42)
+        at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:334)
+        at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:125)
+        at org.apache.maven.cli.MavenCli.main(MavenCli.java:280)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)
+        at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)
+        at hudson.maven.agent.Main.launch(Main.java:97)
+        at hudson.maven.MavenBuilder.call(MavenBuilder.java:129)
+        at hudson.maven.MavenModuleSetBuild$Builder.call(MavenModuleSetBuild.java:485)
+        at hudson.maven.MavenModuleSetBuild$Builder.call(MavenModuleSetBuild.java:431)
+        at hudson.remoting.UserRequest.perform(UserRequest.java:69)
+        at hudson.remoting.UserRequest.perform(UserRequest.java:23)
+        at hudson.remoting.Request$2.run(Request.java:200)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:441)
+        at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:885)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+        at java.lang.Thread.run(Thread.java:619)
+
+"Channel reader thread: channel" prio=6 tid=0x44c79800 nid=0x884 runnable [0x44cef000..0x44cefd94]
+   java.lang.Thread.State: RUNNABLE
+        at java.io.FileOutputStream.writeBytes(Native Method)
+        at java.io.FileOutputStream.write(FileOutputStream.java:260)
+        at java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:65)
+        at java.io.BufferedOutputStream.flush(BufferedOutputStream.java:123)
+        - locked <0x04ead900> (a java.io.BufferedOutputStream)
+        at java.io.PrintStream.write(PrintStream.java:432)
+        - locked <0x04e96718> (a java.io.PrintStream)
+        at java.io.ObjectOutputStream$BlockDataOutputStream.drain(ObjectOutputStream.java:1838)
+        at java.io.ObjectOutputStream$BlockDataOutputStream.write(ObjectOutputStream.java:1802)
+        at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1495)
+        at java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1474)
+        at java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1392)
+        at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1150)
+        at java.io.ObjectOutputStream.writeArray(ObjectOutputStream.java:1338)
+        at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1146)
+        at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1509)
+        at java.io.ObjectOutputStream.defaultWriteObject(ObjectOutputStream.java:416)
+        at java.lang.Throwable.writeObject(Throwable.java:648)
+        - locked <0x02955f78> (a hudson.remoting.Command$Source)
+        at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at java.io.ObjectStreamClass.invokeWriteObject(ObjectStreamClass.java:945)
+        at java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1461)
+        at java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1392)
+        at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1150)
+        at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1509)
+        at java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1474)
+        at java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1392)
+        at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1150)
+        at java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:326)
+        at hudson.remoting.Channel.send(Channel.java:321)
+        - locked <0x04ebf000> (a hudson.remoting.Channel)
+        at hudson.remoting.ProxyOutputStream.flush(ProxyOutputStream.java:94)
+        at hudson.remoting.RemoteOutputStream.flush(RemoteOutputStream.java:89)
+        at java.io.PrintStream.write(PrintStream.java:432)
+        - locked <0x04ee4678> (a java.io.PrintStream)
+        at java.io.FilterOutputStream.write(FilterOutputStream.java:80)
+        at hudson.util.DelegatingOutputStream.write(DelegatingOutputStream.java:24)
+        at hudson.remoting.ProxyOutputStream$Chunk.execute(ProxyOutputStream.java:124)
+        at hudson.remoting.Channel$ReaderThread.run(Channel.java:584)
+
+"Low Memory Detector" daemon prio=6 tid=0x447b9000 nid=0xc58 runnable [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"CompilerThread0" daemon prio=10 tid=0x447ab000 nid=0xeec waiting on condition [0x00000000..0x449ff7bc]
+   java.lang.Thread.State: RUNNABLE
+
+"Attach Listener" daemon prio=10 tid=0x447aa000 nid=0x510 waiting on condition [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Signal Dispatcher" daemon prio=10 tid=0x447a9000 nid=0x49c runnable [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" daemon prio=8 tid=0x44799c00 nid=0x44c in Object.wait() [0x4490f000..0x4490fc94]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x04e96670> (a java.lang.ref.ReferenceQueue$Lock)
+        at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:116)
+        - locked <0x04e96670> (a java.lang.ref.ReferenceQueue$Lock)
+        at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:132)
+        at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
+
+"Reference Handler" daemon prio=10 tid=0x44795800 nid=0xa64 in Object.wait() [0x448bf000..0x448bfd14]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x04e96460> (a java.lang.ref.Reference$Lock)
+        at java.lang.Object.wait(Object.java:485)
+        at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+        - locked <0x04e96460> (a java.lang.ref.Reference$Lock)
+
+"main" prio=6 tid=0x00296800 nid=0x9a0 in Object.wait() [0x0068f000..0x0068fe54]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x04ebf000> (a hudson.remoting.Channel)
+        at java.lang.Object.wait(Object.java:485)
+        at hudson.remoting.Channel.join(Channel.java:477)
+        - locked <0x04ebf000> (a hudson.remoting.Channel)
+        at hudson.remoting.Launcher.main(Launcher.java:69)
+        at hudson.remoting.Launcher.main(Launcher.java:52)
+        at hudson.remoting.Launcher.main(Launcher.java:48)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at hudson.maven.agent.Main.main(Main.java:68)
+        at hudson.maven.agent.Main.main(Main.java:35)
+
+"VM Thread" prio=10 tid=0x44792800 nid=0xd04 runnable
+
+"VM Periodic Task Thread" prio=10 tid=0x447ba400 nid=0xe44 waiting on condition
+
+JNI global references: 949
+

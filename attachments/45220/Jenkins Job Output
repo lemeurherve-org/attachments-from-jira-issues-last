@@ -1,0 +1,436 @@
+Started by an SCM change
+Lightweight checkout support not available, falling back to full checkout.
+Checking out hg https://phabricator.mfa-sp.microflown.loc/source/avisalib/ development into /var/lib/jenkins/workspace/avisalib/development@script to read Jenkinsfile_pipeline.gsh
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" showconfig paths.default
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" pull --rev development
+pulling from [REDACTED]
+no changes found
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" update --clean --rev development
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev . --template {node}
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev . --template {rev}
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev e9c1b55a68d7249cedc2eeaa28f8ee8d8d9eabd3 --template exists\n
+exists
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --template "<changeset node='{node}' author='{author|xmlescape}' rev='{rev}' date='{date}'><msg>{desc|xmlescape}</msg><added>{file_adds|stringify|xmlescape}</added><deleted>{file_dels|stringify|xmlescape}</deleted><files>{files|stringify|xmlescape}</files><parents>{parents}</parents></changeset>\n" --rev "ancestors('development') and not ancestors(e9c1b55a68d7249cedc2eeaa28f8ee8d8d9eabd3)" --encoding UTF-8 --encodingmode replace
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev . --template {node}
+[development@script] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev . --template {rev}
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] node
+Still waiting to schedule task
+‘PLTSTSRV001’ is offline
+Running on PLTSTSRV001 in /home/jenkins/jenkins_slave/workspace/avisalib/development
+[Pipeline] {
+[Pipeline] properties
+[Pipeline] timeout
+Timeout set to expire in 1 hr 0 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Setup)
+[Pipeline] checkout
+$ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" clone --rev development --noupdate https://phabricator.mfa-sp.microflown.loc/source/avisalib/ /home/jenkins/jenkins_slave/workspace/avisalib/development
+adding changesets
+adding manifests
+adding file changes
+added 182 changesets with 268 changes to 43 files
+[Pipeline] sh
+[development] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" update --rev development
+25 files updated, 0 files merged, 0 files removed, 0 files unresolved
+[development] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev . --template {node}
+[development] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev . --template {rev}
+[development] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev e9c1b55a68d7249cedc2eeaa28f8ee8d8d9eabd3 --template exists\n
+exists
+[development] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --template "<changeset node='{node}' author='{author|xmlescape}' rev='{rev}' date='{date}'><msg>{desc|xmlescape}</msg><added>{file_adds|stringify|xmlescape}</added><deleted>{file_dels|stringify|xmlescape}</deleted><files>{files|stringify|xmlescape}</files><parents>{parents}</parents></changeset>\n" --rev "ancestors('development') and not ancestors(e9c1b55a68d7249cedc2eeaa28f8ee8d8d9eabd3)" --encoding UTF-8 --encodingmode replace
+[development] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev . --template {node}
+[development] $ hg --config auth.jenkins.prefix=* --config ******** --config ******** --config "auth.jenkins.schemes=http https" log --rev . --template {rev}
+Collecting pip
+  Using cached https://files.pythonhosted.org/packages/c2/d7/90f34cb0d83a6c5631cf71dfe64cc1054598c843a92b400e55675cc2ac37/pip-18.1-py2.py3-none-any.whl
+Installing collected packages: pip
+  Found existing installation: pip 9.0.3
+    Uninstalling pip-9.0.3:
+      Successfully uninstalled pip-9.0.3
+Successfully installed pip-18.1
+Installing requirements...
+Collecting alabaster>=0.7.10 (from -r requirements.txt (line 1))
+  Using cached https://files.pythonhosted.org/packages/10/ad/00b090d23a222943eb0eda509720a404f531a439e803f6538f35136cae9e/alabaster-0.7.12-py2.py3-none-any.whl
+Collecting attrs>=17.4.0 (from -r requirements.txt (line 2))
+  Using cached https://files.pythonhosted.org/packages/3a/e1/5f9023cc983f1a628a8c2fd051ad19e76ff7b142a0faf329336f9a62a514/attrs-18.2.0-py2.py3-none-any.whl
+Collecting Babel>=2.5.3 (from -r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/b8/ad/c6f60602d3ee3d92fbed87675b6fb6a6f9a38c223343ababdb44ba201f10/Babel-2.6.0-py2.py3-none-any.whl
+Collecting certifi>=2018.1.18 (from -r requirements.txt (line 4))
+  Using cached https://files.pythonhosted.org/packages/56/9d/1d02dd80bc4cd955f98980f28c5ee2200e1209292d5f9e9cc8d030d18655/certifi-2018.10.15-py2.py3-none-any.whl
+Collecting chardet>=3.0.4 (from -r requirements.txt (line 5))
+  Using cached https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl
+Collecting colorama>=0.3.9 (from -r requirements.txt (line 6))
+  Using cached https://files.pythonhosted.org/packages/0a/93/6e8289231675d561d476d656c2ee3a868c1cca207e16c118d4503b25e2bf/colorama-0.4.0-py2.py3-none-any.whl
+Collecting docutils>=0.14 (from -r requirements.txt (line 7))
+  Using cached https://files.pythonhosted.org/packages/36/fa/08e9e6e0e3cbd1d362c3bbee8d01d0aedb2155c4ac112b19ef3cae8eed8d/docutils-0.14-py3-none-any.whl
+Collecting future>=0.16.0 (from -r requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/90/52/e20466b85000a181e1e144fd8305caf2cf475e2f9674e797b222f8105f5f/future-0.17.1.tar.gz
+Collecting idna>=2.6 (from -r requirements.txt (line 9))
+  Using cached https://files.pythonhosted.org/packages/4b/2a/0276479a4b3caeb8a8c1af2f8e4355746a97fab05a372e4a2c6a6b876165/idna-2.7-py2.py3-none-any.whl
+Collecting imagesize>=1.0.0 (from -r requirements.txt (line 10))
+  Using cached https://files.pythonhosted.org/packages/fc/b6/aef66b4c52a6ad6ac18cf6ebc5731ed06d8c9ae4d3b2d9951f261150be67/imagesize-1.1.0-py2.py3-none-any.whl
+Collecting iso8601>=0.1.12 (from -r requirements.txt (line 11))
+  Using cached https://files.pythonhosted.org/packages/ef/57/7162609dab394d38bbc7077b7ba0a6f10fb09d8b7701ea56fa1edc0c4345/iso8601-0.1.12-py2.py3-none-any.whl
+Collecting Jinja2>=2.10 (from -r requirements.txt (line 12))
+  Using cached https://files.pythonhosted.org/packages/7f/ff/ae64bacdfc95f27a016a7bed8e8686763ba4d277a78ca76f32659220a731/Jinja2-2.10-py2.py3-none-any.whl
+Collecting MarkupSafe>=1.0 (from -r requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/08/04/f2191b50fb7f0712f03f064b71d8b4605190f2178ba02e975a87f7b89a0d/MarkupSafe-1.1.0-cp36-cp36m-manylinux1_x86_64.whl
+Collecting more-itertools>=4.1.0 (from -r requirements.txt (line 14))
+  Using cached https://files.pythonhosted.org/packages/79/b1/eace304ef66bd7d3d8b2f78cc374b73ca03bc53664d78151e9df3b3996cc/more_itertools-4.3.0-py3-none-any.whl
+Collecting numpy>=1.14.2 (from -r requirements.txt (line 15))
+  Using cached https://files.pythonhosted.org/packages/ff/7f/9d804d2348471c67a7d8b5f84f9bc59fd1cefa148986f2b74552f8573555/numpy-1.15.4-cp36-cp36m-manylinux1_x86_64.whl
+Collecting packaging>=17.1 (from -r requirements.txt (line 16))
+  Using cached https://files.pythonhosted.org/packages/89/d1/92e6df2e503a69df9faab187c684585f0136662c12bb1f36901d426f3fab/packaging-18.0-py2.py3-none-any.whl
+Collecting pluggy>=0.6.0 (from -r requirements.txt (line 17))
+  Using cached https://files.pythonhosted.org/packages/1c/e7/017c262070af41fe251401cb0d0e1b7c38f656da634cd0c15604f1f30864/pluggy-0.8.0-py2.py3-none-any.whl
+Collecting py>=1.5.3 (from -r requirements.txt (line 18))
+  Using cached https://files.pythonhosted.org/packages/3e/c7/3da685ef117d42ac8d71af525208759742dd235f8094221fdaafcd3dba8f/py-1.7.0-py2.py3-none-any.whl
+Collecting Pygments>=2.2.0 (from -r requirements.txt (line 19))
+  Using cached https://files.pythonhosted.org/packages/02/ee/b6e02dc6529e82b75bb06823ff7d005b141037cb1416b10c6f00fc419dca/Pygments-2.2.0-py2.py3-none-any.whl
+Collecting pyparsing>=2.2.0 (from -r requirements.txt (line 20))
+  Using cached https://files.pythonhosted.org/packages/71/e8/6777f6624681c8b9701a8a0a5654f3eb56919a01a78e12bf3c73f5a3c714/pyparsing-2.3.0-py2.py3-none-any.whl
+Collecting pyserial>=3.4 (from -r requirements.txt (line 21))
+  Using cached https://files.pythonhosted.org/packages/0d/e4/2a744dd9e3be04a0c0907414e2a01a7c88bb3915cbe3c8cc06e209f59c30/pyserial-3.4-py2.py3-none-any.whl
+Collecting pytest>=3.5.0 (from -r requirements.txt (line 22))
+  Using cached https://files.pythonhosted.org/packages/bb/d5/7601c468ded9a59478dcb39d21e24d58bb375681c64a06fbb629d2bc2ac3/pytest-4.0.0-py2.py3-none-any.whl
+Collecting pytest-mock>=1.10.0 (from -r requirements.txt (line 23))
+  Using cached https://files.pythonhosted.org/packages/5e/58/c97f24442020f91af0a4a266280f48b2cbbc43b4e33b0955ac3b3425a5ff/pytest_mock-1.10.0-py2.py3-none-any.whl
+Collecting pytz>=2018.4 (from -r requirements.txt (line 24))
+  Using cached https://files.pythonhosted.org/packages/f8/0e/2365ddc010afb3d79147f1dd544e5ee24bf4ece58ab99b16fbb465ce6dc0/pytz-2018.7-py2.py3-none-any.whl
+Collecting PyYAML>=3.12 (from -r requirements.txt (line 25))
+  Using cached https://files.pythonhosted.org/packages/9e/a3/1d13970c3f36777c583f136c136f804d70f500168edc1edea6daa7200769/PyYAML-3.13.tar.gz
+Collecting requests>=2.18.4 (from -r requirements.txt (line 26))
+  Using cached https://files.pythonhosted.org/packages/ff/17/5cbb026005115301a8fb2f9b0e3e8d32313142fe8b617070e7baad20554f/requests-2.20.1-py2.py3-none-any.whl
+Collecting scipy>=1.1.0 (from -r requirements.txt (line 27))
+  Using cached https://files.pythonhosted.org/packages/a8/0b/f163da98d3a01b3e0ef1cab8dd2123c34aee2bafbb1c5bffa354cc8a1730/scipy-1.1.0-cp36-cp36m-manylinux1_x86_64.whl
+Collecting setuptools>=40.0.0 (from -r requirements.txt (line 28))
+  Using cached https://files.pythonhosted.org/packages/e7/16/da8cb8046149d50940c6110310983abb359bbb8cbc3539e6bef95c29428a/setuptools-40.6.2-py2.py3-none-any.whl
+Collecting six>=1.11.0 (from -r requirements.txt (line 29))
+  Using cached https://files.pythonhosted.org/packages/67/4b/141a581104b1f6397bfa78ac9d43d8ad29a7ca43ea90a2d863fe3056e86a/six-1.11.0-py2.py3-none-any.whl
+Collecting snowballstemmer>=1.2.1 (from -r requirements.txt (line 30))
+  Using cached https://files.pythonhosted.org/packages/d4/6c/8a935e2c7b54a37714656d753e4187ee0631988184ed50c0cf6476858566/snowballstemmer-1.2.1-py2.py3-none-any.whl
+Collecting Sphinx>=1.7.2 (from -r requirements.txt (line 31))
+  Using cached https://files.pythonhosted.org/packages/ff/d5/3a8727d6f890b1ae45da72a55bf8449e9f2c535a444923b338c3f509f203/Sphinx-1.8.2-py2.py3-none-any.whl
+Collecting sphinxcontrib-websupport>=1.0.1 (from -r requirements.txt (line 32))
+  Using cached https://files.pythonhosted.org/packages/52/69/3c2fbdc3702358c5b34ee25e387b24838597ef099761fc9a42c166796e8f/sphinxcontrib_websupport-1.1.0-py2.py3-none-any.whl
+Collecting urllib3>=1.22 (from -r requirements.txt (line 33))
+  Using cached https://files.pythonhosted.org/packages/62/00/ee1d7de624db8ba7090d1226aebefab96a2c71cd5cfa7629d6ad3f61b79e/urllib3-1.24.1-py2.py3-none-any.whl
+Collecting wheel>=0.31.1 (from -r requirements.txt (line 34))
+  Using cached https://files.pythonhosted.org/packages/ff/47/1dfa4795e24fd6f93d5d58602dd716c3f101cfd5a77cd9acbe519b44a0a9/wheel-0.32.3-py2.py3-none-any.whl
+Collecting atomicwrites>=1.0 (from pytest>=3.5.0->-r requirements.txt (line 22))
+  Using cached https://files.pythonhosted.org/packages/3a/9a/9d878f8d885706e2530402de6417141129a943802c084238914fa6798d97/atomicwrites-1.2.1-py2.py3-none-any.whl
+Installing collected packages: alabaster, attrs, pytz, Babel, certifi, chardet, colorama, docutils, future, idna, imagesize, iso8601, MarkupSafe, Jinja2, six, more-itertools, numpy, pyparsing, packaging, pluggy, py, Pygments, pyserial, atomicwrites, setuptools, pytest, pytest-mock, PyYAML, urllib3, requests, scipy, snowballstemmer, sphinxcontrib-websupport, Sphinx, wheel
+  Running setup.py install for future: started
+    Running setup.py install for future: finished with status 'done'
+  Found existing installation: setuptools 39.0.1
+    Uninstalling setuptools-39.0.1:
+      Successfully uninstalled setuptools-39.0.1
+  Running setup.py install for PyYAML: started
+    Running setup.py install for PyYAML: finished with status 'done'
+Successfully installed Babel-2.6.0 Jinja2-2.10 MarkupSafe-1.1.0 PyYAML-3.13 Pygments-2.2.0 Sphinx-1.8.2 alabaster-0.7.12 atomicwrites-1.2.1 attrs-18.2.0 certifi-2018.10.15 chardet-3.0.4 colorama-0.4.0 docutils-0.14 future-0.17.1 idna-2.7 imagesize-1.1.0 iso8601-0.1.12 more-itertools-4.3.0 numpy-1.15.4 packaging-18.0 pluggy-0.8.0 py-1.7.0 pyparsing-2.3.0 pyserial-3.4 pytest-4.0.0 pytest-mock-1.10.0 pytz-2018.7 requests-2.20.1 scipy-1.1.0 setuptools-40.6.2 six-1.11.0 snowballstemmer-1.2.1 sphinxcontrib-websupport-1.1.0 urllib3-1.24.1 wheel-0.32.3
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Documentation)
+[Pipeline] echo
+=========================== building documentation ============================
+[Pipeline] sh
+Running Sphinx v1.8.2
+making output directory...
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 4 source files that are out of date
+updating environment: 4 added, 0 changed, 0 removed
+reading sources... [ 25%] api_reference
+reading sources... [ 50%] dsp_settings
+reading sources... [ 75%] index
+reading sources... [100%] supported_commands
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [ 25%] api_reference
+writing output... [ 50%] dsp_settings
+writing output... [ 75%] index
+writing output... [100%] supported_commands
+
+generating indices... genindex py-modindex
+highlighting module code... [ 50%] avisalib.cli
+highlighting module code... [100%] avisalib.utils
+
+writing additional pages... search
+copying static files... WARNING: html_static_path entry '/home/jenkins/jenkins_slave/workspace/avisalib/development/docs/source/_static' does not exist
+done
+copying extra files... done
+dumping search index in English (code: en) ... done
+dumping object inventory... done
+build succeeded, 1 warning.
+
+The HTML pages are in docs/build/html.
+[Pipeline] echo
+========================== publishing documentation ===========================
+[Pipeline] sh
+Building archive with documentation
+total 12
+drwxr-xr-x 3 jenkins jenkins 4096 Nov 20 04:02 .
+drwxr-xr-x 4 jenkins jenkins 4096 Nov 20 04:02 ..
+drwxr-xr-x 6 jenkins jenkins 4096 Nov 20 04:02 html
+  adding: html/ (stored 0%)
+  adding: html/genindex.html (deflated 82%)
+  adding: html/dsp_settings.html (deflated 89%)
+  adding: html/objects.inv (stored 0%)
+  adding: html/_sources/ (stored 0%)
+  adding: html/_sources/dsp_settings.rst.txt (deflated 89%)
+  adding: html/_sources/supported_commands.rst.txt (deflated 83%)
+  adding: html/_sources/api_reference.rst.txt (deflated 71%)
+  adding: html/_sources/index.rst.txt (deflated 43%)
+  adding: html/api_reference.html (deflated 84%)
+  adding: html/_static/ (stored 0%)
+  adding: html/_static/basic.css (deflated 76%)
+  adding: html/_static/plus.png (deflated 7%)
+  adding: html/_static/down-pressed.png (stored 0%)
+  adding: html/_static/down.png (stored 0%)
+  adding: html/_static/documentation_options.js (deflated 64%)
+  adding: html/_static/sidebar.js (deflated 69%)
+  adding: html/_static/underscore.js (deflated 66%)
+  adding: html/_static/classic.css (deflated 73%)
+  adding: html/_static/comment.png (stored 0%)
+  adding: html/_static/searchtools.js (deflated 68%)
+  adding: html/_static/jquery-3.2.1.js (deflated 70%)
+  adding: html/_static/pygments.css (deflated 79%)
+  adding: html/_static/comment-bright.png (stored 0%)
+  adding: html/_static/comment-close.png (stored 0%)
+  adding: html/_static/up.png (stored 0%)
+  adding: html/_static/minus.png (deflated 8%)
+  adding: html/_static/ajax-loader.gif (deflated 18%)
+  adding: html/_static/Microflown-Icon-small.png (deflated 11%)
+  adding: html/_static/up-pressed.png (stored 0%)
+  adding: html/_static/file.png (stored 0%)
+  adding: html/_static/websupport.js (deflated 73%)
+  adding: html/_static/jquery.js (deflated 65%)
+  adding: html/_static/underscore-1.3.1.js (deflated 72%)
+  adding: html/_static/doctools.js (deflated 64%)
+  adding: html/.doctrees/ (stored 0%)
+  adding: html/.doctrees/environment.pickle (deflated 76%)
+  adding: html/.doctrees/api_reference.doctree (deflated 85%)
+  adding: html/.doctrees/supported_commands.doctree (deflated 88%)
+  adding: html/.doctrees/index.doctree (deflated 58%)
+  adding: html/.doctrees/dsp_settings.doctree (deflated 88%)
+  adding: html/py-modindex.html (deflated 70%)
+  adding: html/searchindex.js (deflated 61%)
+  adding: html/index.html (deflated 79%)
+  adding: html/supported_commands.html (deflated 87%)
+  adding: html/_modules/ (stored 0%)
+  adding: html/_modules/avisalib/ (stored 0%)
+  adding: html/_modules/avisalib/cli.html (deflated 90%)
+  adding: html/_modules/avisalib/utils.html (deflated 84%)
+  adding: html/_modules/index.html (deflated 69%)
+  adding: html/.buildinfo (deflated 25%)
+  adding: html/search.html (deflated 68%)
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Binary)
+[Pipeline] echo
+============================= building binary =================================
+[Pipeline] sh
+running bdist_wheel
+running build
+running build_py
+creating build
+creating build/lib
+creating build/lib/avisalib
+copying avisalib/__init__.py -> build/lib/avisalib
+creating build/lib/avisalib/test
+copying avisalib/test/test_utils.py -> build/lib/avisalib/test
+copying avisalib/test/__init__.py -> build/lib/avisalib/test
+copying avisalib/test/config.py -> build/lib/avisalib/test
+copying avisalib/test/test_cli.py -> build/lib/avisalib/test
+creating build/lib/avisalib/utils
+copying avisalib/utils/__init__.py -> build/lib/avisalib/utils
+copying avisalib/utils/audio.py -> build/lib/avisalib/utils
+copying avisalib/utils/audiointerface.py -> build/lib/avisalib/utils
+creating build/lib/avisalib/cli
+copying avisalib/cli/__main__.py -> build/lib/avisalib/cli
+copying avisalib/cli/__init__.py -> build/lib/avisalib/cli
+installing to build/bdist.linux-x86_64/wheel
+running install
+running install_lib
+creating build/bdist.linux-x86_64
+creating build/bdist.linux-x86_64/wheel
+creating build/bdist.linux-x86_64/wheel/avisalib
+creating build/bdist.linux-x86_64/wheel/avisalib/test
+copying build/lib/avisalib/test/test_utils.py -> build/bdist.linux-x86_64/wheel/avisalib/test
+copying build/lib/avisalib/test/__init__.py -> build/bdist.linux-x86_64/wheel/avisalib/test
+copying build/lib/avisalib/test/config.py -> build/bdist.linux-x86_64/wheel/avisalib/test
+copying build/lib/avisalib/test/test_cli.py -> build/bdist.linux-x86_64/wheel/avisalib/test
+copying build/lib/avisalib/__init__.py -> build/bdist.linux-x86_64/wheel/avisalib
+creating build/bdist.linux-x86_64/wheel/avisalib/utils
+copying build/lib/avisalib/utils/__init__.py -> build/bdist.linux-x86_64/wheel/avisalib/utils
+copying build/lib/avisalib/utils/audio.py -> build/bdist.linux-x86_64/wheel/avisalib/utils
+copying build/lib/avisalib/utils/audiointerface.py -> build/bdist.linux-x86_64/wheel/avisalib/utils
+creating build/bdist.linux-x86_64/wheel/avisalib/cli
+copying build/lib/avisalib/cli/__main__.py -> build/bdist.linux-x86_64/wheel/avisalib/cli
+copying build/lib/avisalib/cli/__init__.py -> build/bdist.linux-x86_64/wheel/avisalib/cli
+running install_egg_info
+running egg_info
+creating avisalib.egg-info
+writing avisalib.egg-info/PKG-INFO
+writing dependency_links to avisalib.egg-info/dependency_links.txt
+writing requirements to avisalib.egg-info/requires.txt
+writing top-level names to avisalib.egg-info/top_level.txt
+writing manifest file 'avisalib.egg-info/SOURCES.txt'
+reading manifest file 'avisalib.egg-info/SOURCES.txt'
+writing manifest file 'avisalib.egg-info/SOURCES.txt'
+Copying avisalib.egg-info to build/bdist.linux-x86_64/wheel/avisalib-1.3.dev77-py3.6.egg-info
+running install_scripts
+creating build/bdist.linux-x86_64/wheel/avisalib-1.3.dev77.dist-info/WHEEL
+creating 'dist/avisalib-1.3.dev77-py3-none-any.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+adding 'avisalib/__init__.py'
+adding 'avisalib/cli/__init__.py'
+adding 'avisalib/cli/__main__.py'
+adding 'avisalib/test/__init__.py'
+adding 'avisalib/test/config.py'
+adding 'avisalib/test/test_cli.py'
+adding 'avisalib/test/test_utils.py'
+adding 'avisalib/utils/__init__.py'
+adding 'avisalib/utils/audio.py'
+adding 'avisalib/utils/audiointerface.py'
+adding 'avisalib-1.3.dev77.dist-info/METADATA'
+adding 'avisalib-1.3.dev77.dist-info/WHEEL'
+adding 'avisalib-1.3.dev77.dist-info/top_level.txt'
+adding 'avisalib-1.3.dev77.dist-info/RECORD'
+removing build/bdist.linux-x86_64/wheel
+[Pipeline] echo
+============================= publishing binary ==============================
+[Pipeline] sh
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] lock
+Trying to acquire lock on [AVISA_TST_SETUP]
+Lock acquired on [AVISA_TST_SETUP]
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (UC + EXPORTFREE)
+[Pipeline] echo
+============================= testing EXPORTFREE ==============================
+
+REDACTED BECAUSE CONTAINS SENSITIVE INFORMATION
+
+============================= test session starts ==============================
+platform linux -- Python 3.6.5, pytest-4.0.0, py-1.7.0, pluggy-0.8.0 -- /home/jenkins/jenkins_slave/workspace/avisalib/development/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/jenkins/jenkins_slave/workspace/avisalib/development, inifile:
+plugins: mock-1.10.0
+collecting ... collected 25 items / 1 deselected
+
+avisalib/test/test_cli.py::test_atstate_request PASSED
+avisalib/test/test_cli.py::test_atstate_change[00] PASSED
+avisalib/test/test_cli.py::test_atstate_change[02] PASSED
+avisalib/test/test_cli.py::test_atstate_change[01] PASSED
+avisalib/test/test_cli.py::test_atversion_request_firmware[UC] PASSED
+avisalib/test/test_cli.py::test_atversion_request_firmware[DSP] PASSED
+avisalib/test/test_cli.py::test_atversion_request_calibration PASSED
+avisalib/test/test_cli.py::test_atinfo_request PASSED
+avisalib/test/test_cli.py::test_atdefaults_change[01] PASSED
+avisalib/test/test_cli.py::test_atdefaults_change[00] PASSED
+avisalib/test/test_cli.py::test_atsettings_request PASSED
+avisalib/test/test_cli.py::test_atsettings_change[01] SKIPPED
+avisalib/test/test_cli.py::test_atsettings_change[00] SKIPPED
+avisalib/test/test_cli.py::test_atgeo_request PASSED
+avisalib/test/test_cli.py::test_atgeo_change[0000003939C4F000-[00000000, 00000000, 00000000]-[0000, 0000, 0000]] PASSED
+avisalib/test/test_cli.py::test_atgeo_change[0000003939C4F111-[3F800000, 40000000, 40400000]-[0001, 0002, 0003]] PASSED
+avisalib/test/test_cli.py::test_atgeo_change[0000003939C4F222-[40400000, 3F800000, 40000000]-[0003, 0001, 0002]] PASSED
+avisalib/test/test_cli.py::test_atsub_change[det-01] PASSED
+avisalib/test/test_cli.py::test_atsub_change[det-00] PASSED
+avisalib/test/test_cli.py::test_atsub_change[state-01] PASSED
+avisalib/test/test_cli.py::test_atsub_change[state-00] PASSED
+avisalib/test/test_cli.py::test_atsub_change[geo-01] PASSED
+avisalib/test/test_cli.py::test_atsub_change[geo-00] PASSED
+avisalib/test/test_cli.py::test_atsync_request PASSED
+
+ generated xml file: /home/jenkins/jenkins_slave/workspace/avisalib/development/testReport-vehicle2.xml 
+============= 22 passed, 2 skipped, 1 deselected in 21.88 seconds ==============
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+Lock released on resource [AVISA_TST_SETUP]
+[Pipeline] // lock
+[Pipeline] stage
+[Pipeline] { (Utils)
+[Pipeline] echo
+=============================== testing utils =================================
+[Pipeline] sh
+============================= test session starts ==============================
+platform linux -- Python 3.6.5, pytest-4.0.0, py-1.7.0, pluggy-0.8.0 -- /home/jenkins/jenkins_slave/workspace/avisalib/development/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/jenkins/jenkins_slave/workspace/avisalib/development, inifile:
+plugins: mock-1.10.0
+collecting ... collected 15 items
+
+avisalib/test/test_utils.py::test_crc32 PASSED
+avisalib/test/test_utils.py::test_swap32 PASSED
+avisalib/test/test_utils.py::test_hex_to_float[3DCCCCCD-0.1] PASSED
+avisalib/test/test_utils.py::test_hex_to_float[3F800000-1.0] PASSED
+avisalib/test/test_utils.py::test_float_to_hex[3DCCCCCD-0.1-False] PASSED
+avisalib/test/test_utils.py::test_float_to_hex[3F800000-1.0-False] PASSED
+avisalib/test/test_utils.py::test_float_to_hex[0x3F800000-1.0-True] PASSED
+avisalib/test/test_utils.py::test_device_attributes_to_hex_address[00410095-AMMS-1-149] PASSED
+avisalib/test/test_utils.py::test_device_attributes_to_hex_address[00400011-AMMS-0-17] PASSED
+avisalib/test/test_utils.py::test_device_attributes_to_hex_address[00810020-USBR-1-32] PASSED
+avisalib/test/test_utils.py::test_hex_address_to_device_attributes[00410095-AMMS-1-149] PASSED
+avisalib/test/test_utils.py::test_hex_address_to_device_attributes[00400011-AMMS-0-17] PASSED
+avisalib/test/test_utils.py::test_hex_address_to_device_attributes[00810020-USBR-1-32] PASSED
+avisalib/test/test_utils.py::test_set_labjack_dio_state[pin0-1-1] PASSED
+avisalib/test/test_utils.py::test_set_labjack_dio_state[pin1-1-2] PASSED
+
+ generated xml file: /home/jenkins/jenkins_slave/workspace/avisalib/development/testReport-utils.xml 
+========================== 15 passed in 0.07 seconds ===========================
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] echo
+============================= post-build actions ==============================
+[Pipeline] stage
+[Pipeline] { (Post-build actions)
+[Pipeline] publishHTML
+[htmlpublisher] Archiving HTML reports...
+[htmlpublisher] Archiving at BUILD level /home/jenkins/jenkins_slave/workspace/avisalib/development/docs/build/html to /var/lib/jenkins/jobs/avisalib/jobs/development/builds/102/htmlreports/Documentation
+[Pipeline] junit
+Recording test results
+None of the test reports contained any result
+[Pipeline] junit
+Recording test results
+None of the test reports contained any result
+[Pipeline] junit
+Recording test results
+[Pipeline] junit
+Recording test results
+[Pipeline] junit
+Recording test results
+[Pipeline] junit
+Recording test results
+[Pipeline] junit
+Recording test results
+[Pipeline] emailextrecipients
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Cleanup)
+[Pipeline] echo
+================================== cleanup ====================================
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+

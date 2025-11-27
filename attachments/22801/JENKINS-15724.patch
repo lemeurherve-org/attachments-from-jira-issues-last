@@ -1,0 +1,44 @@
+### Eclipse Workspace Patch 1.0
+#P pathignore-plugin
+diff --git models/pathignore_wrapper.rb models/pathignore_wrapper.rb
+index f70719f..2746311 100644
+--- models/pathignore_wrapper.rb
++++ models/pathignore_wrapper.rb
+@@ -3,10 +3,12 @@
+ 
+   attr_accessor :invert_ignore
+   attr_accessor :ignored_paths
++  attr_accessor :build_empty
+ 
+   def initialize(attrs)
+     @invert_ignore = attrs['invert_ignore']
+     @ignored_paths = attrs['ignored_paths']
++    @build_empty = attrs['build_empty']
+   end
+ 
+   # Here we test if any of the changes warrant a build
+@@ -21,7 +23,7 @@
+       changeset = build.native.getChangeSet()
+       # XXX: Can there be files in the changeset if it's manually triggered?
+       # If so, how do we check for manual trigger?
+-      if changeset.isEmptySet()
++      if changeset.isEmptySet() and build_empty
+         listener.info "Empty changeset, running build."
+         return
+       end
+diff --git views/pathignore_wrapper/config.erb views/pathignore_wrapper/config.erb
+index 209e333..9427673 100644
+--- views/pathignore_wrapper/config.erb
++++ views/pathignore_wrapper/config.erb
+@@ -6,6 +6,11 @@
+           :description => 'If you enable this, we will only build if there is a change to the ignored paths.') do
+           f.checkbox
+   end
++  f.entry(:title => 'Build on empty changeset?',
++          :field => 'build_empty',
++          :description => 'If you enable this, the build will start when the change set is empty.') do
++          f.checkbox
++  end
+   f.entry(:title => 'Ignored paths',
+           :field => 'ignored_paths',
+           :description => 'Comma-separated, extended globs. See <a target="_blank" href="http://www.ruby-doc.org/core/File.html#method-c-fnmatch">File.fnmatch</a> for details.') do

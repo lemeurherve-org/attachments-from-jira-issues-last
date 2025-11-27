@@ -1,0 +1,395 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>This is a job to maintain builds of OVA image as well as to publish them on NAS (and remove older to keep sane amount of drive storage).</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.1.2"/>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.27.1">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.31">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs.JobRestrictionProperty plugin="job-restrictions@0.8"/>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition plugin="extensible-choice-parameter@1.7.0">
+          <name>OSIMAGE_DISTRO</name>
+          <description>Our directly developed product can be bundled into OS images based on various third-party OS distributions. Pick the flavour here.</description>
+          <editable>true</editable>
+          <editableType>NoFilter</editableType>
+          <choiceListProvider class="jp.ikedam.jenkins.plugins.extensible_choice_parameter.GlobalTextareaChoiceListProvider">
+            <name>OSIMAGE_DISTROS</name>
+          </choiceListProvider>
+        </jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition>
+        <jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition plugin="extensible-choice-parameter@1.7.0">
+          <name>IMAGE_PREFIX</name>
+          <description>Part of the filename leading up to IMAGETYPE and IMAGE_SUFFIX and finally IMAGEVERSION number/tag. Usually correlates with IMGTYPE used to build the OS image.</description>
+          <editable>true</editable>
+          <editableType>NoFilter</editableType>
+          <choiceListProvider class="jp.ikedam.jenkins.plugins.extensible_choice_parameter.TextareaChoiceListProvider">
+            <whenToAdd>CompletedUnstable</whenToAdd>
+            <choiceList>
+              <string>fty-arm-ova</string>
+              <string>fty-master-ova</string>
+            </choiceList>
+          </choiceListProvider>
+        </jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>IMAGETYPE</name>
+          <description>Type of OVA image to be built. Correlates with IMGTYPE used to build the OS image.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>devel</string>
+              <string>deploy</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition plugin="extensible-choice-parameter@1.7.0">
+          <name>IMAGE_SUFFIX</name>
+          <description>&quot;-image&quot; for fty* builds, empty (or a couple of quote characters) for IPM_Infra and IPM_Editions*</description>
+          <editable>true</editable>
+          <editableType>NoFilter</editableType>
+          <choiceListProvider class="jp.ikedam.jenkins.plugins.extensible_choice_parameter.TextareaChoiceListProvider">
+            <whenToAdd>CompletedUnstable</whenToAdd>
+            <choiceList>
+              <string>-image</string>
+              <string></string>
+              <string>&apos;&apos;</string>
+            </choiceList>
+          </choiceListProvider>
+        </jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>IMAGE_DIR</name>
+          <description>Optional directory name for hosting the image type (its branches and arches). If empty, is deduced from prefix+type+suffix e.g. &quot;featureimage-bigdevel-image&quot; or &quot;IPM_Editions-va&quot; (empty suffix).</description>
+          <defaultValue></defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>IMAGEVERSION</name>
+          <description>SquashFS image name without prefix, type and suffix like &quot;16.08.04-10.28.57-2_x86_64&quot; or &quot;1.4+123&quot;.
+
+The default value of &quot;CURRENT&quot; will try to find the latest build matching the other parameters.</description>
+          <defaultValue>CURRENT</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition plugin="extensible-choice-parameter@1.7.0">
+          <name>FEATURE_BRANCH</name>
+          <description>Feature branch (upstream), QA level (master, arm), or release number name (1.4) - subdirectory on NAS for squashfs image storage</description>
+          <editable>true</editable>
+          <editableType>NoFilter</editableType>
+          <choiceListProvider class="jp.ikedam.jenkins.plugins.extensible_choice_parameter.TextareaChoiceListProvider">
+            <whenToAdd>CompletedUnstable</whenToAdd>
+            <choiceList>
+              <string>arm</string>
+              <string>1.4</string>
+              <string>upstream</string>
+              <string>Test</string>
+              <string>master</string>
+              <string>1.5.0</string>
+            </choiceList>
+          </choiceListProvider>
+        </jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CPUCOUNT</name>
+          <description>Number of CPUs allocated for OVA appliance.</description>
+          <defaultValue>2</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>MEMSIZE</name>
+          <description>Size of memory allocated for OVA appliance. Units are MB!</description>
+          <defaultValue>4096</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition plugin="extensible-choice-parameter@1.7.0">
+          <name>BB_REPO_FORK</name>
+          <description>GIT Repo with boot-loader codebase, a fork of ssh://git@bitbucket-prod.localdomain:7999/BIOS/bios-boot</description>
+          <editable>true</editable>
+          <editableType>NoFilter</editableType>
+          <choiceListProvider class="jp.ikedam.jenkins.plugins.extensible_choice_parameter.GlobalTextareaChoiceListProvider">
+            <whenToAdd>Triggered</whenToAdd>
+            <name>BB_REPO_FORK</name>
+          </choiceListProvider>
+        </jp.ikedam.jenkins.plugins.extensible__choice__parameter.ExtensibleChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BB_REPO_BRANCH</name>
+          <description></description>
+          <defaultValue>refs/remotes/origin/master</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BB_REPO_REFSPEC</name>
+          <description>Default (empty) is ok for usual builds; can be customized for e.g. PR builds.</description>
+          <defaultValue></defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>FIX_COMPATIBILITY</name>
+          <description>Fix compatibility for Virtual Box?</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>SANITYCHECK_ALLOW_OVERWRITE</name>
+          <description>If set (is not by default) allow replacing an existing file on NAS. Should be constrained to custom rebuilds while experimenting (with non-standard CPU and RAM variables).</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>SANITYCHECK_ALLOW_MKDIR</name>
+          <description>Normally this job requires that target directory exists and is usable. For experiments, new releases and feature branches, one can force creation of those.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CUSTOM_IMAGE_URL</name>
+          <description>Custom image URL, assumed to be on the NAS and served from relative paths from OBS or Tomcat on the web. If this parameter is used, it overrides the common components of image file name and location defined above and used to construct such an URL for the standard builds. The resulting appliance would be published to the same directory as the OS image.</description>
+          <defaultValue></defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CUSTOM_OVALOADER_URL</name>
+          <description>Do not build an OVA loader from scratch according to BB_REPO settings, but re-use one from the URL</description>
+          <defaultValue></defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CUSTOM_EMPTYOVA_URL</name>
+          <description>Do not build an OVA from scratch according to BB_REPO settings, but re-use one (including its loader disk image) from the URL. Can be mixed with CUSTOM_OVALOADER_URL.</description>
+          <defaultValue></defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@2.0.3-SNAPSHOT">
+      <maxConcurrentPerNode>1</maxConcurrentPerNode>
+      <maxConcurrentTotal>4</maxConcurrentTotal>
+      <categories class="java.util.concurrent.CopyOnWriteArrayList"/>
+      <throttleEnabled>true</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <limitOneJobWithMatchingParams>true</limitOneJobWithMatchingParams>
+      <paramsToUseForLimit></paramsToUseForLimit>
+      <configVersion>1</configVersion>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+    <job-metadata plugin="metadata@1.1.0b">
+      <values class="linked-list">
+        <metadata-tree>
+          <name>job-info</name>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>true</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <children class="linked-list">
+            <metadata-tree>
+              <name>last-saved</name>
+              <description></description>
+              <parent class="metadata-tree" reference="../../.."/>
+              <generated>true</generated>
+              <exposedToEnvironment>false</exposedToEnvironment>
+              <children class="linked-list">
+                <metadata-date>
+                  <name>time</name>
+                  <description></description>
+                  <parent class="metadata-tree" reference="../../.."/>
+                  <generated>true</generated>
+                  <exposedToEnvironment>false</exposedToEnvironment>
+                  <value>
+                    <time>1605094803155</time>
+                    <timezone>UTC</timezone>
+                  </value>
+                  <checked>false</checked>
+                </metadata-date>
+                <metadata-tree>
+                  <name>user</name>
+                  <parent class="metadata-tree" reference="../../.."/>
+                  <generated>true</generated>
+                  <exposedToEnvironment>false</exposedToEnvironment>
+                  <children class="linked-list">
+                    <metadata-string>
+                      <name>display-name</name>
+                      <description></description>
+                      <parent class="metadata-tree" reference="../../.."/>
+                      <generated>true</generated>
+                      <exposedToEnvironment>false</exposedToEnvironment>
+                      <value>SYSTEM</value>
+                    </metadata-string>
+                    <metadata-string>
+                      <name>full-name</name>
+                      <description></description>
+                      <parent class="metadata-tree" reference="../../.."/>
+                      <generated>true</generated>
+                      <exposedToEnvironment>false</exposedToEnvironment>
+                      <value>SYSTEM</value>
+                    </metadata-string>
+                  </children>
+                </metadata-tree>
+              </children>
+            </metadata-tree>
+          </children>
+        </metadata-tree>
+      </values>
+    </job-metadata>
+  </properties>
+  <scm class="org.jenkinsci.plugins.multiplescms.MultiSCM" plugin="multiple-scms@0.6">
+    <scms>
+      <hudson.plugins.git.GitSCM plugin="git@4.4.5">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <refspec>${BB_REPO_REFSPEC}</refspec>
+            <url>${BB_REPO_FORK}</url>
+            <credentialsId>a4cb8b58-30ab-4914-a306-6ba4567890b2</credentialsId>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>${BB_REPO_BRANCH}</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.CloneOption>
+            <shallow>false</shallow>
+            <noTags>false</noTags>
+            <reference>/home/abuild/jenkins-gitcache</reference>
+            <depth>0</depth>
+            <honorRefspec>false</honorRefspec>
+          </hudson.plugins.git.extensions.impl.CloneOption>
+          <hudson.plugins.git.extensions.impl.WipeWorkspace/>
+          <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+            <relativeTargetDir>bios-boot</relativeTargetDir>
+          </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+        </extensions>
+      </hudson.plugins.git.GitSCM>
+      <hudson.plugins.git.GitSCM plugin="git@4.4.5">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <url>https://github.com/42ity/fty-core.git</url>
+            <credentialsId>955c217d-8133-41c2-9235-901234567ca6</credentialsId>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>*/master</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.CloneOption>
+            <shallow>false</shallow>
+            <noTags>false</noTags>
+            <reference>/home/abuild/jenkins-gitcache</reference>
+            <depth>0</depth>
+            <honorRefspec>false</honorRefspec>
+          </hudson.plugins.git.extensions.impl.CloneOption>
+          <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+            <relativeTargetDir>fty-core</relativeTargetDir>
+          </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+        </extensions>
+      </hudson.plugins.git.GitSCM>
+    </scms>
+  </scm>
+  <assignedNode>ova-build</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(System)</jdk>
+  <authToken>thisIsTheToken</authToken>
+  <triggers/>
+  <concurrentBuild>true</concurrentBuild>
+  <builders>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@2.3">
+      <source class="hudson.plugins.groovy.StringSystemScriptSource">
+        <script plugin="script-security@1.75">
+          <script>// Put info about current RC test into the build description
+
+def listener = this.getProperty(&apos;binding&apos;).getVariable(&apos;listener&apos;)
+def env = build.getEnvironment(listener)
+String IMAGEVERSION = env.IMAGEVERSION
+String IMAGE_PREFIX = env.IMAGE_PREFIX
+String IMAGETYPE = env.IMAGETYPE
+String OSIMAGE_DISTRO = env.OSIMAGE_DISTRO
+String FEATURE_BRANCH = env.FEATURE_BRANCH
+String CUSTOM_IMAGE_URL = env.CUSTOM_IMAGE_URL
+String CUSTOM_OVALOADER_URL = env.CUSTOM_OVALOADER_URL
+String CUSTOM_EMPTYOVA_URL = env.CUSTOM_EMPTYOVA_URL
+
+if ( IMAGEVERSION == null ) { IMAGEVERSION = &quot;&quot; }
+if ( IMAGE_PREFIX == null ) { IMAGE_PREFIX = &quot;&quot; }
+if ( IMAGETYPE == null ) { IMAGETYPE = &quot;&quot; }
+if ( OSIMAGE_DISTRO == null ) { OSIMAGE_DISTRO = &quot;&quot; }
+if ( FEATURE_BRANCH == null ) { FEATURE_BRANCH = &quot;&quot; }
+if ( CUSTOM_IMAGE_URL == null ) { CUSTOM_IMAGE_URL = &quot;&quot; }
+if ( CUSTOM_OVALOADER_URL == null ) { CUSTOM_OVALOADER_URL = &quot;&quot; }
+if ( CUSTOM_EMPTYOVA_URL == null ) { CUSTOM_EMPTYOVA_URL = &quot;&quot; }
+
+if ( &quot;&quot;.equals(CUSTOM_IMAGE_URL) ) {
+  build.description = IMAGE_PREFIX + &quot; &quot;
+  if ( ! FEATURE_BRANCH.equals(&quot;&quot;) ) {
+    build.description += &quot;(&quot; + FEATURE_BRANCH + &quot;) &quot;
+  }
+  build.description += IMAGETYPE + &quot; OVA &quot; + IMAGEVERSION
+  if ( ! OSIMAGE_DISTRO.equals(&quot;&quot;) ) {
+    build.description += &quot; in &quot; + OSIMAGE_DISTRO
+  }
+} else {
+  build.description = &quot;Custom OVA made from &quot; + CUSTOM_IMAGE_URL
+}
+
+if ( ! &quot;&quot;.equals(CUSTOM_EMPTYOVA_URL) ) {
+    build.description += &quot; and empty OVA &quot; + CUSTOM_EMPTYOVA_URL
+}
+
+if ( ! &quot;&quot;.equals(CUSTOM_OVALOADER_URL) ) {
+    build.description += &quot; and OVA loader &quot; + CUSTOM_OVALOADER_URL
+}
+</script>
+          <sandbox>false</sandbox>
+        </script>
+      </source>
+    </hudson.plugins.groovy.SystemGroovy>
+    <hudson.tasks.Shell>
+      <command>./prepare-ova.sh</command>
+      <configuredLocalRules/>
+      <unstableReturn>42</unstableReturn>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>**/config.xml</artifacts>
+      <allowEmptyArchive>true</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+      <followSymlinks>true</followSymlinks>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.plugins.ircbot.IrcPublisher plugin="ircbot@2.33">
+      <targets class="empty-list"/>
+      <strategy>ALL</strategy>
+      <notifyOnBuildStart>false</notifyOnBuildStart>
+      <notifySuspects>false</notifySuspects>
+      <notifyCulprits>false</notifyCulprits>
+      <notifyFixers>false</notifyFixers>
+      <notifyUpstreamCommitters>false</notifyUpstreamCommitters>
+      <buildToChatNotifier class="hudson.plugins.im.build_notify.DefaultBuildToChatNotifier" plugin="instant-messaging@1.39-SNAPSHOT"/>
+      <matrixMultiplier>ONLY_CONFIGURATIONS</matrixMultiplier>
+      <extraMessage></extraMessage>
+      <customMessage></customMessage>
+    </hudson.plugins.ircbot.IrcPublisher>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.preSCMbuildstep.PreSCMBuildStepsWrapper plugin="preSCMbuildstep@0.3">
+      <buildSteps>
+        <hudson.tasks.Shell>
+          <command>./cleanup-build-dir.sh</command>
+          <configuredLocalRules/>
+        </hudson.tasks.Shell>
+      </buildSteps>
+      <failOnError>true</failOnError>
+    </org.jenkinsci.plugins.preSCMbuildstep.PreSCMBuildStepsWrapper>
+  </buildWrappers>
+</project>

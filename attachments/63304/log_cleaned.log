@@ -1,0 +1,51 @@
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.426+0000 [id=8469320]        WARNING        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$7: Unexpected error while calling Kubernetes API
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: java.net.ConnectException: Connection refused
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:554)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/java.net.Socket.connect(Socket.java:633)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.platform.Platform.connectSocket(Platform.kt:128)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:295)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: Caused: java.net.ConnectException: Failed to connect to /10.196.10.25:443
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.RealConnection.connectSocket(RealConnection.kt:297)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.RealConnection.connect(RealConnection.kt:207)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.ExchangeFinder.findConnection(ExchangeFinder.kt:226)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.ExchangeFinder.findHealthyConnection(ExchangeFinder.kt:106)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.ExchangeFinder.find(ExchangeFinder.kt:74)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.RealCall.initExchange$okhttp(RealCall.kt:255)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.kt:32)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.kt:95)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.kt:83)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:76)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: Caused: java.io.IOException: Failed to connect to /10.196.10.25:443
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at io.fabric8.kubernetes.client.dsl.internal.OperationSupport.waitForResult(OperationSupport.java:504)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at io.fabric8.kubernetes.client.dsl.internal.BaseOperation.list(BaseOperation.java:450)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: Caused: io.fabric8.kubernetes.client.KubernetesClientException: Operation: [list]  for kind: [Pod]  with name: [null]  in namespace: [jenkins]  failed.
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at io.fabric8.kubernetes.client.KubernetesClientException.launderThrowable(KubernetesClientException.java:159)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at io.fabric8.kubernetes.client.dsl.internal.BaseOperation.list(BaseOperation.java:452)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at io.fabric8.kubernetes.client.dsl.internal.BaseOperation.list(BaseOperation.java:418)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at io.fabric8.kubernetes.client.dsl.internal.BaseOperation.list(BaseOperation.java:97)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at org.csanchez.jenkins.plugins.kubernetes.GarbageCollection$PeriodicGarbageCollection.lambda$garbageCollect$7(GarbageCollection.java:160)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/java.util.Optional.ifPresent(Optional.java:178)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at org.csanchez.jenkins.plugins.kubernetes.GarbageCollection$PeriodicGarbageCollection.garbageCollect(GarbageCollection.java:148)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at org.csanchez.jenkins.plugins.kubernetes.GarbageCollection$PeriodicGarbageCollection.execute(GarbageCollection.java:136)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at hudson.model.AsyncPeriodicWork.lambda$doRun$0(AsyncPeriodicWork.java:102)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]:         at java.base/java.lang.Thread.run(Thread.java:840)
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.519+0000 [id=8469320]        INFO        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$6: Deleting orphan pod test-services/test-job-539-wxw16-t829g-fgnvl
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.526+0000 [id=8469320]        INFO        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$6: Deleting orphan pod test-services/test-task-100181-g88hx-89r74-fnqht
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.530+0000 [id=8469320]        INFO        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$6: Deleting orphan pod test-services/test-task-100186-fhdgd-411rq-fnkvf
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.535+0000 [id=8469320]        INFO        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$6: Deleting orphan pod test-services/test-task-100188-nk0zt-6941q-8plh1
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.539+0000 [id=8469320]        INFO        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$6: Deleting orphan pod test-services/test-task-100194-l04pt-80ljz-sl69r
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.543+0000 [id=8469320]        INFO        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$6: Deleting orphan pod test-services/test-task-100216-kxst4-r9xzh-td78j
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.548+0000 [id=8469320]        INFO        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$6: Deleting orphan pod test-services/test-task-100219-9mbmx-mh01p-twhxf
+Sep 12 23:49:51 ubuntu22 jenkins[2232180]: 2024-09-12 20:49:51.553+0000 [id=8469320]        INFO        o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$6: Deleting orphan pod test-services/test-task-100221-n5m93-9zz0z-4mmhg

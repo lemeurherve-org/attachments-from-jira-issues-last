@@ -1,0 +1,60 @@
+pipeline {
+    agent none
+    stages {
+        stage('Test') {
+			steps {
+				script {
+					def testStages = [:]
+					testStages['success1'] = createStage('success1', 1)
+					testStages['success2'] = createStage('success2', 30)
+					testStages['unstable'] = createStage('unstable', 5)
+					testStages['failure'] = createStage('failure', 10)
+					parallel testStages
+				}
+			}
+        }
+    }
+}
+
+def createStage(String status, int sleep) {
+	return {
+		node(label: 'small') {
+			//stage(status) {
+				try {
+					sh "sleep ${sleep}"
+					if (status.startsWith('success')) {
+						writeFile file: 'report.xml', text: """\
+							<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+							<testsuite errors="0" failures="0" name="${status}" tests="1">
+								<testcase classname="ClassTest" name="testMethod" />
+							</testsuite>
+						""".stripIndent()
+					} else if (status.startsWith('unstable')) {
+						writeFile file: 'report.xml', text: '''\
+							<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+							<testsuite errors="1" failures="1" name="unstable" tests="1">
+								<testcase classname="ClassTest" name="testMethod">
+									<failure message="Unstable"><![CDATA[Unstable Message]></failure>
+								</testcase>
+							</testsuite>
+						'''.stripIndent()
+					} else {
+						writeFile file: 'report.xml', text: '''\
+							<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+							<testsuite errors="1" failures="1" name="failure" tests="1">
+								<testcase classname="ClassTest" name="testMethod">
+									<failure message="Failure"><![CDATA[Failure Message]></failure>
+								</testcase>
+							</testsuite>
+						'''.stripIndent()
+						sh 'missingCommand'
+					}
+				} finally {
+					junit testResults: 'report.xml'
+				}
+
+				echo 'hello'
+			//}
+		}
+	}
+}

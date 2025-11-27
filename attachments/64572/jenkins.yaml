@@ -1,0 +1,63 @@
+jenkins:
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  numExecutors: 1
+  quietPeriod: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+      - id: "mwaite"
+        name: "Mark Waite"
+        properties:
+        - mailer:
+            emailAddress: "mwaite@cloudbees.com"
+unclassified:
+  location:
+    adminAddress: "mwaite@cloudbees.com"
+    url: "http://testing-b.markwaite.net:8080/"
+tool:
+  jdk:
+    installations:
+    - home: "/home/mwaite/tools/jdk-21.0.7+6"
+      name: "jdk-21"
+      properties:
+      - installSource:
+          installers:
+          - command:
+              command: "echo Using /home/mwaite/tools/jdk-21.0.7+6"
+              toolHome: "/home/mwaite/tools/jdk-21.0.7+6"
+    - home: "/home/mwaite/tools/jdk-17.0.15+6"
+      name: "jdk-17"
+      properties:
+      - installSource:
+          installers:
+          - command:
+              command: "echo Using /home/mwaite/tools/jdk-17.0.15+6"
+              toolHome: "/home/mwaite/tools/jdk-17.0.15+6"
+    - home: "/home/mwaite/tools/jdk-11.0.27+6"
+      name: "jdk-11"
+      properties:
+      - installSource:
+          installers:
+          - command:
+              command: "echo Using /home/mwaite/tools/jdk-11.0.27+6"
+              toolHome: "/home/mwaite/tools/jdk-11.0.27+6"
+  maven:
+    installations:
+    - name: "maven-3.9.10"
+      properties:
+      - installSource:
+          installers:
+          - command:
+              command: "echo Using /home/mwaite/tools/apache-maven-3.9.10"
+              toolHome: "/home/mwaite/tools/apache-maven-3.9.10"
+    - name: "maven-3.9.9"
+      properties:
+      - installSource:
+          installers:
+          - command:
+              command: "echo Using /home/mwaite/tools/apache-maven-3.9.9"
+              toolHome: "/home/mwaite/tools/apache-maven-3.9.9"

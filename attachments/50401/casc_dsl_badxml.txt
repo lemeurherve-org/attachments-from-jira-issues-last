@@ -1,0 +1,246 @@
+# Execute Job DSL script via CasC:
+
+jobs:
+    - script: |
+        pipelineJob('jenkins-seed') {
+            blockOn('^.*$') {
+                blockLevel('GLOBAL')
+                scanQueueFor('ALL')
+            }
+            definition {
+                cpsScm {
+                    scm {
+                        BbS {
+                            branches {
+                                branchSpec {
+                                    name('refs/heads/master')
+                                }
+                            }
+                            credentialsId('Build-User')
+                            extensions {
+                                cleanBeforeCheckout {
+                                    deleteUntrackedNestedRepositories(true)
+                                }
+                                localBranch {
+                                    localBranch('**')
+                                }
+                            }
+                            gitTool(null)
+                            id('jenkins-seed')
+                            mirrorName('')
+                            projectName('JENKINS')
+                            repositoryName('jenkins-seed')
+                            serverId('Bitbucket')
+                        }
+                    }
+                }
+            }
+            quietPeriod(10)
+            triggers {
+                hudsonStartupTrigger {
+                    label('master')
+                    nodeParameterName(null)
+                    quietPeriod('10')
+                    runOnChoice(null)
+                }
+            }
+        }
+
+# Define Bitbucket server in same CasC:
+
+unclassified:
+    bitbucketPluginConfiguration:
+        serverList:
+            -
+                adminCredentialsId: API-Token
+                baseUrl: https://redacted.com/
+                credentialsId: Build-User
+                id: Bitbucket
+                serverName: Bitbucket
+
+# Resulting XML is missing remote and browser URLs:
+
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.36">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>true</useBuildBlocker>
+      <blockLevel>GLOBAL</blockLevel>
+      <scanQueueFor>ALL</scanQueueFor>
+      <blockingJobs>^.*$</blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <org.jvnet.hudson.plugins.triggers.startup.HudsonStartupTrigger plugin="startup-trigger-plugin@2.9.3">
+          <spec></spec>
+          <label>master</label>
+          <quietPeriod>10</quietPeriod>
+        </org.jvnet.hudson.plugins.triggers.startup.HudsonStartupTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.80">
+    <scm class="com.atlassian.bitbucket.jenkins.internal.scm.BitbucketSCM" plugin="atlassian-bitbucket-server-integration@1.0.4">
+      <gitSCM plugin="git@4.1.1">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs class="singleton-list">
+          <hudson.plugins.git.UserRemoteConfig>
+            <name>jenkins-seed</name>
+            <credentialsId>Build-User</credentialsId>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>refs/heads/master</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <browser class="hudson.plugins.git.browser.Stash">
+          <url></url>
+        </browser>
+        <submoduleCfg class="empty-list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.CleanBeforeCheckout>
+            <deleteUntrackedNestedRepositories>true</deleteUntrackedNestedRepositories>
+          </hudson.plugins.git.extensions.impl.CleanBeforeCheckout>
+          <hudson.plugins.git.extensions.impl.LocalBranch>
+            <localBranch>**</localBranch>
+          </hudson.plugins.git.extensions.impl.LocalBranch>
+          <com.atlassian.bitbucket.jenkins.internal.scm.BitbucketPostBuildStatus plugin="atlassian-bitbucket-server-integration@1.0.4">
+            <jenkinsProvider class="com.atlassian.bitbucket.jenkins.internal.provider.DefaultJenkinsProvider"/>
+            <serverId>Bitbucket</serverId>
+          </com.atlassian.bitbucket.jenkins.internal.scm.BitbucketPostBuildStatus>
+        </extensions>
+      </gitSCM>
+      <branches reference="../gitSCM/branches"/>
+      <extensions>
+        <hudson.plugins.git.extensions.impl.CleanBeforeCheckout reference="../../gitSCM/extensions/hudson.plugins.git.extensions.impl.CleanBeforeCheckout"/>
+        <hudson.plugins.git.extensions.impl.LocalBranch reference="../../gitSCM/extensions/hudson.plugins.git.extensions.impl.LocalBranch"/>
+        <com.atlassian.bitbucket.jenkins.internal.scm.BitbucketPostBuildStatus reference="../../gitSCM/extensions/com.atlassian.bitbucket.jenkins.internal.scm.BitbucketPostBuildStatus"/>
+      </extensions>
+      <id>jenkins-seed</id>
+      <repositories>
+        <com.atlassian.bitbucket.jenkins.internal.scm.BitbucketSCMRepository>
+          <credentialsId>Build-User</credentialsId>
+          <projectKey>JENKINS</projectKey>
+          <projectName>JENKINS</projectName>
+          <repositoryName>jenkins-seed</repositoryName>
+          <repositorySlug>jenkins-seed</repositorySlug>
+          <serverId>Bitbucket</serverId>
+          <mirrorName></mirrorName>
+        </com.atlassian.bitbucket.jenkins.internal.scm.BitbucketSCMRepository>
+      </repositories>
+      <isWebhookRegistered>false</isWebhookRegistered>
+    </scm>
+    <scriptPath>Jenkinsfile</scriptPath>
+    <lightweight>false</lightweight>
+  </definition>
+  <quietPeriod>10</quietPeriod>
+  <disabled>false</disabled>
+</flow-definition>
+
+# Jenkins logs contain the following lines:
+
+2020-02-24 19:05:16.565+0000 [id=26]	INFO	c.a.b.j.i.scm.BitbucketSCM#<init>: No Bitbucket Server configuration for serverId Bitbucket
+2020-02-24 18:51:16.087+0000 [id=92]	INFO	c.a.b.j.i.h.HttpRequestExecutorImpl#handleError: Bitbucket - did not accept the request
+
+# Job build logs show immediate failure due to missing URLs:
+
+2020-02-24 12:50:10.207 | Started
+2020-02-24 12:50:10.220 | Running as runner
+2020-02-24 12:50:10.247 | Checking out com.atlassian.bitbucket.jenkins.internal.scm.BitbucketSCM into /var/jenkins_home/workspace/jenkins-seed@script to read Jenkinsfile
+2020-02-24 12:50:10.311 | using credential Build-User
+2020-02-24 12:50:10.349 |  > git rev-parse refs/heads/master^{commit} # timeout=10
+2020-02-24 12:50:10.388 | ERROR: Couldn't find any revision to build. Verify the repository and branch configuration for this job.
+2020-02-24 12:50:10.485 | ERROR: Maximum checkout retry attempts reached, aborting
+2020-02-24 12:50:10.485 | Finished: FAILURE
+
+# After going to the Configure page for the job and clicking Save without making any changes, XML gets URLs:
+
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.36">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.12"/>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>true</useBuildBlocker>
+      <blockLevel>GLOBAL</blockLevel>
+      <scanQueueFor>ALL</scanQueueFor>
+      <blockingJobs>^.*$</blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <org.jvnet.hudson.plugins.triggers.startup.HudsonStartupTrigger plugin="startup-trigger-plugin@2.9.3">
+          <spec></spec>
+          <label>master</label>
+          <quietPeriod>10</quietPeriod>
+          <runOnChoice>ON_CONNECT</runOnChoice>
+        </org.jvnet.hudson.plugins.triggers.startup.HudsonStartupTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.80">
+    <scm class="com.atlassian.bitbucket.jenkins.internal.scm.BitbucketSCM" plugin="atlassian-bitbucket-server-integration@1.0.4">
+      <gitSCM plugin="git@4.1.1">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs class="singleton-list">
+          <hudson.plugins.git.UserRemoteConfig>
+            <name>jenkins-seed</name>
+            <url>https://redacted.com/scm/jenkins/jenkins-seed.git</url>
+            <credentialsId>Build-User</credentialsId>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>refs/heads/master</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <browser class="hudson.plugins.git.browser.Stash">
+          <url>https://redacted.com/projects/JENKINS/repos/jenkins-seed</url>
+        </browser>
+        <submoduleCfg class="empty-list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.CleanBeforeCheckout>
+            <deleteUntrackedNestedRepositories>true</deleteUntrackedNestedRepositories>
+          </hudson.plugins.git.extensions.impl.CleanBeforeCheckout>
+          <hudson.plugins.git.extensions.impl.LocalBranch>
+            <localBranch>**</localBranch>
+          </hudson.plugins.git.extensions.impl.LocalBranch>
+          <com.atlassian.bitbucket.jenkins.internal.scm.BitbucketPostBuildStatus plugin="atlassian-bitbucket-server-integration@1.0.4">
+            <jenkinsProvider class="com.atlassian.bitbucket.jenkins.internal.provider.DefaultJenkinsProvider"/>
+            <serverId>Bitbucket</serverId>
+          </com.atlassian.bitbucket.jenkins.internal.scm.BitbucketPostBuildStatus>
+        </extensions>
+      </gitSCM>
+      <branches reference="../gitSCM/branches"/>
+      <extensions>
+        <hudson.plugins.git.extensions.impl.CleanBeforeCheckout reference="../../gitSCM/extensions/hudson.plugins.git.extensions.impl.CleanBeforeCheckout"/>
+        <hudson.plugins.git.extensions.impl.LocalBranch reference="../../gitSCM/extensions/hudson.plugins.git.extensions.impl.LocalBranch"/>
+        <com.atlassian.bitbucket.jenkins.internal.scm.BitbucketPostBuildStatus reference="../../gitSCM/extensions/com.atlassian.bitbucket.jenkins.internal.scm.BitbucketPostBuildStatus"/>
+      </extensions>
+      <id>jenkins-seed</id>
+      <repositories>
+        <com.atlassian.bitbucket.jenkins.internal.scm.BitbucketSCMRepository>
+          <credentialsId>Build-User</credentialsId>
+          <projectKey>JENKINS</projectKey>
+          <projectName>Jenkins</projectName>
+          <repositoryName>jenkins-seed</repositoryName>
+          <repositorySlug>jenkins-seed</repositorySlug>
+          <serverId>Bitbucket</serverId>
+          <mirrorName></mirrorName>
+        </com.atlassian.bitbucket.jenkins.internal.scm.BitbucketSCMRepository>
+      </repositories>
+      <isWebhookRegistered>false</isWebhookRegistered>
+    </scm>
+    <scriptPath>Jenkinsfile</scriptPath>
+    <lightweight>false</lightweight>
+  </definition>
+  <quietPeriod>10</quietPeriod>
+  <disabled>false</disabled>
+</flow-definition>

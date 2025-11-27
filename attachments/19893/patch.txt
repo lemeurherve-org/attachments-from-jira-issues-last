@@ -1,0 +1,13 @@
+Index: scripts/hudson-behavior.js
+===================================================================
+--- scripts/hudson-behavior.js	(revision 36250)
++++ scripts/hudson-behavior.js	(working copy)
+@@ -1625,7 +1625,7 @@
+             return null;  // this field shouldn't contribute to the final result
+ 
+         var name = e.getAttribute("name");
+-        if(name!=null) {
++        if(name!=null && name!="") {
+             if(e.tagName=="INPUT" && !static && !xor(e.checked,Element.hasClassName(e,"negative")))
+                 return null;  // field is not active
+ 

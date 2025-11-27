@@ -1,0 +1,48 @@
+Index: main/java/hudson/maven/reporters/MavenSiteArchiver.java
+===================================================================
+--- main/java/hudson/maven/reporters/MavenSiteArchiver.java	(revision 12553)
++++ main/java/hudson/maven/reporters/MavenSiteArchiver.java	(working copy)
+@@ -22,6 +22,9 @@
+ import javax.servlet.ServletException;
+ import java.io.File;
+ import java.io.IOException;
++import java.util.ArrayList;
++import java.util.Collections;
++import java.util.List;
+ 
+ /**
+  * Watches out for the execution of maven-site-plugin and records its output.
+@@ -45,10 +48,10 @@
+             // be defensive. I suspect there's some interaction with this and multi-module builds
+             FilePath target;
+             // store at MavenModuleSet level.
+-            target = build.getModuleSetRootDir().child("site");
++            target = getModuleSiteDir(build.getModuleSetRootDir().child("site"), pom);
+ 
+             try {
+-                listener.getLogger().println("[HUDSON] Archiving site");
++                listener.getLogger().println("[HUDSON] Archiving site to "+target);
+                 new FilePath(destDir).copyRecursiveTo("**/*",target);
+             } catch (IOException e) {
+                 Util.displayIOException(e,listener);
+@@ -62,6 +65,20 @@
+         return true;
+     }
+ 
++    private FilePath getModuleSiteDir(FilePath siteDir, MavenProject pom) {
++        FilePath dir = siteDir;
++        MavenProject modulePom = pom;
++        List<String> modulePath = new ArrayList<String>();
++        while (modulePom.hasParent()) {
++            modulePath.add(modulePom.getArtifactId());
++            modulePom = modulePom.getParent();
++        }
++        Collections.reverse(modulePath);
++        for (String path : modulePath) {
++            dir = dir.child(path);
++        }        
++        return dir;
++    }
+ 
+     public Action getProjectAction(MavenModule project) {
+         return new SiteAction(project);

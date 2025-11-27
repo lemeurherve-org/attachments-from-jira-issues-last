@@ -1,0 +1,69 @@
+Index: SSHLauncher.java
+===================================================================
+--- SSHLauncher.java	(revision 30273)
++++ SSHLauncher.java	(working copy)
+@@ -3,17 +3,27 @@
+ import static hudson.Util.fixEmpty;
+ import static java.util.logging.Level.FINE;
+ import hudson.AbortException;
++import hudson.EnvVars;
+ import hudson.Extension;
+ import hudson.Util;
+ import hudson.model.Descriptor;
+ import hudson.model.Hudson;
++import hudson.model.JDK;
++import hudson.model.JDK.*;
++import hudson.model.Node;
+ import hudson.model.TaskListener;
+ import hudson.remoting.Channel;
+ import hudson.slaves.ComputerLauncher;
++import hudson.slaves.EnvironmentVariablesNodeProperty;
++import hudson.slaves.NodeProperty;
++import hudson.slaves.NodePropertyDescriptor;
+ import hudson.slaves.SlaveComputer;
+ import hudson.tools.JDKInstaller;
++import hudson.tools.ToolLocationNodeProperty;
+ import hudson.tools.JDKInstaller.CPU;
+ import hudson.tools.JDKInstaller.Platform;
++import hudson.tools.ToolLocationNodeProperty.ToolLocation;
++import hudson.util.DescribableList;
+ import hudson.util.IOException2;
+ import hudson.util.Secret;
+ import hudson.util.StreamCopyThread;
+@@ -608,13 +618,34 @@
+     @Extension
+     public static class DefaultJavaProvider extends JavaProvider {
+         public List<String> getJavas(SlaveComputer computer, TaskListener listener, Connection connection) {
+-            return Arrays.asList("java",
++            List<String> javas = new ArrayList<String>(Arrays.asList("java",
+                     "/usr/bin/java",
+                     "/usr/java/default/bin/java",
+                     "/usr/java/latest/bin/java",
+                     "/usr/local/bin/java",
+                     "/usr/local/java/bin/java",
+-                    getWorkingDirectory(computer)+"/jdk/bin/java"); // this is where we attempt to auto-install
++                    getWorkingDirectory(computer)+"/jdk/bin/java")); // this is where we attempt to auto-install
++            
++            DescribableList<NodeProperty<?>, NodePropertyDescriptor> nodePropertyList = computer.getNode().getNodeProperties();
++            if (nodePropertyList != null ) {   
++                for (NodeProperty nodeProperty : nodePropertyList) {
++                    if (nodeProperty instanceof EnvironmentVariablesNodeProperty) {
++                        EnvVars ev = ((EnvironmentVariablesNodeProperty)nodeProperty).getEnvVars();
++                        if (ev != null && ev.containsKey("JAVA_HOME")) {
++                            javas.add(ev.get("JAVA_HOME") + "/bin/java");
++                        }
++                    }
++                    // see if they specified a jdk tool location
++                    if (nodeProperty instanceof ToolLocationNodeProperty) {
++                        for (ToolLocation tool : ((ToolLocationNodeProperty)nodeProperty).getLocations()) {
++                            if (tool.getType().getDisplayName().equals(new JDK.DescriptorImpl().getDisplayName())) {
++                                javas.add(tool.getHome() + "/bin/java");
++                            }
++                        }
++                    }
++                } 
++            } 
++            return javas;
+         }
+     }
+ 

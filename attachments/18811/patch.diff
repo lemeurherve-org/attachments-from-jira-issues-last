@@ -1,0 +1,64 @@
+Index: src/test/java/hudson/plugins/perforce/PerforceSCMTest.java
+===================================================================
+--- src/test/java/hudson/plugins/perforce/PerforceSCMTest.java	(revision 21618)
++++ src/test/java/hudson/plugins/perforce/PerforceSCMTest.java	(working copy)
+@@ -87,6 +87,20 @@
+         String encryptedPassword = encryptor.encryptString(password);
+         assertEquals(encryptedPassword, ((PerforceSCM)project.getScm()).getP4Passwd());
+       }
++      
+ 
++	public void testFixProjectPath() throws Exception {
++		P4Web browser = new P4Web(new URL("http://localhost/"));
++		 PerforceSCM scm = new PerforceSCM(
++	        		"user", "pass", "client", "port", "path", "exe", "sysRoot", 
++	        		"sysDrive", "label", true, true, true, 0, browser);
++		String p4spec=" //content/main/.. //foobar/...\n"+
++			" -//content/main/...foostuff.ext //foobar/...foostuff.ext\n";
++		String result = scm.fixProjectPath(p4spec, "-mymachine");
++		String  expected = "//content/main/.. //client-mymachine/...\n"+
++			"-//content/main/...foostuff.ext //client-mymachine/...foostuff.ext\n";
++		assertEquals("Expected is not correct",expected ,result);
++	}
++
+ }
+ 
+Index: src/main/java/hudson/plugins/perforce/PerforceSCMHelper.java
+===================================================================
+--- src/main/java/hudson/plugins/perforce/PerforceSCMHelper.java	(revision 21618)
++++ src/main/java/hudson/plugins/perforce/PerforceSCMHelper.java	(working copy)
+@@ -10,7 +10,7 @@
+ public final class PerforceSCMHelper {
+ 
+     private static final String DEPOT_ROOT = "//";
+-    private static final String EXCLUSION_VIEW_PREFIX = "-";
++    static final String EXCLUSION_VIEW_PREFIX = "-";
+ 
+     private PerforceSCMHelper() {
+         // static methods, do not instantiate
+Index: src/main/java/hudson/plugins/perforce/PerforceSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/perforce/PerforceSCM.java	(revision 21618)
++++ src/main/java/hudson/plugins/perforce/PerforceSCM.java	(working copy)
+@@ -908,7 +908,7 @@
+         }
+     }
+ 
+-    private String fixProjectPath(String projectPath, String nodeSuffix) {
++    String fixProjectPath(String projectPath, String nodeSuffix) {
+ 
+         String newPath = "";
+         for (String line : projectPath.split("\n")) {
+@@ -926,8 +926,10 @@
+                 line = line + " //" + p4Client + nodeSuffix + "/...\n";
+ 
+             } else if (depotAndWorkspace.find()) {
+-
+-                line = depotAndWorkspace.group(1) +
++            	String start="";
++	            if ((line.trim().indexOf(PerforceSCMHelper.EXCLUSION_VIEW_PREFIX) == 0))
++	            	start=PerforceSCMHelper.EXCLUSION_VIEW_PREFIX;
++                line = start+depotAndWorkspace.group(1) +
+                     " //" + p4Client + nodeSuffix + depotAndWorkspace.group(2);
+             }
+             newPath = newPath + line + "\n";

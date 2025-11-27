@@ -1,0 +1,408 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.22">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.3.1"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.3.1">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>30</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.20.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs.JobRestrictionProperty plugin="job-restrictions@0.7"/>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.1">
+          <name>OS</name>
+          <description></description>
+          <randomName>choice-parameter-1830678397072882</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>return[
+&apos;Windows&apos;,
+&apos;Red Hat&apos;,
+&apos;Suse&apos;
+]</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.1">
+          <name>Applications</name>
+          <description></description>
+          <randomName>choice-parameter-1830678407813842</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>return[
+&apos;Application_Server&apos;,
+&apos;Java&apos;,
+&apos;Other&apos;
+]</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <choiceType>PT_CHECKBOX</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.1">
+          <name>Application_Server</name>
+          <description></description>
+          <randomName>choice-parameter-1008822003550171</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>if (Applications.contains(&quot;Application_Server&quot;)) {
+  return [&quot;Tomcat_7&quot;, &quot;Tomcat_8&quot;, &quot;Jboss_Wildfly&quot;, &quot;Weblogic12&quot;, &quot;Websphere&quot;]
+}</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Applications</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.1">
+          <name>Application_server_version</name>
+          <description></description>
+          <randomName>choice-parameter-436711677612751</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>import static groovy.io.FileType.DIRECTORIES
+import groovy.io.FileType
+switch(Application_Server){
+    case~/.*Tomcat_7*/:
+        def choices=[]
+        def html=&apos;&apos;
+        def list=[]
+        if(OS.equals(&apos;Windows&apos;)){
+            list+=new File( &apos;Path\\&apos; ).list().findAll()
+        }
+        else{
+            list+=new File( &apos;Path\\&apos; ).list().findAll()
+        }
+        def finlstr= list.unique().sort().collect{ &apos;&apos; + it + &apos;&apos;}.join(&quot;,&quot;)
+        choices=finlstr.split(&apos;,&apos;)
+        choices.each{
+            html=html+&quot;&quot;&quot;
+&lt;input type=&quot;radio&quot; json=&quot;${it}&quot; name=&quot;value&quot; value=&quot;${it}&quot;&gt;${it as String}
+&lt;br&gt;
+&quot;&quot;&quot;
+        }
+        return html
+        break
+    case~/.*Tomcat_8*/:
+        def choices=[]
+        def html=&apos;&apos;
+        def list=[]
+        if(OS.equals(&apos;Windows&apos;)){
+            list+=new File( &apos;Path\\&apos; ).list().findAll()
+        }
+        else{
+            list+=new File( &apos;Path\\&apos; ).list().findAll()
+        }
+        def finlstr= list.unique().sort().collect{ &apos;&apos; + it + &apos;&apos;}.join(&quot;,&quot;)
+        choices=finlstr.split(&apos;,&apos;)
+        choices.each{
+            html=html+&quot;&quot;&quot;
+&lt;input type=&quot;radio&quot; json=&quot;${it}&quot; name=&quot;value&quot; value=&quot;${it}&quot;&gt;${it as String}
+&lt;br&gt;
+&quot;&quot;&quot;
+        }
+        return html
+        break
+    case~/.*Jboss_Wildfly*/:
+        def choices=[]
+        def html=&apos;&apos;
+        def list=[]
+        list+=new File( &apos;Path\\&apos; ).list().findAll()
+        def finlstr= list.unique().sort().collect{ &apos;&apos; + it + &apos;&apos;}.join(&quot;,&quot;)
+        choices=finlstr.split(&apos;,&apos;)
+        choices.each{
+            html=html+&quot;&quot;&quot;
+&lt;input type=&quot;radio&quot; json=&quot;${it}&quot; name=&quot;value&quot; value=&quot;${it}&quot;&gt;${it as String}
+&lt;br&gt;
+&quot;&quot;&quot;
+        }
+        return html
+        break
+    case~/.*Weblogic12*/:
+        def choices=[]
+        def html=&apos;&apos;
+        def list=[]
+        list+=new File( &apos;Path\\&apos; ).list().findAll( { it.startsWith( &apos;12&apos; ) })
+        def finlstr= list.unique().sort().collect{ &apos;&apos; + it + &apos;&apos;}.join(&quot;,&quot;)
+        choices=finlstr.split(&apos;,&apos;)
+        choices.each{
+            html=html+&quot;&quot;&quot;
+&lt;input type=&quot;radio&quot; json=&quot;${it}&quot; name=&quot;value&quot; value=&quot;${it}&quot;&gt;${it as String}
+&lt;br&gt;
+&quot;&quot;&quot;
+        }
+        return html
+        break
+    case~/.*Websphere*/:
+        def choices=[]
+        def html=&apos;&apos;
+        def list=[]
+        list+=new File( &apos;Path\\&apos; ).list().findAll()
+        def finlstr= list.unique().sort().collect{ &apos;&apos; + it + &apos;&apos;}.join(&quot;,&quot;)
+        choices=finlstr.split(&apos;,&apos;)
+        choices.each{
+            html=html+&quot;&quot;&quot;
+&lt;input type=&quot;radio&quot; json=&quot;${it}&quot; name=&quot;value&quot; value=&quot;${it}&quot;&gt;${it as String}
+&lt;br&gt;
+&quot;&quot;&quot;
+        }
+        return html
+        break
+}</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Application_Server, OS</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.1">
+          <name>Java</name>
+          <description></description>
+          <randomName>choice-parameter-1830678419196713</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>if (Applications.contains(&quot;Java&quot;)) {
+  return [&quot;1.7&quot;, &quot;1.8&quot;]
+}</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Applications</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.1">
+          <name>Java_version</name>
+          <description></description>
+          <randomName>choice-parameter-500093404411201</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>import static groovy.io.FileType.DIRECTORIES
+import groovy.io.FileType
+switch(Java){
+  case~/.*1.7*/:
+        def choices1=[]
+        def html1=&apos;&apos;
+        def list1=[]
+        if(OS.equals(&apos;Windows&apos;)){
+            list1+=new File( &apos;Path\\&apos; ).list().findAll({ it.endsWith( &apos;.exe&apos; ) })
+        }
+        else{
+            list1+=new File( &apos;Path\\&apos; ).list().findAll()
+        }
+        def finlstr1= list1.unique().sort().collect{ &apos;&apos; + it + &apos;&apos;}.join(&quot;,&quot;)
+        choices1=finlstr1.split(&apos;,&apos;)
+        choices1.each{
+            html1=html1+&quot;&quot;&quot;
+&lt;input type=&quot;radio&quot; json=&quot;${it}&quot; name=&quot;value&quot; value=&quot;${it}&quot;&gt;${it as String}
+&lt;br&gt;
+&quot;&quot;&quot;
+        }
+        return html1
+        break
+}</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Java, OS</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.1">
+          <name>Other_Applications</name>
+          <description></description>
+          <randomName>choice-parameter-603763195081478</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>if (Applications.contains(&quot;Other&quot;) &amp;&amp; OS.equals(&quot;Windows&quot;)) {
+  return [&quot;Notepad++&quot;, &quot;SVN_Client&quot;, &quot;Maven&quot;]
+}
+else if (OS.equals(&quot;Red Hat&quot;) || OS.equals(&quot;Suse&quot;)) {
+  return [&quot;SVN_Client&quot;, &quot;Maven&quot;]
+}</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Applications, OS</referencedParameters>
+          <choiceType>PT_CHECKBOX</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.1">
+          <name>SVN_version</name>
+          <description></description>
+          <randomName>choice-parameter-1736021706176043</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>import static groovy.io.FileType.DIRECTORIES
+import groovy.io.FileType
+if(Other_Applications.contains(&apos;SVN_Client&apos;)){
+        def choices2=[]
+        def html2=&apos;&apos;
+        def list2=[]
+        if(OS.equals(&apos;Windows&apos;)){
+            list2+=new File( &apos;Path\\&apos; ).list().findAll({ it.endsWith( &apos;.exe&apos; ) })
+        }
+        else{
+             list2+=new File( &apos;Path\\&apos; ).list().findAll({ it.endsWith( &apos;.rpm&apos; ) })
+        }
+        def finlstr2= list2.unique().sort().collect{ &apos;&apos; + it + &apos;&apos;}.join(&quot;,&quot;)
+        choices2=finlstr2.split(&apos;,&apos;)
+        choices2.each{
+            html2=html2+&quot;&quot;&quot;
+&lt;input type=&quot;radio&quot; json=&quot;${it}&quot; name=&quot;value2&quot; value=&quot;${it}&quot;&gt;${it as String}
+&lt;br&gt;
+&quot;&quot;&quot;
+        }
+        return html2
+}</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Other_Applications, OS</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+        <org.biouno.unochoice.DynamicReferenceParameter plugin="uno-choice@2.1">
+          <name>MVN_version</name>
+          <description></description>
+          <randomName>choice-parameter-1739359120803363</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.44">
+              <script>import static groovy.io.FileType.DIRECTORIES
+import groovy.io.FileType
+if(Other_Applications.contains(&apos;Maven&apos;)){
+        def choices3=[]
+        def html3=&apos;&apos;
+        def list3=[]
+        if(OS.equals(&apos;Windows&apos;)){
+            list3+=new File( &apos;Path\\&apos; ).list().findAll({ it.endsWith( &apos;.zip&apos; ) })
+        }
+        else{
+             list3+=new File(  &apos;Path\\&apos; ).list().findAll({ it.endsWith( &apos;.tar.gz&apos; ) })
+        }
+        def finlstr3= list3.unique().sort().collect{ &apos;&apos; + it + &apos;&apos;}.join(&quot;,&quot;)
+        choices3=finlstr3.split(&apos;,&apos;)
+        choices3.each{
+            html3=html3+&quot;&quot;&quot;
+&lt;input type=&quot;radio&quot; json=&quot;${it}&quot; name=&quot;value3&quot; value=&quot;${it}&quot;&gt;${it as String}
+&lt;br&gt;
+&quot;&quot;&quot;
+        }
+        return html3
+}</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.44">
+              <script>return  [&apos;error&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>App</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Other_Applications, OS</referencedParameters>
+          <choiceType>ET_FORMATTED_HTML</choiceType>
+          <omitValueField>true</omitValueField>
+        </org.biouno.unochoice.DynamicReferenceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.54">
+    <script>pipeline {
+    agent {
+        label{
+            label &quot;master&quot;
+        }
+    }
+    stages{
+        stage(&apos;Application folders&apos;) {
+            echo &quot;App path: ${Application_server_version}, Java path: ${Java_version}, SVN path: ${SVN_version}, Maven path: ${MVN_version}&quot;
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

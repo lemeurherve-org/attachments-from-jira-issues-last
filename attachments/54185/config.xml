@@ -1,0 +1,66 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<hudson>
+  <disabledAdministrativeMonitors>
+    <string>jenkins.security.QueueItemAuthenticatorMonitor</string>
+  </disabledAdministrativeMonitors>
+  <version>2.282</version>
+  <numExecutors>0</numExecutors>
+  <mode>EXCLUSIVE</mode>
+  <useSecurity>true</useSecurity>
+  <authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
+    <permission>hudson.model.Computer.Build:authenticated</permission>
+    <permission>hudson.model.Computer.Build:other-permissions-data</permission>
+    <permission>org.jenkins.plugins.lockableresources.LockableResourcesManager.View:authenticated</permission>
+  </authorizationStrategy>
+  <securityRealm class="org.jenkinsci.plugins.saml.SamlSecurityRealm" plugin="saml@1.1.7">
+    <displayNameAttributeName>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name</displayNameAttributeName>
+    <groupsAttributeName>http://schemas.xmlsoap.org/claims/Group</groupsAttributeName>
+    <maximumAuthenticationLifetime>86400</maximumAuthenticationLifetime>
+    <usernameCaseConversion>none</usernameCaseConversion>
+    <usernameAttributeName>username</usernameAttributeName>
+    <binding>urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect</binding>
+    <advancedConfiguration>
+      <forceAuthn>false</forceAuthn>
+      <spEntityId>http://jenkins.blah.blah/securityRealm/finishLogin</spEntityId>
+    </advancedConfiguration>
+    <idpMetadataConfiguration>
+      <xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;md:EntityDescriptor xmlns:md=&quot;urn:oasis:names:tc:SAML:2.0:metadata&quot; entityID=&quot;JumpCloud&quot;&gt;&lt;md:IDPSSODescriptor WantAuthnRequestsSigned=&quot;false&quot; protocolSupportEnumeration=&quot;urn:oasis:names:tc:SAML:2.0:protocol&quot;&gt;&lt;md:KeyDescriptor use=&quot;signing&quot;&gt;&lt;ds:KeyInfo xmlns:ds=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;&lt;ds:X509Data&gt;&lt;ds:X509Certificate&gt;MIIRANDOM-CERT-DATA-HERE==&lt;/ds:X509Certificate&gt;&lt;/ds:X509Data&gt;&lt;/ds:KeyInfo&gt;&lt;/md:KeyDescriptor&gt;&lt;md:NameIDFormat&gt;urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress&lt;/md:NameIDFormat&gt;&lt;md:SingleSignOnService Binding=&quot;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST&quot; Location=&quot;https://sso.jumpcloud.com/saml2/jenkins&quot;/&gt;&lt;md:SingleSignOnService Binding=&quot;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect&quot; Location=&quot;https://sso.jumpcloud.com/saml2/jenkins&quot;/&gt;&lt;/md:IDPSSODescriptor&gt;&lt;/md:EntityDescriptor&gt;</xml>
+      <url></url>
+      <period>0</period>
+    </idpMetadataConfiguration>
+  </securityRealm>
+  <disableRememberMe>false</disableRememberMe>
+  <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+  <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULL_NAME}</workspaceDir>
+  <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+  <systemMessage>Welcome to Jenkins!</systemMessage>
+  <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+  <jdks>
+    <jdk>
+      <name>java-11-openjdk-amd64</name>
+      <home>/usr/lib/jvm/java-11-openjdk-amd64</home>
+      <properties/>
+    </jdk>
+  </jdks>
+  <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+  <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+  <clouds/>
+  <quietPeriod>60</quietPeriod>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>all</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+    </hudson.model.AllView>
+  </views>
+  <primaryView>all</primaryView>
+  <slaveAgentPort>55328</slaveAgentPort>
+  <label>master</label>
+  <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+    <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+  </crumbIssuer>
+  <nodeProperties/>
+  <globalNodeProperties/>

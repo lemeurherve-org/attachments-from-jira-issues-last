@@ -1,0 +1,88 @@
+def BRANCH = ''
+
+def branchRelations = [
+    'master': 'master',
+    'release/rc-24.2': 'release/rc-24.2',
+    'release/rc-24.1': 'release/rc-24.1',
+    'release/rc-23.2': 'release/rc-23.2'
+]
+
+def skippedGenerations = [
+    '6.1'
+]
+
+pipeline {
+    agent { label 'Tools' }
+    environment {
+        ART_FOLDER = ART_TRIGGER_FILE.split('/pipeline_status').first()
+    }
+    options {
+        skipDefaultCheckout true
+    }
+    stages {
+        stage('Get Artifacts') {
+            steps {
+                rtDownload (
+                    serverId: 'ART_SERVICE_ID',
+                    spec: """{
+                        "files": [
+                            {
+                                "pattern": "${ART_REPO}/${ART_FOLDER}/artifacts/**/BuildInfo.json",
+                                "target": "BuildInfo.json",
+                                "flat": "true"
+                            },
+                            {
+                                "pattern": "${ART_REPO}/${ART_FOLDER}/pipeline_status/release_packages.json",
+                                "target": "release_packages.json",
+                                "flat": "true"
+                            }
+                        ]
+                    }""",
+                    failNoOp: true
+                )
+            }
+        }
+        stage('Set TC Branch') {
+            steps {
+                script {
+                    def buildData = readFile encoding: 'utf-16', file: "./BuildInfo.json"
+                    def buildInfoJson = readJSON text: buildData.trim()
+                    def repoBranch = buildInfoJson['Summary']['Branch']
+                    BRANCH = branchRelations.get(repoBranch, 'master')
+
+                    echo "For Repo '${repoBranch}' selected TestRepo '${BRANCH}' branch"
+
+                    def releasePackages = readFile file: "release_packages.json"
+                    def releasePackagesJson = readJSON text: releasePackages.trim()
+                    GENERATION = releasePackagesJson['Generation']
+
+                    echo "Generation: ${GENERATION}"
+                }
+            }
+        }
+        stage('Trigger Smoke Tests') {
+            when {
+                expression { !skippedGenerations.contains(GENERATION) }
+            }
+            steps {
+                build job: 'Smoke Runner',
+                    propagate: false,
+                    wait: false,
+                    parameters: [
+                        string(name: 'GIT_BRANCH', value: BRANCH),
+                        string(name: 'ART_REPO', value: ART_REPO),
+                        string(name: 'ART_FOLDER', value: ART_FOLDER)
+                    ]
+            }
+        }
+    }
+    post {
+        cleanup {
+            script {
+                if (getContext(hudson.FilePath)) {
+                    cleanWs()
+                }
+            }
+        }
+    }
+}

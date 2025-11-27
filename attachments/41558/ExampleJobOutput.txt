@@ -1,0 +1,242 @@
+Started by user anonymous
+Obtained Jenkinsfile from p4-MasterServer-//depot/lightweight/... //jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524/...
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/LightweightPipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+(p4):cmd:... p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+(p4):cmd:... p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+
+(p4):stop:6
+(p4):cmd:... p4 client -i
+p4 client -i
+
+Client jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524 saved.
+
+(p4):stop:7
+(p4):cmd:... p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+
+(p4):stop:8
+(p4):cmd:... p4 client -i
+p4 client -i
+
+Client jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524 saved.
+
+(p4):stop:9
+... client: jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+(p4):cmd:... p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+(p4):cmd:... p4 counter change
+p4 counter change
+
+(p4):stop:6
+(p4):cmd:... p4 changes -m1 -ssubmitted //jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524/...
+p4 changes -m1 -ssubmitted //jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524/...
+
+Change 92 on 2018/02/21 by super@test_ws 'added]'
+(p4):stop:7
+(p4):cmd:... p4 repos -C
+p4 repos -C
+
+(p4):stop:8
+Building on Node: master
+(p4):cmd:... p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+
+P4 Task: establishing connection.
+... server: P4Server:1666
+... node: vm-user1-xenial
+
+P4 Task: reverting all pending and shelved revisions.
+(p4):cmd:... p4 revert /var/lib/jenkins/workspace/LightweightPipeline/...
+p4 revert /var/lib/jenkins/workspace/LightweightPipeline/...
+
+/var/lib/jenkins/workspace/LightweightPipeline/... - file(s) not opened on this client.
+
+(p4):stop:6
+... rm [abandoned files]
+duration: (3ms)
+
+P4 Task: cleaning workspace to match have list.
+(p4):cmd:... p4 reconcile -w -f /var/lib/jenkins/workspace/LightweightPipeline/...
+p4 reconcile -w -f /var/lib/jenkins/workspace/LightweightPipeline/...
+
+(p4):stop:7
+duration: (4ms)
+
+P4 Task: syncing files at change: 92
+(p4):cmd:... p4 sync /var/lib/jenkins/workspace/LightweightPipeline/...@92
+p4 sync /var/lib/jenkins/workspace/LightweightPipeline/...@92
+
+... totalFileSize 615
+... totalFileCount 2
+//depot/lightweight/Jenkinsfile#1 - added as /var/lib/jenkins/workspace/LightweightPipeline/Jenkinsfile
+//depot/lightweight/f1#1 - added as /var/lib/jenkins/workspace/LightweightPipeline/f1
+(p4):stop:8
+duration: (13ms)
+
+P4 Task: saving built changes.
+(p4):cmd:... p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+p4 client -o jenkinsTemp-abbe6545-5edc-474d-a197-5e8b7027c524
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+... done
+
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Repro)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] p4sync
+(p4):cmd:... p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+(p4):cmd:... p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+
+(p4):stop:6
+(p4):cmd:... p4 client -i
+p4 client -i
+
+Client jenkins-master-LightweightPipeline-0Source-TEST not changed.
+
+(p4):stop:7
+... client: jenkins-master-LightweightPipeline-0Source-TEST
+(p4):cmd:... p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+(p4):cmd:... p4 counter change
+p4 counter change
+
+(p4):stop:6
+(p4):cmd:... p4 changes -m1 -ssubmitted //jenkins-master-LightweightPipeline-0Source-TEST/...
+p4 changes -m1 -ssubmitted //jenkins-master-LightweightPipeline-0Source-TEST/...
+
+Change 92 on 2018/02/21 by super@test_ws 'added]'
+(p4):stop:7
+(p4):cmd:... p4 repos -C
+p4 repos -C
+
+(p4):stop:8
+Building on Node: master
+(p4):cmd:... p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+
+P4 Task: establishing connection.
+... server: P4Server:1666
+... node: vm-user1-xenial
+
+P4 Task: reverting all pending and shelved revisions.
+(p4):cmd:... p4 revert /var/lib/jenkins/workspace/LightweightPipeline/...
+p4 revert /var/lib/jenkins/workspace/LightweightPipeline/...
+
+/var/lib/jenkins/workspace/LightweightPipeline/... - file(s) not opened on this client.
+
+(p4):stop:6
+... rm [abandoned files]
+duration: (9ms)
+
+P4 Task: cleaning workspace to match have list.
+(p4):cmd:... p4 reconcile -w -f /var/lib/jenkins/workspace/LightweightPipeline/...
+p4 reconcile -w -f /var/lib/jenkins/workspace/LightweightPipeline/...
+
+/var/lib/jenkins/workspace/LightweightPipeline/... - no file(s) to reconcile.
+
+(p4):stop:7
+duration: (34ms)
+
+P4 Task: syncing files at change: 92
+(p4):cmd:... p4 sync -q /var/lib/jenkins/workspace/LightweightPipeline/...@92
+p4 sync -q /var/lib/jenkins/workspace/LightweightPipeline/...@92
+
+(p4):stop:8
+duration: (16ms)
+
+P4 Task: saving built changes.
+Found last change 92 on syncID jenkins-NODE_NAME-LightweightPipeline-EXECUTOR_NUMBERSource-TEST
+(p4):cmd:... p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+(p4):cmd:... p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+p4 client -o jenkins-master-LightweightPipeline-0Source-TEST
+
+(p4):stop:4
+(p4):cmd:... p4 info
+p4 info
+
+(p4):stop:5
+... done
+
+[Pipeline] sh
+[LightweightPipeline] Running shell script
++ pwd
+/var/lib/jenkins/workspace/LightweightPipeline
+[Pipeline] sh
+[LightweightPipeline] Running shell script
++ ls -l
+total 8
+-r--r--r-- 1 jenkins jenkins  45 Feb 21 15:49 f1
+-r--r--r-- 1 jenkins jenkins 570 Feb 21 15:49 Jenkinsfile
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
+

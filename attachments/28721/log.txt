@@ -1,0 +1,32 @@
+Started by an SCM change
+Building in workspace C:\Program Files (x86)\Jenkins\jobs\myIntegrationBranch\workspace
+Wiping out workspace first.
+Cloning the remote Git repository
+Cloning repository ssh://MyGitUser@myserver/project/av/srv/git/repo.git
+ > C:\Program Files (x86)\Git\cmd\git.exe init C:\Program Files (x86)\Jenkins\jobs\myIntegrationBranch\workspace # timeout=10
+Fetching upstream changes from ssh://MyGitUser@myserver/project/av/srv/git/repo.git
+ > C:\Program Files (x86)\Git\cmd\git.exe --version # timeout=10
+ > C:\Program Files (x86)\Git\cmd\git.exe -c core.askpass=true fetch --tags --progress ssh://MyGitUser@myserver/project/av/srv/git/repo.git +refs/heads/*:refs/remotes/origin/*
+ > C:\Program Files (x86)\Git\cmd\git.exe config remote.origin.url ssh://MyGitUser@myserver/project/av/srv/git/repo.git # timeout=10
+ > C:\Program Files (x86)\Git\cmd\git.exe config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > C:\Program Files (x86)\Git\cmd\git.exe config remote.origin.url ssh://MyGitUser@myserver/project/av/srv/git/repo.git # timeout=10
+Pruning obsolete local branches
+Fetching upstream changes from ssh://MyGitUser@myserver/project/av/srv/git/repo.git
+ > C:\Program Files (x86)\Git\cmd\git.exe -c core.askpass=true fetch --tags --progress ssh://MyGitUser@myserver/project/av/srv/git/repo.git +refs/heads/*:refs/remotes/origin/* --prune
+Seen branch in repository origin/ready/testability
+
+Seen XX remote branches
+Checking out Revision 88adec51f8db8bdba6f4af9d1a9c63b9f9f7e366 (origin/ready/testability)
+ > C:\Program Files (x86)\Git\cmd\git.exe config core.sparsecheckout # timeout=10
+ > C:\Program Files (x86)\Git\cmd\git.exe checkout -f 88adec51f8db8bdba6f4af9d1a9c63b9f9f7e366
+ > C:\Program Files (x86)\Git\cmd\git.exe rev-list 98e231ad2b3c5dc101addf1147906ca988103f77 # timeout=10
+2.2.1 (63b83)
+Checking out integration target branch myIntegrationBranch and pulling latest changes
+[PREINT]  "C:\Program Files (x86)\Git\cmd\git.exe" checkout -B myIntegrationBranch origin/myIntegrationBranch
+[workspace] $ "C:\Program Files (x86)\Git\cmd\git.exe" checkout -B myIntegrationBranch origin/myIntegrationBranch
+[PREINT]  "C:\Program Files (x86)\Git\cmd\git.exe" pull origin myIntegrationBranch
+[workspace] $ "C:\Program Files (x86)\Git\cmd\git.exe" pull origin myIntegrationBranch
+Preparing to merge changes in commit 88adec51f8db8bdba6f4af9d1a9c63b9f9f7e366 to integration branch myIntegrationBranch
+Merge failure
+Performing pre-verified post build steps
+Finished: FAILURE

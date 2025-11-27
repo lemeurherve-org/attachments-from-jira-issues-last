@@ -1,0 +1,85 @@
+Started by user Thomas Biesaart
+Unpacking https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.3.3/apache-maven-3.3.3-bin.zip to C:\Program Files (x86)\Jenkins\tools\hudson.tasks.Maven_MavenInstallation\Latest_Maven on Jenkins
+Building in workspace C:\Program Files (x86)\Jenkins\workspace\PCS4J
+ > git.exe rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git.exe config remote.origin.url https://github.com/ChappIO/pcs4j # timeout=10
+Fetching upstream changes from https://github.com/ChappIO/pcs4j
+ > git.exe --version # timeout=10
+using .gitcredentials to set credentials
+ > git.exe config --local credential.username chapp-io # timeout=10
+ > git.exe config --local credential.helper store --file=\"C:\Windows\TEMP\git844923688638133780.credentials\" # timeout=10
+ > git.exe -c core.askpass=true fetch --tags --progress https://github.com/ChappIO/pcs4j +refs/heads/*:refs/remotes/origin/*
+ > git.exe config --local --remove-section credential # timeout=10
+Seen branch in repository origin/1-properties-file-in-home-folder
+Seen branch in repository origin/feature/#1-properties-file-in-home-folder
+Seen branch in repository origin/feature/1-properties-file-in-home-folder
+Seen branch in repository origin/master
+Seen branch in repository origin/tmp
+Seen 5 remote branches
+Checking out Revision 8ec5acdebad015854954c0d75b3b73ab8c757b5f (origin/feature/1-properties-file-in-home-folder)
+ > git.exe config core.sparsecheckout # timeout=10
+ > git.exe checkout -f 8ec5acdebad015854954c0d75b3b73ab8c757b5f # timeout=10
+ > git.exe branch -a -v --no-abbrev # timeout=10
+ > git.exe branch -D feature/1-properties-file-in-home-folder # timeout=10
+ > git.exe checkout -b feature/1-properties-file-in-home-folder 8ec5acdebad015854954c0d75b3b73ab8c757b5f
+ > git.exe rev-list 8ec5acdebad015854954c0d75b3b73ab8c757b5f # timeout=10
+FATAL: org/codehaus/plexus/classworlds/realm/ClassRealm
+java.lang.NoClassDefFoundError: org/codehaus/plexus/classworlds/realm/ClassRealm
+	at org.jfrog.hudson.maven3.MavenVersionCallable.call(MavenVersionCallable.java:45)
+	at org.jfrog.hudson.maven3.MavenVersionCallable.call(MavenVersionCallable.java:33)
+	at hudson.FilePath.act(FilePath.java:1105)
+	at org.jfrog.hudson.util.MavenVersionHelper.isAtLeast(MavenVersionHelper.java:109)
+	at org.jfrog.hudson.util.MavenVersionHelper.isAtLeastVersion(MavenVersionHelper.java:81)
+	at org.jfrog.hudson.util.MavenVersionHelper.isAtLeastResolutionCapableVersion(MavenVersionHelper.java:72)
+	at org.jfrog.hudson.maven3.extractor.MavenExtractorEnvironment.isMavenVersionValid(MavenExtractorEnvironment.java:165)
+	at org.jfrog.hudson.maven3.extractor.MavenExtractorEnvironment.buildEnvVars(MavenExtractorEnvironment.java:100)
+	at hudson.model.AbstractBuild.getEnvironment(AbstractBuild.java:931)
+	at hudson.maven.AbstractMavenBuild.getEnvironment(AbstractMavenBuild.java:56)
+	at hudson.maven.MavenModuleSetBuild.getEnvironment(MavenModuleSetBuild.java:166)
+	at hudson.maven.MavenModuleSetBuild$MavenModuleSetBuildExecution.doRun(MavenModuleSetBuild.java:622)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:534)
+	at hudson.model.Run.execute(Run.java:1741)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:531)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:410)
+Caused by: java.lang.ClassNotFoundException: org.codehaus.plexus.classworlds.realm.ClassRealm
+	at jenkins.util.AntClassLoader.findClassInComponents(AntClassLoader.java:1376)
+	at jenkins.util.AntClassLoader.findClass(AntClassLoader.java:1326)
+	at jenkins.util.AntClassLoader.loadClass(AntClassLoader.java:1079)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	... 17 more
+ERROR: Step �Set status for GitHub commit [universal]� aborted due to exception: 
+java.lang.NoClassDefFoundError: org/codehaus/plexus/classworlds/realm/ClassRealm
+	at org.jfrog.hudson.maven3.MavenVersionCallable.call(MavenVersionCallable.java:45)
+	at org.jfrog.hudson.maven3.MavenVersionCallable.call(MavenVersionCallable.java:33)
+	at hudson.FilePath.act(FilePath.java:1105)
+	at org.jfrog.hudson.util.MavenVersionHelper.isAtLeast(MavenVersionHelper.java:109)
+	at org.jfrog.hudson.util.MavenVersionHelper.isAtLeastVersion(MavenVersionHelper.java:81)
+	at org.jfrog.hudson.util.MavenVersionHelper.isAtLeastResolutionCapableVersion(MavenVersionHelper.java:72)
+	at org.jfrog.hudson.maven3.extractor.MavenExtractorEnvironment.isMavenVersionValid(MavenExtractorEnvironment.java:165)
+	at org.jfrog.hudson.maven3.extractor.MavenExtractorEnvironment.buildEnvVars(MavenExtractorEnvironment.java:100)
+	at hudson.model.AbstractBuild.getEnvironment(AbstractBuild.java:931)
+	at hudson.maven.AbstractMavenBuild.getEnvironment(AbstractMavenBuild.java:56)
+	at hudson.maven.MavenModuleSetBuild.getEnvironment(MavenModuleSetBuild.java:166)
+	at org.jenkinsci.plugins.tokenmacro.TokenMacro.expandAll(TokenMacro.java:241)
+	at org.jenkinsci.plugins.github.common.ExpandableMessage.expandAll(ExpandableMessage.java:52)
+	at org.jenkinsci.plugins.github.status.sources.ConditionalStatusResultSource.get(ConditionalStatusResultSource.java:56)
+	at org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter.perform(GitHubCommitStatusSetter.java:126)
+	at hudson.tasks.BuildStepCompatibilityLayer.perform(BuildStepCompatibilityLayer.java:78)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:779)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:720)
+	at hudson.maven.MavenModuleSetBuild$MavenModuleSetBuildExecution.post2(MavenModuleSetBuild.java:1047)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:665)
+	at hudson.model.Run.execute(Run.java:1766)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:531)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:410)
+Caused by: java.lang.ClassNotFoundException: org.codehaus.plexus.classworlds.realm.ClassRealm
+	at jenkins.util.AntClassLoader.findClassInComponents(AntClassLoader.java:1376)
+	at jenkins.util.AntClassLoader.findClass(AntClassLoader.java:1326)
+	at jenkins.util.AntClassLoader.loadClass(AntClassLoader.java:1079)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	... 25 more
+Finished: FAILURE

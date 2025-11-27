@@ -1,0 +1,124 @@
+Index: src/main/java/hudson/plugins/sitemonitor/SiteMonitorRecorder.java
+===================================================================
+--- src/main/java/hudson/plugins/sitemonitor/SiteMonitorRecorder.java	(revision 33632)
++++ src/main/java/hudson/plugins/sitemonitor/SiteMonitorRecorder.java	(working copy)
+@@ -29,6 +29,9 @@
+ import hudson.plugins.sitemonitor.model.Status;
+ import hudson.tasks.BuildStepMonitor;
+ import hudson.tasks.Recorder;
++import org.apache.commons.httpclient.HttpClient;
++import org.apache.commons.httpclient.methods.GetMethod;
++import org.apache.commons.httpclient.HttpClient;
+ 
+ import java.io.IOException;
+ import java.net.HttpURLConnection;
+@@ -40,6 +43,7 @@
+ 
+ /**
+  * Performs the web site monitoring process.
++ *
+  * @author cliffano
+  */
+ public class SiteMonitorRecorder extends Recorder {
+@@ -56,8 +60,8 @@
+ 
+     /**
+      * Construct {@link SiteMonitorRecorder}.
+-     * @param sites
+-     *            the list of web sites to monitor
++     *
++     * @param sites the list of web sites to monitor
+      */
+     public SiteMonitorRecorder(final List<Site> sites) {
+         mSites = sites;
+@@ -73,21 +77,17 @@
+     /**
+      * Performs the web site monitoring by checking the response code of the
+      * site's URL.
+-     * @param build
+-     *            the build
+-     * @param launcher
+-     *            the launcher
+-     * @param listener
+-     *            the listener
++     *
++     * @param build    the build
++     * @param launcher the launcher
++     * @param listener the listener
+      * @return true if all sites give success response codes, false otherwise
+-     * @throws InterruptedException
+-     *             when there's an interruption
+-     * @throws IOException
+-     *             when there's an IO error
++     * @throws InterruptedException when there's an interruption
++     * @throws IOException          when there's an IO error
+      */
+     @Override
+     public final boolean perform(final AbstractBuild<?, ?> build,
+-            final Launcher launcher, final BuildListener listener)
++                                 final Launcher launcher, final BuildListener listener)
+             throws InterruptedException, IOException {
+         List<Result> results = new ArrayList<Result>();
+         SiteMonitorDescriptor descriptor = (SiteMonitorDescriptor)
+@@ -101,11 +101,21 @@
+             String note = "";
+ 
+             try {
+-                HttpURLConnection connection = (HttpURLConnection) (new URL(
+-                        site.getUrl())).openConnection();
+-                connection.setConnectTimeout(descriptor.getTimeout()
+-                        * MILLISECS_IN_SECS);
+-                responseCode = connection.getResponseCode();
++//                HttpURLConnection connection = (HttpURLConnection) (new URL(
++//                        site.getUrl())).openConnection();
++//                connection.setConnectTimeout(descriptor.getTimeout()
++//                        * MILLISECS_IN_SECS);
++//                responseCode = connection.getResponseCode();
++                //using HttpClient for now
++                HttpClient httpClient = new HttpClient();
++                httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(descriptor.getTimeout()*MILLISECS_IN_SECS);
++                GetMethod httpGet = new GetMethod(site.getUrl());
++                try {
++                    httpClient.executeMethod(httpGet);
++                    responseCode = httpGet.getStatusCode();
++                } finally {
++                    httpGet.releaseConnection();
++                }
+ 
+                 List<Integer> successResponseCodes = descriptor
+                         .getSuccessResponseCodes();
+@@ -143,15 +153,16 @@
+             result = hudson.model.Result.SUCCESS;
+         }
+         build.setResult(result);
+-        
++
+         // the return value is not used when this class implements a Recorder,
+         // it's left here just in case this class switches to a Builder.
+         // http://n4.nabble.com/how-can-a-Recorder-mark-build-as-failure-td1746654.html
+         return !hasFailure;
+     }
+-    
++
+     /**
+      * Gets the required monitor service.
++     *
+      * @return the BuildStepMonitor
+      */
+     public final BuildStepMonitor getRequiredMonitorService() {
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 33632)
++++ pom.xml	(working copy)
+@@ -51,6 +51,11 @@
+             <version>1.7</version>
+             <scope>test</scope>
+         </dependency>
++        <dependency>
++            <groupId>commons-httpclient</groupId>
++            <artifactId>commons-httpclient</artifactId>
++            <version>3.1</version>
++        </dependency>
+     </dependencies>
+     
+     <reporting>

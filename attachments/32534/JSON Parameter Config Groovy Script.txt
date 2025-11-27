@@ -1,0 +1,49 @@
+import org.boon.Boon;
+
+def jsonEditorOptions = Boon.fromJson(/{
+disable_edit_json: false,
+disable_properties: false,
+no_additional_properties: false,
+disable_collapse: true,
+disable_array_add: false,
+disable_array_delete: false,
+disable_array_reorder: true,
+theme: "bootstrap3",
+iconlib:"bootstrap3",
+
+schema: {
+"title": "SVN Permission for Branch: xxxxx",
+"type": "array",
+"format": "table",
+"uniqueItems": true,
+        "items": {
+                "type": "object",
+                "title": "User",
+                "properties": {
+                        "Username": {
+                                "type": "string",
+                                "propertyOrder": 1
+                        },
+                        "Permission": {
+                                "type": "string",
+                                "propertyOrder": 2,
+                                "enum": [
+                                        "RO",
+                                        "RW",
+                                        "NO",
+                                        ""
+                                ],
+                                "default": ""
+                        },
+
+                }
+        }
+}
+startval: [
+        {"Username": "user2", "Permission":"RW" },
+        {"Username": "user3", "Permission":"RW" },
+        {"Username": "user4", "Permission":"RW" },
+]
+}/);
+
+return jsonEditorOptions;

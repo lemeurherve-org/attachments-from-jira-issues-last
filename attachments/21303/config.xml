@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.queueSorter.PrioritySorterJobProperty>
+      <priority>100</priority>
+    </hudson.queueSorter.PrioritySorterJobProperty>
+    <org.jvnet.hudson.plugins.shelveproject.ShelveProjectProperty/>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>D:\jenkins\_\temp</customWorkspace>
+  <builders>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+      <info>
+        <propertiesContent>VAR1=VALUE
+VAR2=${VAR1}
+VAR3=${VAR2}
+VAR4=${VAR3}
+
+VAR9=VALUE
+VAR8=${VAR9}
+VAR7=${VAR8}
+VAR6=${VAR7}
+
+
+VAR_Z=${WORKSPACE}
+VAR_Y=${VAR_Z}
+VAR_X=${VAR_Y}
+
+VAR_A=${WORKSPACE}
+VAR_B=${VAR_A}
+VAR_C=${VAR_B}
+
+
+CONTENT_SOMEDIR=${WORKSPACE}\\Stuff
+CONTENT_ANT_HOME=${CONTENT_SOMEDIR}\\MyAntDir
+CONTENT_ZANT_HOME=${CONTENT_SOMEDIR}\\MyAntDir</propertiesContent>
+        <populateTriggerCause>false</populateTriggerCause>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+      <info>
+        <propertiesFilePath>asdf_alpha.txt</propertiesFilePath>
+        <populateTriggerCause>false</populateTriggerCause>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+      <info>
+        <propertiesFilePath>asdf_alpha_rev.txt</propertiesFilePath>
+        <populateTriggerCause>false</populateTriggerCause>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+      <info>
+        <propertiesFilePath>workspace_alpha_rev.txt</propertiesFilePath>
+        <populateTriggerCause>false</populateTriggerCause>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+      <info>
+        <propertiesFilePath>workspace_alpha.txt</propertiesFilePath>
+        <populateTriggerCause>false</populateTriggerCause>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+      <info>
+        <propertiesFilePath>D:\jenkins\_\temp\build.config</propertiesFilePath>
+        <populateTriggerCause>false</populateTriggerCause>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuilder>
+    <hudson.tasks.BatchFile>
+      <command>set</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <timeoutMinutes>3</timeoutMinutes>
+      <failBuild>false</failBuild>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+  </buildWrappers>
+</project>

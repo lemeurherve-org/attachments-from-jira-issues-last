@@ -1,0 +1,218 @@
+Started by user admin
+[Pipeline] Allocate node : Start
+Running on docker-agent.beesshop.org in /home/ubuntu/jenkins-aws-home/workspace/tests/ssh-with-private-key
+[Pipeline] node {
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ whoami
+ubuntu
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ ls -al /home/ubuntu/.ssh/
+total 16
+drwx------  2 ubuntu ubuntu 4096 Jan 22 17:22 .
+drwxr-xr-x 10 ubuntu ubuntu 4096 Jan 22 17:51 ..
+-rw-------  1 ubuntu ubuntu  807 Jan 20 11:05 authorized_keys
+-rw-r--r--  1 ubuntu ubuntu 2654 Jan 26 10:32 known_hosts
+[Pipeline] SSH Agent : Start
+[ssh-agent] Using credentials ubuntu (cleclerc-us-east.pem)
+[ssh-agent] Looking for ssh-agent implementation...
+[ssh-agent]   Java/JNR ssh-agent
+[ssh-agent] Started.
+[Pipeline] sshagent {
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ echo SSH_AUTH_SOCK=/tmp/jenkins6928154557375758973.jnr
+SSH_AUTH_SOCK=/tmp/jenkins6928154557375758973.jnr
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ ls -al /tmp/jenkins6928154557375758973.jnr
+srw------- 1 ubuntu ubuntu 0 Jan 26 12:31 /tmp/jenkins6928154557375758973.jnr
+[Pipeline] sh
+[ssh-with-private-key] Running shell script
++ ssh -vvv -o StrictHostKeyChecking=no ubuntu@docker-agent.beesshop.org uname -a
+OpenSSH_6.6.1, OpenSSL 1.0.1f 6 Jan 2014
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: Applying options for *
+debug2: ssh_connect: needpriv 0
+debug1: Connecting to docker-agent.beesshop.org [52.90.177.155] port 22.
+debug1: Connection established.
+debug1: identity file /home/ubuntu/.ssh/id_rsa type -1
+debug1: identity file /home/ubuntu/.ssh/id_rsa-cert type -1
+debug1: identity file /home/ubuntu/.ssh/id_dsa type -1
+debug1: identity file /home/ubuntu/.ssh/id_dsa-cert type -1
+debug1: identity file /home/ubuntu/.ssh/id_ecdsa type -1
+debug1: identity file /home/ubuntu/.ssh/id_ecdsa-cert type -1
+debug1: identity file /home/ubuntu/.ssh/id_ed25519 type -1
+debug1: identity file /home/ubuntu/.ssh/id_ed25519-cert type -1
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.4
+debug1: Remote protocol version 2.0, remote software version OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.4
+debug1: match: OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.4 pat OpenSSH_6.6.1* compat 0x04000000
+debug2: fd 3 setting O_NONBLOCK
+debug3: load_hostkeys: loading entries for host "docker-agent.beesshop.org" from file "/home/ubuntu/.ssh/known_hosts"
+debug3: load_hostkeys: found key type ECDSA in file /home/ubuntu/.ssh/known_hosts:6
+debug3: load_hostkeys: loaded 1 keys
+debug3: order_hostkeyalgs: prefer hostkeyalgs: ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug2: kex_parse_kexinit: curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1
+debug2: kex_parse_kexinit: ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,ssh-dss-cert-v01@openssh.com,ssh-rsa-cert-v00@openssh.com,ssh-dss-cert-v00@openssh.com,ssh-ed25519,ssh-rsa,ssh-dss
+debug2: kex_parse_kexinit: aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,arcfour,rijndael-cbc@lysator.liu.se
+debug2: kex_parse_kexinit: aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,arcfour,rijndael-cbc@lysator.liu.se
+debug2: kex_parse_kexinit: hmac-md5-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-md5,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160,hmac-ripemd160@openssh.com,hmac-sha1-96,hmac-md5-96
+debug2: kex_parse_kexinit: hmac-md5-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-md5,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160,hmac-ripemd160@openssh.com,hmac-sha1-96,hmac-md5-96
+debug2: kex_parse_kexinit: none,zlib@openssh.com,zlib
+debug2: kex_parse_kexinit: none,zlib@openssh.com,zlib
+debug2: kex_parse_kexinit: 
+debug2: kex_parse_kexinit: 
+debug2: kex_parse_kexinit: first_kex_follows 0 
+debug2: kex_parse_kexinit: reserved 0 
+debug2: kex_parse_kexinit: curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1
+debug2: kex_parse_kexinit: ssh-rsa,ssh-dss,ecdsa-sha2-nistp256,ssh-ed25519
+debug2: kex_parse_kexinit: aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,arcfour,rijndael-cbc@lysator.liu.se
+debug2: kex_parse_kexinit: aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,arcfour,rijndael-cbc@lysator.liu.se
+debug2: kex_parse_kexinit: hmac-md5-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-md5,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160,hmac-ripemd160@openssh.com,hmac-sha1-96,hmac-md5-96
+debug2: kex_parse_kexinit: hmac-md5-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1-96-etm@openssh.com,hmac-md5-96-etm@openssh.com,hmac-md5,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160,hmac-ripemd160@openssh.com,hmac-sha1-96,hmac-md5-96
+debug2: kex_parse_kexinit: none,zlib@openssh.com
+debug2: kex_parse_kexinit: none,zlib@openssh.com
+debug2: kex_parse_kexinit: 
+debug2: kex_parse_kexinit: 
+debug2: kex_parse_kexinit: first_kex_follows 0 
+debug2: kex_parse_kexinit: reserved 0 
+debug2: mac_setup: setup hmac-md5-etm@openssh.com
+debug1: kex: server->client aes128-ctr hmac-md5-etm@openssh.com none
+debug2: mac_setup: setup hmac-md5-etm@openssh.com
+debug1: kex: client->server aes128-ctr hmac-md5-etm@openssh.com none
+debug1: sending SSH2_MSG_KEX_ECDH_INIT
+debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+debug1: Server host key: ECDSA 5e:42:24:9d:b9:f1:7b:eb:fd:a0:45:d2:8d:94:fa:1c
+debug3: load_hostkeys: loading entries for host "docker-agent.beesshop.org" from file "/home/ubuntu/.ssh/known_hosts"
+debug3: load_hostkeys: found key type ECDSA in file /home/ubuntu/.ssh/known_hosts:6
+debug3: load_hostkeys: loaded 1 keys
+debug3: load_hostkeys: loading entries for host "52.90.177.155" from file "/home/ubuntu/.ssh/known_hosts"
+debug3: load_hostkeys: found key type ECDSA in file /home/ubuntu/.ssh/known_hosts:7
+debug3: load_hostkeys: loaded 1 keys
+debug1: Host 'docker-agent.beesshop.org' is known and matches the ECDSA host key.
+debug1: Found key in /home/ubuntu/.ssh/known_hosts:6
+debug1: ssh_ecdsa_verify: signature correct
+debug2: kex_derive_keys
+debug2: set_newkeys: mode 1
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug2: set_newkeys: mode 0
+debug1: SSH2_MSG_NEWKEYS received
+debug1: SSH2_MSG_SERVICE_REQUEST sent
+debug2: service_accept: ssh-userauth
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug2: key: ubuntu (cleclerc-us-east.pem) (0x7fe4356aea40),
+debug2: key: /home/ubuntu/.ssh/id_rsa ((nil)),
+debug2: key: /home/ubuntu/.ssh/id_dsa ((nil)),
+debug2: key: /home/ubuntu/.ssh/id_ecdsa ((nil)),
+debug2: key: /home/ubuntu/.ssh/id_ed25519 ((nil)),
+debug1: Authentications that can continue: publickey
+debug3: start over, passed a different list publickey
+debug3: preferred gssapi-keyex,gssapi-with-mic,publickey,keyboard-interactive,password
+debug3: authmethod_lookup publickey
+debug3: remaining preferred: keyboard-interactive,password
+debug3: authmethod_is_enabled publickey
+debug1: Next authentication method: publickey
+debug1: Offering RSA public key: ubuntu (cleclerc-us-east.pem)
+debug3: send_pubkey_test
+debug2: we sent a publickey packet, wait for reply
+debug1: Server accepts key: pkalg ssh-rsa blen 279
+debug2: input_userauth_pk_ok: fp 07:a9:cf:fa:16:ce:d8:61:4d:49:75:4b:5e:69:d1:71
+debug3: sign_and_send_pubkey: RSA 07:a9:cf:fa:16:ce:d8:61:4d:49:75:4b:5e:69:d1:71
+debug1: Authentication succeeded (publickey).
+Authenticated to docker-agent.beesshop.org ([52.90.177.155]:22).
+debug2: fd 4 setting O_NONBLOCK
+debug2: fd 5 setting O_NONBLOCK
+debug3: fd 6 is O_NONBLOCK
+debug1: channel 0: new [client-session]
+debug3: ssh_session2_open: channel_new: 0
+debug2: channel 0: send open
+debug1: Requesting no-more-sessions@openssh.com
+debug1: Entering interactive session.
+debug2: callback start
+debug2: fd 3 setting TCP_NODELAY
+debug3: packet_set_tos: set IP_TOS 0x08
+debug2: client_session2_setup: id 0
+debug1: Sending environment.
+debug3: Ignored env JENKINS_HOME
+debug3: Ignored env MAIL
+debug3: Ignored env SSH_CLIENT
+debug3: Ignored env USER
+debug3: Ignored env HUDSON_URL
+debug3: Ignored env SHLVL
+debug3: Ignored env OLDPWD
+debug3: Ignored env HOME
+debug3: Ignored env BUILD_URL
+debug3: Ignored env HUDSON_COOKIE
+debug3: Ignored env JENKINS_SERVER_COOKIE
+debug3: Ignored env LOGNAME
+debug3: Ignored env NODE_NAME
+debug3: Ignored env _
+debug3: Ignored env EXECUTOR_NUMBER
+debug3: Ignored env XDG_SESSION_ID
+debug3: Ignored env BUILD_DISPLAY_NAME
+debug3: Ignored env HUDSON_HOME
+debug3: Ignored env PATH
+debug3: Ignored env BUILD_ID
+debug3: Ignored env XDG_RUNTIME_DIR
+debug3: Ignored env BUILD_TAG
+debug1: Sending env LANG = en_US.UTF-8
+debug2: channel 0: request env confirm 0
+debug3: Ignored env JENKINS_URL
+debug3: Ignored env JOB_URL
+debug3: Ignored env SSH_AUTH_SOCK
+debug3: Ignored env BUILD_NUMBER
+debug3: Ignored env SHELL
+debug3: Ignored env HUDSON_SERVER_COOKIE
+debug3: Ignored env JOB_NAME
+debug3: Ignored env PWD
+debug3: Ignored env SSH_CONNECTION
+debug1: Sending command: uname -a
+debug2: channel 0: request exec confirm 1
+debug2: callback done
+debug2: channel 0: open confirm rwindow 0 rmax 32768
+debug2: channel 0: rcvd adjust 2097152
+debug2: channel_input_status_confirm: type 99 id 0
+debug2: exec request accepted on channel 0
+debug2: channel 0: read<=0 rfd 4 len 0
+debug2: channel 0: read failed
+debug2: channel 0: close_read
+debug2: channel 0: input open -> drain
+debug2: channel 0: ibuf empty
+debug2: channel 0: send eof
+debug2: channel 0: input drain -> closed
+Linux ip-10-0-0-84 3.13.0-76-generic #120-Ubuntu SMP Mon Jan 18 15:59:10 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+debug2: channel 0: rcvd eof
+debug2: channel 0: output open -> drain
+debug2: channel 0: obuf empty
+debug2: channel 0: close_write
+debug2: channel 0: output drain -> closed
+debug1: client_input_channel_req: channel 0 rtype exit-status reply 0
+debug2: channel 0: rcvd close
+debug3: channel 0: will not send data after close
+debug2: channel 0: almost dead
+debug2: channel 0: gc: notify user
+debug2: channel 0: gc: user detached
+debug2: channel 0: send close
+debug2: channel 0: is dead
+debug2: channel 0: garbage collecting
+debug1: channel 0: free: client-session, nchannels 1
+debug3: channel 0: status: The following connections are open:
+  #0 client-session (t4 r0 i3/0 o3/0 fd -1/-1 cc -1)
+
+debug1: fd 0 clearing O_NONBLOCK
+debug1: fd 1 clearing O_NONBLOCK
+debug3: fd 2 is not O_NONBLOCK
+Transferred: sent 3372, received 2612 bytes, in 0.2 seconds
+Bytes per second: sent 15211.0, received 11782.7
+debug1: Exit status 0
+[Pipeline] } //sshagent
+[Pipeline] SSH Agent : End
+[Pipeline] } //node
+[Pipeline] Allocate node : End
+[Pipeline] End of Pipeline
+Finished: SUCCESS

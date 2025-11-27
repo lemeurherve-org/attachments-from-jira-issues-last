@@ -1,0 +1,15 @@
+pipeline {
+    // options { authorizationMatrix(permissions('jill', ['hudson.model.Item.Create','hudson.model.Item.Discover'])) }
+    agent none
+    // properties([authorizationMatrix(inheritanceStrategy: inheritingGlobal(), permissions: ['hudson.model.Item.Build:jill', 'hudson.model.Item.Cancel:jill'])])
+    stages {        
+        stage('base matrix test') {
+            agent { node { label "jenkins-node-01" } }             
+            steps {                
+                script { 
+                    sh "echo matrix works!!"                     
+                }                
+            }
+        } 
+    }    
+}

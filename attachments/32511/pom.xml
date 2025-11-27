@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.mycompany.saas.maven</groupId>
+		<artifactId>mycompany-parent</artifactId>
+		<version>1.0.1</version>
+	</parent>
+
+	<groupId>com.mycompany.saas</groupId>
+	<artifactId>darwin-csb</artifactId>
+	<name>${project.artifactId}</name>
+	<version>2.4.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>darwin-author-webapp</module>
+		<module>darwin-webapp</module>
+		<module>darwin-module</module>
+		<module>modules</module>
+	</modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<csb-comms.version>1.12.0-SNAPSHOT</csb-comms.version>
+		<csb-user-acc-management.version>1.12.0-SNAPSHOT</csb-user-acc-management.version>
+		<csb-model.version>1.12.0-SNAPSHOT</csb-model.version>
+		<csb-billing-subs.version>1.12.0-SNAPSHOT</csb-billing-subs.version>
+		<csb-e-commerce.version>1.12.0-SNAPSHOT</csb-e-commerce.version>
+		<csb-sso.version>1.12.0-SNAPSHOT</csb-sso.version>
+
+		<!-- import csb-bundle based on magnolia 5.4.3 -->
+		<csb.bundle.version>${project.version}</csb.bundle.version>
+		<csb.platform.version>${project.version}</csb.platform.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!--
+				Importing dependencyManagement of csb bundle.
+
+				This include a consistent set of Magnolia, Spring, etc.
+
+				This means you don't have to specify versions of modules you depend on
+				(unless you want a different version than that of the bundle)-->
+			<dependency>
+				<groupId>com.mycompany.saas.maven</groupId>
+				<artifactId>csb-parent-bundle</artifactId>
+				<version>${csb.bundle.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!--
+				Importing MYCOMPANY core-lib dependencies
+			-->
+			<dependency>
+				<groupId>com.mycompany.marketo</groupId>
+				<artifactId>mycompany-marketo</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>csb-user-acc-management</artifactId>
+				<version>${csb-user-acc-management.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>csb-model</artifactId>
+				<version>${csb-model.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>csb-comms</artifactId>
+				<version>${csb-comms.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>csb-sso</artifactId>
+				<version>${csb-sso.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>mycompany-saml</artifactId>
+				<version>1.0.10</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>csb-e-commerce</artifactId>
+				<version>${csb-e-commerce.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>csb-billing-subs</artifactId>
+				<version>${csb-billing-subs.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>log4j-slf4j-impl</artifactId>
+						<groupId>org.apache.logging.log4j</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>log4j</artifactId>
+						<groupId>log4j</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>nortonapi</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>mozy</groupId>
+				<artifactId>mozyapi</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<!--
+				Importing MYCOMPANY modules
+			-->
+
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-common</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-localisation</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-security</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-login</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-provisioning</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-isv</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-products</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-customer-administration</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-comms</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-cs-admin</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-branding</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mycompany.saas.module</groupId>
+				<artifactId>csb-module-static-pages</artifactId>
+				<version>${csb.platform.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.mycompany.saas</groupId>
+				<artifactId>csb-module</artifactId>
+				<version>${csb.platform.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>log4j-over-slf4j</artifactId>
+						<groupId>org.slf4j</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>com.mycompany.saas.module.test</groupId>
+				<artifactId>csb-module-test-resources</artifactId>
+				<version>${csb.platform.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce</id>
+						<configuration>
+							<rules>
+								<!--
+								this rule ensure that we chose a specific version of a dependency
+								when two different versions come from the dependency:tree
+								We don't want to put both in the classpath and let the class loader decide by itself.
+								-->
+								<dependencyConvergence />
+								<!--
+								This rule ensure that we use the latest version
+								of a dependency (probably the safest option).
+								This is an important rule to enable when upgrading the MYCOMPANY core libraries,
+								because they usually come with newer versions of their dependencies
+								-->
+								<requireUpperBoundDeps />
+								<reactorModuleConvergence />
+								<requireSameVersions>
+									<dependencies>
+										<dependency>org.springframework.security:*</dependency>
+									</dependencies>
+								</requireSameVersions>
+								<requireSameVersions>
+									<dependencies>
+										<dependency>org.springframework</dependency>
+									</dependencies>
+								</requireSameVersions>
+								<requireSameVersions>
+									<dependencies>
+										<dependency>org.springframework.ws</dependency>
+									</dependencies>
+								</requireSameVersions>
+								<requireSameVersions>
+									<dependencies>
+										<dependency>org.apache.logging.log4j</dependency>
+									</dependencies>
+								</requireSameVersions>
+
+								<bannedDependencies>
+									<excludes>
+										<!--
+										our current configuration is:
+										- log4j2
+										- log4j1.2 api redirect to log4j2
+										- slf4j api redirects to log4j2
+										the presence of these dependencies in the build
+										would simply break the logs
+										-->
+										<exclude>org.slf4j:log4j-over-slf4j</exclude>
+										<exclude>log4j:log4j</exclude>
+										<exclude>org.slf4j:slf4j-log4j12</exclude>
+										<!--
+										Ban javax.servlet:servlet-api:2.5 because it makes some tests failed
+										We use javax.servlet:javax.servlet-api:3.0.1 instead
+										-->
+										<!--<exclude>javax.servlet:servlet-api</exclude>-->
+									</excludes>
+								</bannedDependencies>
+							</rules>
+						</configuration>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>external.atlassian.jgitflow</groupId>
+				<artifactId>jgitflow-maven-plugin</artifactId>
+				<version>1.0-m5.1</version>
+				<configuration>
+					<allowSnapshots>true</allowSnapshots>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<excludes>
+						<exclude>**/integration/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<!-- default resources configuration which will filter your module descriptors -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>META-INF/magnolia/*</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>MYCOMPANY</id>
+			<url>http://162.13.46.125:8081/nexus/content/groups/internal/</url>
+		</repository>
+	</repositories>
+
+	<scm>
+		<connection>scm:git:ssh://git@bitbucket.org/mycompanydev/darwin.git</connection>
+		<developerConnection>scm:git:ssh://git@bitbucket.org/mycompanydev/darwin.git</developerConnection>
+		<url>scm:git:ssh://git@bitbucket.org/mycompanydev/darwin.git</url>
+	</scm>
+
+</project>

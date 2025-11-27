@@ -1,0 +1,27 @@
+Index: src/main/java/hudson/plugins/clearcase/ClearToolExec.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/ClearToolExec.java	(revision 29887)
++++ src/main/java/hudson/plugins/clearcase/ClearToolExec.java	(working copy)
+@@ -292,6 +292,7 @@
+     public void endView(String viewName) throws IOException, InterruptedException {
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+         cmd.add("endview");
++        cmd.add("-server");
+         cmd.add(viewName);
+ 
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+Index: src/main/java/hudson/plugins/clearcase/history/AbstractHistoryAction.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/history/AbstractHistoryAction.java	(revision 29887)
++++ src/main/java/hudson/plugins/clearcase/history/AbstractHistoryAction.java	(working copy)
+@@ -90,6 +90,10 @@
+             }
+         } catch (ParseException ex) {
+             /* empty by design */
++        } finally {
++            if(isDynamicView){
++                cleartool.endView(viewName);
++            }
+         }
+         return fullList;
+         // ChangeLogEntryMerger entryMerger = new ChangeLogEntryMerger(maxTimeDifferenceMillis);

@@ -1,0 +1,349 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Hudson SSH Slaves plugin
+[INFO]    task-segment: [release:prepare, release:perform] (aggregator-style)
+[INFO] ------------------------------------------------------------------------
+[INFO] [release:prepare {execution: default-cli}]
+[INFO] Verifying that there are no local modifications...
+[INFO] Executing: /bin/sh -c cd /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves && svn --non-interactive status
+[INFO] Working directory: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves
+[INFO] Checking dependencies and plugins for snapshots ...
+[INFO] Transforming 'Hudson SSH Slaves plugin'...
+[INFO] Not generating release POMs
+[INFO] Executing goals 'clean verify'...
+[INFO] [INFO] Scanning for projects...
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] Building Hudson SSH Slaves plugin
+[INFO] [INFO]    task-segment: [clean, verify]
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] [clean:clean {execution: default-clean}]
+[INFO] [INFO] Deleting directory /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target
+[INFO] [INFO] [enforcer:display-info {execution: default}]
+[INFO] [INFO] Maven Version: 2.2.1
+[INFO] [INFO] JDK Version: 1.6.0_12 normalized as: 1.6.0-12
+[INFO] [INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.31-15-generic
+[INFO] [INFO] [localizer:generate {execution: default}]
+[INFO] [INFO] [resources:resources {execution: default-resources}]
+[INFO] [WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] [INFO] Copying 3 resources
+[INFO] [INFO] [hpi:apt-compile {execution: default-apt-compile}]
+[INFO] [INFO] Compiling 7 source files to /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/classes
+[INFO] Note: Generating hudson/plugins/sshslaves/SSHLauncher.stapler
+[INFO] Note: hudson.plugins.sshslaves.SSHLauncher.DescriptorImpl indexed under hudson.Extension
+[INFO] Note: hudson.plugins.sshslaves.SSHLauncher.DefaultJavaProvider indexed under hudson.Extension
+[INFO] /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/src/main/java/hudson/plugins/sshslaves/SSHLauncher.java:479: warning: [deprecation] afterDisconnect(hudson.slaves.SlaveComputer,hudson.util.StreamTaskListener) in hudson.slaves.ComputerLauncher has been deprecated
+[INFO]     public synchronized void afterDisconnect(SlaveComputer slaveComputer, StreamTaskListener listener) {
+[INFO]                              ^
+[INFO] /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/src/main/java/hudson/plugins/sshslaves/SSHLauncher.java:502: warning: [deprecation] afterDisconnect(hudson.slaves.SlaveComputer,hudson.util.StreamTaskListener) in hudson.slaves.ComputerLauncher has been deprecated
+[INFO]         super.afterDisconnect(slaveComputer, listener);
+[INFO]              ^
+[INFO] Note: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/src/main/java/hudson/plugins/sshslaves/SFTPFileSystem.java uses unchecked or unsafe operations.
+[INFO] Note: Recompile with -Xlint:unchecked for details.
+[INFO] 2 warnings
+[INFO] [INFO] [hpi:insert-test {execution: default-insert-test}]
+[INFO] [INFO] [groovy:generateTestStubs {execution: test-in-groovy}]
+[INFO] [INFO]  No sources found for Java stub generation
+[INFO] [INFO] [resources:testResources {execution: default-testResources}]
+[INFO] [WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] [INFO] skip non existing resourceDirectory /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/src/test/resources
+[INFO] [INFO] [compiler:testCompile {execution: default-testCompile}]
+[INFO] [INFO] Compiling 1 source file to /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/test-classes
+[INFO] [INFO] [hpi:test-hpl {execution: default-test-hpl}]
+[INFO] [INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/test-classes/the.hpl
+[INFO] [INFO] [groovy:testCompile {execution: test-in-groovy}]
+[INFO] [INFO]  No sources found to compile
+[INFO] [INFO] [surefire:test {execution: default-test}]
+[INFO] [INFO] Surefire report directory: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/surefire-reports
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running InjectedTest
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 sec
+[INFO] 
+[INFO] Results :
+[INFO] 
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] [INFO] [hpi:hpi {execution: default-hpi}]
+[INFO] [INFO] Exploding webapp...
+[INFO] [INFO] Copy webapp webResources to /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/ssh-slaves
+[INFO] [INFO] Assembling webapp ssh-slaves in /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/ssh-slaves
+[INFO] [INFO] Generating hpi /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/ssh-slaves.hpi
+[INFO] [INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/ssh-slaves/META-INF/MANIFEST.MF
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/ssh-slaves.hpi
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/ssh-slaves.jar
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] BUILD SUCCESSFUL
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] Total time: 15 seconds
+[INFO] [INFO] Finished at: Wed Dec 09 06:20:24 PST 2009
+[INFO] [INFO] Final Memory: 85M/412M
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] Checking in modified POMs...
+[INFO] Executing: /bin/sh -c cd /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves && svn --non-interactive commit --file /tmp/maven-scm-1293774242.commit --targets /tmp/maven-scm-5510605503395177218-targets
+[INFO] Working directory: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves
+[INFO] Tagging release with the label ssh-slaves-0.9...
+[INFO] Executing: /bin/sh -c cd /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves && svn --non-interactive copy --file /tmp/maven-scm-1078347305.commit --revision 24508 https://svn.dev.java.net/svn/hudson/trunk/hudson/plugins/ssh-slaves https://svn.dev.java.net/svn/hudson/tags/ssh-slaves-0.9
+[INFO] Working directory: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves
+[INFO] Transforming 'Hudson SSH Slaves plugin'...
+[INFO] Not removing release POMs
+[INFO] Checking in modified POMs...
+[INFO] Executing: /bin/sh -c cd /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves && svn --non-interactive commit --file /tmp/maven-scm-925982478.commit --targets /tmp/maven-scm-2657863607833448925-targets
+[INFO] Working directory: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves
+[INFO] Release preparation complete.
+[INFO] [release:perform {execution: default-cli}]
+[INFO] Checking out the project to perform the release ...
+[INFO] Executing: /bin/sh -c cd /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target && svn --non-interactive checkout https://svn.dev.java.net/svn/hudson/tags/ssh-slaves-0.9 /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout
+[INFO] Working directory: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target
+[INFO] Executing goals 'deploy hpi:upload hpi:announce'...
+[INFO] [INFO] Scanning for projects...
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] Building Hudson SSH Slaves plugin
+[INFO] [INFO]    task-segment: [deploy, hpi:upload, hpi:announce]
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] [enforcer:display-info {execution: default}]
+[INFO] [INFO] Maven Version: 2.2.1
+[INFO] [INFO] JDK Version: 1.6.0_12 normalized as: 1.6.0-12
+[INFO] [INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.31-15-generic
+[INFO] [INFO] [localizer:generate {execution: default}]
+[INFO] [INFO] [resources:resources {execution: default-resources}]
+[INFO] [WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] [INFO] Copying 3 resources
+[INFO] [INFO] [hpi:apt-compile {execution: default-apt-compile}]
+[INFO] [INFO] Compiling 7 source files to /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/classes
+[INFO] Note: Generating hudson/plugins/sshslaves/SSHLauncher.stapler
+[INFO] Note: hudson.plugins.sshslaves.SSHLauncher.DescriptorImpl indexed under hudson.Extension
+[INFO] Note: hudson.plugins.sshslaves.SSHLauncher.DefaultJavaProvider indexed under hudson.Extension
+[INFO] /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/main/java/hudson/plugins/sshslaves/SSHLauncher.java:479: warning: [deprecation] afterDisconnect(hudson.slaves.SlaveComputer,hudson.util.StreamTaskListener) in hudson.slaves.ComputerLauncher has been deprecated
+[INFO]     public synchronized void afterDisconnect(SlaveComputer slaveComputer, StreamTaskListener listener) {
+[INFO]                              ^
+[INFO] /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/main/java/hudson/plugins/sshslaves/SSHLauncher.java:502: warning: [deprecation] afterDisconnect(hudson.slaves.SlaveComputer,hudson.util.StreamTaskListener) in hudson.slaves.ComputerLauncher has been deprecated
+[INFO]         super.afterDisconnect(slaveComputer, listener);
+[INFO]              ^
+[INFO] Note: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/main/java/hudson/plugins/sshslaves/SFTPFileSystem.java uses unchecked or unsafe operations.
+[INFO] Note: Recompile with -Xlint:unchecked for details.
+[INFO] 2 warnings
+[INFO] [INFO] [hpi:insert-test {execution: default-insert-test}]
+[INFO] [INFO] [groovy:generateTestStubs {execution: test-in-groovy}]
+[INFO] [INFO]  No sources found for Java stub generation
+[INFO] [INFO] [resources:testResources {execution: default-testResources}]
+[INFO] [WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] [INFO] skip non existing resourceDirectory /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/test/resources
+[INFO] [INFO] [compiler:testCompile {execution: default-testCompile}]
+[INFO] [INFO] Compiling 1 source file to /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/test-classes
+[INFO] [INFO] [hpi:test-hpl {execution: default-test-hpl}]
+[INFO] [INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/test-classes/the.hpl
+[INFO] [INFO] [groovy:testCompile {execution: test-in-groovy}]
+[INFO] [INFO]  No sources found to compile
+[INFO] [INFO] [surefire:test {execution: default-test}]
+[INFO] [INFO] Surefire report directory: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/surefire-reports
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running InjectedTest
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 sec
+[INFO] 
+[INFO] Results :
+[INFO] 
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] [INFO] [hpi:hpi {execution: default-hpi}]
+[INFO] [INFO] Exploding webapp...
+[INFO] [INFO] Copy webapp webResources to /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves
+[INFO] [INFO] Assembling webapp ssh-slaves in /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves
+[INFO] [INFO] Generating hpi /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves.hpi
+[INFO] [INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves/META-INF/MANIFEST.MF
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves.hpi
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves.jar
+[INFO] [INFO] Preparing source:jar
+[INFO] [WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[INFO] [INFO] [enforcer:display-info {execution: default}]
+[INFO] [INFO] Maven Version: 2.2.1
+[INFO] [INFO] JDK Version: 1.6.0_12 normalized as: 1.6.0-12
+[INFO] [INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.31-15-generic
+[INFO] [INFO] [localizer:generate {execution: default}]
+[INFO] [INFO] [source:jar {execution: attach-sources}]
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves-sources.jar
+[INFO] [INFO] Preparing javadoc:jar
+[INFO] [WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[INFO] [WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[INFO] [INFO] [enforcer:display-info {execution: default}]
+[INFO] [INFO] Maven Version: 2.2.1
+[INFO] [INFO] JDK Version: 1.6.0_12 normalized as: 1.6.0-12
+[INFO] [INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.31-15-generic
+[INFO] [INFO] [localizer:generate {execution: default}]
+[INFO] [INFO] [javadoc:jar {execution: attach-javadocs}]
+[INFO] Loading source files for package hudson.plugins.sshslaves...
+[INFO] Constructing Javadoc information...
+[INFO] Standard Doclet version 1.6.0_12
+[INFO] Building tree for all the packages and classes...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//JavaProvider.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//Messages.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//PluginImpl.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//SFTPClient.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//SSHLauncher.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//SSHLauncher.DefaultJavaProvider.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//SSHLauncher.DescriptorImpl.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//package-frame.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//package-summary.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//package-tree.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/constant-values.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/SSHLauncher.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/SSHLauncher.DescriptorImpl.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/SSHLauncher.DefaultJavaProvider.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/JavaProvider.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/Messages.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/PluginImpl.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/SFTPClient.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//package-use.html...
+[INFO] Building index for all the packages and classes...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/overview-tree.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/index-all.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/deprecated-list.html...
+[INFO] Building index for all classes...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/allclasses-frame.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/allclasses-noframe.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/index.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/help-doc.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/stylesheet.css...
+[INFO] 2 warnings
+[INFO] [INFO] Javadoc Warnings
+[INFO] [WARNING] /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/main/java/hudson/plugins/sshslaves/PluginImpl.java:17: warning - @plugin is an unknown tag.
+[INFO] [WARNING] /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/main/java/hudson/plugins/sshslaves/SSHLauncher.java:120: warning - @return tag has no arguments.
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves-javadoc.jar
+[INFO] [INFO] [install:install {execution: default-install}]
+[INFO] [INFO] Installing /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves.hpi to /home/kohsuke/.m2/repository/org/jvnet/hudson/plugins/ssh-slaves/0.9/ssh-slaves-0.9.hpi
+[INFO] [INFO] Installing /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves.jar to /home/kohsuke/.m2/repository/org/jvnet/hudson/plugins/ssh-slaves/0.9/ssh-slaves-0.9.jar
+[INFO] [INFO] Installing /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves-sources.jar to /home/kohsuke/.m2/repository/org/jvnet/hudson/plugins/ssh-slaves/0.9/ssh-slaves-0.9-sources.jar
+[INFO] [INFO] Installing /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves-javadoc.jar to /home/kohsuke/.m2/repository/org/jvnet/hudson/plugins/ssh-slaves/0.9/ssh-slaves-0.9-javadoc.jar
+[INFO] [INFO] [deploy:deploy {execution: default-deploy}]
+[INFO] Uploading: java-net:/maven2-repository/trunk/repository//trunk/repository/org/jvnet/hudson/plugins/ssh-slaves/0.9/ssh-slaves-0.9.hpi
+[INFO] 
+[INFO] [INFO] Retrieving previous metadata from java.net-m2-repository
+[INFO] [INFO] Uploading repository metadata for: 'artifact org.jvnet.hudson.plugins:ssh-slaves'
+[INFO] [INFO] Uploading project information for ssh-slaves 0.9
+[INFO] Uploading: java-net:/maven2-repository/trunk/repository//trunk/repository/org/jvnet/hudson/plugins/ssh-slaves/0.9/ssh-slaves-0.9.jar
+[INFO] 
+[INFO] Uploading: java-net:/maven2-repository/trunk/repository//trunk/repository/org/jvnet/hudson/plugins/ssh-slaves/0.9/ssh-slaves-0.9-sources.jar
+[INFO] 
+[INFO] Uploading: java-net:/maven2-repository/trunk/repository//trunk/repository/org/jvnet/hudson/plugins/ssh-slaves/0.9/ssh-slaves-0.9-javadoc.jar
+[INFO] 
+[INFO] [INFO] Preparing hpi:upload
+[INFO] [INFO] [enforcer:display-info {execution: default}]
+[INFO] [INFO] Maven Version: 2.2.1
+[INFO] [INFO] JDK Version: 1.6.0_12 normalized as: 1.6.0-12
+[INFO] [INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.31-15-generic
+[INFO] [INFO] [localizer:generate {execution: default}]
+[INFO] [INFO] [resources:resources {execution: default-resources}]
+[INFO] [WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] [INFO] Copying 3 resources
+[INFO] [INFO] [hpi:apt-compile {execution: default-apt-compile}]
+[INFO] [INFO] Nothing to compile - all classes are up to date
+[INFO] [INFO] [hpi:insert-test {execution: default-insert-test}]
+[INFO] [INFO] [groovy:generateTestStubs {execution: test-in-groovy}]
+[INFO] [INFO]  No sources found for Java stub generation
+[INFO] [INFO] [resources:testResources {execution: default-testResources}]
+[INFO] [WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] [INFO] skip non existing resourceDirectory /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/test/resources
+[INFO] [INFO] [compiler:testCompile {execution: default-testCompile}]
+[INFO] [INFO] Nothing to compile - all classes are up to date
+[INFO] [INFO] [hpi:test-hpl {execution: default-test-hpl}]
+[INFO] [INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/test-classes/the.hpl
+[INFO] [INFO] [groovy:testCompile {execution: test-in-groovy}]
+[INFO] [INFO]  No sources found to compile
+[INFO] [INFO] [surefire:test {execution: default-test}]
+[INFO] [INFO] Surefire report directory: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/surefire-reports
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running InjectedTest
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 sec
+[INFO] 
+[INFO] Results :
+[INFO] 
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] [INFO] [hpi:hpi {execution: default-hpi}]
+[INFO] [INFO] Exploding webapp...
+[INFO] [INFO] Copy webapp webResources to /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves
+[INFO] [INFO] Assembling webapp ssh-slaves in /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves
+[INFO] [INFO] Generating hpi /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves.hpi
+[INFO] [INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves/META-INF/MANIFEST.MF
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves.hpi
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves.jar
+[INFO] [INFO] Preparing source:jar
+[INFO] [WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[INFO] [INFO] [enforcer:display-info {execution: default}]
+[INFO] [INFO] Maven Version: 2.2.1
+[INFO] [INFO] JDK Version: 1.6.0_12 normalized as: 1.6.0-12
+[INFO] [INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.31-15-generic
+[INFO] [INFO] [localizer:generate {execution: default}]
+[INFO] [INFO] [source:jar {execution: attach-sources}]
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves-sources.jar
+[INFO] [INFO] Preparing javadoc:jar
+[INFO] [WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[INFO] [WARNING] Removing: jar from forked lifecycle, to prevent recursive invocation.
+[INFO] [INFO] [enforcer:display-info {execution: default}]
+[INFO] [INFO] Maven Version: 2.2.1
+[INFO] [INFO] JDK Version: 1.6.0_12 normalized as: 1.6.0-12
+[INFO] [INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.31-15-generic
+[INFO] [INFO] [localizer:generate {execution: default}]
+[INFO] [INFO] [javadoc:jar {execution: attach-javadocs}]
+[INFO] Loading source files for package hudson.plugins.sshslaves...
+[INFO] Constructing Javadoc information...
+[INFO] Standard Doclet version 1.6.0_12
+[INFO] Building tree for all the packages and classes...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//JavaProvider.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//Messages.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//PluginImpl.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//SFTPClient.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//SSHLauncher.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//SSHLauncher.DefaultJavaProvider.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//SSHLauncher.DescriptorImpl.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//package-frame.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//package-summary.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//package-tree.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/constant-values.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/SSHLauncher.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/SSHLauncher.DescriptorImpl.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/SSHLauncher.DefaultJavaProvider.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/JavaProvider.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/Messages.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/PluginImpl.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//class-use/SFTPClient.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/hudson/plugins/sshslaves//package-use.html...
+[INFO] Building index for all the packages and classes...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/overview-tree.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/index-all.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/deprecated-list.html...
+[INFO] Building index for all classes...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/allclasses-frame.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/allclasses-noframe.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/index.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/help-doc.html...
+[INFO] Generating /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/apidocs/stylesheet.css...
+[INFO] 2 warnings
+[INFO] [INFO] Javadoc Warnings
+[INFO] [WARNING] /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/main/java/hudson/plugins/sshslaves/PluginImpl.java:17: warning - @plugin is an unknown tag.
+[INFO] [WARNING] /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/src/main/java/hudson/plugins/sshslaves/SSHLauncher.java:120: warning - @return tag has no arguments.
+[INFO] [INFO] Building jar: /home/kohsuke/ws/hudson/hudson/plugins/ssh-slaves/target/checkout/target/ssh-slaves-javadoc.jar
+[INFO] [INFO] [hpi:upload {execution: default-cli}]
+[INFO] [INFO] [hpi:announce {execution: default-cli}]
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] BUILD SUCCESSFUL
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] [INFO] Total time: 6 minutes 23 seconds
+[INFO] [INFO] Finished at: Wed Dec 09 06:27:29 PST 2009
+[INFO] [INFO] Final Memory: 90M/417M
+[INFO] [INFO] ------------------------------------------------------------------------
+[INFO] Cleaning up after release...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 7 minutes 29 seconds
+[INFO] Finished at: Wed Dec 09 06:27:29 PST 2009
+[INFO] Final Memory: 57M/384M
+[INFO] ------------------------------------------------------------------------

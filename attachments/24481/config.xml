@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.plugins.repo.RepoScm" plugin="repo@1.5">
+    <manifestRepositoryUrl>git://github.com/NVIDIA/tegra-uboot-flasher-manifests.git</manifestRepositoryUrl>
+    <manifestGroup>default,-tools,-bootloader</manifestGroup>
+    <jobs>0</jobs>
+    <currentBranch>true</currentBranch>
+    <quiet>true</quiet>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <hudson.matrix.TextAxis>
+      <name>board</name>
+      <values>
+        <string>harmony</string>
+      </values>
+    </hudson.matrix.TextAxis>
+  </axes>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>if [ ! -d scripts ]; then
+    echo MISSING scripts dir
+    exit 1
+fi
+
+if [ ! -d cbootimage-configs ]; then
+    echo MISSING cbootimage-configs dir
+    exit 1
+fi
+
+exit 0</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>false</runSequentially>
+  </executionStrategy>
+</matrix-project>

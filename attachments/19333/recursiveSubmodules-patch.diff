@@ -1,0 +1,199 @@
+diff --git a/src/main/java/hudson/plugins/git/GitAPI.java b/src/main/java/hudson/plugins/git/GitAPI.java
+index df535cb..6b599e1 100644
+--- a/src/main/java/hudson/plugins/git/GitAPI.java
++++ b/src/main/java/hudson/plugins/git/GitAPI.java
+@@ -32,6 +32,8 @@ import org.spearce.jgit.transport.RemoteConfig;
+ 
+ public class GitAPI implements IGitAPI {
+ 
++	private static final String DEFAULT_CLEAN_OPTIONS = "-fdx";
++	
+     Launcher launcher;
+     FilePath workspace;
+     TaskListener listener;
+@@ -183,7 +185,7 @@ public class GitAPI implements IGitAPI {
+     }
+ 
+     public void clean() throws GitException {
+-        launchCommand("clean", "-fdx");
++        launchCommand("clean", DEFAULT_CLEAN_OPTIONS);
+     }
+ 
+     public ObjectId revParse(String revName) throws GitException {
+@@ -315,10 +317,30 @@ public class GitAPI implements IGitAPI {
+     /**
+      * Update submodules.
+      *
++     * @param recursive if true, will recursively retrieve submodules (requires git 1.6.5)
++     *
+      * @throws GitException if executing the Git command fails
+      */
+-    public void submoduleUpdate() throws GitException {
+-        launchCommand("submodule", "update");
++    public void submoduleUpdate(boolean recursive) throws GitException {
++    	ArgumentListBuilder args = new ArgumentListBuilder();
++    	args.add("submodule", "update");
++    	if ( recursive ) {
++    		args.add("--init", "--recursive");
++    	}
++    	
++        launchCommand(args);
++    }
++    
++    public void submoduleClean(boolean recursive) throws GitException
++    {
++    	ArgumentListBuilder args = new ArgumentListBuilder();
++    	args.add("submodule", "foreach");
++    	if ( recursive ) {
++    		args.add("--recursive");
++    	}
++    	args.add("git clean " + DEFAULT_CLEAN_OPTIONS);
++    	
++    	launchCommand(args);
+     }
+ 
+     public void tag(String tagName, String comment) throws GitException {
+diff --git a/src/main/java/hudson/plugins/git/GitSCM.java b/src/main/java/hudson/plugins/git/GitSCM.java
+index 96b58e4..909829f 100644
+--- a/src/main/java/hudson/plugins/git/GitSCM.java
++++ b/src/main/java/hudson/plugins/git/GitSCM.java
+@@ -87,6 +87,8 @@ public class GitSCM extends SCM implements Serializable {
+ 	private PreBuildMergeOptions mergeOptions;
+ 
+     private boolean doGenerateSubmoduleConfigurations;
++    
++    private boolean recursiveSubmodules;
+ 
+ 	private boolean clean;
+ 
+@@ -108,6 +110,7 @@ public class GitSCM extends SCM implements Serializable {
+ 	        List<BranchSpec> branches,
+ 	        PreBuildMergeOptions mergeOptions,
+ 	        boolean doGenerateSubmoduleConfigurations,
++	        boolean recursiveSubmodules,
+ 	        Collection<SubmoduleConfig> submoduleCfg,
+ 	        boolean clean,
+ 	        GitWeb browser) {
+@@ -121,6 +124,7 @@ public class GitSCM extends SCM implements Serializable {
+ 		this.mergeOptions = mergeOptions;
+ 
+ 		this.doGenerateSubmoduleConfigurations = doGenerateSubmoduleConfigurations;
++		this.recursiveSubmodules = recursiveSubmodules;
+ 		this.submoduleCfg = submoduleCfg;
+ 
+ 		this.clean = clean;
+@@ -141,6 +145,7 @@ public class GitSCM extends SCM implements Serializable {
+     	   remoteRepositories = new ArrayList<RemoteConfig>();
+    			branches = new ArrayList<BranchSpec>();
+    			doGenerateSubmoduleConfigurations = false;
++   			recursiveSubmodules = false;
+    			mergeOptions = new PreBuildMergeOptions();
+ 
+ 
+@@ -490,7 +495,7 @@ public class GitSCM extends SCM implements Serializable {
+ 
+ 					if (git.hasGitModules()) {
+ 						git.submoduleInit();
+-						git.submoduleUpdate();
++						git.submoduleUpdate(recursiveSubmodules);
+ 					}
+ 				}
+ 
+@@ -565,7 +570,7 @@ public class GitSCM extends SCM implements Serializable {
+ 						}
+ 
+ 						if (git.hasGitModules()) {
+-							git.submoduleUpdate();
++							git.submoduleUpdate(recursiveSubmodules);
+ 						}
+ 
+ 						// Tag the successful merge
+@@ -633,13 +638,14 @@ public class GitSCM extends SCM implements Serializable {
+ 					// we've only just discovered.
+ 					// So - try updating from all RRs, then use the submodule
+ 					// Update to do the checkout
+-
+-					for (RemoteConfig remoteRepository : getRepositories()) {
+-						fetchFrom(git, localWorkspace, listener, remoteRepository);
++					if ( !recursiveSubmodules ) {
++						for (RemoteConfig remoteRepository : getRepositories()) {
++							fetchFrom(git, localWorkspace, listener, remoteRepository);
++						}
+ 					}
+ 
+ 					// Update to the correct checkout
+-					git.submoduleUpdate();
++					git.submoduleUpdate(recursiveSubmodules);
+ 
+ 				}
+ 
+@@ -677,6 +683,9 @@ public class GitSCM extends SCM implements Serializable {
+                 if (getClean()) {
+     				listener.getLogger().println("Cleaning workspace");
+                     git.clean();
++                    
++                    if ( git.hasGitModules() )
++                    	git.submoduleClean(recursiveSubmodules);
+                 }
+ 
+                 // Fetch the diffs into the changelog file
+@@ -844,6 +853,7 @@ public class GitSCM extends SCM implements Serializable {
+ 					branches,
+ 					mergeOptions,
+ 				    req.getParameter("git.generate") != null,
++				    req.getParameter("git.recursiveSubmodules") != null,
+ 					submoduleCfg,
+ 					req.getParameter("git.clean") != null,
+ 					gitWeb);
+@@ -913,6 +923,10 @@ public class GitSCM extends SCM implements Serializable {
+ 	public boolean getDoGenerate() {
+ 		return this.doGenerateSubmoduleConfigurations;
+ 	}
++	
++	public boolean getRecursiveSubmodules() {
++		return this.recursiveSubmodules;
++	}
+ 
+     public List<BranchSpec> getBranches()
+     {
+diff --git a/src/main/java/hudson/plugins/git/IGitAPI.java b/src/main/java/hudson/plugins/git/IGitAPI.java
+index 3654863..2eee736 100644
+--- a/src/main/java/hudson/plugins/git/IGitAPI.java
++++ b/src/main/java/hudson/plugins/git/IGitAPI.java
+@@ -21,7 +21,8 @@ public interface IGitAPI {
+ 	boolean hasGitModules() throws GitException;
+ 
+ 	void submoduleInit()  throws GitException;
+-    void submoduleUpdate()  throws GitException;
++    void submoduleUpdate(boolean recursive)  throws GitException;
++    void submoduleClean(boolean recursive) throws GitException;
+ 
+     public void fetch(String repository, String refspec) throws GitException;
+     void fetch(RemoteConfig remoteRepository);
+diff --git a/src/main/resources/hudson/plugins/git/GitSCM/config.jelly b/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
+index 9e187b8..ce78f62 100644
+--- a/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
++++ b/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
+@@ -119,6 +119,11 @@
+     <f:entry title="Clean after checkout" help="/plugin/git/clean.html">
+       <f:checkbox name="git.clean" checked="${scm.clean}" />
+     </f:entry>
++    
++    <f:entry title="Recursively update submodules" help="/plugin/git/recursiveSubmodules.html">
++      <f:checkbox name="git.recursiveSubmodules" checked="${scm.recursiveSubmodules}" />
++    </f:entry>
++    
+   </f:advanced>
+   
+   <t:listScmBrowsers name="git.browser" />
+diff --git a/src/main/webapp/recursiveSubmodules.html b/src/main/webapp/recursiveSubmodules.html
+new file mode 100644
+index 0000000..8a252eb
+--- /dev/null
++++ b/src/main/webapp/recursiveSubmodules.html
+@@ -0,0 +1,5 @@
++<div>
++  Retrieve all submodules recursively 
++  
++  (uses '--recursive' option which requires git 1.6.5)  
++</div>

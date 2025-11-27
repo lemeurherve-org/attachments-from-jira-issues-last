@@ -1,0 +1,108 @@
+Started by user Alexandr Panshin
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Scripts/TestScripto
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Defect reproducing stage)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sleep
+Sleeping for 5 sec
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+an exception which occurred:
+	in field hudson.model.Slave.launcher
+	in object org.jenkinsci.plugins.vSphereCloudSlave@4597dc39
+	in field com.cloudbees.groovy.cps.impl.BlockScopeEnv.locals
+	in object com.cloudbees.groovy.cps.impl.BlockScopeEnv@1467c116
+	in field com.cloudbees.groovy.cps.impl.CallEnv.caller
+	in object com.cloudbees.groovy.cps.impl.FunctionCallEnv@6546b593
+	in field com.cloudbees.groovy.cps.Continuable.e
+	in object org.jenkinsci.plugins.workflow.cps.SandboxContinuable@180e5519
+	in field org.jenkinsci.plugins.workflow.cps.CpsThread.program
+	in object org.jenkinsci.plugins.workflow.cps.CpsThread@395549ec
+	in field org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.threads
+	in object org.jenkinsci.plugins.workflow.cps.CpsThreadGroup@2b6da7c3
+	in object org.jenkinsci.plugins.workflow.cps.CpsThreadGroup@2b6da7c3
+Caused: java.io.NotSerializableException: org.jenkinsci.plugins.vSphereCloudLauncher
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:926)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteFields(RiverMarshaller.java:1082)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1040)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1019)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1019)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:920)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:568)
+	at org.jboss.marshalling.river.BlockMarshaller.doWriteObject(BlockMarshaller.java:65)
+	at org.jboss.marshalling.river.BlockMarshaller.writeObject(BlockMarshaller.java:56)
+	at org.jboss.marshalling.MarshallerObjectOutputStream.writeObjectOverride(MarshallerObjectOutputStream.java:50)
+	at org.jboss.marshalling.river.RiverObjectOutputStream.writeObjectOverride(RiverObjectOutputStream.java:179)
+	at java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:344)
+	at java.util.HashMap.internalWriteEntries(HashMap.java:1790)
+	at java.util.HashMap.writeObject(HashMap.java:1363)
+	at sun.reflect.GeneratedMethodAccessor430.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.jboss.marshalling.reflect.JDKSpecific$SerMethods.callWriteObject(JDKSpecific.java:156)
+	at org.jboss.marshalling.reflect.SerializableClass.callWriteObject(SerializableClass.java:191)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1028)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:920)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteFields(RiverMarshaller.java:1082)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1040)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:920)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteFields(RiverMarshaller.java:1082)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1040)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1019)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:920)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteFields(RiverMarshaller.java:1082)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1040)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1019)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:920)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteFields(RiverMarshaller.java:1082)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1040)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:920)
+	at org.jboss.marshalling.river.BlockMarshaller.doWriteObject(BlockMarshaller.java:65)
+	at org.jboss.marshalling.river.BlockMarshaller.writeObject(BlockMarshaller.java:56)
+	at org.jboss.marshalling.MarshallerObjectOutputStream.writeObjectOverride(MarshallerObjectOutputStream.java:50)
+	at org.jboss.marshalling.river.RiverObjectOutputStream.writeObjectOverride(RiverObjectOutputStream.java:179)
+	at java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:344)
+	at java.util.concurrent.ConcurrentSkipListMap.writeObject(ConcurrentSkipListMap.java:1437)
+	at sun.reflect.GeneratedMethodAccessor471.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.jboss.marshalling.reflect.JDKSpecific$SerMethods.callWriteObject(JDKSpecific.java:156)
+	at org.jboss.marshalling.reflect.SerializableClass.callWriteObject(SerializableClass.java:191)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1028)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:920)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteFields(RiverMarshaller.java:1082)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteSerializableObject(RiverMarshaller.java:1040)
+	at org.jboss.marshalling.river.RiverMarshaller.doWriteObject(RiverMarshaller.java:920)
+	at org.jboss.marshalling.AbstractObjectOutput.writeObject(AbstractObjectOutput.java:58)
+	at org.jboss.marshalling.AbstractMarshaller.writeObject(AbstractMarshaller.java:111)
+	at org.jenkinsci.plugins.workflow.support.pickles.serialization.RiverWriter.lambda$writeObject$0(RiverWriter.java:144)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:237)
+	at org.jenkinsci.plugins.workflow.support.pickles.serialization.RiverWriter.writeObject(RiverWriter.java:143)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.saveProgram(CpsThreadGroup.java:522)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.saveProgram(CpsThreadGroup.java:499)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.saveProgramIfPossible(CpsThreadGroup.java:486)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:410)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$200(CpsThreadGroup.java:93)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:282)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:270)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:67)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:131)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:59)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Finished: FAILURE

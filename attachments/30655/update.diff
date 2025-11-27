@@ -1,0 +1,186 @@
+diff --git a/pom.xml b/pom.xml
+index 3836226..8648e7b 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -4,7 +4,7 @@
+     <parent>
+         <groupId>org.jenkins-ci.plugins</groupId>
+         <artifactId>plugin</artifactId>
+-        <version>1.596.1</version>
++        <version>1.609.3</version>
+     </parent>
+     <artifactId>docker-workflow</artifactId>
+     <version>1.3-SNAPSHOT</version>
+@@ -28,7 +28,7 @@
+   </scm>
+ 
+     <properties>
+-        <workflow.version>1.7-alpha-1</workflow.version>
++        <workflow.version>1.10</workflow.version>
+         <maven-hpi-plugin.version>1.112</maven-hpi-plugin.version>
+     </properties>
+     <repositories>
+@@ -47,12 +47,12 @@
+         <dependency>
+             <groupId>org.jenkins-ci.plugins</groupId>
+             <artifactId>docker-commons</artifactId>
+-            <version>1.0</version>
++            <version>1.2</version>
+         </dependency>
+         <dependency>
+             <groupId>org.jenkins-ci.plugins</groupId>
+             <artifactId>script-security</artifactId>
+-            <version>1.14</version>
++            <version>1.15</version>
+         </dependency>
+         <dependency>
+             <groupId>org.jenkins-ci.plugins.workflow</groupId>
+diff --git a/src/test/java/org/jenkinsci/plugins/docker/workflow/DockerDSLTest.java b/src/test/java/org/jenkinsci/plugins/docker/workflow/DockerDSLTest.java
+index 0665828..84eda31 100644
+--- a/src/test/java/org/jenkinsci/plugins/docker/workflow/DockerDSLTest.java
++++ b/src/test/java/org/jenkinsci/plugins/docker/workflow/DockerDSLTest.java
+@@ -45,8 +45,6 @@ import org.jenkinsci.plugins.docker.commons.fingerprint.DockerAncestorFingerprin
+ import org.jenkinsci.plugins.docker.commons.fingerprint.DockerDescendantFingerprintFacet;
+ import org.jenkinsci.plugins.docker.commons.fingerprint.DockerFingerprints;
+ import org.jenkinsci.plugins.docker.commons.fingerprint.DockerRunFingerprintFacet;
+-import org.jenkinsci.plugins.workflow.BuildWatcher;
+-import org.jenkinsci.plugins.workflow.JenkinsRuleExt;
+ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+ import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+@@ -57,6 +55,7 @@ import org.junit.ClassRule;
+ import org.junit.Rule;
+ import org.junit.Test;
+ import org.junit.runners.model.Statement;
++import org.jvnet.hudson.test.BuildWatcher;
+ import org.jvnet.hudson.test.RestartableJenkinsRule;
+ 
+ public class DockerDSLTest {
+@@ -80,7 +79,7 @@ public class DockerDSLTest {
+                 WorkflowRun b = p.getLastBuild();
+                 assertEquals(Collections.<String>emptySet(), grep(b.getRootDir(), "org.jenkinsci.plugins.docker.workflow.Docker"));
+                 SemaphoreStep.success("wait/1", null);
+-                story.j.assertBuildStatusSuccess(JenkinsRuleExt.waitForCompletion(b));
++                story.j.assertBuildStatusSuccess(story.j.waitForCompletion(b));
+             }
+         });
+     }
+@@ -126,7 +125,7 @@ public class DockerDSLTest {
+                 SemaphoreStep.success("wait/1", null);
+                 WorkflowJob p = story.j.jenkins.getItemByFullName("p", WorkflowJob.class);
+                 WorkflowRun b = p.getLastBuild();
+-                story.j.assertLogContains("Require method GET POST OPTIONS", story.j.assertBuildStatusSuccess(JenkinsRuleExt.waitForCompletion(b)));
++                story.j.assertLogContains("Require method GET POST OPTIONS", story.j.assertBuildStatusSuccess(story.j.waitForCompletion(b)));
+                 story.j.assertLogContains("the answer is 42", b);
+                 DockerClient client = new DockerClient(new Launcher.LocalLauncher(StreamTaskListener.NULL), null, null);
+                 String httpdIID = client.inspect(new EnvVars(), "httpd:2.4.12", ".Id");
+@@ -163,7 +162,7 @@ public class DockerDSLTest {
+             @Override public void evaluate() throws Throwable {
+                 SemaphoreStep.success("wait/1", null);
+                 WorkflowJob p = story.j.jenkins.getItemByFullName("p", WorkflowJob.class);
+-                WorkflowRun b = story.j.assertBuildStatusSuccess(JenkinsRuleExt.waitForCompletion(p.getLastBuild()));
++                WorkflowRun b = story.j.assertBuildStatusSuccess(story.j.waitForCompletion(p.getLastBuild()));
+                 story.j.assertLogContains("would be connecting to tcp://host:1234", b);
+                 story.j.assertLogContains("image name is docker.my.com/whatever", b);
+             }
+@@ -210,7 +209,7 @@ public class DockerDSLTest {
+                 SemaphoreStep.success("wait/1", null);
+                 WorkflowJob p = story.j.jenkins.getItemByFullName("p", WorkflowJob.class);
+                 WorkflowRun b = p.getLastBuild();
+-                story.j.assertLogContains("Require method GET POST OPTIONS", story.j.assertBuildStatusSuccess(JenkinsRuleExt.waitForCompletion(b)));
++                story.j.assertLogContains("Require method GET POST OPTIONS", story.j.assertBuildStatusSuccess(story.j.waitForCompletion(b)));
+                 story.j.assertLogContains("the answer is 42", b);
+                 DockerClient client = new DockerClient(new Launcher.LocalLauncher(StreamTaskListener.NULL), null, null);
+                 String httpdIID = client.inspect(new EnvVars(), "httpd:2.4.12", ".Id");
+diff --git a/src/test/java/org/jenkinsci/plugins/docker/workflow/RegistryEndpointStepTest.java b/src/test/java/org/jenkinsci/plugins/docker/workflow/RegistryEndpointStepTest.java
+index fec7d47..eda6e27 100644
+--- a/src/test/java/org/jenkinsci/plugins/docker/workflow/RegistryEndpointStepTest.java
++++ b/src/test/java/org/jenkinsci/plugins/docker/workflow/RegistryEndpointStepTest.java
+@@ -32,7 +32,6 @@ import java.util.Collections;
+ import java.util.Map;
+ import java.util.TreeMap;
+ import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
+-import org.jenkinsci.plugins.workflow.BuildWatcher;
+ import org.jenkinsci.plugins.workflow.steps.StepConfigTester;
+ import org.jenkinsci.plugins.workflow.structs.DescribableHelper;
+ import static org.junit.Assert.assertEquals;
+@@ -41,6 +40,7 @@ import org.junit.ClassRule;
+ import org.junit.Rule;
+ import org.junit.Test;
+ import org.junit.runners.model.Statement;
++import org.jvnet.hudson.test.BuildWatcher;
+ import org.jvnet.hudson.test.RestartableJenkinsRule;
+ 
+ public class RegistryEndpointStepTest {
+diff --git a/src/test/java/org/jenkinsci/plugins/docker/workflow/ServerEndpointStepTest.java b/src/test/java/org/jenkinsci/plugins/docker/workflow/ServerEndpointStepTest.java
+index 368df67..f7e4538 100644
+--- a/src/test/java/org/jenkinsci/plugins/docker/workflow/ServerEndpointStepTest.java
++++ b/src/test/java/org/jenkinsci/plugins/docker/workflow/ServerEndpointStepTest.java
+@@ -32,8 +32,6 @@ import java.util.Map;
+ import java.util.TreeMap;
+ import org.jenkinsci.plugins.docker.commons.credentials.DockerServerCredentials;
+ import org.jenkinsci.plugins.docker.commons.credentials.DockerServerEndpoint;
+-import org.jenkinsci.plugins.workflow.BuildWatcher;
+-import org.jenkinsci.plugins.workflow.JenkinsRuleExt;
+ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+ import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+@@ -45,6 +43,7 @@ import static org.junit.Assert.*;
+ import org.junit.ClassRule;
+ import org.junit.Rule;
+ import org.junit.runners.model.Statement;
++import org.jvnet.hudson.test.BuildWatcher;
+ import org.jvnet.hudson.test.RestartableJenkinsRule;
+ 
+ public class ServerEndpointStepTest {
+@@ -93,7 +92,7 @@ public class ServerEndpointStepTest {
+                 SemaphoreStep.success("wait/1", null);
+                 WorkflowJob p = story.j.jenkins.getItemByFullName("p", WorkflowJob.class);
+                 WorkflowRun b = p.getLastBuild();
+-                story.j.assertLogContains("would be connecting to tcp://host:1234", story.j.assertBuildStatusSuccess(JenkinsRuleExt.waitForCompletion(b)));
++                story.j.assertLogContains("would be connecting to tcp://host:1234", story.j.assertBuildStatusSuccess(story.j.waitForCompletion(b)));
+             }
+         });
+     }
+diff --git a/src/test/java/org/jenkinsci/plugins/docker/workflow/WithContainerStepTest.java b/src/test/java/org/jenkinsci/plugins/docker/workflow/WithContainerStepTest.java
+index 513bcb4..66324b5 100644
+--- a/src/test/java/org/jenkinsci/plugins/docker/workflow/WithContainerStepTest.java
++++ b/src/test/java/org/jenkinsci/plugins/docker/workflow/WithContainerStepTest.java
+@@ -27,8 +27,6 @@ import hudson.model.Result;
+ import hudson.tools.ToolProperty;
+ import java.util.Collections;
+ import org.jenkinsci.plugins.docker.commons.tools.DockerTool;
+-import org.jenkinsci.plugins.workflow.BuildWatcher;
+-import org.jenkinsci.plugins.workflow.JenkinsRuleExt;
+ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+ import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+@@ -38,6 +36,7 @@ import org.junit.ClassRule;
+ import org.junit.Test;
+ import org.junit.Rule;
+ import org.junit.runners.model.Statement;
++import org.jvnet.hudson.test.BuildWatcher;
+ import org.jvnet.hudson.test.RestartableJenkinsRule;
+ 
+ public class WithContainerStepTest {
+@@ -88,9 +87,9 @@ public class WithContainerStepTest {
+                     "  }\n" +
+                     "}", true));
+                 WorkflowRun b = p.scheduleBuild2(0).waitForStart();
+-                JenkinsRuleExt.waitForMessage("sleeping now", b);
++                story.j.waitForMessage("sleeping now", b);
+                 b.doStop();
+-                story.j.assertBuildStatus(Result.ABORTED, JenkinsRuleExt.waitForCompletion(b));
++                story.j.assertBuildStatus(Result.ABORTED, story.j.waitForCompletion(b));
+                 story.j.assertLogContains("script returned exit code 99", b);
+             }
+         });
+@@ -117,7 +116,7 @@ public class WithContainerStepTest {
+                 SemaphoreStep.success("wait/1", null);
+                 WorkflowJob p = story.j.jenkins.getItemByFullName("p", WorkflowJob.class);
+                 WorkflowRun b = p.getLastBuild();
+-                story.j.assertLogContains("Require method GET POST OPTIONS", story.j.assertBuildStatusSuccess(JenkinsRuleExt.waitForCompletion(b)));
++                story.j.assertLogContains("Require method GET POST OPTIONS", story.j.assertBuildStatusSuccess(story.j.waitForCompletion(b)));
+             }
+         });
+     }

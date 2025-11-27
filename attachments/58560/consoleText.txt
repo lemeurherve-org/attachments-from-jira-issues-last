@@ -1,0 +1,107 @@
+Started by user Nitesh Behal
+Checking out git https://azuredevops.qatarairways.com.qa/devops/Digital%20Commercial/DigitalPods/_git/MobileApp-Revamp-Android into /softwares/jenkins/workspace/CD-MBE-ANDROID@script to read Android/Jenkinsfile-CD
+The recommended git tool is: git
+using credential MBE-SCM-USER
+ > git rev-parse --resolve-git-dir /softwares/jenkins/workspace/CD-MBE-ANDROID@script/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://azuredevops.qatarairways.com.qa/devops/Digital%20Commercial/DigitalPods/_git/MobileApp-Revamp-Android # timeout=10
+Fetching upstream changes from https://azuredevops.qatarairways.com.qa/devops/Digital%20Commercial/DigitalPods/_git/MobileApp-Revamp-Android
+ > git --version # timeout=10
+ > git --version # 'git version 2.18.0'
+using GIT_ASKPASS to set credentials MBE-SCM-USER
+ > git fetch --tags --progress -- https://azuredevops.qatarairways.com.qa/devops/Digital%20Commercial/DigitalPods/_git/MobileApp-Revamp-Android +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/develop^{commit} # timeout=10
+JENKINS-19022: warning: possible memory leak due to Git plugin usage; see: https://plugins.jenkins.io/git/#remove-git-plugin-buildsbybranch-builddata-script
+Checking out Revision c100cf2261c0a5faa48a56695b2d2e139e710702 (refs/remotes/origin/develop)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f c100cf2261c0a5faa48a56695b2d2e139e710702 # timeout=10
+Commit message: "Merged PR 36317: 200312, some security issues fixed."
+ > git rev-list --no-walk c100cf2261c0a5faa48a56695b2d2e139e710702 # timeout=10
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /softwares/jenkins/workspace/CD-MBE-ANDROID
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: git
+using credential MBE-SCM-USER
+ > git rev-parse --resolve-git-dir /softwares/jenkins/workspace/CD-MBE-ANDROID/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://azuredevops.qatarairways.com.qa/devops/Digital%20Commercial/DigitalPods/_git/MobileApp-Revamp-Android # timeout=10
+Fetching upstream changes from https://azuredevops.qatarairways.com.qa/devops/Digital%20Commercial/DigitalPods/_git/MobileApp-Revamp-Android
+ > git --version # timeout=10
+ > git --version # 'git version 2.18.0'
+using GIT_ASKPASS to set credentials MBE-SCM-USER
+ > git fetch --tags --progress -- https://azuredevops.qatarairways.com.qa/devops/Digital%20Commercial/DigitalPods/_git/MobileApp-Revamp-Android +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/develop^{commit} # timeout=10
+JENKINS-19022: warning: possible memory leak due to Git plugin usage; see: https://plugins.jenkins.io/git/#remove-git-plugin-buildsbybranch-builddata-script
+Checking out Revision c100cf2261c0a5faa48a56695b2d2e139e710702 (refs/remotes/origin/develop)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f c100cf2261c0a5faa48a56695b2d2e139e710702 # timeout=10
+Commit message: "Merged PR 36317: 200312, some security issues fixed."
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Tool Install)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Clean project)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+Build is offline true
+[Pipeline] dir
+Running in /softwares/jenkins/workspace/CD-MBE-ANDROID/Android
+[Pipeline] {
+[Pipeline] sh
+/bin/sh: /softwares/jenkins/workspace/CD-MBE-ANDROID/Android@tmp/durable-b54ee4ac/script.sh: Operation not permitted
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build project)
+Stage "Build project" skipped due to earlier failure(s)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Prepare build to deploy)
+Stage "Prepare build to deploy" skipped due to earlier failure(s)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy build to AppExplorer)
+Stage "Deploy build to AppExplorer" skipped due to earlier failure(s)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] emailext
+Sending email to: ---
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+Finished: FAILURE

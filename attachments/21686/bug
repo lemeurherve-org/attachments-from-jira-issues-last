@@ -1,0 +1,33 @@
+Started by an SCM change
+Building on master in workspace /var/lib/jenkins/workspace
+Using master perforce client: uday_sqat
+[workspace] $ p4 workspace -o uday_sqat
+Caught exception communicating with perforce. Could not run perforce command.com.tek42.perforce.PerforceException: Could not run perforce command.
+	at hudson.plugins.perforce.HudsonP4DefaultExecutor.exec(HudsonP4DefaultExecutor.java:88)
+	at com.tek42.perforce.parse.AbstractPerforceTemplate.getPerforceResponse(AbstractPerforceTemplate.java:321)
+	at com.tek42.perforce.parse.AbstractPerforceTemplate.getPerforceResponse(AbstractPerforceTemplate.java:292)
+	at com.tek42.perforce.parse.Workspaces.getWorkspace(Workspaces.java:61)
+	at hudson.plugins.perforce.PerforceSCM.getPerforceWorkspace(PerforceSCM.java:1357)
+	at hudson.plugins.perforce.PerforceSCM.checkout(PerforceSCM.java:724)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1197)
+	at hudson.model.AbstractBuild$AbstractRunner.checkout(AbstractBuild.java:579)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:468)
+	at hudson.model.Run.run(Run.java:1410)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+Caused by: java.io.IOException: Cannot run program "p4" (in directory "/var/lib/jenkins/workspace"): java.io.IOException: error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:475)
+	at hudson.Proc$LocalProc.<init>(Proc.java:244)
+	at hudson.Proc$LocalProc.<init>(Proc.java:216)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:707)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:338)
+	at hudson.plugins.perforce.HudsonP4DefaultExecutor.exec(HudsonP4DefaultExecutor.java:79)
+	... 12 more
+Caused by: java.io.IOException: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:164)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:81)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:468)
+	... 17 more
+ERROR: Unable to communicate with perforce. Could not run perforce command.
+Finished: FAILURE

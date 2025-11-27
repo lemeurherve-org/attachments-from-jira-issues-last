@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                withCredentials([conjurSecretCredential(credentialsId: 'privateKey', variable: 'SSH_PRIVATE_KEY')]) {
+                    echo 'This will use SSH private key for server access...'
+                }
+                
+                withCredentials([conjurSecretUsername(credentialsId: 'conjurUsrAndPass', passwordVariable: 'PSW', usernameVariable: 'USR')]) {
+                    echo 'This will access a REST API...'
+                }
+            }
+        }
+    }
+}

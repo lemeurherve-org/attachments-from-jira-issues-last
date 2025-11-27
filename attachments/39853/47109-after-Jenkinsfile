@@ -1,0 +1,45 @@
+pipeline {
+  agent any
+  stages {
+    stage('new-parallel-name') {
+      parallel {
+        stage('firstParallelStage') {
+          agent {
+            label 'linux'
+          }
+          steps {
+            build 'JENKINS-41334-Triage'
+          }
+        }
+        stage('secondParallelStage') {
+          agent {
+            label 'linux'
+          }
+          steps {
+            build 'JENKINS-41334-Triage'
+          }
+        }
+      }
+    }
+    stage('Parallel Steps As Before') {
+      parallel {
+        stage('firstBranch') {
+          steps {
+            node(label: 'master') {
+              build 'ten-parallels'
+            }
+            
+          }
+        }
+        stage('secondBranch') {
+          steps {
+            node(label: 'master') {
+              build 'ten-parallels'
+            }
+            
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,92 @@
+11:24:59 channel stopped
+11:25:24 [DeployPublisher][INFO] Attempting to deploy 1 war file(s)
+11:26:46 ERROR: Build step failed with exception
+11:26:46 org.codehaus.cargo.container.ContainerException: Failed to create deployer with implementation class org.codehaus.cargo.container.jboss.JBoss7xRemoteDeployer for the parameters (container [id = [jboss7x]], deployer type [remote]).
+11:26:46 	at org.codehaus.cargo.generic.spi.AbstractGenericHintFactory.createImplementation(AbstractGenericHintFactory.java:154)
+11:26:46 	at org.codehaus.cargo.generic.spi.AbstractIntrospectionGenericHintFactory.createImplementation(AbstractIntrospectionGenericHintFactory.java:89)
+11:26:46 	at org.codehaus.cargo.generic.deployer.DefaultDeployerFactory.createDeployer(DefaultDeployerFactory.java:131)
+11:26:46 	at org.codehaus.cargo.generic.deployer.DefaultDeployerFactory.createDeployer(DefaultDeployerFactory.java:150)
+11:26:46 	at hudson.plugins.deploy.CargoContainerAdapter.deploy(CargoContainerAdapter.java:69)
+11:26:46 	at hudson.plugins.deploy.CargoContainerAdapter$DeployCallable.invoke(CargoContainerAdapter.java:167)
+11:26:46 	at hudson.plugins.deploy.CargoContainerAdapter$DeployCallable.invoke(CargoContainerAdapter.java:136)
+11:26:46 	at hudson.FilePath.act(FilePath.java:1162)
+11:26:46 	at hudson.FilePath.act(FilePath.java:1145)
+11:26:46 	at hudson.plugins.deploy.CargoContainerAdapter.redeployFile(CargoContainerAdapter.java:133)
+11:26:46 	at hudson.plugins.deploy.PasswordProtectedAdapterCargo.redeployFile(PasswordProtectedAdapterCargo.java:95)
+11:26:46 	at hudson.plugins.deploy.DeployPublisher.perform(DeployPublisher.java:113)
+11:26:46 	at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+11:26:46 	at hudson.tasks.BuildStepCompatibilityLayer.perform(BuildStepCompatibilityLayer.java:78)
+11:26:46 	at hudson.tasks.BuildStepMonitor$3.perform(BuildStepMonitor.java:47)
+11:26:46 	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:813)
+11:26:46 	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:762)
+11:26:46 	at hudson.maven.MavenModuleSetBuild$MavenModuleSetBuildExecution.post2(MavenModuleSetBuild.java:1072)
+11:26:46 	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:706)
+11:26:46 	at hudson.model.Run.execute(Run.java:1917)
+11:26:46 	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:543)
+11:26:46 	at hudson.model.ResourceController.execute(ResourceController.java:100)
+11:26:46 	at hudson.model.Executor.run(Executor.java:440)
+11:26:46 Caused by: java.lang.reflect.InvocationTargetException
+11:26:46 	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+11:26:46 	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+11:26:46 	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+11:26:46 	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+11:26:46 	at org.codehaus.cargo.generic.deployer.DefaultDeployerFactory.createInstance(DefaultDeployerFactory.java:229)
+11:26:46 	at org.codehaus.cargo.generic.deployer.DefaultDeployerFactory.createInstance(DefaultDeployerFactory.java:40)
+11:26:46 	at org.codehaus.cargo.generic.spi.AbstractGenericHintFactory.createImplementation(AbstractGenericHintFactory.java:148)
+11:26:46 	... 22 more
+11:26:46 Caused by: org.codehaus.cargo.util.CargoException: Cannot locate the JBoss connector classes! Make sure the required JBoss JARs (or Maven dependencies) are in CARGO's classpath.
+11:26:46 More information on: https://codehaus-cargo.github.io/cargo/JBoss+Remote+Deployer.html
+11:26:46 	at org.codehaus.cargo.container.jboss.JBoss5xRemoteDeployer.<init>(JBoss5xRemoteDeployer.java:146)
+11:26:46 	at org.codehaus.cargo.container.jboss.JBoss7xRemoteDeployer.<init>(JBoss7xRemoteDeployer.java:39)
+11:26:46 	... 29 more
+11:26:46 Caused by: java.lang.ClassNotFoundException: org.jboss.as.controller.client.ModelControllerClient
+11:26:46 	at org.apache.tools.ant.AntClassLoader.findClassInComponents(AntClassLoader.java:1402)
+11:26:46 	at org.apache.tools.ant.AntClassLoader.findClass(AntClassLoader.java:1357)
+11:26:46 	at org.apache.tools.ant.AntClassLoader.loadClass(AntClassLoader.java:1112)
+11:26:46 	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+11:26:46 	at org.codehaus.cargo.container.jboss.JBoss5xRemoteDeployer.<init>(JBoss5xRemoteDeployer.java:141)
+11:26:46 	... 30 more
+11:26:46 java.lang.reflect.InvocationTargetException
+11:26:46 	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+11:26:46 	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+11:26:46 	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+11:26:46 	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+11:26:46 	at org.codehaus.cargo.generic.deployer.DefaultDeployerFactory.createInstance(DefaultDeployerFactory.java:229)
+11:26:46 	at org.codehaus.cargo.generic.deployer.DefaultDeployerFactory.createInstance(DefaultDeployerFactory.java:40)
+11:26:46 	at org.codehaus.cargo.generic.spi.AbstractGenericHintFactory.createImplementation(AbstractGenericHintFactory.java:148)
+11:26:46 	at org.codehaus.cargo.generic.spi.AbstractIntrospectionGenericHintFactory.createImplementation(AbstractIntrospectionGenericHintFactory.java:89)
+11:26:46 	at org.codehaus.cargo.generic.deployer.DefaultDeployerFactory.createDeployer(DefaultDeployerFactory.java:131)
+11:26:46 	at org.codehaus.cargo.generic.deployer.DefaultDeployerFactory.createDeployer(DefaultDeployerFactory.java:150)
+11:26:46 	at hudson.plugins.deploy.CargoContainerAdapter.deploy(CargoContainerAdapter.java:69)
+11:26:46 	at hudson.plugins.deploy.CargoContainerAdapter$DeployCallable.invoke(CargoContainerAdapter.java:167)
+11:26:46 	at hudson.plugins.deploy.CargoContainerAdapter$DeployCallable.invoke(CargoContainerAdapter.java:136)
+11:26:46 	at hudson.FilePath.act(FilePath.java:1162)
+11:26:46 	at hudson.FilePath.act(FilePath.java:1145)
+11:26:46 	at hudson.plugins.deploy.CargoContainerAdapter.redeployFile(CargoContainerAdapter.java:133)
+11:26:46 	at hudson.plugins.deploy.PasswordProtectedAdapterCargo.redeployFile(PasswordProtectedAdapterCargo.java:95)
+11:26:46 	at hudson.plugins.deploy.DeployPublisher.perform(DeployPublisher.java:113)
+11:26:46 	at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+11:26:46 	at hudson.tasks.BuildStepCompatibilityLayer.perform(BuildStepCompatibilityLayer.java:78)
+11:26:46 	at hudson.tasks.BuildStepMonitor$3.perform(BuildStepMonitor.java:47)
+11:26:46 	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:813)
+11:26:46 	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:762)
+11:26:46 	at hudson.maven.MavenModuleSetBuild$MavenModuleSetBuildExecution.post2(MavenModuleSetBuild.java:1072)
+11:26:46 	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:706)
+11:26:46 	at hudson.model.Run.execute(Run.java:1917)
+11:26:46 	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:543)
+11:26:46 	at hudson.model.ResourceController.execute(ResourceController.java:100)
+11:26:46 	at hudson.model.Executor.run(Executor.java:440)
+11:26:46 Caused by: org.codehaus.cargo.util.CargoException: Cannot locate the JBoss connector classes! Make sure the required JBoss JARs (or Maven dependencies) are in CARGO's classpath.
+11:26:46 More information on: https://codehaus-cargo.github.io/cargo/JBoss+Remote+Deployer.html
+11:26:46 	at org.codehaus.cargo.container.jboss.JBoss5xRemoteDeployer.<init>(JBoss5xRemoteDeployer.java:146)
+11:26:46 	at org.codehaus.cargo.container.jboss.JBoss7xRemoteDeployer.<init>(JBoss7xRemoteDeployer.java:39)
+11:26:46 	... 29 more
+11:26:46 Caused by: java.lang.ClassNotFoundException: org.jboss.as.controller.client.ModelControllerClient
+11:26:46 	at org.apache.tools.ant.AntClassLoader.findClassInComponents(AntClassLoader.java:1402)
+11:26:46 	at org.apache.tools.ant.AntClassLoader.findClass(AntClassLoader.java:1357)
+11:26:46 	at org.apache.tools.ant.AntClassLoader.loadClass(AntClassLoader.java:1112)
+11:26:46 	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+11:26:46 	at org.codehaus.cargo.container.jboss.JBoss5xRemoteDeployer.<init>(JBoss5xRemoteDeployer.java:141)
+11:26:46 	... 30 more
+11:26:46 Build step 'Deploy war/ear to a container' marked build as failure
+11:27:03 Finished: FAILURE

@@ -1,0 +1,52 @@
+From 9245c5f098586117aaea471d319104807e4376f1 Mon Sep 17 00:00:00 2001
+From: Magnus Reftel <magnus.reftel@skatteetaten.no>
+Date: Wed, 4 May 2016 13:57:56 +0200
+Subject: [PATCH] Testcases for initializers
+
+---
+ .../sandbox/groovy/SandboxInterceptorTest.java     | 29 ++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/src/test/java/org/jenkinsci/plugins/scriptsecurity/sandbox/groovy/SandboxInterceptorTest.java b/src/test/java/org/jenkinsci/plugins/scriptsecurity/sandbox/groovy/SandboxInterceptorTest.java
+index 7b99fdb..a93d063 100644
+--- a/src/test/java/org/jenkinsci/plugins/scriptsecurity/sandbox/groovy/SandboxInterceptorTest.java
++++ b/src/test/java/org/jenkinsci/plugins/scriptsecurity/sandbox/groovy/SandboxInterceptorTest.java
+@@ -577,6 +577,35 @@ public class SandboxInterceptorTest {
+         assertEvaluate(new GenericWhitelist(), expected, script);
+     }
+ 
++    @Test public void staticInitializerCanSetNonFinalField() throws Exception {
++        String script = "class C {\n"
++            + "  private static boolean initialized;\n"
++            + "  static { initialized = true }\n"
++            + "}\n"
++            + "C.initialized\n";
++        boolean expected = true;
++        assertEvaluate(new GenericWhitelist(), expected, script);
++    }
++
++    @Test public void staticFinalFieldCanHaveInitializer() throws Exception {
++        String script = "class C {\n"
++            + "  private final static boolean initialized = true;\n"
++            + "}\n"
++            + "C.initialized\n";
++        boolean expected = true;
++        assertEvaluate(new GenericWhitelist(), expected, script);
++    }
++
++    @Test public void staticInitializerCanSetFinalField() throws Exception {
++        String script = "class C {\n"
++            + "  private final static boolean initialized;\n"
++            + "  static { initialized = true }\n"
++            + "}\n"
++            + "C.initialized\n";
++        boolean expected = true;
++        assertEvaluate(new GenericWhitelist(), expected, script);
++    }
++
+     private static void assertEvaluate(Whitelist whitelist, final Object expected, final String script) {
+         final GroovyShell shell = new GroovyShell(GroovySandbox.createSecureCompilerConfiguration());
+         Object actual = GroovySandbox.run(shell.parse(script), whitelist);
+-- 
+1.9.1
+

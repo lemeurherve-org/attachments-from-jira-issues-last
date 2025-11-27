@@ -1,0 +1,12 @@
+diff -rupN git-plugin/src/main/java/hudson/plugins/git/GitSCM.java git-plugin-patched/src/main/java/hudson/plugins/git/GitSCM.java
+--- git-plugin/src/main/java/hudson/plugins/git/GitSCM.java	2011-02-04 12:07:00.068912141 -0500
++++ git-plugin-patched/src/main/java/hudson/plugins/git/GitSCM.java	2011-02-04 12:08:34.931414632 -0500
+@@ -835,7 +835,7 @@ public class GitSCM extends SCM implemen
+         if(revToBuild == null) {
+             // getBuildCandidates should make the last item the last build, so a re-build
+             // will build the last built thing.
+-            listener.error("Nothing to do");
++            listener.error("Unable to locate reference: " + singleBranch);
+             return false;
+         }
+         listener.getLogger().println("Commencing build of " + revToBuild);

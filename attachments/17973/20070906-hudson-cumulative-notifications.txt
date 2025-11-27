@@ -1,0 +1,129 @@
+? main/core/.settings
+? main/core/patch
+? extras/tester/.classpath
+? extras/tester/.project
+? extras/tester/.settings
+? extras/tester/target
+? extras/tester/src/test/java/hudson/model/.changelog-user1.xml.swp
+? extras/tester/src/test/java/hudson/model/.changelog-user2.xml.swp
+Index: main/core/src/main/java/hudson/model/AbstractProject.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/model/AbstractProject.java,v
+retrieving revision 1.54
+diff -u -r1.54 AbstractProject.java
+--- main/core/src/main/java/hudson/model/AbstractProject.java	15 Aug 2007 04:48:43 -0000	1.54
++++ main/core/src/main/java/hudson/model/AbstractProject.java	6 Sep 2007 13:17:27 -0000
+@@ -22,6 +22,7 @@
+ import org.kohsuke.stapler.StaplerResponse;
+ import org.kohsuke.stapler.export.Exported;
+ 
++import javax.mail.Address;
+ import javax.servlet.ServletException;
+ import java.io.File;
+ import java.io.IOException;
+@@ -68,6 +69,8 @@
+      */
+     private Integer quietPeriod = null;
+ 
++    public volatile List<User> culprits = new Vector<User>();
++
+     /**
+      * If this project is configured to be only built on a certain label,
+      * this value will be set to that label.
+Index: main/core/src/main/java/hudson/tasks/MailSender.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/tasks/MailSender.java,v
+retrieving revision 1.9
+diff -u -r1.9 MailSender.java
+--- main/core/src/main/java/hudson/tasks/MailSender.java	6 Sep 2007 13:02:45 -0000	1.9
++++ main/core/src/main/java/hudson/tasks/MailSender.java	6 Sep 2007 13:17:27 -0000
+@@ -117,6 +117,9 @@
+         appendBuildUrl(build, buf);
+         msg.setText(buf.toString());
+ 
++        // Reset the list of culprits
++        build.getProject().culprits.clear();
++
+         return msg;
+     }
+ 
+@@ -248,9 +251,11 @@
+                 listener.getLogger().println("Trying to send e-mails to individuals who broke the build. sizeof(changeset)=="+count);
+             }
+ 
+-            Set<User> users = new HashSet<User>();
+             for (Entry change : build.getChangeSet()) {
+-                User a = change.getAuthor();
++                build.getProject().culprits.add(change.getAuthor());
++            }
++            Set<User> users = new HashSet<User>();
++            for (User a : build.getProject().culprits) {
+                 if (users.add(a)) {
+                     String adrs = Util.fixEmpty(a.getProperty(Mailer.UserProperty.class).getAddress());
+                     if(debug)
+Index: extras/tester/src/test/java/hudson/model/FreeStyleProjectTest.java
+===================================================================
+RCS file: /cvs/hudson/hudson/extras/tester/src/test/java/hudson/model/FreeStyleProjectTest.java,v
+retrieving revision 1.3
+diff -u -r1.3 FreeStyleProjectTest.java
+--- extras/tester/src/test/java/hudson/model/FreeStyleProjectTest.java	6 Sep 2007 12:42:25 -0000	1.3
++++ extras/tester/src/test/java/hudson/model/FreeStyleProjectTest.java	6 Sep 2007 13:17:28 -0000
+@@ -61,7 +61,10 @@
+              */
+             public boolean checkout(AbstractBuild build, Launcher launcher, FilePath remoteDir, BuildListener listener, File changeLogFile) throws IOException {
+                 try {
+-                    FileUtils.copyFile(nextChangeLog, changeLogFile);
++                    if (nextChangeLog != null)
++                        FileUtils.copyFile(nextChangeLog, changeLogFile);
++                    else
++                        createEmptyChangeLog(changeLogFile, listener, "log");
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                     // FIXME I wonder why Hudson does not propagate exceptions here, what's the point of returning a boolean?
+@@ -136,27 +139,39 @@
+         Result result;
+ 
+         setCommand(project, "echo Hello World");
+-        nextChangeLog = new File("src/test/java/hudson/model/changelog-user1.xml");
++        nextChangeLog = null;
+         result = build(project);
+         assertTrue(result.equals(Result.SUCCESS));
+-        assertNull(mail);
++        assertNull("Not expecting an email", mail);
+ 
+         setCommand(project, "nonexistentcommand1");
+         nextChangeLog = new File("src/test/java/hudson/model/changelog-user1.xml");
+         result = build(project);
+         assertTrue(result.equals(Result.FAILURE));
+-        assertTrue(mail.getAllRecipients().length == 1);
++        assertTrue("number of recipients not 1", mail.getAllRecipients().length == 1);
+         assertEquals(mail.getAllRecipients()[0], new InternetAddress("user1@company.com"));
+ 
+         setCommand(project, "nonexistentcommand2");
+         nextChangeLog = new File("src/test/java/hudson/model/changelog-user2.xml");
+         result = build(project);
+         assertTrue(result.equals(Result.FAILURE));
+-        assertTrue(mail.getAllRecipients().length == 1);
+-        assertEquals(mail.getAllRecipients()[0], new InternetAddress("user2@company.com"));
+-/*        assertTrue(mail.getAllRecipients().length == 2);
++        assertTrue("number of recipients not 2", mail.getAllRecipients().length == 2);
+         assertEquals(mail.getAllRecipients()[0], new InternetAddress("user1@company.com"));
+-        assertEquals(mail.getAllRecipients()[1], new InternetAddress("user2@company.com"));*/
++        assertEquals(mail.getAllRecipients()[1], new InternetAddress("user2@company.com"));
++
++        setCommand(project, "echo Back to normal");
++        nextChangeLog = new File("src/test/java/hudson/model/changelog-user2.xml");
++        result = build(project);
++        assertTrue(result.equals(Result.SUCCESS));
++        assertTrue("number of recipients not 2", mail.getAllRecipients().length == 2);
++        assertEquals(mail.getAllRecipients()[0], new InternetAddress("user1@company.com"));
++        assertEquals(mail.getAllRecipients()[1], new InternetAddress("user2@company.com"));
++
++        setCommand(project, "echo Normal build");
++        nextChangeLog = null;
++        result = build(project);
++        assertTrue(result.equals(Result.SUCCESS));
++        assertNull("Not expecting an email", mail);
+     }
+ 
+     private Hudson newHudson() throws Exception {

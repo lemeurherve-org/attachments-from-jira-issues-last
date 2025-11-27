@@ -1,0 +1,34 @@
+pipeline {
+  agent any
+
+  options {
+    sendSplunkConsoleLog()
+  }
+
+  environment {
+    userAndPass = credentials('menoaheslo')
+  }
+
+  stages {
+    stage('A') {
+      steps {
+        echo "Username and Password: ${userAndPass}"
+
+        withCredentials([usernamePassword(credentialsId: 'menoaheslo', passwordVariable: 'heslo', usernameVariable: 'meno')]) {
+          echo "Username: ${meno}"
+          echo "Password: ${heslo}"
+        }
+      }
+    }
+    stage('B') {
+      steps {
+        sh "echo 'Username and Password: ${userAndPass}'"
+
+        withCredentials([usernamePassword(credentialsId: 'menoaheslo', passwordVariable: 'heslo', usernameVariable: 'meno')]) {
+          sh "echo 'Username: ${meno}'"
+          sh "echo 'Password: ${heslo}'"
+        }
+      }
+    }
+  }
+}

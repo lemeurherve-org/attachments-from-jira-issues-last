@@ -1,0 +1,107 @@
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 69)
++++ pom.xml	(working copy)
+@@ -73,7 +73,7 @@
+     <dependency>
+       <groupId>javanettasks</groupId>
+       <artifactId>javanettasks</artifactId>
+-      <version>1.0.14</version>
++      <version>1.0.19</version>
+       <exclusions>
+         <exclusion>
+           <groupId>xom</groupId>
+Index: src/main/java/org/jvnet/its/Generator.java
+===================================================================
+--- src/main/java/org/jvnet/its/Generator.java	(revision 69)
++++ src/main/java/org/jvnet/its/Generator.java	(working copy)
+@@ -10,10 +10,14 @@
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.FileOutputStream;
++import java.util.Arrays;
++import java.util.HashSet;
+ import java.util.Map;
+ import java.util.List;
+ import java.util.ArrayList;
+ import java.util.Collections;
++import java.util.Set;
++import java.util.StringTokenizer;
+ 
+ /**
+  * @author Kohsuke Kawaguchi
+@@ -25,13 +29,30 @@
+         this.timePeriodFactory = timePeriodFactory;
+     }
+ 
++    /**
++     * Generate report for all issues regardless their subcomponent
++     * @param p project to generate an issue graph for
++     * @param outputDirectory path to store graphs too
++     */
+     public void generate(JNProject p, File outputDirectory) throws ProcessingException, IOException {
++        generate(p, null, outputDirectory);
++    }
++
++    /**
++     * Generate report all issues of the specified sub components
++     * @param p project to generate an issue graph for
++     * @param subComponentNames set of names of sub components
++     * @param outputDirectory path to store graphs too
++     */
++    public void generate(JNProject p, Set<String> subComponentNames, File outputDirectory) throws ProcessingException, IOException {
+         Map<Integer,JNIssue> allIssues = p.getIssueTracker().getAll();
+-
+         // sort all activities in the time line order
+         List<Activity> activities = new ArrayList<Activity>();
+-        for (JNIssue i : allIssues.values())
+-            activities.addAll(i.getActivities());
++        for (JNIssue i : allIssues.values()) {        	
++            if ((subComponentNames == null) || subComponentNames.contains(i.getSubComponent())) {
++                activities.addAll(i.getActivities());
++            }
++        }
+         Collections.sort(activities);
+ 
+         generateGraphs(activities, outputDirectory);
+Index: src/main/java/org/jvnet/its/Main.java
+===================================================================
+--- src/main/java/org/jvnet/its/Main.java	(revision 69)
++++ src/main/java/org/jvnet/its/Main.java	(working copy)
+@@ -12,6 +12,8 @@
+ import java.io.File;
+ import java.io.IOException;
+ import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.HashSet;
+ import java.util.List;
+ 
+ /**
+@@ -32,6 +34,9 @@
+     @Option(name="-debug")
+     public static boolean debug = false;
+ 
++    @Option(name="-c",metaVar="[subcomponent(s)]",usage="Specifies the names of sub component(s) for the project, comma separated")
++    public String subcomponentNames = null;
++
+     private final Generator generator = new Generator();
+ 
+     public static void main(String[] args) {
+@@ -73,10 +78,15 @@
+             JavaNet con = JavaNet.connect();
+             for (String project : projects) {
+                 JNProject p = con.getProject(project);
+-                System.err.println("Working on "+project);
+                 File dir = new File(outputDirectory, p.getName());
+                 dir.mkdirs();
+-                generator.generate(p, dir);
++                if (subcomponentNames == null) {
++                    System.err.println("Working on "+project);
++                    generator.generate(p, dir);
++                } else {
++                    System.err.println("Working on "+project + " (" + subcomponentNames + ")");
++                    generator.generate(p, new HashSet<String>(Arrays.asList(subcomponentNames.split(","))), dir);
++                }
+             }
+         } else {
+             generator.generateGraphs(new ArrayList<Activity>(),outputDirectory);

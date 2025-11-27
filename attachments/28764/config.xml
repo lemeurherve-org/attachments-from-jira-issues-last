@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>&lt;h3&gt;&lt;font color=&quot;#cc0000&quot;&gt;THIS JOB WAS AUTOCREATED, DO NOT EDIT&lt;/font&gt;&lt;/h3&gt;
+ &lt;font size=&quot;+2&quot; color=&quot;blue&quot;&gt;Environment:&lt;/font&gt;
+ &lt;ul&gt;
+ &lt;li&gt;&lt;font size=+1&quot;&gt;Latest diffs: &lt;a href=&quot;http://ci.global.media.corp.yahoo.com/pipeline/env_diff?pipeline=lego_core&amp;new_env=qa1p&amp;new_tag=latest&amp;old_env=qa1p&amp;old_tag=previous&quot;&gt;Env Diff Tool&lt;/a&gt;&lt;/font&gt;
+ &lt;li&gt;&lt;font size=&quot;+1&quot;&gt;Hosts in this deployment: &lt;a href=&quot;http://igor.corp.yahoo.com:9999/igor/ui/role/members?role=globalmedia.env-qa1p.loc-gq1&quot;&gt;globalmedia.env-qa1p.loc-gq1&lt;/a&gt;&lt;/font&gt;
+ &lt;li&gt;&lt;font size=&quot;+1&quot;&gt;&lt;a href=&quot;http://mnoden-hot.media.corp.yahoo.com:9999/nagios/globalmedia_pipeline/cgi-bin/status.cgi?hostgroup=env_qa1p_gq1&amp;style=overview&quot;&gt;View Monitoring&lt;/a&gt; for this environment&lt;/font&gt;
+ &lt;/ul&gt;
+</description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>10</daysToKeep>
+    <numToKeep>30</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>IGOR_TAG</name>
+          <description>Optional parameter.  If this parameter is set, this job will tag all the hosts in the igor roles with this tag before deploying.</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>FORCE</name>
+          <description>If checked, force the full push on even if there are no yinst -restore changes.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>SKIP_MONITORING</name>
+          <description>Uncheck if you want to monitoring checks to block the success of deployment. This should be UNCHECKED for production.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <com.yahoo.yhudson.plugins.jobmetadata.JobMetadataProperty plugin="jobmetadata_plugin@2.4"/>
+  </properties>
+  <scm class="org.jenkinsci.plugins.multiplescms.MultiSCM" plugin="multiple-scms@0.3">
+    <scms>
+      <hudson.plugins.git.GitSCM plugin="git@2.2.10_2">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <name></name>
+            <refspec></refspec>
+            <url>git@git.corp.yahoo.com:Media/build_pogo_lego.git</url>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>master</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <gitTool>Default</gitTool>
+        <submoduleCfg class="list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.UserExclusion>
+            <excludedUsers>media_ci
+by-tortuga</excludedUsers>
+          </hudson.plugins.git.extensions.impl.UserExclusion>
+          <hudson.plugins.git.extensions.impl.PathRestriction>
+            <includedRegions></includedRegions>
+            <excludedRegions>.*</excludedRegions>
+          </hudson.plugins.git.extensions.impl.PathRestriction>
+          <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+            <relativeTargetDir>build_pogo_lego</relativeTargetDir>
+          </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+          <hudson.plugins.git.extensions.impl.PerBuildTag/>
+          <hudson.plugins.git.extensions.impl.SubmoduleOption>
+            <disableSubmodules>true</disableSubmodules>
+            <recursiveSubmodules>false</recursiveSubmodules>
+            <trackingSubmodules>false</trackingSubmodules>
+          </hudson.plugins.git.extensions.impl.SubmoduleOption>
+          <hudson.plugins.git.extensions.impl.CleanCheckout/>
+          <hudson.plugins.git.extensions.impl.ScmName>
+            <name>Media/build_pogo_lego</name>
+          </hudson.plugins.git.extensions.impl.ScmName>
+          <hudson.plugins.git.extensions.impl.LocalBranch>
+            <localBranch>master</localBranch>
+          </hudson.plugins.git.extensions.impl.LocalBranch>
+        </extensions>
+      </hudson.plugins.git.GitSCM>
+      <hudson.plugins.git.GitSCM plugin="git@2.2.10_2">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <name></name>
+            <refspec></refspec>
+            <url>git@git-mirror.corp.yahoo.com:Media/build_conf_common.git</url>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>stable</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <gitTool>Default</gitTool>
+        <submoduleCfg class="list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.UserExclusion>
+            <excludedUsers>media_ci
+by-tortuga</excludedUsers>
+          </hudson.plugins.git.extensions.impl.UserExclusion>
+          <hudson.plugins.git.extensions.impl.PathRestriction>
+            <includedRegions></includedRegions>
+            <excludedRegions>.*</excludedRegions>
+          </hudson.plugins.git.extensions.impl.PathRestriction>
+          <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+            <relativeTargetDir>build_conf_common</relativeTargetDir>
+          </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+          <hudson.plugins.git.extensions.impl.PerBuildTag/>
+          <hudson.plugins.git.extensions.impl.SubmoduleOption>
+            <disableSubmodules>true</disableSubmodules>
+            <recursiveSubmodules>false</recursiveSubmodules>
+            <trackingSubmodules>false</trackingSubmodules>
+          </hudson.plugins.git.extensions.impl.SubmoduleOption>
+          <hudson.plugins.git.extensions.impl.CleanCheckout/>
+          <hudson.plugins.git.extensions.impl.ScmName>
+            <name>Media/build_conf_common</name>
+          </hudson.plugins.git.extensions.impl.ScmName>
+          <hudson.plugins.git.extensions.impl.LocalBranch>
+            <localBranch>stable</localBranch>
+          </hudson.plugins.git.extensions.impl.LocalBranch>
+        </extensions>
+      </hudson.plugins.git.GitSCM>
+      <hudson.plugins.git.GitSCM plugin="git@2.2.10_2">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <name></name>
+            <refspec></refspec>
+            <url>git@git-mirror.corp.yahoo.com:Media/build_conf_lego.git</url>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>master</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <gitTool>Default</gitTool>
+        <submoduleCfg class="list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.UserExclusion>
+            <excludedUsers>media_ci
+by-tortuga</excludedUsers>
+          </hudson.plugins.git.extensions.impl.UserExclusion>
+          <hudson.plugins.git.extensions.impl.PathRestriction>
+            <includedRegions></includedRegions>
+            <excludedRegions>.*</excludedRegions>
+          </hudson.plugins.git.extensions.impl.PathRestriction>
+          <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+            <relativeTargetDir>build_conf_lego</relativeTargetDir>
+          </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+          <hudson.plugins.git.extensions.impl.PerBuildTag/>
+          <hudson.plugins.git.extensions.impl.SubmoduleOption>
+            <disableSubmodules>true</disableSubmodules>
+            <recursiveSubmodules>false</recursiveSubmodules>
+            <trackingSubmodules>false</trackingSubmodules>
+          </hudson.plugins.git.extensions.impl.SubmoduleOption>
+          <hudson.plugins.git.extensions.impl.CleanCheckout/>
+          <hudson.plugins.git.extensions.impl.ScmName>
+            <name>Media/build_conf_lego</name>
+          </hudson.plugins.git.extensions.impl.ScmName>
+          <hudson.plugins.git.extensions.impl.LocalBranch>
+            <localBranch>master</localBranch>
+          </hudson.plugins.git.extensions.impl.LocalBranch>
+        </extensions>
+      </hudson.plugins.git.GitSCM>
+      <hudson.plugins.git.GitSCM plugin="git@2.2.10_2">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <name></name>
+            <refspec></refspec>
+            <url>git@git-mirror.corp.yahoo.com:Media/build_data_lego.git</url>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>master</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <gitTool>Default</gitTool>
+        <submoduleCfg class="list"/>
+        <extensions>
+          <hudson.plugins.git.extensions.impl.UserExclusion>
+            <excludedUsers>media_ci
+by-tortuga</excludedUsers>
+          </hudson.plugins.git.extensions.impl.UserExclusion>
+          <hudson.plugins.git.extensions.impl.PathRestriction>
+            <includedRegions></includedRegions>
+            <excludedRegions>.*</excludedRegions>
+          </hudson.plugins.git.extensions.impl.PathRestriction>
+          <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+            <relativeTargetDir>build_data_lego</relativeTargetDir>
+          </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+          <hudson.plugins.git.extensions.impl.PerBuildTag/>
+          <hudson.plugins.git.extensions.impl.SubmoduleOption>
+            <disableSubmodules>true</disableSubmodules>
+            <recursiveSubmodules>false</recursiveSubmodules>
+            <trackingSubmodules>false</trackingSubmodules>
+          </hudson.plugins.git.extensions.impl.SubmoduleOption>
+          <hudson.plugins.git.extensions.impl.CleanCheckout/>
+          <hudson.plugins.git.extensions.impl.ScmName>
+            <name>Media/build_data_lego</name>
+          </hudson.plugins.git.extensions.impl.ScmName>
+          <hudson.plugins.git.extensions.impl.LocalBranch>
+            <localBranch>master</localBranch>
+          </hudson.plugins.git.extensions.impl.LocalBranch>
+        </extensions>
+      </hudson.plugins.git.GitSCM>
+    </scms>
+  </scm>
+  <quietPeriod>30</quietPeriod>
+  <assignedNode>rhel6_4on6</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <com.yahoo.yhudson.tasks.Gmake plugin="yahoo-gmake-plugin@0.2.0">
+      <makefileLocation>build_conf_lego/make</makefileLocation>
+      <alternateMakefile>Makefile.deploy</alternateMakefile>
+      <targets>
+        <com.yahoo.yhudson.tasks.GmakeParam>
+          <param>run_full_lego_deploy</param>
+        </com.yahoo.yhudson.tasks.GmakeParam>
+      </targets>
+      <options>
+        <com.yahoo.yhudson.tasks.GmakeParam>
+          <param>ENV=qa1p</param>
+        </com.yahoo.yhudson.tasks.GmakeParam>
+        <com.yahoo.yhudson.tasks.GmakeParam>
+          <param>ROLES=globalmedia.env-qa1p.loc-gq1</param>
+        </com.yahoo.yhudson.tasks.GmakeParam>
+        <com.yahoo.yhudson.tasks.GmakeParam>
+          <param>TAG_TYPE=unit_tested</param>
+        </com.yahoo.yhudson.tasks.GmakeParam>
+      </options>
+    </com.yahoo.yhudson.tasks.Gmake>
+  </builders>
+  <publishers>
+    <hudson.plugins.descriptionsetter.DescriptionSetterPublisher plugin="description-setter@1.8">
+      <regexp>deploy_igor_tag: (.*)</regexp>
+      <regexpForFailed>(http://media.pogo.corp.yahoo.com/.*)</regexpForFailed>
+      <descriptionForFailed></descriptionForFailed>
+      <setForMatrix>false</setForMatrix>
+    </hudson.plugins.descriptionsetter.DescriptionSetterPublisher>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.18">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.FileBuildParameters>
+              <propertiesFile>promote.properties</propertiesFile>
+              <failTriggerOnMissing>false</failTriggerOnMissing>
+            </hudson.plugins.parameterizedtrigger.FileBuildParameters>
+          </configs>
+          <projects>lego.all.test-trigger.qa1p-gq1</projects>
+          <condition>SUCCESS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+    <hudson.plugins.emailext.ExtendedEmailPublisher plugin="email-ext@2.37.2.2">
+      <recipientList>lego-build@yahoo-inc.com</recipientList>
+      <configuredTriggers>
+        <hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <sendToRequester>false</sendToRequester>
+            <includeCulprits>false</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+            <attachBuildLog>false</attachBuildLog>
+            <compressBuildLog>false</compressBuildLog>
+            <contentType>project</contentType>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+      </configuredTriggers>
+      <contentType>default</contentType>
+      <defaultSubject>DO NOT AUTODELETE, THIS DEPLOYMENT MATTERS $DEFAULT_SUBJECT</defaultSubject>
+      <defaultContent>$DEFAULT_CONTENT</defaultContent>
+      <attachBuildLog>false</attachBuildLog>
+      <compressBuildLog>false</compressBuildLog>
+      <saveOutput>false</saveOutput>
+    </hudson.plugins.emailext.ExtendedEmailPublisher>
+  </publishers>
+  <buildWrappers>
+    <com.yahoo.yhudson.BuildyBlockBuildWrapper plugin="yahoo-container-plugin@0.6">
+      <pathToBim>build_data_lego/assembly/lego_other/release_definition/bims/deploy.bim</pathToBim>
+    </com.yahoo.yhudson.BuildyBlockBuildWrapper>
+  </buildWrappers>
+</project>

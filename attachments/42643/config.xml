@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.17">
+  <actions/>
+  <description>Generates a report with the old artifacts from a Arifactory repository older than a specififed time period</description>
+  <displayName>Old Artifactory Files Report</displayName>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>ArtifactoryRepo</name>
+          <description>The name of the repository to query</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>TimePeriod</name>
+          <description>Relative time period to list artifacts older than that. More info:
+&lt;br/&gt;&lt;br/&gt;
+&lt;a href=&quot;https://www.jfrog.com/confluence/display/RTF/Artifactory+Query+Language#ArtifactoryQueryLanguage-RelativeTimeOperators&quot;&gt;https://www.jfrog.com/confluence/display/RTF/Artifactory+Query+Language#ArtifactoryQueryLanguage-RelativeTimeOperators&lt;/a&gt;</description>
+          <defaultValue>6mo</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.44">
+    <script>node(&apos;linux&apos;) {
+    withCredentials([usernamePassword(credentialsId: &apos;service.jenkins.artifactory.token&apos;, passwordVariable: &apos;token&apos;, usernameVariable: &apos;user&apos;)]) {
+        currentBuild.description = &quot;$ArtifactoryRepo - older than $TimePeriod&quot;
+        writeAQL(&quot;$ArtifactoryRepo&quot;, &quot;$TimePeriod&quot;)
+        def output = sh returnStdout: true, script: &quot;curl -s -X POST -H &apos;X-JFrog-Art-Api:${env.token}&apos; -T query.json https://repo.<company>.com/api/search/aql&quot;
+        def response = readJSON file: &apos;&apos;, text: &quot;$output&quot;
+        writeReport(response.results)
+        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: &apos;&apos;, reportFiles: &apos;report.html&apos;, reportName: &apos;Old artifacts report&apos;, reportTitles: &apos;&apos;])
+
+    }
+}
+ 
+def writeAQL(repository, before) {
+    String content = &quot;&quot;&quot;items.find({
+    &quot;repo&quot;: &quot;$repository&quot;,
+    &quot;modified&quot;:{&quot;\$before&quot;:&quot;$before&quot;}}).include(&quot;repo&quot;,&quot;path&quot;, &quot;name&quot;, &quot;created&quot;, &quot;stat.downloaded&quot;, &quot;size&quot;)
+&quot;&quot;&quot;
+    writeFile file: &apos;query.json&apos;, text: content
+}
+
+def writeReport(results) {
+    long totalSize = 0
+    String content = &quot;&quot;
+    for(int i = 0; i &lt; results.size(); i++ ) {
+        try{
+            lastDownload = results[i].stats ? &quot;${results[i].stats[0].downloaded}&quot; : &quot;&quot;
+            totalSize += results[i].size
+            humanReadableSize = humanReadableByteCount(results[i].size, false)
+            content = &quot;&quot;&quot;
+$content
+&lt;tr&gt;
+&lt;td&gt;${results[i].path}&lt;/td&gt;
+&lt;td&gt;${results[i].name}&lt;/td&gt;
+&lt;td&gt;${results[i].created}&lt;/td&gt;
+&lt;td&gt;${lastDownload}&lt;/td&gt;
+&lt;td&gt;${humanReadableSize}&lt;/td&gt;
+&lt;/tr&gt;
+            &quot;&quot;&quot;
+        }
+        catch(error){
+            echo &quot;$error&quot;
+        }
+    }
+    humanReadableTotalSize = humanReadableByteCount(totalSize, false)
+    template = &quot;&quot;&quot;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h1&gt;Old artifacts report&lt;h1&gt;
+  &lt;h3&gt;Repository: $ArtifactoryRepo&lt;/h3&gt;
+  &lt;h3&gt;Time period: older than $TimePeriod&lt;h3&gt;
+  &lt;h3&gt;Total artifacts size: ${humanReadableTotalSize}&lt;/h3&gt;
+  &lt;table width=&quot;100%&quot; border=&quot;1&quot;&gt;
+  &lt;tr&gt;
+  &lt;th width=&quot;40%&quot;&gt;Path&lt;/th&gt;
+  &lt;th width=&quot;20%&quot;&gt;Name&lt;/th&gt;
+  &lt;th width=&quot;15%&quot;&gt;Created&lt;/th&gt;
+  &lt;th width=&quot;15%&quot;&gt;Last downloaded&lt;/th&gt;
+  &lt;th width=&quot;10%&quot;&gt;Size&lt;/th&gt;
+  &lt;/tr&gt;
+$content
+  &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+&quot;&quot;&quot;
+    writeFile file: &apos;report.html&apos;, text: template
+}
+
+def humanReadableByteCount(final long bytes,final boolean si) {
+  final int unit=si ? 1000 : 1024;
+  if(bytes&lt;unit)
+    return bytes+&quot; B&quot;;
+  double result=bytes;
+  final String unitsToUse=(si ? &quot;k&quot; : &quot;K&quot;)+&quot;MGTPE&quot;;
+  int i=0;
+  final int unitsCount=unitsToUse.length();
+  while(true) {
+    result/=unit;
+    if(result&lt;unit)
+      break;
+    // check if we can go further:
+    if(i==unitsCount-1)
+      break;
+    ++i;
+  }
+  String sb = String.format(&quot;%.1f &quot;,result);
+  sb += unitsToUse.charAt(i);
+  if(si) {
+    sb += &quot;B&quot;;
+  }
+  else {
+    sb += &quot;iB&quot;;
+  }
+  return sb;
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

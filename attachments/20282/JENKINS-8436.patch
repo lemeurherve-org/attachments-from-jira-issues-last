@@ -1,0 +1,36 @@
+Index: maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+===================================================================
+--- maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java	(date 1299611040000)
++++ maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java	(revision )
+@@ -333,14 +333,24 @@
+     }
+ 
+     private static String normalizePath(String relPath) {
+-        // JENKINS-8525 FilenameUtils.normalize for ../foo returns null
+-        if (StringUtils.isEmpty(relPath) || StringUtils.startsWith( relPath, "../" )) {
+-            LOGGER.config("No need to normalize " + (StringUtils.isEmpty(relPath) ? "an empty path" : relPath));
++        relPath = StringUtils.trimToEmpty( relPath );
++        if (StringUtils.isEmpty( relPath )) {
++            LOGGER.config("No need to normalize an empty path.");
+         } else {
++            if(FilenameUtils.indexOfLastSeparator( relPath ) == -1) {
++                LOGGER.config("No need to normalize "+relPath);
++            } else {
+-            String tmp = FilenameUtils.normalize( relPath );
++                String tmp = FilenameUtils.normalize( relPath );
++                if(tmp == null) {
++                    LOGGER.config("Path " + relPath + " can not be normalized (parent dir is unknown). Keeping as is.");
++                } else {
+-            LOGGER.config("Normalized path " + relPath + " to "+tmp);
+-            relPath = tmp;
+-        }
++                    LOGGER.config("Normalized path " + relPath + " to "+tmp);
++                    relPath = tmp;
++                }
++                relPath = FilenameUtils.separatorsToUnix( relPath );
++            }
++        }
++        LOGGER.fine("Returning path " + relPath);
+         return relPath;
+     }
+ 

@@ -1,0 +1,31 @@
+From a4223d9e01711acc4ef13f84fc2bb2cebaf7bbf2 Mon Sep 17 00:00:00 2001
+From: Bryan Jacobs <bjacobs@woti.com>
+Date: Mon, 16 Jul 2012 11:24:25 -0400
+Subject: [PATCH] Add Jenkins repo to pom.xml
+
+Without this repository, some of the dependencies cannot be fetched on
+an unconfigured Maven instance.
+---
+ pom.xml |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 95bead1..131470e 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -64,6 +64,12 @@
+       <name>guice maven</name>
+       <url>http://guice-maven.googlecode.com/svn/trunk</url>
+     </repository>
++
++    <repository>
++      <id>jenkins</id>
++      <name>jenkins repository</name>
++      <url>http://repo.jenkins-ci.org/public/</url>
++    </repository>
+   </repositories>
+ 
+ 	<developers>
+-- 
+1.7.9
+

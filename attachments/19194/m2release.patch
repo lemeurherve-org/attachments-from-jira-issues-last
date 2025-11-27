@@ -1,0 +1,264 @@
+Index: C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java
+===================================================================
+--- C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java	(revision 28131)
++++ C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java	(working copy)
+@@ -81,12 +81,16 @@
+ 	private transient String              repoDescription;
+ 	
+ 	public String                         releaseGoals        = DescriptorImpl.DEFAULT_RELEASE_GOALS;
++	public String                         vcsPrefix        	  = DescriptorImpl.DEFAULT_VCS_PREFIX;
++	public String                         vcsSeparator        = DescriptorImpl.DEFAULT_VCS_SEPARATOR;
+ 	
+ 
+ 	@DataBoundConstructor
+-	public M2ReleaseBuildWrapper(String releaseGoals) {
++	public M2ReleaseBuildWrapper(String releaseGoals, String vcsPrefix, String vcsSeparator) {
+ 		super();
+ 		this.releaseGoals = releaseGoals;
++		this.vcsPrefix = vcsPrefix;
++		this.vcsSeparator = vcsSeparator;
+ 	}
+ 
+ 
+@@ -98,6 +102,7 @@
+ 		MavenModuleSet mmSet;
+ 		final String mavenOpts;
+ 		
++		
+ 		synchronized (getModuleSet(build)) {
+ 			if (!doRelease) {
+ 				// we are not performing a release so don't need a custom tearDown.
+@@ -119,6 +124,9 @@
+ 				else {
+ 					mmSet.setGoals(releaseGoals);
+ 				}
++				if(versions.get("VCSVersion") != null) {		
++					mmSet.setGoals(generateVersionString(build.getNumber()) + releaseGoals+" -Dtag="+versions.get("VCSVersion"));
++				}
+ 			}
+ 			else {
+ 				// can this be so?
+@@ -161,6 +169,7 @@
+ 						                                     getDescriptor().getNexusUser(),
+ 						                                     getDescriptor().getNexusPassword());
+ 						MavenModule rootModule = mmSet.getRootModule();
++						
+ 						// TODO add support for a user supplied comment.
+ 						StageRepository repo = client.getOpenStageRepositoryForUser(rootModule.getModuleName().groupId,
+ 						                                                            rootModule.getModuleName().artifactId,
+@@ -200,7 +209,6 @@
+ 		this.versions = versions;
+ 	}
+ 
+-
+ 	public void setAppendHudsonBuildNumber(boolean appendHudsonBuildNumber) {
+ 		this.appendHudsonBuildNumber = appendHudsonBuildNumber;
+ 	}
+@@ -218,19 +226,21 @@
+ 		// -Dproject.rel.org.mycompany.group.project=version ....
+ 		StringBuilder sb = new StringBuilder();
+ 		for (String key : versions.keySet()) {
+-			sb.append(key);
+-			sb.append('=');
+-			sb.append(versions.get(key));
+-			if (appendHudsonBuildNumber && key.startsWith("-Dproject.rel")) { //$NON-NLS-1$
+-				sb.append('-');
+-				sb.append(buildNumber);
++			if(!key.startsWith("VCSVersion")) {
++				sb.append(key);
++				sb.append('=');
++				sb.append(versions.get(key));
++				if (appendHudsonBuildNumber && key.startsWith("-Dproject.rel")) { //$NON-NLS-1$
++					sb.append('!');
++					sb.append(buildNumber);
++				}
++				sb.append(' ');
+ 			}
+-			sb.append(' ');
+ 		}
++		
+ 		return sb.toString();
+ 	}
+ 
+-
+ 	private String getReleaseVersion(MavenModule moduleName) {
+ 		String retVal = null;
+ 		String key = "-Dproject.rel." + moduleName.getModuleName().toString();
+@@ -292,6 +302,9 @@
+ 	public static class DescriptorImpl extends BuildWrapperDescriptor {
+ 
+ 		public static final String     DEFAULT_RELEASE_GOALS = "-Dresume=false release:prepare release:perform"; //$NON-NLS-1$
++		public static final String     DEFAULT_VCS_PREFIX = "";
++		public static final String     DEFAULT_VCS_SEPARATOR = ".";
++		
+ 		public static final Permission CREATE_RELEASE        = new Permission(Item.PERMISSIONS,
+ 		                                                                      "Release", //$NON-NLS-1$
+ 		                                                                      Messages._CreateReleasePermission_Description(),
+Index: C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/ReleaseCause.java
+===================================================================
+--- C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/ReleaseCause.java	(revision 28131)
++++ C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/ReleaseCause.java	(working copy)
+@@ -23,6 +23,8 @@
+  */
+ package org.jvnet.hudson.plugins.m2release;
+ 
++import org.acegisecurity.vote.AuthenticatedVoter;
++
+ import hudson.model.Hudson;
+ import hudson.model.Cause.UserCause;
+ 
+Index: C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java
+===================================================================
+--- C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java	(revision 28131)
++++ C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java	(working copy)
+@@ -23,6 +23,7 @@
+  */
+ package org.jvnet.hudson.plugins.m2release;
+ 
++
+ import hudson.maven.MavenModule;
+ import hudson.maven.MavenModuleSet;
+ import hudson.model.Action;
+@@ -41,7 +42,7 @@
+ import org.kohsuke.stapler.StaplerResponse;
+ 
+ /**
+- * The action appears as the link in the side bar that users will click on in order to start the release
++ * The action appears as thelink in the side bar that users will click on in order to start the release
+  * process.
+  * 
+  * @author James Nord
+@@ -51,7 +52,6 @@
+ 
+ 	private MavenModuleSet project;
+ 
+-
+ 	public M2ReleaseAction(MavenModuleSet project) {
+ 		this.project = project;
+ 	}
+@@ -75,7 +75,7 @@
+ 		return "m2release"; //$NON-NLS-1$
+ 	}
+ 
+-	public Collection<MavenModule> getModules() {
++	public Collection<MavenModule> getModules(){
+ 		return project.getModules();
+ 	}
+ 	
+@@ -83,6 +83,15 @@
+ 		return version.replace("-SNAPSHOT", ""); //$NON-NLS-1$ //$NON-NLS-2$
+ 	}
+ 	
++	public String getVcsVersion() {
++		M2ReleaseBuildWrapper m2Wrapper = project.getBuildWrappers().get(M2ReleaseBuildWrapper.class);
++		
++		String temp = project.getRootModule().getVersion();
++		temp = m2Wrapper.vcsPrefix+temp.replace(".",m2Wrapper.vcsSeparator);
++		temp = temp.replace("-SNAPSHOT", "");
++		return temp;
++	}
++	
+ 	public String computeRepoDescription() {
+ 		return "Release " + computeReleaseVersion(project.getRootModule().getVersion()) + " of " + project.getRootModule().getName();
+ 	}
+@@ -126,7 +135,6 @@
+ 	public void doSubmit(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException {
+ 		M2ReleaseBuildWrapper.checkReleasePermission(project);
+ 		M2ReleaseBuildWrapper m2Wrapper = project.getBuildWrappers().get(M2ReleaseBuildWrapper.class);
+-
+ 		// JSON collapses everything in the dynamic specifyVersions section so we need to fall back to
+ 		// good old http...
+ 		Map<?,?> httpParams = req.getParameterMap();
+@@ -140,10 +148,13 @@
+ 		if (httpParams.containsKey("specifyVersions")) {
+ 			versions = new HashMap<String,String>();
+ 			for (Object key : httpParams.keySet()) {
+-				String keyStr = (String)key;
++				String keyStr = (String)key;				
+ 				if (keyStr.startsWith("-Dproject.")) {
+ 					versions.put(keyStr, (String)(((Object[])httpParams.get(key))[0]));
+ 				}
++				if (keyStr.startsWith("VCSVersion")) {
++					versions.put(keyStr, (String)(((Object[])httpParams.get(key))[0]));
++				}
+ 			}
+ 		}
+ 		
+@@ -160,5 +171,4 @@
+ 		// redirect to status page
+ 		resp.sendRedirect(project.getAbsoluteUrl());
+ 	}
+-
+ }
+Index: C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/index.jelly
+===================================================================
+--- C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/index.jelly	(revision 28131)
++++ C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/index.jelly	(working copy)
+@@ -4,5 +4,5 @@
+   Since we don't really have anything dynamic here, let's just use static HTML. 
+ -->
+ <div>
+-  A plug-in that enables you to perform releases using the <a href="http://maven.apache.org/plugins/maven-release-plugin/">maven-release-plugin</a> from Hudson.
++  A plug-in that enables you to perform releases using <a href="http://maven.apache.org/plugins/maven-release-plugin/">maven-release-plugin</a> from Hudson.
+ </div>
+\ No newline at end of file
+Index: C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper/config.jelly
+===================================================================
+--- C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper/config.jelly	(revision 28131)
++++ C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper/config.jelly	(working copy)
+@@ -10,4 +10,13 @@
+ 		-->
+ 		<f:textbox field="releaseGoals" value="${h.defaulted(instance.releaseGoals,descriptor.DEFAULT_RELEASE_GOALS)}"/>
+ 	</f:entry>
++	
++	<f:entry title="Management of VCS version" help="">
++		<f:entry title="Prefix of VCS version" help="">
++			<f:textbox field="vcsPrefix" value="${h.defaulted(instance.vcsPrefix,descriptor.DEFAULT_VCS_PREFIX)}"/>
++		</f:entry>
++		<f:entry title="Separator of VCS version" help="">
++			<f:textbox field="vcsSeparator" value="${h.defaulted(instance.vcsSeparator,descriptor.DEFAULT_VCS_SEPARATOR)}"/>
++		</f:entry>
++	</f:entry>
+ </j:jelly>
+Index: C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseAction/index.jelly
+===================================================================
+--- C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseAction/index.jelly	(revision 28131)
++++ C:/Documents and Settings/pbocquet/IBM/rationalsdp7.0/workspace/m2release-hudson/plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseAction/index.jelly	(working copy)
+@@ -2,18 +2,23 @@
+ 	Displays the form to choose the tag name.
+ 
+ 	This belongs to a build view.
++
++
+ -->
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+ 	<l:layout>
+ 		<l:main-panel>
+ 			<f:form method="post" action="submit">
+ 				<f:section title="Perform Maven Release">
+-					<f:optionalBlock name="specifyVersions" title="Specify release version(s)" checked="false">
++					<f:optionalBlock name="specifyVersions" title="Specify release version(s)" checked="false">	
++							<f:entry title="VCS Version for the Job">
++								<f:textbox name="VCSVersion" value="${it.getVcsVersion()}" />
++							</f:entry>			   				
+ 							<j:forEach var="m" items="${it.modules}">
+-								<f:section title="${m.moduleName}">
++								<f:section title="${m.moduleName}">						
+ 									<f:entry title="Release Version">
+ 										<f:textbox name="-Dproject.rel.${m.moduleName}" value="${it.computeReleaseVersion(m.version)}" />
+-									</f:entry>
++									</f:entry>								
+ 									<f:entry title="Development version">
+ 										<f:textbox name="-Dproject.dev.${m.moduleName}" value="${it.computeNextVersion(m.version)}" />
+ 									</f:entry>
+@@ -42,8 +47,6 @@
+ 					</td></tr>
+ 				</f:section>
+ 			</f:form>
+-
+-
+ 		</l:main-panel>
+-	</l:layout>
++	</l:layout>	
+ </j:jelly>
+\ No newline at end of file

@@ -1,0 +1,86 @@
+Sep 09, 2025 2:02:36 PM hudson.plugins.ec2.EC2Cloud
+INFO: Launching instance: i-0e3a65ba44d58a9c1
+Sep 09, 2025 2:02:36 PM hudson.plugins.ec2.EC2Cloud
+INFO: bootstrap()
+Sep 09, 2025 2:02:36 PM hudson.plugins.ec2.EC2Cloud
+INFO: Getting keypair...
+Sep 09, 2025 2:02:36 PM hudson.plugins.ec2.EC2Cloud
+INFO: Using private key remora_build_rsa (SHA-1 fingerprint 50:c8:69:19:3e:02:aa:4d:bf:f2:b3:21:0a:fd:d3:fe:e4:30:d2:43)
+Sep 09, 2025 2:02:36 PM hudson.plugins.ec2.EC2Cloud
+INFO: Authenticating as ubuntu
+Sep 09, 2025 2:02:36 PM hudson.plugins.ec2.EC2Cloud
+INFO: Connecting to 10.2.1.59 on port 22, with timeout 10000.
+Sep 09, 2025 2:02:52 PM hudson.plugins.ec2.EC2Cloud
+INFO: Failed to connect via ssh: DefaultConnectFuture[ubuntu@/10.2.1.59:22]: Failed (ConnectException) to execute: Connection refused
+Sep 09, 2025 2:02:52 PM hudson.plugins.ec2.EC2Cloud
+INFO: Waiting for SSH to come up. Sleeping 5.
+Sep 09, 2025 2:02:57 PM hudson.plugins.ec2.EC2Cloud
+INFO: Connecting to 10.2.1.59 on port 22, with timeout 10000.
+Sep 09, 2025 2:02:57 PM hudson.plugins.ec2.EC2Cloud
+INFO: Connected via SSH.
+Sep 09, 2025 2:02:58 PM hudson.plugins.ec2.EC2Cloud
+INFO: The SSH key EC 1e:a8:aa:da:ef:b2:73:56:cf:56:df:38:39:9c:27:50 has been automatically trusted for connections to EC2 (v12 Build) - Ubuntu Build Agent (i-0e3a65ba44d58a9c1)
+Sep 09, 2025 2:02:58 PM hudson.plugins.ec2.EC2Cloud
+INFO: SSH service responded. Waiting 240000ms for service to stabilize
+Sep 09, 2025 2:06:58 PM hudson.plugins.ec2.EC2Cloud
+INFO: SSH service should have stabilized
+Sep 09, 2025 2:06:58 PM hudson.plugins.ec2.EC2Cloud
+INFO: connect fresh as root
+Sep 09, 2025 2:06:58 PM hudson.plugins.ec2.EC2Cloud
+INFO: Connecting to 10.2.1.59 on port 22, with timeout 10000.
+Sep 09, 2025 2:06:58 PM hudson.plugins.ec2.EC2Cloud
+INFO: Connected via SSH.
+Sep 09, 2025 2:06:58 PM hudson.plugins.ec2.EC2Cloud
+INFO: Connection allowed after the host key has been verified
+Sep 09, 2025 2:06:59 PM hudson.plugins.ec2.EC2Cloud
+INFO: Creating tmp directory (/tmp) if it does not exist
+Sep 09, 2025 2:07:00 PM hudson.plugins.ec2.EC2Cloud
+INFO: Verifying: /usr/bin/java -fullversion
+openjdk full version "21.0.8+9-Ubuntu-0ubuntu124.04.1"
+Sep 09, 2025 2:07:00 PM hudson.plugins.ec2.EC2Cloud
+INFO: Verifying: which scp
+/usr/bin/scp
+Sep 09, 2025 2:07:00 PM hudson.plugins.ec2.EC2Cloud
+INFO: Copying remoting.jar to: /tmp
+Sep 09, 2025 2:07:00 PM hudson.plugins.ec2.EC2Cloud
+INFO: Launching remoting agent (via SSH client process): ssh -o StrictHostKeyChecking=accept-new -o "UserKnownHostsFile=/tmp/ec2_7262774302005659660_known_hosts" -o "HostKeyAlgorithms=EC" -i /tmp/ec2_8472504361240753226.pem ubuntu@10.2.1.59 -p 22  /usr/bin/java  -jar /tmp/remoting.jar -workDir /var/jenkins
+[09/09/25 14:07:00] Launching agent
+$ ssh -o StrictHostKeyChecking=accept-new -o "UserKnownHostsFile=/tmp/ec2_7262774302005659660_known_hosts" -o "HostKeyAlgorithms=EC" -i /tmp/ec2_8472504361240753226.pem ubuntu@10.2.1.59 -p 22  /usr/bin/java  -jar /tmp/remoting.jar -workDir /var/jenkins
+command-line line 0: Bad key types 'EC'.
+ERROR: Unable to launch the agent for EC2 (v12 Build) - Ubuntu Build Agent (i-0e3a65ba44d58a9c1)
+Also:   java.io.IOException: Stream closed
+		at java.base/java.lang.ProcessBuilder$NullOutputStream.write(ProcessBuilder.java:445)
+		at java.base/java.io.OutputStream.write(OutputStream.java:162)
+		at java.base/java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:81)
+		at java.base/java.io.BufferedOutputStream.flush(BufferedOutputStream.java:142)
+		at java.base/java.io.FilterOutputStream.flush(FilterOutputStream.java:153)
+		at hudson.remoting.BinarySafeStream$2.flush(BinarySafeStream.java:324)
+		at java.base/java.io.ObjectOutputStream$BlockDataOutputStream.flush(ObjectOutputStream.java:1832)
+		at java.base/java.io.ObjectOutputStream.flush(ObjectOutputStream.java:724)
+		at hudson.remoting.Capability$ObjectOutputStreamImpl.close(Capability.java:162)
+		at hudson.remoting.Capability.write(Capability.java:149)
+java.io.IOException: Stream closed
+	at java.base/java.lang.ProcessBuilder$NullOutputStream.write(ProcessBuilder.java:445)
+	at java.base/java.io.OutputStream.write(OutputStream.java:162)
+	at java.base/java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:81)
+	at java.base/java.io.BufferedOutputStream.flush(BufferedOutputStream.java:142)
+	at java.base/java.io.FilterOutputStream.flush(FilterOutputStream.java:153)
+	at hudson.remoting.BinarySafeStream$2.flush(BinarySafeStream.java:324)
+	at java.base/java.io.ObjectOutputStream$BlockDataOutputStream.flush(ObjectOutputStream.java:1832)
+	at java.base/java.io.ObjectOutputStream.flush(ObjectOutputStream.java:724)
+	at hudson.remoting.Capability.write(Capability.java:151)
+	at hudson.remoting.Capability.writePreamble(Capability.java:142)
+	at hudson.remoting.ChannelBuilder.negotiate(ChannelBuilder.java:470)
+	at hudson.remoting.ChannelBuilder.build(ChannelBuilder.java:437)
+	at hudson.slaves.SlaveComputer.setChannel(SlaveComputer.java:440)
+	at PluginClassLoader for command-launcher//hudson.slaves.CommandLauncher.launch(CommandLauncher.java:188)
+	at PluginClassLoader for ec2//hudson.plugins.ec2.ssh.EC2UnixLauncher.launchScript(EC2UnixLauncher.java:280)
+	at PluginClassLoader for ec2//hudson.plugins.ec2.EC2ComputerLauncher.launch(EC2ComputerLauncher.java:55)
+	at hudson.slaves.SlaveComputer.lambda$_connect$0(SlaveComputer.java:297)
+	at jenkins.util.ContextResettingExecutorService$2.call(ContextResettingExecutorService.java:46)
+	at jenkins.security.ImpersonatingExecutorService$2.call(ImpersonatingExecutorService.java:80)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+ERROR: Process terminated with exit code 255

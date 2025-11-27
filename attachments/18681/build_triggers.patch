@@ -1,0 +1,341 @@
+Index: src/main/resources/hudson/plugins/accurev/AccurevSCM/global.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/accurev/AccurevSCM/global.jelly	(revision 20179)
++++ src/main/resources/hudson/plugins/accurev/AccurevSCM/global.jelly	Mon Jul 27 17:54:18 CEST 2009
+@@ -26,6 +26,10 @@
+                             <input class="setting-input number" type="text"
+                                    name="server.port" value="${h.ifThenElse(server==null,5050,server.port)}"/>
+                         </f:entry>
++                        <f:entry title="Valid transaction types" help="/plugin/accurev/help/validtransactiontypes.html">
++                            <input class="setting-input" type="text"
++                                   name="server.validTransactionTypes" value="${h.ifThenElse(server==null,'add;chstream;co;defcomp;defunct;keep;mkstream;move;promote;purge',server.validTransactionTypes)}" />
++                        </f:entry>
+                     </f:advanced>
+ 
+                 </table>
+Index: src/main/webapp/help/validTransactionTypes.html
+===================================================================
+--- src/main/webapp/help/validTransactionTypes.html	Mon Jul 27 17:54:50 CEST 2009
++++ src/main/webapp/help/validTransactionTypes.html	Mon Jul 27 17:54:50 CEST 2009
+@@ -0,0 +1,27 @@
++<div>
++    <b>WARNING:</b> By changing the valid types of transactions you can miss vital changes made to your source code.<BR>
++    <p>
++        By default, the AccuRev-plugin will allow any type of transaction to trigger a build.<BR><BR>
++        This behaviour is not always wanted, resulting in issue-triggered builds.<BR>
++        <BR>
++        To solve this you specify the types of transactions that you want to use.<BR>
++        You enter the transaction types separated by semicolons like this<BR><BR>
++        <code>add;chstream;co;defcomp;defunct;keep;mkstream;move;promote;purge</code><BR><BR>
++    The types you are able to choose are the AccuRev transaction types,
++    <ul>
++            <li>add - </li>
++            <li>chstream -</li>
++            <li>co - </li>
++            <li>defcomp - </li>
++            <li>defunct - </li>
++            <li>dispatch - </li>
++            <li>keep - </li>
++            <li>mkstream - </li>
++            <li>move - </li>
++            <li>promote - </li>
++            <li>purge - </li>
++        </ul>
++    <p>
++
++   </p>
++</div>
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/accurev/AccurevSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/accurev/AccurevSCM.java	(revision 20179)
++++ src/main/java/hudson/plugins/accurev/AccurevSCM.java	Mon Jul 27 17:58:59 CEST 2009
+@@ -734,6 +734,20 @@
+         }
+     }
+ 
++    /**
++     *
++     * @param server
++     * @param accurevEnv
++     * @param workspace
++     * @param listener
++     * @param accurevPath
++     * @param launcher
++     * @param stream
++     * @param buildDate
++     * @return if there are any new transactions in the stream since the last build was done
++     * @throws IOException
++     * @throws InterruptedException
++     */
+     private boolean checkStreamForChanges(AccurevServer server,
+                                           Map<String, String> accurevEnv,
+                                           FilePath workspace,
+@@ -743,80 +757,105 @@
+                                           String stream,
+                                           Date buildDate)
+             throws IOException, InterruptedException {
++        AccurevTransaction latestCodeChangeTransaction = new AccurevTransaction();
++        latestCodeChangeTransaction.setDate(new Date(0));
++
++        //query AccuRev for the latest transactions of each kind defined in transactionTypes using getTimeOfLatestTransaction
++        for (String transactionType : server.getValidTransactionTypes().split(";")) {
++            AccurevTransaction tempTransaction;
++
++            try {
++                tempTransaction = getLatestTransaction(server, accurevEnv, workspace, listener, accurevPath, launcher, stream, transactionType);
++                if (latestCodeChangeTransaction.getDate().before(tempTransaction.getDate())) {
++                    latestCodeChangeTransaction = tempTransaction;
++                }
++            }
++            catch(NullPointerException e){
++                 listener.getLogger().println("There is no transactions of the type " + transactionType + " in the stream " + stream);
++            }
++            catch(Exception e) {
++                listener.getLogger().println("getTimeOfLatestTransaction failed when checking the stream " + stream + " for changes with transaction type " + transactionType);
++                e.printStackTrace(listener.getLogger());
++                logger.warning(e.getMessage());
++            }
++        }
++
++        //log transaction-information
++        listener.getLogger().println("Last change on " + latestCodeChangeTransaction.getDate());
++        listener.getLogger().println("#" + latestCodeChangeTransaction.getId() + " " + latestCodeChangeTransaction.getAuthor() + " " + latestCodeChangeTransaction.getAction());
++        if(latestCodeChangeTransaction.getMsg() != null ) {
++            listener.getLogger().println(latestCodeChangeTransaction.getMsg());
++        }
++
++        return buildDate == null || buildDate.before(latestCodeChangeTransaction.getDate());
++    }
++
++    /**
++     *
++     *
++     * @param server
++     * @param accurevEnv
++     * @param workspace
++     * @param listener
++     * @param accurevPath
++     * @param launcher
++     * @param stream
++     * @param transactionType Specify what type of transaction to search for
++     * @return the latest transaction of the specified type from the selected stream
++     * @throws Exception
++     */
++    private AccurevTransaction getLatestTransaction(AccurevServer server,
++                                              Map<String, String> accurevEnv,
++                                              FilePath workspace,
++                                              TaskListener listener,
++                                              String accurevPath,
++                                              Launcher launcher,
++                                              String stream,
++                                              String transactionType)
++                throws Exception {
++            //initialize code that extracts the latest transaction of a certain type using -k flag
+-        ArgumentListBuilder cmd = new ArgumentListBuilder();
+-        cmd.add(accurevPath);
+-        cmd.add("hist");
+-        addServer(cmd, server);
+-        cmd.add("-fx");
+-        cmd.add("-p");
+-        cmd.add(depot);
+-        cmd.add("-s");
+-        cmd.add(stream);
+-        cmd.add("-t");
+-        cmd.add("now.1");
++            ArgumentListBuilder cmd = new ArgumentListBuilder();
++            cmd.add(accurevPath);
++            cmd.add("hist");
++            addServer(cmd, server);
++            cmd.add("-fx");
++            cmd.add("-p");
++            cmd.add(depot);
++            cmd.add("-s");
++            cmd.add(stream);
++            cmd.add("-t");
++            cmd.add("now.1");
++            cmd.add("-k");
++            cmd.add(transactionType);
+-        StringOutputStream sos = new StringOutputStream();
++            StringOutputStream sos = new StringOutputStream();
+-        int rv;
+-        if (0 != (rv = launchAccurev(launcher, cmd, accurevEnv, null, sos, workspace))) {
+-            listener.fatalError("History command failed with exit code " + rv);
+-            return false;
++
++            //execute code that extracts the latest transaction
++            int rv = launchAccurev(launcher, cmd, accurevEnv, null, sos, workspace);
++            if (0 != rv) {
++                throw new Exception("History command failed with exit code " + rv + " when trying to get the latest transaction of type " + transactionType);
+-        }
++            }
+ 
+-        try {
++            //parse the result from the transaction-query
+             XmlPullParser parser = newPullParser();
+             parser.setInput(new StringReader(sos.toString()));
+-            while (true) {
+-                int event = parser.next();
+-                if (event == XmlPullParser.END_DOCUMENT) {
+-                    // we've got to the end with no transaction tags,
+-                    // therefore no changes in this stream
+-                    return false;
+-                }
+-                if (event != XmlPullParser.START_TAG) {
+-                    continue;
+-                }
+-                if (!"transaction".equalsIgnoreCase(parser.getName())) {
+-                    continue;
+-                }
+-                break;
+-            }
+-            String transactionId = parser.getAttributeValue("", "id");
+-            String transactionType = parser.getAttributeValue("", "type");
+-            String transactionTime = parser.getAttributeValue("", "time");
+-            String transactionUser = parser.getAttributeValue("", "user");
+-            Date transactionDate = convertAccurevTimestamp(transactionTime);
+-            listener.getLogger().println("Last change on " + transactionDate);
+-            listener.getLogger().println("#" + transactionId + " " + transactionUser + " " + transactionType);
+ 
+-            String transactionComment = null;
+-            boolean inComment = false;
+-            while (transactionComment == null) {
+-                switch (parser.next()) {
+-                    case XmlPullParser.START_TAG:
+-                        inComment = "comment".equalsIgnoreCase(parser.getName());
+-                        break;
+-                    case XmlPullParser.END_TAG:
+-                        inComment = false;
+-                        break;
+-                    case XmlPullParser.TEXT:
+-                        if (inComment) {
+-                            transactionComment = parser.getText();
++            AccurevTransaction resultTransaction = new AccurevTransaction();
++            while (parser.next() != XmlPullParser.END_DOCUMENT) {
++                if (parser.getEventType() == XmlPullParser.START_TAG) {
++                    if(parser.getName().equalsIgnoreCase("transaction")) {
++                        //parse transaction-values
++                        resultTransaction.setId( ( Integer.parseInt( parser.getAttributeValue("", "id"))));
++                        resultTransaction.setAction( parser.getAttributeValue("","type"));
++                        resultTransaction.setDate( convertAccurevTimestamp(parser.getAttributeValue("", "time")));
++                        resultTransaction.setUser( parser.getAttributeValue("", "user"));
++                    } else if (parser.getName().equalsIgnoreCase("comment")) {
++                        //parse comments
++                        resultTransaction.setMsg(parser.nextText());
+-                        }
++                    }
+-                        break;
+-                    case XmlPullParser.END_DOCUMENT:
+-                        transactionComment = "";
+-                    default:
+                 }
+             }
+-            listener.getLogger().println(transactionComment);
+-
+-            return buildDate == null || buildDate.compareTo(transactionDate) < 0;
+-        } catch (XmlPullParserException e) {
+-            e.printStackTrace(listener.getLogger());
+-            logger.warning(e.getMessage());
+-            return false;
++            return resultTransaction;
+-        }
++        }    
+-    }
+-
+     /**
+      * Helper method to retrieve include/exclude rules for a given stream.
+      *
+@@ -1071,7 +1110,7 @@
+         private String password;
+         private transient List<String> winCmdLocations;
+         private transient List<String> nixCmdLocations;
+-
++        private String validTransactionTypes;
+         /**
+          * The default search paths for Windows clients.
+          */
+@@ -1097,7 +1136,7 @@
+         }
+ 
+         @DataBoundConstructor
+-        public AccurevServer(String name, String host, int port, String username, String password) {
++        public AccurevServer(String name, String host, int port, String username, String password, String validTransactionTypes) {
+             this.name = name;
+             this.host = host;
+             this.port = port;
+@@ -1105,6 +1144,7 @@
+             this.password = Password.obfuscate(password);
+             winCmdLocations = new ArrayList<String>(DEFAULT_WIN_CMD_LOCATIONS);
+             nixCmdLocations = new ArrayList<String>(DEFAULT_NIX_CMD_LOCATIONS);
++            this.validTransactionTypes = validTransactionTypes;
+         }
+ 
+         /**
+@@ -1186,8 +1226,23 @@
+             return winCmdLocations.toArray(new String[winCmdLocations.size()]);
+         }
+ 
++        /**
++         *
++         * @return returns the currently set transaction types that are seen as valid for triggering builds and whos authors get notified when a build fails
++         */
++        public String getValidTransactionTypes() {
++            return validTransactionTypes;
+-    }
++        }
+ 
++        /**
++         *
++         * @param validTransactionTypes the currently set transaction types that are seen as valid for triggering builds and whos authors get notified when a build fails 
++         */
++        public void setValidTransactionTypes(String validTransactionTypes) {
++            this.validTransactionTypes = validTransactionTypes;
++         }
++    }
++
+     private static final class PurgeWorkspaceContents implements FilePath.FileCallable<Boolean> {
+ 
+         private final TaskListener listener;
+Index: src/main/java/hudson/plugins/accurev/AccurevTransaction.java
+===================================================================
+--- src/main/java/hudson/plugins/accurev/AccurevTransaction.java	(revision 20179)
++++ src/main/java/hudson/plugins/accurev/AccurevTransaction.java	Mon Jul 27 13:56:04 CEST 2009
+@@ -19,6 +19,7 @@
+     private String msg;
+     private String action;
+     private List<String> affectedPaths = new ArrayList<String>();
++    private int id;
+ 
+     public String getRevision() {
+         return revision;
+@@ -96,4 +97,29 @@
+     public void addAffectedPath(String path) {
+         affectedPaths.add(path);
+     }
++    /**
++     * Getter for action
++     * Enables accurate filtering by AccuRev transaction type since the metod getEditType censors the actual type.
++     * @return transaction type of the AccuRev transaction
++     */
++    public String getAction() {
++        return action;
+-}
++    }
++
++    /**
++     * Getter for id
++     * Enables logging with AccuRev transaction id
++     * @return transaction id of the AccuRev transaction
++     */
++    public int getId() {
++        return id;
++    }
++
++    /**
++     * Setter for id
++     * @param id transaction id of the AccuRev transaction
++     */
++    public void setId(int id) {
++        this.id = id;
++    }
++}

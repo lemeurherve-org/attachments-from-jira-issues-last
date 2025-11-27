@@ -1,0 +1,129 @@
+From 4544a479d7ee73f6751b8801a6a16c27f44e22ea Mon Sep 17 00:00:00 2001
+From: James Coleman <jamesc@dspsrv.com>
+Date: Tue, 10 Jun 2014 16:23:48 +0100
+Subject: [PATCH] cvsplugin part of fix for JENKINS-23234 cvs update hang when
+ recursive symlink in directory. Along with messy debug.
+
+---
+ src/main/java/hudson/scm/AbstractCvs.java | 55 ++++++++++++++++++++++++++++++-
+ 1 file changed, 54 insertions(+), 1 deletion(-)
+
+diff --git a/src/main/java/hudson/scm/AbstractCvs.java b/src/main/java/hudson/scm/AbstractCvs.java
+index ac1a06a..ea89980 100644
+--- a/src/main/java/hudson/scm/AbstractCvs.java
++++ b/src/main/java/hudson/scm/AbstractCvs.java
+@@ -74,6 +74,8 @@ import java.util.List;
+ import java.util.ListIterator;
+ import java.util.Locale;
+ import java.util.Map;
++import java.util.logging.Level;
++import java.util.logging.Logger;
+ import java.util.regex.Pattern;
+ import java.util.regex.PatternSyntaxException;
+ 
+@@ -137,6 +139,8 @@ public abstract class AbstractCvs extends SCM implements ICvs {
+                         // force it to recurse into directories
+                         updateCommand.setBuildDirectories(true);
+                         updateCommand.setRecursive(true);
++                        // JCO. fix JENKINS-23234 cvs update hang when recursive symlink in directory
++                        // updateCommand.setIgnoreSymlinks(true);
+ 
+                         // set directory pruning
+                         updateCommand.setPruneDirectories(pruneEmptyDirectories);
+@@ -321,6 +325,14 @@ public abstract class AbstractCvs extends SCM implements ICvs {
+                 // not CVS-controlled, ignore
+                 continue;
+             }
++
++	    if (isSymLink(kid)) {
++		// ignore symlinks, prevent infinate loop in case of recursive symlinks
++		System.err.println("JAMESCO pruneEmptyDirectories prevent infinate loop file:" + kid);
++                continue;
++	    }
++
++	    System.err.println("JAMESCO DEBUG pruneEmptyDirectories calls pruneEmptyDirectories file:" + kid);
+             pruneEmptyDirectories(kid);
+             File[] subkids = kid.listFiles();
+             if (subkids != null && subkids.length == 1) {
+@@ -843,7 +855,13 @@ public abstract class AbstractCvs extends SCM implements ICvs {
+ 
+                             File[] innerFiles = directory.listFiles();
+                             if (null != innerFiles) {
++
+                                 for (File innerFile : innerFiles) {
++				    if (isSymLink(innerFile)) {
++					// ignore symlinks, prevent infinate loop in case of recursive symlinks
++					System.err.println("JAMESCO cleanup file:" + innerFile);
++					continue;
++				    }
+                                     if (innerFile.isDirectory() && !innerFile.getName().equals("CVS")) {
+                                         cleanup(innerFile, adminHandler);
+                                     }
+@@ -875,6 +893,33 @@ public abstract class AbstractCvs extends SCM implements ICvs {
+         return workspaceState;
+     }
+ 
++    /**
++     * Return true if file is a symbolic link.
++     * Symbolic links are ignored by other cvs clients.
++     * Symbolic link to dir within cvs tree can cause infinate loop of cvs update following symlink. 
++     * Solution when recursive check is directory a symlink and ignore it if so.
++     * @param file name of file/dir/symlink to test
++     */
++    public static boolean isSymLink(File file) {
++        if (file == null)
++	    return false;
++        try {
++            File canon;
++            if (file.getParent() == null) {
++                canon = file;
++            } else {
++                File canonDir = file.getParentFile().getCanonicalFile();
++                canon = new File(canonDir, file.getName());
++            }
++            return !canon.getCanonicalFile().equals(canon.getAbsoluteFile());
++        } catch (IOException ex) {
++ 	    System.err.println("jco DEBUG: isSymLink exception:" + ex);
++	    Logger.getLogger(AbstractCvs.class.getName()).log(Level.SEVERE, null, ex);
++       }
++        return false;
++    }
++
++
+     private List<CvsFile> getCvsFiles(final FilePath workspace, final CvsModule module, final boolean flatten,
+                                       final EnvVars envVars)
+             throws IOException, InterruptedException {
+@@ -908,6 +953,8 @@ public abstract class AbstractCvs extends SCM implements ICvs {
+                 if (moduleLocation.isFile()) {
+                     Entry entry = adminHandler.getEntry(moduleLocation);
+                     if (entry != null) {
++			System.err.println("JAMESCO fileList.add file" + entry);
++                        Logger.getLogger(AbstractCvs.class.getName()).log(Level.SEVERE, "JAMESCO fileList.add file" + entry);
+                         fileList.add(CvsFile.make(entry.getName(), entry.getRevision()));
+                     }
+                 } else {
+@@ -917,6 +964,8 @@ public abstract class AbstractCvs extends SCM implements ICvs {
+                         if (file.isFile()) {
+                             Entry entry = adminHandler.getEntry(file);
+                             CvsFile currentFile = CvsFile.make(prefix + "/" + entry.getName(), entry.getRevision());
++			    System.err.println("JAMESCO fileList.add file 2" + entry);
++                            Logger.getLogger(AbstractCvs.class.getName()).log(Level.SEVERE, "JAMESCO fileList.add file 2" + file);
+                             fileList.add(currentFile);
+                         }
+                     }
+@@ -928,7 +977,11 @@ public abstract class AbstractCvs extends SCM implements ICvs {
+                     if (directoryFiles != null) {
+                         for (File file : directoryFiles) {
+                             if (file.isDirectory()) {
+-                                fileList.addAll(buildFileList(file, prefix + "/" + file.getName()));
++				if (!isSymLink(file)) {
++				    System.err.println("JAMESCO fileList.add dir:" + file);
++                                    Logger.getLogger(AbstractCvs.class.getName()).log(Level.SEVERE, "JAMESCO fileList.add dir:" + file);
++				    fileList.addAll(buildFileList(file, prefix + "/" + file.getName()));
++				}
+                             }
+                         }
+                     }
+-- 
+1.8.3.1
+

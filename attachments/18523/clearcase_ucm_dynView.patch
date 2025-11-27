@@ -1,0 +1,361 @@
+Index: main/java/hudson/plugins/clearcase/ucm/UcmMakeBaseline.java
+===================================================================
+--- main/java/hudson/plugins/clearcase/ucm/UcmMakeBaseline.java	(revision 15956)
++++ main/java/hudson/plugins/clearcase/ucm/UcmMakeBaseline.java	(working copy)
+@@ -36,6 +36,7 @@
+  * @author Gregory Boissinot 
+  * 2008-10-11 Add the rebase dynamic view feature
+  * 2008-11-21 Restric the baseline creation on read/write components
++ * 2009-03-02 Add the dynamic view support for the make baseline
+  * 
+  */
+ public class UcmMakeBaseline extends Publisher {
+@@ -44,7 +45,7 @@
+ 
+     private transient List<String> readWriteComponents = null;
+     
+-    private transient List<String> latestBaselines = null;
++    private transient List<String> latestBaselines = new ArrayList<String>();
+ 
+     private transient List<String> createdBaselines = new ArrayList<String>();
+ 
+@@ -176,7 +177,7 @@
+         if (this.lockStream) {
+             try {
+                 this.streamSuccessfullyLocked = lockStream(scm.getStream(),
+-                        clearToolLauncher, filePath);
++                        clearToolLauncher, scm, filePath);
+             } catch (Exception ex) {
+                 listener.getLogger().println("Failed to lock stream: " + ex);
+                 return false;
+@@ -185,11 +186,11 @@
+         try {
+         	
+         	//Get read/write component
+-        	this.readWriteComponents = getReadWriteComponent(clearToolLauncher,filePath);
++        	this.readWriteComponents = getReadWriteComponent(clearToolLauncher, scm, filePath);
+         	   
+         	if (readWriteComponents.size()!=0){
+-        		makeBaseline(build, clearToolLauncher, filePath);            
+-        		this.latestBaselines = getLatestBaselineNames(clearToolLauncher,filePath);
++        		makeBaseline(build, clearToolLauncher, scm, filePath);            
++        		this.latestBaselines = getLatestBaselineNames(clearToolLauncher, scm, filePath);
+             
+         		addBuildParameter(build);
+         	}
+@@ -239,17 +240,17 @@
+                 // On success, promote all current baselines in stream
+                 for (String baselineName : this.latestBaselines) {
+                     promoteBaselineToBuiltLevel(scm.getStream(),
+-                            clearToolLauncher, filePath, baselineName);
++                            clearToolLauncher, scm, filePath, baselineName);
+                 }
+                 if (this.recommend) {
+                     recommedBaseline(scm.getStream(), clearToolLauncher,
+-                            filePath);
++                    		scm, filePath);
+                 }
+ 
+                 // Rebase a dynamic view
+                 if (this.rebaseDynamicView) {
+                     for (String baseline : this.latestBaselines) {
+-                        rebaseDynamicView(clearToolLauncher, filePath,
++                        rebaseDynamicView(clearToolLauncher, scm, filePath,
+                                 this.dynamicViewName, baseline);
+                     }
+                 }
+@@ -274,14 +275,14 @@
+                         listener.getLogger().println("Couldn't find baseline name for "+ baselineName);
+                     } else {
+                         demoteBaselineToRejectedLevel(scm.getStream(),
+-                                clearToolLauncher, filePath, realBaselineName);
++                                clearToolLauncher, scm, filePath, realBaselineName);
+                         alreadyRejected.add(realBaselineName);
+                     }
+                 }
+             }
+ 
+             if (this.lockStream && this.streamSuccessfullyLocked) {
+-                unlockStream(scm.getStream(), clearToolLauncher, filePath);
++                unlockStream(scm.getStream(), clearToolLauncher, scm, filePath);
+             }
+         } else {
+             listener.getLogger().println(
+@@ -295,10 +296,15 @@
+         return DESCRIPTOR;
+     }
+ 
+-    private void rebaseDynamicView(HudsonClearToolLauncher clearToolLauncher,
++    private void rebaseDynamicView(HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm,
+             FilePath filePath, String dynamicView, String blName)
+             throws InterruptedException, IOException {
+ 
++        FilePath clearToolLauncherPath = filePath;
++        if (scm.isUseDynamicView()){
++            	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }      	
++    	
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+         cmd.add("rebase");
+         cmd.add("-baseline");
+@@ -307,19 +313,24 @@
+         cmd.add(dynamicView);
+         cmd.add("-complete");
+ 
+-        clearToolLauncher.run(cmd.toCommandArray(), null, null, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, null, clearToolLauncherPath);
+     }
+ 
+     private void unlockStream(String stream,
+-            HudsonClearToolLauncher clearToolLauncher, FilePath filePath)
++            HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm, FilePath filePath)
+             throws IOException, InterruptedException {
+ 
++        FilePath clearToolLauncherPath = filePath;
++        if (scm.isUseDynamicView()){
++            	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }          	
++    	
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+ 
+         cmd.add("unlock");
+         cmd.add("stream:" + stream);
+ 
+-        clearToolLauncher.run(cmd.toCommandArray(), null, null, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, null, clearToolLauncherPath);
+ 
+     }
+ 
+@@ -331,9 +342,14 @@
+      * @return true if the stream was locked
+      */
+     private boolean lockStream(String stream,
+-            HudsonClearToolLauncher clearToolLauncher, FilePath filePath)
++            HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm, FilePath filePath)
+             throws IOException, InterruptedException {
+ 
++        FilePath clearToolLauncherPath = filePath;
++        if (scm.isUseDynamicView()){
++            	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }        	
++    	
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+ 
+         cmd.add("lock");
+@@ -341,7 +357,7 @@
+ 
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+ 
+-        clearToolLauncher.run(cmd.toCommandArray(), null, baos, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, baos, clearToolLauncherPath);
+         String cleartoolResult = baos.toString();
+         if (cleartoolResult.contains("cleartool: Error")) {
+             return false;
+@@ -352,15 +368,15 @@
+ 
+     @SuppressWarnings("unchecked")
+     private void makeBaseline(AbstractBuild build,
+-            HudsonClearToolLauncher clearToolLauncher, FilePath filePath)
++            HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm, FilePath filePath)
+             throws Exception {
+ 
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+ 
+-        String baselineName = Util
+-                .replaceMacro(namePattern, build.getEnvVars());
+-        String baselineComment = Util.replaceMacro(commentPattern, build
+-                .getEnvVars());
++        String baselineName = Util.replaceMacro(namePattern, build.getEnvVars());               
++        String baselineComment = Util.replaceMacro(commentPattern, build.getEnvVars());
++
++        
+         cmd.add("mkbl");
+         if (this.identical) {
+             cmd.add("-identical");
+@@ -373,7 +389,14 @@
+             cmd.add("-incremental");
+         }
+ 
++        FilePath clearToolLauncherPath = filePath;
++        if (scm.isUseDynamicView()){
++            	cmd.add("-view");
++            	cmd.add(scm.getViewName());        	
++            	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }        
+ 
++
+         //Make baseline only for read/write components (identical or not)
+         cmd.add("-comp");
+         StringBuffer lstComp = new StringBuffer();
+@@ -389,7 +412,7 @@
+         
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+ 
+-        clearToolLauncher.run(cmd.toCommandArray(), null, baos, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, baos, clearToolLauncherPath);
+         baos.close();
+         String cleartoolResult = baos.toString();
+         if (cleartoolResult.contains("cleartool: Error")) {
+@@ -409,9 +432,14 @@
+     }
+ 
+     private void recommedBaseline(String stream,
+-            HudsonClearToolLauncher clearToolLauncher, FilePath filePath)
++            HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm, FilePath filePath)
+             throws InterruptedException, IOException {
+ 
++        FilePath clearToolLauncherPath = filePath;
++        if (scm.isUseDynamicView()){
++            	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }    
++        
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+ 
+         cmd.add("chstream");
+@@ -419,13 +447,18 @@
+         cmd.add("-def");
+         cmd.add(stream);
+ 
+-        clearToolLauncher.run(cmd.toCommandArray(), null, null, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, null, clearToolLauncherPath);
+     }
+ 
+     private void promoteBaselineToBuiltLevel(String stream,
+-            HudsonClearToolLauncher clearToolLauncher, FilePath filePath,
++            HudsonClearToolLauncher clearToolLauncher,  ClearCaseUcmSCM scm, FilePath filePath,
+             String blName) throws InterruptedException, IOException {
+ 
++        FilePath clearToolLauncherPath = filePath;
++        if (scm.isUseDynamicView()){
++            	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }        	
++    	
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+ 
+         cmd.add("chbl");
+@@ -436,13 +469,18 @@
+ 
+         cmd.add(blName);
+ 
+-        clearToolLauncher.run(cmd.toCommandArray(), null, null, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, null, clearToolLauncherPath);
+     }
+ 
+     private void demoteBaselineToRejectedLevel(String stream,
+-            HudsonClearToolLauncher clearToolLauncher, FilePath filePath,
++            HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm, FilePath filePath,
+             String blName) throws InterruptedException, IOException {
+ 
++        FilePath clearToolLauncherPath = filePath;
++        if (scm.isUseDynamicView()){
++            	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }      	
++    	
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+ 
+         cmd.add("chbl");
+@@ -453,7 +491,7 @@
+ 
+         cmd.add(blName);
+ 
+-        clearToolLauncher.run(cmd.toCommandArray(), null, null, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, null, clearToolLauncherPath);
+     }
+     
+     
+@@ -465,17 +503,26 @@
+      * @throws Exception
+      */
+     private List<String> getReadWriteComponent(
+-            HudsonClearToolLauncher clearToolLauncher, FilePath filePath)
++            HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm, FilePath filePath)
+             throws Exception {
+         
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+-      
++        FilePath clearToolLauncherPath = filePath;
++        
+         cmd.add("lsproject");
+-        cmd.add("-cview");
+-        cmd.add("-fmt");
+-        cmd.add("%[mod_comps]Xp");
++        if (scm.isUseDynamicView()){
++        	cmd.add("-view");
++        	cmd.add(scm.getViewName());        	
++        	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }
++        else{        	
++        	cmd.add("-cview"); 	
++        }
++    	cmd.add("-fmt");
++    	cmd.add("%[mod_comps]Xp");       
++
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+-        clearToolLauncher.run(cmd.toCommandArray(), null, baos, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, baos, clearToolLauncherPath);
+         baos.close();
+         String cleartoolResult = baos.toString();
+             	
+@@ -505,18 +552,23 @@
+      * @throws IOException
+      */
+     private String getComponentforBaseline(
+-                HudsonClearToolLauncher clearToolLauncher, FilePath filePath,
++                HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm, FilePath filePath,
+                 String blName) throws InterruptedException, IOException {    	
+   
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+ 
+-        cmd.add("lsbl");
++        FilePath clearToolLauncherPath = filePath;
++        if (scm.isUseDynamicView()){
++        	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }     
++        
++        cmd.add("lsbl");      
+         cmd.add("-fmt");
+         cmd.add("%[component]Xp");
+         cmd.add(blName);
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();   
+         
+-        clearToolLauncher.run(cmd.toCommandArray(), null, baos, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, baos, clearToolLauncherPath);
+         baos.close();
+         String cleartoolResult = baos.toString();
+         
+@@ -526,17 +578,23 @@
+     
+     
+     private List<String> getLatestBaselineNames(
+-            HudsonClearToolLauncher clearToolLauncher, FilePath filePath)
++            HudsonClearToolLauncher clearToolLauncher, ClearCaseUcmSCM scm, FilePath filePath)
+             throws Exception {
+ 
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+-
++        FilePath clearToolLauncherPath = filePath;
++        
+         cmd.add("lsstream");
++        if (scm.isUseDynamicView()){
++        	cmd.add("-view");
++        	cmd.add(scm.getViewName());        	
++        	clearToolLauncherPath=clearToolLauncher.getWorkspace();
++        }             
+         cmd.add("-fmt");
+         cmd.add("%[latest_bls]Xp");
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+ 
+-        clearToolLauncher.run(cmd.toCommandArray(), null, baos, filePath);
++        clearToolLauncher.run(cmd.toCommandArray(), null, baos, clearToolLauncherPath);
+         baos.close();
+         String cleartoolResult = baos.toString();
+         String prefix = "baseline:";
+@@ -547,7 +605,7 @@
+                 String baselineNameTrimmed = baselineName.trim();
+                 if (!baselineNameTrimmed.equals("")) {      
+                 		//Retrict to baseline bind to read/write component
+-                		String blComp = getComponentforBaseline(clearToolLauncher, filePath, baselineNameTrimmed);
++                		String blComp = getComponentforBaseline(clearToolLauncher, scm, filePath, baselineNameTrimmed);
+                 		if (this.readWriteComponents.contains(blComp))                	
+                 			baselineNames.add(baselineNameTrimmed);
+                 }

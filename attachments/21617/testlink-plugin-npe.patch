@@ -1,0 +1,24 @@
+diff -uNr src.pristine/main/java/hudson/plugins/testlink/result/JUnitCaseClassNameResultSeeker.java src/main/java/hudson/plugins/testlink/result/JUnitCaseClassNameResultSeeker.java
+--- src.pristine/main/java/hudson/plugins/testlink/result/JUnitCaseClassNameResultSeeker.java	2012-03-08 00:55:38.000000000 +0200
++++ src/main/java/hudson/plugins/testlink/result/JUnitCaseClassNameResultSeeker.java	2012-03-09 14:49:08.772579841 +0200
+@@ -141,7 +141,7 @@
+ 						testCase.getClassName(), 
+ 						testCase.getSkipCount(), 
+ 						testCase.getFailCount(), 
+-						testCase.getSuiteResult().getTimestamp())
++						(testCase.getSuiteResult() != null ? testCase.getSuiteResult().getTimestamp() : null))
+ 		);
+ 		
+ 		return notes.toString();
+diff -uNr src.pristine/main/java/hudson/plugins/testlink/result/JUnitCaseNameResultSeeker.java src/main/java/hudson/plugins/testlink/result/JUnitCaseNameResultSeeker.java
+--- src.pristine/main/java/hudson/plugins/testlink/result/JUnitCaseNameResultSeeker.java	2012-03-08 00:55:38.000000000 +0200
++++ src/main/java/hudson/plugins/testlink/result/JUnitCaseNameResultSeeker.java	2012-03-09 13:27:06.636257959 +0200
+@@ -141,7 +141,7 @@
+ 						testCase.getClassName(), 
+ 						testCase.getSkipCount(), 
+ 						testCase.getFailCount(), 
+-						testCase.getSuiteResult().getTimestamp())
++						(testCase.getSuiteResult() != null ? testCase.getSuiteResult().getTimestamp() : null))
+ 		);
+ 		
+ 		return notes.toString();

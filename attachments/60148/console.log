@@ -1,0 +1,39 @@
+Started by user BEBEJ Stanislav
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on linux-agent-app-01 in /opt/app/jenkins/workspace/_BEBEJ/conjur-secrets-plugin-defect
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Hello)
+[Pipeline] withCredentials
+Masking supported pattern matches of $CONJUR_SECRET
+[Pipeline] {
+[Pipeline] sh
++ echo ****
++ base64
+ZGVmYXVsdDEyMwo=
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] withCredentials
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+java.io.IOException: Error fetching secret from Conjur [401 - Unauthorized
+Malformed authorization token
+	at org.conjur.jenkins.api.ConjurAPI.getSecret(ConjurAPI.java:187)
+	at org.conjur.jenkins.conjursecrets.ConjurSecretCredentialsImpl.getSecret(ConjurSecretCredentialsImpl.java:81)
+Caused: org.conjur.jenkins.exceptions.InvalidConjurSecretException: Error fetching secret from Conjur [401 - Unauthorized
+Malformed authorization token
+	at org.conjur.jenkins.conjursecrets.ConjurSecretCredentialsImpl.getSecret(ConjurSecretCredentialsImpl.java:85)
+	at org.conjur.jenkins.conjursecrets.ConjurSecretCredentialsBinding.bind(ConjurSecretCredentialsBinding.java:133)
+	at org.jenkinsci.plugins.credentialsbinding.impl.BindingStep$Execution2.doStart(BindingStep.java:132)
+	at org.jenkinsci.plugins.workflow.steps.GeneralNonBlockingStepExecution.lambda$run$0(GeneralNonBlockingStepExecution.java:77)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+Finished: FAILURE

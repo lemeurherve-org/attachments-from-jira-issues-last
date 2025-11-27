@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<maven2-moduleset>
+  <actions/>
+  <description>Int version of the 13.1, used to test Hudson</description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.plugins.clearcase.ClearCaseUcmSCM">
+    <viewName>stromp_be_builc</viewName>
+    <mkviewOptionalParam></mkviewOptionalParam>
+    <filteringOutDestroySubBranchEvent>false</filteringOutDestroySubBranchEvent>
+    <useUpdate>true</useUpdate>
+    <removeViewOnRename>false</removeViewOnRename>
+    <excludedRegions></excludedRegions>
+    <loadRules>\be_rec\config\&#xd;
+\be_rec\access\&#xd;
+\be_rec\admins\&#xd;
+\be_rec\be\&#xd;
+\be_rec\buildservices\&#xd;
+\be_rec\uf\&#xd;
+\be_rec\sef\&#xd;
+\be_rec\jwash\</loadRules>
+    <useDynamicView>false</useDynamicView>
+    <viewDrive>M:\</viewDrive>
+    <multiSitePollBuffer>0</multiSitePollBuffer>
+    <createDynView>false</createDynView>
+    <winDynStorageDir></winDynStorageDir>
+    <unixDynStorageDir></unixDynStorageDir>
+    <stream>jcp_v13.1_be_int@\june2008_recover</stream>
+    <overrideBranchName></overrideBranchName>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>* * * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>jcp</groupId>
+    <artifactId>build</artifactId>
+  </rootModule>
+  <goals>install</goals>
+  <mavenOpts>-XX:MaxPermSize=512m -Xms128m -Xmx512m</mavenOpts>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <usePrivateRepository>false</usePrivateRepository>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <archivingDisabled>false</archivingDisabled>
+  <reporters/>
+  <publishers>
+    <hudson.plugins.chucknorris.CordellWalkerRecorder>
+      <factGenerator/>
+    </hudson.plugins.chucknorris.CordellWalkerRecorder>
+    <de.stephannoske.hudson.tools.NabatzagPublisher/>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.m2extrasteps.M2ExtraStepsWrapper>
+      <preBuildSteps>
+        <hudson.tasks.BatchFile>
+          <command>echo pre-build
+cd stromp_be_builc\be_rec\config\pom-templates
+D:\java\apache-maven-2.1.0\bin\mvn process-resources -Pwls10,dev</command>
+        </hudson.tasks.BatchFile>
+      </preBuildSteps>
+      <postBuildSteps/>
+      <runIfResult>allCases</runIfResult>
+    </hudson.plugins.m2extrasteps.M2ExtraStepsWrapper>
+  </buildWrappers>
+</maven2-moduleset>

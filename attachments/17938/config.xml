@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <builders class="vector">
+    <hudson.tasks.Ant>
+      <targets>all -Denable.coverage=true -Dhudson.checkout=true</targets>
+      <antName>ant1.6.5</antName>
+    </hudson.tasks.Ant>
+  </builders>
+  <publishers class="vector">
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>CertiOne2.0_packaging/build/**,CertiOne2.0_packaging/bin/DataBinding/dist/**,CertiOne2.0_packaging/src/EDIEngine/EDIEngine.jar,CertiOne2.0_packaging/src/EDIEngine/docs/**,CertiOne2.0_packaging/src/MRTEngine/MRTEngine.jar,CertiOne2.0_packaging/src/MRTEngine/docs/**,CertiOne2.0_packaging/src/CertiOne2.0_junit/reports/**,CertiOne2.0_packaging/src/CertiOne2.0_junit/testng-output/**</artifacts>
+      <latestOnly>false</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.JavadocArchiver>
+      <javadocDir>CertiOne2.0_packaging/src/CertiOne2.0/docs/api</javadocDir>
+    </hudson.tasks.JavadocArchiver>
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>CertiOne2.0_packaging/src/CertiOne2.0_junit/reports/*.xml,CertiOne2.0_packaging/src/CertiOne2.0_junit/testng-output/**/*.xml</testResults>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.plugins.emma.EmmaPublisher>
+      <includes>CertiOne2.0_packaging/src/CertiOne2.0_junit/reports/coverage/coverage.xml</includes>
+    </hudson.plugins.emma.EmmaPublisher>
+    <hudson.plugins.jira.JiraIssueUpdater/>
+    <hudson.tasks.Mailer>
+      <recipients>CoreDevelopment@staff.certipost.be</recipients>
+      <dontNotifyEveryUnstableBuild>true</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers class="vector"/>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0_packaging/trunk</remote>
+        <local>CertiOne2.0_packaging</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0/trunk</remote>
+        <local>CertiOne2.0_packaging/src/CertiOne2.0</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0_ext/trunk</remote>
+        <local>CertiOne2.0_packaging/src/CertiOne2.0_ext</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0_junit/trunk</remote>
+        <local>CertiOne2.0_packaging/src/CertiOne2.0_junit</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0_gui/trunk</remote>
+        <local>CertiOne2.0_packaging/src/CertiOne2.0_gui</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/MRTEngine/trunk</remote>
+        <local>CertiOne2.0_packaging/src/MRTEngine</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/EDIEngine/trunk</remote>
+        <local>CertiOne2.0_packaging/src/EDIEngine</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2_FTPServer/trunk</remote>
+        <local>CertiOne2.0_packaging/src/CertiOne2_FTPServer</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0/trunk/lib</remote>
+        <local>CertiOne2.0_packaging/src/DataBinding/lib</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0/trunk/src/be/certipost/jc/xml/binding</remote>
+        <local>CertiOne2.0_packaging/src/DataBinding/src/be/certipost/jc/xml/binding</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0/trunk/src/be/certipost/jc/storage</remote>
+        <local>CertiOne2.0_packaging/src/DataBinding/src/be/certipost/jc/storage</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0/trunk/src/be/certipost/tools</remote>
+        <local>CertiOne2.0_packaging/src/DataBinding/src/be/certipost/tools</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+      <hudson.scm.SubversionSCM-ModuleLocation>
+        <remote>http://bravo/svn/core/CertiONE-2.0/ApplicationsServer/CertiOne2.0_web/trunk</remote>
+        <local>CertiOne2.0_packaging/src/CertiOne2.0_web</local>
+      </hudson.scm.SubversionSCM-ModuleLocation>
+    </locations>
+    <useUpdate>true</useUpdate>
+    <browser class="hudson.scm.browsers.ViewSVN">
+      <url>http://bravo.office.certipost.be/viewcvs.cgi/</url>
+    </browser>
+  </scm>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <jdk>jdk1.5</jdk>
+  <triggers class="vector">
+    <hudson.triggers.TimerTrigger>
+      <spec>30 2 * * 1-6</spec>
+    </hudson.triggers.TimerTrigger>
+  </triggers>
+  <logRotator>
+    <daysToKeep>5</daysToKeep>
+    <numToKeep>10</numToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.jira.JiraProjectProperty>
+      <siteName>http://jira.certipost.be/</siteName>
+    </hudson.plugins.jira.JiraProjectProperty>
+  </properties>
+  <description>CertiOne2 Core</description>
+  <actions class="vector"/>
+</project>

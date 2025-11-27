@@ -1,0 +1,36 @@
+From d045db5b6c463ee0be1e1734e3ba7f31e0f8c1a2 Mon Sep 17 00:00:00 2001
+From: Peter Collingbourne <collingbourne2@llnl.gov>
+Date: Wed, 2 Dec 2009 13:52:34 -0800
+Subject: [PATCH] Do not attempt to publish if this is a matrix run
+
+---
+ src/main/java/hudson/plugins/git/GitPublisher.java |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/git/GitPublisher.java b/src/main/java/hudson/plugins/git/GitPublisher.java
+index d1740bc..55ae5b9 100644
+--- a/src/main/java/hudson/plugins/git/GitPublisher.java
++++ b/src/main/java/hudson/plugins/git/GitPublisher.java
+@@ -4,6 +4,7 @@ import hudson.EnvVars;
+ import hudson.Extension;
+ import hudson.Launcher;
+ import hudson.FilePath.FileCallable;
++import hudson.matrix.MatrixRun;
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
+ import hudson.model.BuildListener;
+@@ -45,6 +46,11 @@ public class GitPublisher extends Publisher implements Serializable {
+             Launcher launcher, final BuildListener listener)
+             throws InterruptedException {
+ 
++        // http://bugs.sun.com/view_bug.do?bug_id=6548436 workaround
++        if (MatrixRun.class.isInstance(build)) {
++            return true;
++        }
++
+         final SCM scm = build.getProject().getScm();
+ 
+         if (!(scm instanceof GitSCM)) {
+-- 
+1.6.3.3
+

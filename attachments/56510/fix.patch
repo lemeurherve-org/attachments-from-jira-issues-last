@@ -1,0 +1,51 @@
+diff --git a/src/main/java/org/reviewboard/rbjenkins/common/ReviewBoardUtils.java b/src/main/java/org/reviewboard/rbjenkins/common/ReviewBoardUtils.java
+index 2c970f6..e76d474 100644
+--- a/src/main/java/org/reviewboard/rbjenkins/common/ReviewBoardUtils.java
++++ b/src/main/java/org/reviewboard/rbjenkins/common/ReviewBoardUtils.java
+@@ -115,8 +115,9 @@ public class ReviewBoardUtils {
+ 
+         final String token = String.format(
+             "token %s", serverConfig.getReviewBoardAPIToken());
+-        final URL serverUrl = new URL(
+-            new URL(serverConfig.getReviewBoardURL()), path);
++        final URL serverBaseUrl = new URL(serverConfig.getReviewBoardURL());
++        final String fullPath = (serverBaseUrl.getPath() + path).replace("//","/");  
++        final URL serverUrl = new URL(serverBaseUrl,fullPath);
+         final HttpURLConnection conn =
+             (HttpURLConnection)serverUrl.openConnection();
+         conn.setRequestMethod("PUT");
+diff --git a/src/main/java/org/reviewboard/rbjenkins/steps/ReviewBoardSetup.java b/src/main/java/org/reviewboard/rbjenkins/steps/ReviewBoardSetup.java
+index f484995..f6cb726 100644
+--- a/src/main/java/org/reviewboard/rbjenkins/steps/ReviewBoardSetup.java
++++ b/src/main/java/org/reviewboard/rbjenkins/steps/ReviewBoardSetup.java
+@@ -30,7 +30,7 @@ import org.reviewboard.rbjenkins.config.ReviewBoardServerConfiguration;
+ public class ReviewBoardSetup extends Builder implements SimpleBuildStep {
+     private static final String RBT_INSTALL = "pip install --user rbtools";
+     private static final String RBT_COMMAND =
+-        "rbt patch --api-token %s --server %s --diff-revision %d %s %d";
++        "rbt patch --api-token %s --server %s --diff-revision %d %s%d";
+ 
+     private boolean downloadOnly = false;
+     private boolean installRBTools = true;
+@@ -113,7 +113,7 @@ public class ReviewBoardSetup extends Builder implements SimpleBuildStep {
+ 
+         String downloadOnlyFile = "";
+         if (downloadOnly) {
+-            downloadOnlyFile = "--write patch.diff";
++            downloadOnlyFile = "--write patch.diff ";
+         }
+ 
+         // Construct commands to install and use rbtools.
+diff --git a/src/test/java/org/reviewboard/rbjenkins/steps/ReviewBoardSetupTest.java b/src/test/java/org/reviewboard/rbjenkins/steps/ReviewBoardSetupTest.java
+index 18fb99e..6220487 100644
+--- a/src/test/java/org/reviewboard/rbjenkins/steps/ReviewBoardSetupTest.java
++++ b/src/test/java/org/reviewboard/rbjenkins/steps/ReviewBoardSetupTest.java
+@@ -133,7 +133,7 @@ public class ReviewBoardSetupTest {
+         final String[] commands = {
+             "pip install --user rbtools",
+             String.format("rbt patch --api-token %s --server %s " +
+-                          "--diff-revision %s  %s",
++                          "--diff-revision %s %s",
+                           "UNKNOWN",
+                           REVIEWBOARD_URL,
+                           DIFF_REVISION,

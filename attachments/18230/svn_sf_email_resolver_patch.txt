@@ -1,0 +1,17 @@
+Index: main/core/src/main/java/hudson/tasks/MailAddressResolver.java
+===================================================================
+--- main/core/src/main/java/hudson/tasks/MailAddressResolver.java	(revision 10472)
++++ main/core/src/main/java/hudson/tasks/MailAddressResolver.java	(working copy)
+@@ -165,9 +165,11 @@
+             }
+ 
+             {// source forge
++                Pattern svnUrl = Pattern.compile("(http|https)://[^.]+.svn.(sourceforge|sf).net/svnroot/([^/]+)(/.*)?");
+                 Pattern cvsUrl = Pattern.compile(":(pserver|ext):([^@]+)@([^.]+).cvs.(sourceforge|sf).net:.+");
++
++                RULE_TABLE.put(svnUrl,"@users.sourceforge.net");
+                 RULE_TABLE.put(cvsUrl,"@users.sourceforge.net");
+-                // SVN URL?
+             }
+ 
+             // TODO: read some file under $HUDSON_HOME?

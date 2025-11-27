@@ -1,0 +1,209 @@
+Index: main/java/hudson/plugins/emailext/EmailType.java
+===================================================================
+--- main/java/hudson/plugins/emailext/EmailType.java	(revision 36824)
++++ main/java/hudson/plugins/emailext/EmailType.java	(working copy)
+@@ -35,6 +35,12 @@
+ 	private boolean includeCulprits;
+ 	
+ 	/**
++	 * Specifies whether or not we should allow duplicate emails to be sent
++	 * to the same email address.
++	 */
++	private boolean noDuplicates;
++	
++	/**
+ 	 * A comma-separated list of names of the recipientLists
+ 	 * that we should send emails to.
+ 	 */
+@@ -47,6 +53,7 @@
+ 		sendToDevelopers = false;
+ 		includeCulprits = false;
+ 		sendToRecipientList = false;
++		noDuplicates = false;
+ 	}
+ 	
+ 	public String getSubject() {
+@@ -81,6 +88,14 @@
+ 		this.includeCulprits = includeCulprits;
+ 	}
+ 	
++	public boolean getNoDuplicates() {
++		return noDuplicates;
++	}
++	
++	public void setNoDuplicates(boolean noDuplicates) {
++		this.noDuplicates = noDuplicates;
++	}
++	
+ 	public boolean getSendToRecipientList() {
+ 		return sendToRecipientList;
+ 	}
+Index: main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java
+===================================================================
+--- main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java	(revision 36824)
++++ main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java	(working copy)
+@@ -260,7 +260,7 @@
+ 		// Get the recipients from the global list of addresses
+ 		List<InternetAddress> recipientAddresses = new ArrayList<InternetAddress>();
+ 		if (type.getSendToRecipientList()) {
+-            addAddressesFromRecipientList(recipientAddresses, recipientList, env, listener);
++            addAddressesFromRecipientList(recipientAddresses, recipientList, env, listener, type.getNoDuplicates());
+ 		}
+ 		// Get the list of developers who made changes between this build and the last
+ 		// if this mail type is configured that way
+@@ -277,7 +277,7 @@
+ 			for (User user : users) {
+ 				String adrs = user.getProperty(Mailer.UserProperty.class).getAddress();
+ 				if (adrs != null)
+-					addAddressesFromRecipientList(recipientAddresses, adrs, env, listener);
++					addAddressesFromRecipientList(recipientAddresses, adrs, env, listener, type.getNoDuplicates());
+ 				else {
+ 					listener.getLogger().println("Failed to send e-mail to " + user.getFullName() + " because no e-mail address is known, and no default e-mail domain is configured");
+ 				}
+@@ -285,7 +285,7 @@
+ 		}
+ 		//Get the list of recipients that are uniquely specified for this type of email
+ 		if (type.getRecipientList() != null && type.getRecipientList().trim().length() > 0) {
+-            addAddressesFromRecipientList( recipientAddresses, type.getRecipientList(), env, listener );
++            addAddressesFromRecipientList( recipientAddresses, type.getRecipientList(), env, listener, type.getNoDuplicates());
+ 		}
+ 
+ 		msg.setRecipients(Message.RecipientType.TO, recipientAddresses.toArray(new InternetAddress[recipientAddresses.size()]));
+@@ -331,15 +331,23 @@
+     }
+ 
+     private static void addAddressesFromRecipientList(List<InternetAddress> addresses, String recipientList,
+-                                                      EnvVars envVars, BuildListener listener) {
++                                                      EnvVars envVars, BuildListener listener, boolean noDuplicates) {
+         try {
+             List<InternetAddress> internetAddresses = new EmailRecepientUtils().convertRecipientString( recipientList, envVars );
+-			addresses.addAll(internetAddresses);
+-		} catch(AddressException ae) {
+-			LOGGER.log(Level.WARNING, "Could not create email address.", ae);
+-			listener.getLogger().println("Failed to create e-mail address for " + ae.getRef());
+-		}
+-	}
++            if (noDuplicates) {
++                for (InternetAddress internetAddress : internetAddresses) {
++                    if (!addresses.contains(internetAddress))
++                        addresses.add(internetAddress);
++                }
++            }
++            else {
++            	addresses.addAll(internetAddresses);
++            }
++        } catch(AddressException ae) {
++            LOGGER.log(Level.WARNING, "Could not create email address.", ae);
++            listener.getLogger().println("Failed to create e-mail address for " + ae.getRef());
++        }
++    }
+ 
+ 	@Override
+ 	public boolean needsToRunAfterFinalized() {
+Index: main/java/hudson/plugins/emailext/EmailRecepientUtils.java
+===================================================================
+--- main/java/hudson/plugins/emailext/EmailRecepientUtils.java	(revision 36824)
++++ main/java/hudson/plugins/emailext/EmailRecepientUtils.java	(working copy)
+@@ -26,7 +26,9 @@
+         final String[] addresses = StringUtils.trim( expandedRecipientList ).split( COMMA_SEPARATED_SPLIT_REGEXP );
+         for ( String address : addresses )
+         {
+-            internetAddresses.add( new InternetAddress( address ) );
++        	InternetAddress internetAddress = new InternetAddress(address);
++        	if (!internetAddresses.contains(internetAddress))
++               internetAddresses.add(internetAddress);
+         }
+ 
+         return internetAddresses;
+Index: main/java/hudson/plugins/emailext/ExtendedEmailPublisherDescriptor.java
+===================================================================
+--- main/java/hudson/plugins/emailext/ExtendedEmailPublisherDescriptor.java	(revision 36824)
++++ main/java/hudson/plugins/emailext/ExtendedEmailPublisherDescriptor.java	(working copy)
+@@ -258,6 +258,7 @@
+         m.setSendToRecipientList( formData.optBoolean( prefix + "sendToRecipientList" ) );
+         m.setSendToDevelopers( formData.optBoolean( prefix + "sendToDevelopers" ) );
+         m.setIncludeCulprits( formData.optBoolean( prefix + "includeCulprits" ) );
++        m.setNoDuplicates( formData.optBoolean( prefix + "noDuplicates" ) );
+         return m;
+     }
+ 
+Index: main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly
+===================================================================
+--- main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly	(revision 36824)
++++ main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly	(working copy)
+@@ -113,6 +113,9 @@
+    							<div style="font-weight:bold">Include Culprits</div>
+    						</td>
+    						<td>
++   							<div style="font-weight:bold">No Duplicates</div>
++   						</td>
++   						<td>
+    							<div style="font-weight:bold">More Configuration</div>
+    						</td>
+    						<td>
+@@ -140,6 +143,7 @@
+ 					     				sendToList="${trigger.defaultSendToList}" 
+ 					     				sendToDevs="${trigger.defaultSendToDevs}" 
+ 					     				includeCulps="${trigger.defaultIncludeCulps}"
++					     				noDups="${trigger.defaultNoDups}"
+ 					     				trigger="${trigger}"
+ 					     				configured="${true}"
+ 					     				secId="${secId}">
+@@ -199,6 +203,7 @@
+ 						     				sendToList="${trigger.defaultSendToList}" 
+ 						     				sendToDevs="${trigger.defaultSendToDevs}" 
+ 						     				includeCulps="${trigger.defaultIncludeCulps}"
++						     				noDups="${trigger.defaultNoDups}"
+ 						     				trigger="${trigger}"
+ 						     				configured="${false}"
+ 						     				secId="${secId}">
+Index: main/resources/hudson/plugins/emailext/tags/mailtype.jelly
+===================================================================
+--- main/resources/hudson/plugins/emailext/tags/mailtype.jelly	(revision 36824)
++++ main/resources/hudson/plugins/emailext/tags/mailtype.jelly	(working copy)
+@@ -7,6 +7,7 @@
+ 	<%@attribute name="sendToList" required="true" %>
+ 	<%@attribute name="sendToDevs" required="true" %>
+ 	<%@attribute name="includeCulps" required="true" %>
++	<%@attribute name="noDups" required="true" %>
+ 	<%@attribute name="configured" required="true" %>
+ 	<%@attribute name="secId" required="true" %>
+ -->
+@@ -51,6 +52,11 @@
+ 						name="mailer_${mailType}_includeCulprits"
+ 						checked="${includeCulps}" />
+ 				</td>
++				<td>
++					<f:checkbox
++						name="mailer_${mailType}_noDuplicates"
++						checked="${noDups}" />
++				</td>
+ 			</j:when>
+ 			<j:otherwise>
+ 				<td>
+@@ -68,6 +74,11 @@
+ 						name="mailer_${mailType}_includeCulprits"
+ 						checked="${mailTypeObj.includeCulprits}" />
+ 				</td>
++				<td>
++					<f:checkbox
++						name="mailer_${mailType}_noDuplicates"
++						checked="${mailTypeObj.noDuplicates}" />
++				</td>
+ 			</j:otherwise>
+ 		</j:choose>
+ 		<td>
+Index: main/webapp/help/projectConfig/advancedFeatures.html
+===================================================================
+--- main/webapp/help/projectConfig/advancedFeatures.html	(revision 36824)
++++ main/webapp/help/projectConfig/advancedFeatures.html	(working copy)
+@@ -15,6 +15,9 @@
+ 	is checked, emails will include everyone who committed since
+ 	the last successful build.</p>
+ 	
++	<p><b>No Duplicates - </b>Prevents duplicate emails from being sent to
++	the same recipient.</p>
++	
+ 	<p><b>More Configuration - </b>You can change more settings for each
+ 	email trigger by clicking on the "+(expand)" link.</p>
+ 	

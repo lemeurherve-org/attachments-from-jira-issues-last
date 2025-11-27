@@ -1,0 +1,12 @@
+Index: ProxyOutputStream.java
+===================================================================
+--- ProxyOutputStream.java	(revision 17484)
++++ ProxyOutputStream.java	(working copy)
+@@ -109,6 +109,7 @@
+                 tmp = new ByteArrayOutputStream();
+             tmp.write(b);
+         } else {
++        	System.err.println("channel write nr of bytes: " + b.length);
+             channel.send(new Chunk(oid,b));
+         }
+     }

@@ -1,0 +1,53 @@
+SOURCE:
+@NonCPS
+void commentJiraIssues2() {
+	echo "commentJiraIssues2"
+	echo "ping 00"
+	
+    def response1 = jiraAddComment( 
+	            		idOrKey: "OG-4807",
+	            		site: "iwjira",
+	            		comment: "[JENKINS-PIPELINE]\n"+
+	            				"Current Build:  "+ currentBuild.absoluteUrl+"\n"+
+	            				"Git Commit ID:  ${env.GITREPO_HOST_URL}/scm/#changesetPanel;${env.GITREPO_BRANCH};"+"XXX"+"\n"+
+	            				"Commit Message: "+"FOO1"+"\n"+
+	            		  		"Author:         "+"AUTHOR1"+"\n"+
+	            		  		"Timestamp:      "+0+" UTC\n"+
+	            		  		"Files:          "+"STUB",
+			              failOnError: false,
+			              auditLog: false
+	            )
+	
+	echo "ping 10"
+	
+    def response2 = jiraAddComment( 
+	            		idOrKey: "OG-4807",
+	            		site: "iwjira",
+	            		comment: "[JENKINS-PIPELINE]\n"+
+	            				"Current Build:  "+ currentBuild.absoluteUrl+"\n"+
+	            				"Git Commit ID:  ${env.GITREPO_HOST_URL}/scm/#changesetPanel;${env.GITREPO_BRANCH};"+"YYY"+"\n"+
+	            				"Commit Message: "+"FOO2"+"\n"+
+	            		  		"Author:         "+"AUTHOR2"+"\n"+
+	            		  		"Timestamp:      "+0+" UTC\n"+
+	            		  		"Files:          "+"STUB",
+			              failOnError: false,
+			              auditLog: false
+	            )
+	            
+	echo "ping 20"
+	
+}
+
+
+OUTPUT:
+[2019-02-27T16:08:16.476Z] Update Jira
+[2019-02-27T16:08:16.483Z] commentJiraIssues2
+[2019-02-27T16:08:16.488Z] ping 00
+[2019-02-27T16:08:16.507Z] JIRA: Site - iwjira - Add new comment: [JENKINS-PIPELINE]
+[2019-02-27T16:08:16.507Z] Current Build:  http://omnibld0.ibi.com:8080/job/omni-pipeline/job/develop/109/
+[2019-02-27T16:08:16.507Z] Git Commit ID:  http://omnibld0.ibi.com:8082/scm/#changesetPanel;E0RIJG2bEe;XXX
+[2019-02-27T16:08:16.507Z] Commit Message: FOO1
+[2019-02-27T16:08:16.507Z] Author:         AUTHOR1
+[2019-02-27T16:08:16.507Z] Timestamp:      0 UTC
+[2019-02-27T16:08:16.507Z] Files:          STUB on issue: OG-4807
+[2019-02-27T16:08:16.682Z] Successful. Code: 201

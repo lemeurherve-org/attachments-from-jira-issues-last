@@ -1,0 +1,98 @@
+<project>
+    <actions></actions>
+    <description>OSMF</description>
+    <keepDependencies>false</keepDependencies>
+    <properties></properties>
+    <canRoam>false</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers class='vector'>
+        <hudson.triggers.SCMTrigger>
+            <spec>H/10 * * * *</spec>
+            <ignorePostCommitHooks>false</ignorePostCommitHooks>
+        </hudson.triggers.SCMTrigger>
+    </triggers>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <hudson.tasks.Shell>
+            <command>cd ./OSMF; mvn clean</command>
+        </hudson.tasks.Shell>
+        <hudson.tasks.Shell>
+            <command>cd ./OSMF; mvn generate-resources</command>
+        </hudson.tasks.Shell>
+        <hudson.tasks.Shell>
+            <command>cd ./OSMF; mvn install -P nonforge</command>
+        </hudson.tasks.Shell>
+    </builders>
+    <publishers>
+        <hudson.tasks.BuildTrigger>
+            <childProjects>BBCMediaPlayback</childProjects>
+            <threshold>
+                <name>SUCCESS</name>
+                <ordinal>0</ordinal>
+                <color>BLUE</color>
+            </threshold>
+        </hudson.tasks.BuildTrigger>
+        <hudson.plugins.emailext.ExtendedEmailPublisher>
+            <recipientList>$DEFAULT_RECIPIENTS, anthony.green@bbc.co.uk</recipientList>
+            <contentType>text</contentType>
+            <defaultSubject>$DEFAULT_SUBJECT</defaultSubject>
+            <defaultContent>$DEFAULT_CONTENT</defaultContent>
+            <attachmentsPattern></attachmentsPattern>
+            <configuredTriggers>
+                <hudson.plugins.emailext.plugins.trigger.SuccessTrigger>
+                    <email>
+                        <recipientList></recipientList>
+                        <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+                        <body>$PROJECT_DEFAULT_CONTENT</body>
+                        <sendToDevelopers>false</sendToDevelopers>
+                        <sendToRequester>false</sendToRequester>
+                        <includeCulprits>false</includeCulprits>
+                        <sendToRecipientList>true</sendToRecipientList>
+                    </email>
+                </hudson.plugins.emailext.plugins.trigger.SuccessTrigger>
+                <hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+                    <email>
+                        <recipientList></recipientList>
+                        <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+                        <body>$PROJECT_DEFAULT_CONTENT</body>
+                        <sendToDevelopers>false</sendToDevelopers>
+                        <sendToRequester>false</sendToRequester>
+                        <includeCulprits>false</includeCulprits>
+                        <sendToRecipientList>true</sendToRecipientList>
+                    </email>
+                </hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+                <hudson.plugins.emailext.plugins.trigger.FixedTrigger>
+                    <email>
+                        <recipientList></recipientList>
+                        <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+                        <body>$PROJECT_DEFAULT_CONTENT</body>
+                        <sendToDevelopers>false</sendToDevelopers>
+                        <sendToRequester>false</sendToRequester>
+                        <includeCulprits>false</includeCulprits>
+                        <sendToRecipientList>true</sendToRecipientList>
+                    </email>
+                </hudson.plugins.emailext.plugins.trigger.FixedTrigger>
+            </configuredTriggers>
+        </hudson.plugins.emailext.ExtendedEmailPublisher>
+    </publishers>
+    <buildWrappers></buildWrappers>
+    <assignedNode>osx-slave</assignedNode>
+    <scm class='hudson.scm.SubversionSCM'>
+        <locations>
+            <hudson.scm.SubversionSCM_-ModuleLocation>
+                <remote>https://repo.dev.bbc.co.uk/playout/osmf/OSMF2.0-110614/framework/</remote>
+                <credentialsId>forge-certificate</credentialsId>
+                <local>.</local>
+                <depthOption>infinity</depthOption>
+            </hudson.scm.SubversionSCM_-ModuleLocation>
+        </locations>
+        <workspaceUpdater class='hudson.scm.subversion.UpdateUpdater'></workspaceUpdater>
+        <excludedRegions></excludedRegions>
+        <includedRegions></includedRegions>
+        <excludedUsers></excludedUsers>
+        <excludedCommitMessages></excludedCommitMessages>
+        <excludedRevprop></excludedRevprop>
+    </scm>
+</project>

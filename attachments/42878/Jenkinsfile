@@ -1,0 +1,25 @@
+pipeline {
+    agent {
+        label "pipeline"
+    }
+
+    stages {
+        stage("Compile") {
+            parallel {
+                stage("Code") {
+                    agent {
+                        label "pipeline"
+                    }
+                    steps {
+                        input message: "STAGE_NAME is ${STAGE_NAME} @ ${NODE_NAME} -- Compile:Code"
+                    }
+                }
+                stage("Frontend") {
+                    steps {
+                        input message: "STAGE_NAME is ${STAGE_NAME} @ ${NODE_NAME} -- Compile:Frontend"
+                    }
+                }
+            }
+        }
+    }
+}

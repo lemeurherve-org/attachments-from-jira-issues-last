@@ -1,0 +1,96 @@
+*** config.xml extract ***
+<org.jenkinsci.plugins.cppcheck.CppcheckPublisher plugin="cppcheck@1.18">
+    <cppcheckConfig>
+        <pattern>cppcheck-result.xml</pattern>
+        <ignoreBlankFiles>false</ignoreBlankFiles>
+        <allowNoReport>true</allowNoReport>
+        <configSeverityEvaluation>
+            <threshold/>
+            <newThreshold/>
+            <failureThreshold/>
+            <newFailureThreshold/>
+            <healthy/>
+            <unHealthy/>
+            <severityError>true</severityError>
+            <severityWarning>true</severityWarning>
+            <severityStyle>true</severityStyle>
+            <severityPerformance>true</severityPerformance>
+            <severityInformation>true</severityInformation>
+            <severityNoCategory>true</severityNoCategory>
+            <severityPortability>true</severityPortability>
+        </configSeverityEvaluation>
+        <configGraph>
+            <xSize>500</xSize>
+            <ySize>200</ySize>
+            <displayAllErrors>true</displayAllErrors>
+            <displayErrorSeverity>false</displayErrorSeverity>
+            <displayWarningSeverity>false</displayWarningSeverity>
+            <displayStyleSeverity>false</displayStyleSeverity>
+            <displayPerformanceSeverity>false</displayPerformanceSeverity>
+            <displayInformationSeverity>false</displayInformationSeverity>
+            <displayNoCategorySeverity>false</displayNoCategorySeverity>
+            <displayPortabilitySeverity>false</displayPortabilitySeverity>
+        </configGraph>
+    </cppcheckConfig>
+</org.jenkinsci.plugins.cppcheck.CppcheckPublisher>
+
+*** build.xml extract ***
+<org.jenkinsci.plugins.cppcheck.CppcheckBuildAction plugin="cppcheck@1.18">
+    <owner class="build" reference="../../.."/>
+    <result>
+        <owner class="build" reference="../../../.."/>
+        <statistics>
+            <errorCount>1</errorCount>
+            <warningCount>0</warningCount>
+            <styleCount>152</styleCount>
+            <performanceCount>0</performanceCount>
+            <informationCount>0</informationCount>
+            <noCategoryCount>149</noCategoryCount>
+            <portabilityCount>0</portabilityCount>
+        </statistics>
+    </result>
+    <healthReportPercentage>-1</healthReportPercentage>
+</org.jenkinsci.plugins.cppcheck.CppcheckBuildAction>
+
+*** cppcheck_details.xml extract ***
+<org.jenkinsci.plugins.cppcheck.CppcheckSourceContainer plugin="cppcheck@1.18">
+  <internalMap>
+    ...
+    <entry>
+      <int>154</int>
+      <com.thalesgroup.hudson.plugins.cppcheck.model.CppcheckWorkspaceFile>
+        <fileName>filepath.cpp</fileName>
+        <cppcheckFile>
+          <key>154</key>
+          <fileName>filepath.cpp</fileName>
+          <lineNumber>72</lineNumber>
+          <severity>warning</severity>
+          <cppCheckId>unreadVariable</cppCheckId>
+          <message>Variable &apos;ret&apos; is assigned a value that is never used.</message>
+          <inconclusive>false</inconclusive>
+        </cppcheckFile>
+        <sourceIgnored>false</sourceIgnored>
+      </com.thalesgroup.hudson.plugins.cppcheck.model.CppcheckWorkspaceFile>
+    </entry>
+    <entry>
+      <int>155</int>
+      <com.thalesgroup.hudson.plugins.cppcheck.model.CppcheckWorkspaceFile>
+        <fileName>filepath.cpp</fileName>
+        <cppcheckFile>
+          <key>155</key>
+          <fileName>filepath.cpp</fileName>
+          <lineNumber>127</lineNumber>
+          <severity>performance</severity>
+          <cppCheckId>postfixOperator</cppCheckId>
+          <message>Prefer prefix ++/-- operators for non-primitive types.</message>
+          <inconclusive>false</inconclusive>
+        </cppcheckFile>
+        <sourceIgnored>false</sourceIgnored>
+      </com.thalesgroup.hudson.plugins.cppcheck.model.CppcheckWorkspaceFile>
+    </entry>
+    
+*** cppcheck_result.xml extract ***
+<results>
+  ...
+<error file="filepath.cpp" line="72" id="unreadVariable" severity="warning" msg="Variable 'ret' is assigned a value that is never used."/>
+<error file="filepath.cpp" line="127" id="postfixOperator" severity="performance" msg="Prefer prefix ++/-- operators for non-primitive types."/>

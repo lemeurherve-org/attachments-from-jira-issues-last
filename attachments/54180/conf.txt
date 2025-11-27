@@ -1,0 +1,24 @@
+timestamps {
+    try{
+        stage('Build') {
+            def rhj = build job: 'pg5'
+              def tasks = [:]
+              tasks["T1"] = { build job: 'pg3' }
+              tasks["T2"] = { build job: 'pg4' }
+              parallel tasks        
+        }
+        stage('Sanity') {
+            build job: 'pg5'
+            if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
+            	build job: 'pg5',propagate: false
+            }
+        }
+        stage('Notify') {
+            emailext body: '${JOB_NAME} has finished ${BUILD_URL}', replyTo: 'xxxxx', subject: '${JOB_NAME} has finished', to: 'xxxxx'
+        }
+    } catch (err) {
+        echo "Caught: ${err}"
+        currentBuild.result = 'FAILURE'
+        emailext attachLog: true, body: '${JOB_NAME} Build has failed ${BUILD_URL}', replyTo: 'xxxx', subject: 'test', to: 'xxxxx'
+    }    
+}

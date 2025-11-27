@@ -1,0 +1,65 @@
+ [Pipeline] Start of Pipeline
+ [Pipeline] node
+ Running on Jenkins in /var/lib/jenkins/workspace/test-pipeline
+   <...>
+ [Pipeline] withEnv
+ [Pipeline] {
+ [Pipeline] stage
+ [Pipeline] { (Build)
+ [Pipeline] withCredentials
+ Masking only exact matches of $SSH_KEY_PATH or $SSH_KEY_PATH_PSW or $SSH_KEY_PATH_USR
+ [Pipeline] {
+ [Pipeline] sh
+ + cat ****
+ [Pipeline] withEnv
+ [Pipeline] {
+ [Pipeline] echo
+ Building Docker image
+ [Pipeline] script
+ [Pipeline] {
+ [Pipeline] sh
+ + docker build -t jenkins.onprem:5000/test --build-arg SSH_KEY .
+ Sending build context to Docker daemon  357.9kB
+
+ Step 1/21 : FROM golang:1.12-alpine as builder
+  ---> b97a72b8e97d
+   <...>
+ Step 5/21 : RUN mkdir /root/.ssh
+  ---> Using cache
+  ---> 887df674871a
+ Step 6/21 : ARG SSH_KEY
+  ---> Using cache
+  ---> 03c487d37178
+ Step 7/21 : RUN echo "${SSH_KEY}" > /root/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa
+  ---> Using cache
+  ---> 064bce91848f
+   <...>
+ Successfully built fe30688551a0
+ Successfully tagged jenkins.arenko:5000/ffr-exporter:latest
+ [Pipeline] dockerFingerprintFrom
+ [Pipeline] }
+ [Pipeline] // script
+ [Pipeline] }
+ [Pipeline] // withEnv
+ [Pipeline] }
+ [Pipeline] // withCredentials
+ [Pipeline] }
+ [Pipeline] // stage
+ [Pipeline] }
+ [Pipeline] // withEnv
+ [Pipeline] }
+ [Pipeline] // node
+ [Pipeline] End of Pipeline
+ java.lang.IllegalArgumentException: Illegal syntax for --build-arg SSH_KEY, need KEY=VALUE
+ 	at org.jenkinsci.plugins.docker.workflow.DockerUtils.parseBuildArgs(DockerUtils.java:55)
+ 	at org.jenkinsci.plugins.docker.workflow.FromFingerprintStep$Execution.run(FromFingerprintStep.java:99)
+ 	at org.jenkinsci.plugins.docker.workflow.FromFingerprintStep$Execution.run(FromFingerprintStep.java:84)
+ 	at org.jenkinsci.plugins.workflow.steps.AbstractSynchronousNonBlockingStepExecution$1$1.call(AbstractSynchronousNonBlockingStepExecution.java:47)
+ 	at hudson.security.ACL.impersonate(ACL.java:290)
+ 	at org.jenkinsci.plugins.workflow.steps.AbstractSynchronousNonBlockingStepExecution$1.run(AbstractSynchronousNonBlockingStepExecution.java:44)
+ 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+ 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+ 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+ 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+ 	at java.lang.Thread.run(Thread.java:748)
+ Finished: FAILURE

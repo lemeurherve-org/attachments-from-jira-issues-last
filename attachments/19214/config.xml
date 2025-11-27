@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator>
+    <daysToKeep>30</daysToKeep>
+    <numToKeep>-1</numToKeep>
+  </logRotator>
+  <keepDependencies>true</keepDependencies>
+  <properties>
+    <hudson.plugins.descriptionsetter.JobByDescription/>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://192.168.1.3/svn/apps/branches/dev-4.0.x_alpha</remote>
+        <local>root</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <useUpdate>false</useUpdate>
+    <doRevert>false</doRevert>
+    <excludedRegions></excludedRegions>
+    <excludedUsers>ccb</excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+  </scm>
+  <assignedNode>winbuild</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>*/15 * * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>cd %WORKSPACE%\root&#xd;
+nant win32-vs2005</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers>
+    <hudson.plugins.warnings.WarningsPublisher>
+      <threshold></threshold>
+      <newThreshold></newThreshold>
+      <failureThreshold></failureThreshold>
+      <newFailureThreshold></newFailureThreshold>
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <pluginName>[WARNINGS] </pluginName>
+      <thresholdLimit>low</thresholdLimit>
+      <defaultEncoding></defaultEncoding>
+      <pattern></pattern>
+      <parserNames/>
+      <canRunOnFailed>false</canRunOnFailed>
+      <ignoreConsole>false</ignoreConsole>
+    </hudson.plugins.warnings.WarningsPublisher>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>root/artifacts/**</artifacts>
+      <latestOnly>false</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>root/code/**/test_detail.xml</testResults>
+      <testDataPublishers/>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.tasks.Fingerprinter>
+      <targets>root/artifacts/**</targets>
+      <recordBuildArtifacts>true</recordBuildArtifacts>
+    </hudson.tasks.Fingerprinter>
+    <hudson.plugins.doclinks.DocLinksPublisher>
+      <documents>
+        <hudson.plugins.doclinks.Document>
+          <title>API Doxygen</title>
+          <directory>root/code/api/doxygen/html</directory>
+          <id>1</id>
+        </hudson.plugins.doclinks.Document>
+        <hudson.plugins.doclinks.Document>
+          <title>Security Doxygen</title>
+          <directory>root/code/security/doxygen/html</directory>
+          <id>2</id>
+        </hudson.plugins.doclinks.Document>
+        <hudson.plugins.doclinks.Document>
+          <title>API CodeScanner</title>
+          <directory>root/code/api/codescanner</directory>
+          <file>componentIndex.html</file>
+          <id>3</id>
+        </hudson.plugins.doclinks.Document>
+        <hudson.plugins.doclinks.Document>
+          <title>Security CodeScanner</title>
+          <directory>root/code/security/codescanner</directory>
+          <file>componentIndex.html</file>
+          <id>4</id>
+        </hudson.plugins.doclinks.Document>
+        <hudson.plugins.doclinks.Document>
+          <title>API CPPNCSS</title>
+          <directory>root/code/api</directory>
+          <file>cppncss.html</file>
+          <id>5</id>
+        </hudson.plugins.doclinks.Document>
+        <hudson.plugins.doclinks.Document>
+          <title>Security CPPNCSS</title>
+          <directory>root/code/security</directory>
+          <file>cppncss.html</file>
+          <id>6</id>
+        </hudson.plugins.doclinks.Document>
+      </documents>
+    </hudson.plugins.doclinks.DocLinksPublisher>
+    <hudson.plugins.cppncss.CppNCSSPublisher>
+      <reportFilenamePattern>root/code/**/cppncss.xml</reportFilenamePattern>
+      <functionCcnViolationThreshold>5</functionCcnViolationThreshold>
+      <functionNcssViolationThreshold>10</functionNcssViolationThreshold>
+      <targets>
+        <hudson.plugins.cppncss.CppNCSSHealthTarget>
+          <metric class="hudson.plugins.cppncss.CppNCSSHealthMetrics">AVG_FILE_CCN_RATIO</metric>
+          <healthy>4.0</healthy>
+          <unhealthy>6.0</unhealthy>
+          <unstable>19.0</unstable>
+          <fail>21.0</fail>
+          <failNew>1.0</failNew>
+        </hudson.plugins.cppncss.CppNCSSHealthTarget>
+        <hudson.plugins.cppncss.CppNCSSHealthTarget>
+          <metric class="hudson.plugins.cppncss.CppNCSSHealthMetrics">NUMBER_OF_CCN_VIOLATED_FUNCTION</metric>
+          <healthy>5.0</healthy>
+          <unhealthy>10.0</unhealthy>
+          <unstable>20.0</unstable>
+          <fail>30.0</fail>
+          <failNew>1.0</failNew>
+        </hudson.plugins.cppncss.CppNCSSHealthTarget>
+      </targets>
+    </hudson.plugins.cppncss.CppNCSSPublisher>
+    <hudson.plugins.emailext.ExtendedEmailPublisher>
+      <recipientList>releaseteam@acme.com</recipientList>
+      <configuredTriggers>
+        <hudson.plugins.emailext.plugins.trigger.UnstableTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT&#xd;
+&#xd;
+&#xd;
+${FAILED_TESTS}</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>true</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.UnstableTrigger>
+        <hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT&#xd;
+&#xd;
+&#xd;
+$CHANGES_SINCE_LAST_SUCCESS&#xd;
+&#xd;
+&#xd;
+$BUILD_LOG</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>true</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+        <hudson.plugins.emailext.plugins.trigger.StillFailingTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT&#xd;
+&#xd;
+&#xd;
+$CHANGES_SINCE_LAST_SUCCESS&#xd;
+&#xd;
+&#xd;
+$BUILD_LOG</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>true</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.StillFailingTrigger>
+        <hudson.plugins.emailext.plugins.trigger.FixedTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>true</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.FixedTrigger>
+        <hudson.plugins.emailext.plugins.trigger.StillUnstableTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT&#xd;
+&#xd;
+&#xd;
+${FAILED_TESTS}</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>true</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.StillUnstableTrigger>
+      </configuredTriggers>
+      <contentType>default</contentType>
+      <defaultSubject>$DEFAULT_SUBJECT</defaultSubject>
+      <defaultContent>$DEFAULT_CONTENT</defaultContent>
+    </hudson.plugins.emailext.ExtendedEmailPublisher>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.release.ReleaseWrapper>
+      <releaseVersionTemplate>Release: ${build_state}&lt;br/&gt;API  - ${api_version}&lt;br/&gt;Security - ${security_version}&lt;br/&gt;CL - ${cl_version}&lt;br/&gt;EVK - ${evk_version}&lt;br/&gt;MSL - ${msl_version}&lt;br/&gt;IntApp - ${intapp_version}&lt;br/&gt;SDK - ${sdk_version}</releaseVersionTemplate>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>build_state</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Alpha</string>
+              <string>Beta</string>
+              <string>Release Candidate</string>
+              <string>Commercial Release</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>api_version</name>
+          <description></description>
+          <defaultValue>4.0.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>security_version</name>
+          <description></description>
+          <defaultValue>4.0.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>cl_version</name>
+          <description></description>
+          <defaultValue>4.0.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>evk_version</name>
+          <description></description>
+          <defaultValue>4.0.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>msl_version</name>
+          <description></description>
+          <defaultValue>4.0.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>intapp_version</name>
+          <description></description>
+          <defaultValue>4.0.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>sdk_version</name>
+          <description></description>
+          <defaultValue>4.0.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+      <preBuildSteps/>
+      <postBuildSteps/>
+    </hudson.plugins.release.ReleaseWrapper>
+  </buildWrappers>
+</project>

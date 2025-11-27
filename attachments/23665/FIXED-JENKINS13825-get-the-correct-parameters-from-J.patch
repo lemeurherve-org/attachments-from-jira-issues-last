@@ -1,0 +1,17 @@
+diff --git a/src/main/java/net/hurstfrost/hudson/sounds/HudsonSoundsNotifier.java b/src/main/java/net/hurstfrost/hudson/sounds/HudsonSoundsNotifier.java
+index 205bc6a..1a6005d 100644
+--- a/src/main/java/net/hurstfrost/hudson/sounds/HudsonSoundsNotifier.java
++++ b/src/main/java/net/hurstfrost/hudson/sounds/HudsonSoundsNotifier.java
+@@ -349,9 +349,10 @@
+ 				} catch (Exception e) {
+ 					Log.debug("Exception setting play method", e);
+ 				}
++				// JENKINS-13825 
++				setSystemCommand(playMethod.optString("systemCommand"));
++				setPipeTimeoutSecs(playMethod.optInt("pipeTimeoutSecs"));
+ 			}
+-			setSystemCommand(json.optString("systemCommand"));
+-			setPipeTimeoutSecs(json.optInt("pipeTimeoutSecs"));
+ 			save();
+ 			return true;
+ 		}

@@ -1,0 +1,53 @@
+Looking for the test results of TestLink test cases.
+
+FATAL: java.io.IOException: remote file operation failed: <project path> at hudson.remoting.Channel@582aac28:<node>: java.io.IOException: Failed to deserialize response to UserRequest:hudson.plugins.testlink.result.AbstractTAPFileNameResultSeeker$1@5fe248b4: java.lang.SecurityException: Rejected: org.tap4j.model.TestSet; see https://jenkins.io/redirect/class-filter/
+hudson.plugins.testlink.result.ResultSeekerException: java.io.IOException: remote file operation failed: <project path> at hudson.remoting.Channel@582aac28:<node>: java.io.IOException: Failed to deserialize response to UserRequest:hudson.plugins.testlink.result.AbstractTAPFileNameResultSeeker$1@5fe248b4: java.lang.SecurityException: Rejected: org.tap4j.model.TestSet; see https://jenkins.io/redirect/class-filter/
+	at hudson.plugins.testlink.result.AbstractTAPFileNameResultSeeker.seek(AbstractTAPFileNameResultSeeker.java:155)
+	at hudson.plugins.testlink.result.TAPFileNameResultSeeker.seek(TAPFileNameResultSeeker.java:67)
+	at hudson.plugins.testlink.TestLinkBuilder.perform(TestLinkBuilder.java:260)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:744)
+	at hudson.model.Build$BuildExecution.build(Build.java:206)
+	at hudson.model.Build$BuildExecution.doRun(Build.java:163)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:504)
+	at hudson.model.Run.execute(Run.java:1727)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:97)
+	at hudson.model.Executor.run(Executor.java:429)
+Caused by: java.io.IOException: remote file operation failed: <project path> at hudson.remoting.Channel@582aac28:<node>: java.io.IOException: Failed to deserialize response to UserRequest:hudson.plugins.testlink.result.AbstractTAPFileNameResultSeeker$1@5fe248b4: java.lang.SecurityException: Rejected: org.tap4j.model.TestSet; see https://jenkins.io/redirect/class-filter/
+	at hudson.FilePath.act(FilePath.java:1005)
+	at hudson.FilePath.act(FilePath.java:987)
+	at hudson.plugins.testlink.result.AbstractTAPFileNameResultSeeker.seek(AbstractTAPFileNameResultSeeker.java:107)
+	... 11 more
+Caused by: java.io.IOException: Failed to deserialize response to UserRequest:hudson.plugins.testlink.result.AbstractTAPFileNameResultSeeker$1@5fe248b4: java.lang.SecurityException: Rejected: org.tap4j.model.TestSet; see https://jenkins.io/redirect/class-filter/
+	at hudson.remoting.Channel.call(Channel.java:960)
+	at hudson.FilePath.act(FilePath.java:998)
+	... 13 more
+Caused by: java.lang.SecurityException: Rejected: org.tap4j.model.TestSet; see https://jenkins.io/redirect/class-filter/
+	at hudson.remoting.ClassFilter.check(ClassFilter.java:76)
+	at hudson.remoting.MultiClassLoaderSerializer$Input.resolveClass(MultiClassLoaderSerializer.java:129)
+	at java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1859)
+	at java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1745)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2033)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1567)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:427)
+	at java.util.HashMap.readObject(HashMap.java:1409)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at java.io.ObjectStreamClass.invokeReadObject(ObjectStreamClass.java:1158)
+	at java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2169)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2060)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1567)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:427)
+	at hudson.remoting.UserRequest.deserialize(UserRequest.java:277)
+	at hudson.remoting.UserResponse.retrieve(UserRequest.java:310)
+	at hudson.remoting.Channel.call(Channel.java:952)
+	... 14 more
+ERROR: An error occured while trying to retrieve the test results: java.io.IOException: remote file operation failed: <project path> at hudson.remoting.Channel@582aac28:<node>: java.io.IOException: Failed to deserialize response to UserRequest:hudson.plugins.testlink.result.AbstractTAPFileNameResultSeeker$1@5fe248b4: java.lang.SecurityException: Rejected: org.tap4j.model.TestSet; see https://jenkins.io/redirect/class-filter/
+Started calculate disk usage of build
+Finished Calculation of disk usage of build in 0 seconds
+Started calculate disk usage of workspace
+Finished Calculation of disk usage of workspace in 0 seconds
+Finished: FAILURE

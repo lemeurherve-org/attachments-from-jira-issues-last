@@ -1,0 +1,102 @@
+Index: src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java
+===================================================================
+--- src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java	(revision 20622)
++++ src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java	(working copy)
+@@ -91,9 +91,14 @@
+         if(authentication!=null)
+             password = (String) authentication.getCredentials();
+ 
++        // Remove site prefix from domain name if present
++        String domainOnly = domainName;
++        String parts[] = domainName.split("@", 2);
++        if (parts.length > 1) domainOnly = parts[1];
++
+         // bind by using the specified username/password
+         Hashtable props = new Hashtable();
+-        String principalName = username + '@' + domainName;
++        String principalName = username + '@' + domainOnly;
+         props.put(Context.SECURITY_PRINCIPAL, principalName);
+         props.put(Context.SECURITY_CREDENTIALS,password);
+         props.put(Context.REFERRAL, "follow");
+@@ -111,11 +116,11 @@
+             // locate this user's record
+             SearchControls controls = new SearchControls();
+             controls.setSearchScope(SUBTREE_SCOPE);
+-            NamingEnumeration<SearchResult> renum = context.search(toDC(domainName),"(& (userPrincipalName="+principalName+")(objectClass=user))", controls);
++            NamingEnumeration<SearchResult> renum = context.search(toDC(domainOnly),"(& (userPrincipalName="+principalName+")(objectClass=user))", controls);
+             if(!renum.hasMore()) {
+                 // failed to find it. Fall back to sAMAccountName.
+                 // see http://www.nabble.com/Re%3A-Hudson-AD-plug-in-td21428668.html
+-                renum = context.search(toDC(domainName),"(& (sAMAccountName="+username+")(objectClass=user))", controls);
++                renum = context.search(toDC(domainOnly),"(& (sAMAccountName="+username+")(objectClass=user))", controls);
+                 if(!renum.hasMore()) {
+                     throw new BadCredentialsException("Authentication was successful but cannot locate the user information for "+username);
+                 }
+Index: src/main/java/hudson/plugins/active_directory/ActiveDirectorySecurityRealm.java
+===================================================================
+--- src/main/java/hudson/plugins/active_directory/ActiveDirectorySecurityRealm.java	(revision 20622)
++++ src/main/java/hudson/plugins/active_directory/ActiveDirectorySecurityRealm.java	(working copy)
+@@ -98,28 +98,28 @@
+                         if(!name.endsWith(".")) name+='.';
+ 
+                         DirContext ictx;
++                        String domainOnly = getDomainOnly(name);
+ 
+                         // first test the sanity of the domain name itself
+                         try {
+-                            LOGGER.fine("Attempting to resolve "+name+" to A record");
++                            LOGGER.fine("Attempting to resolve "+domainOnly+" to A record");
+                             ictx = createDNSLookupContext();
+-                            Attributes attributes = ictx.getAttributes(name, new String[]{"A"});
++                            Attributes attributes = ictx.getAttributes(domainOnly, new String[]{"A"});
+                             Attribute a = attributes.get("A");
+                             if(a==null) throw new NamingException();
+-                            LOGGER.fine(name+" resolved to "+ a.get());
++                            LOGGER.fine(domainOnly+" resolved to "+ a.get());
+                         } catch (NamingException e) {
+-                            LOGGER.log(Level.WARNING,"Failed to resolve "+name+" to A record",e);
++                            LOGGER.log(Level.WARNING,"Failed to resolve "+domainOnly+" to A record",e);
+                             error(name+" doesn't look like a valid domain name");
+                             return;
+                         }
+ 
+                         // then look for the LDAP server
+-                        final String ldapServer = "_ldap._tcp."+name;
+                         String serverHostName;
+                         try {
+                             serverHostName = obtainLDAPServer(ictx,name);
+                         } catch (NamingException e) {
+-                            LOGGER.log(Level.WARNING,"Failed to resolve "+ldapServer+" to SRV record",e);
++                            LOGGER.log(Level.WARNING,"Failed to resolve "+getLDAPServerDNS(name)+" to SRV record",e);
+                             error("No LDAP server was found in "+name);
+                             return;
+                         }
+@@ -153,11 +153,27 @@
+             return obtainLDAPServer(createDNSLookupContext(),domainName);
+         }
+ 
++        private static String getDomainOnly(String domainName) {
++            String[] parts = domainName.split("@", 2);
++            return (parts.length > 1 ? parts[1] : domainName);
++        }
++
++        private static String getLDAPServerDNS(String domainName) {
++            // Check if there is a site prefix
++            String site = null;
++            String[] parts = domainName.split("@", 2);
++            if (parts.length > 1) {
++                site = parts[0];
++                domainName = parts[1];
++            }
++            return "_ldap._tcp." + (site != null ? site + "._sites." : "") + domainName;
++        }
++
+         /**
+          * Use DNS and obtains the LDAP server's host name.
+          */
+         public String obtainLDAPServer(DirContext ictx, String domainName) throws NamingException {
+-            final String ldapServer = "_ldap._tcp."+domainName;
++            final String ldapServer = getLDAPServerDNS(domainName);
+ 
+             LOGGER.fine("Attempting to resolve "+ldapServer+" to SRV record");
+             Attributes attributes = ictx.getAttributes(ldapServer, new String[]{"SRV"});

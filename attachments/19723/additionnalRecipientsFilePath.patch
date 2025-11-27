@@ -1,0 +1,111 @@
+Index: core/src/main/resources/hudson/tasks/Mailer/config.jelly
+===================================================================
+--- core/src/main/resources/hudson/tasks/Mailer/config.jelly	(revision 28215)
++++ core/src/main/resources/hudson/tasks/Mailer/config.jelly	(working copy)
+@@ -26,6 +26,9 @@
+   <f:entry title="${%Recipients}" description="${%description}">
+     <f:textbox name="mailer_recipients" value="${instance.recipients}"/>
+   </f:entry>
++  <f:entry title="${%Additionnal recipients file path}" help="/help/tasks/mailer/additionnalRecipientsFilePath.html">
++    <f:textbox name="mailer_additionnalRecipientsFilePath" value="${instance.additionnalRecipientsFilePath}"/>
++  </f:entry>
+   <f:entry title="">
+     <f:checkbox name="mailer_notifyEveryUnstableBuild" checked="${h.defaultToTrue(!instance.dontNotifyEveryUnstableBuild)}" />
+     <label class="attach-previous">${%Send e-mail for every unstable build}</label>
+Index: core/src/main/resources/hudson/tasks/Mailer/config_fr.properties
+===================================================================
+--- core/src/main/resources/hudson/tasks/Mailer/config_fr.properties	(revision 28215)
++++ core/src/main/resources/hudson/tasks/Mailer/config_fr.properties	(working copy)
+@@ -24,3 +24,4 @@
+ description=Liste des destinataires, séparés par un espace. Un email sera envoyé lors d''un échec d''un build.
+ Send\ e-mail\ for\ every\ unstable\ build=Envoyer un email pour chaque build instable
+ Send\ separate\ e-mails\ to\ individuals\ who\ broke\ the\ build=Envoyer des emails séparés aux personnes qui ont cassé le build
++Additionnal\ recipients\ file\ path=Chemin vers un fichier de destinataires additionnels
+Index: maven-plugin/src/main/java/hudson/maven/reporters/MavenMailer.java
+===================================================================
+--- maven-plugin/src/main/java/hudson/maven/reporters/MavenMailer.java	(revision 34182)
++++ maven-plugin/src/main/java/hudson/maven/reporters/MavenMailer.java	(working copy)
+@@ -23,6 +23,7 @@
+  */
+ package hudson.maven.reporters;
+ 
++import hudson.FilePath;
+ import hudson.Launcher;
+ import hudson.Extension;
+ import hudson.maven.MavenBuild;
+@@ -33,7 +34,13 @@
+ import hudson.tasks.Mailer;
+ import org.kohsuke.stapler.StaplerRequest;
+ 
++import java.io.File;
+ import java.io.IOException;
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.HashSet;
++import java.util.List;
++import java.util.Set;
+ 
+ import net.sf.json.JSONObject;
+ 
+@@ -46,14 +53,39 @@
+      * @see Mailer
+      */
+     public String recipients;
++    public String additionnalRecipientsFilePath;
+     public boolean dontNotifyEveryUnstableBuild;
+     public boolean sendToIndividuals;
+ 
+     public boolean end(MavenBuild build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+-        new MailSender(recipients,dontNotifyEveryUnstableBuild,sendToIndividuals).execute(build,listener);
++    	String fullRecipients = createFullRecipients(recipients, additionnalRecipientsFilePath, build);
++        new MailSender(fullRecipients,dontNotifyEveryUnstableBuild,sendToIndividuals).execute(build,listener);
+         return true;
+     }
+ 
++    private String createFullRecipients(String recipients, String additionnalRecipientsFilePath, MavenBuild build) throws IOException{
++    	StringBuilder fullRecipientsSB = new StringBuilder(recipients==null?"":recipients);
++    	if(additionnalRecipientsFilePath!=null && !"".equals(additionnalRecipientsFilePath)){
++        	File additionnalRecipientsFile = new File(build.getWorkspace().getRemote()+additionnalRecipientsFilePath);
++        	if(additionnalRecipientsFile.exists()){
++        		String additionnalRecipients = new FilePath(additionnalRecipientsFile).readToString();
++        		fullRecipientsSB.append(additionnalRecipients.replaceAll("\\n|\\t|\\r", " "));
++        	}
++    	}
++    	
++    	// verify mails are uniques
++    	StringBuilder reducedFullRecipientsSB = new StringBuilder();
++    	List<String> mails = new ArrayList<String>();
++    	for(String mail : fullRecipientsSB.toString().split("\\s")){
++    		if(!mails.contains(mail) && !"".equals(mail)){
++    			mails.add(mail);
++    			reducedFullRecipientsSB.append(mail+" ");
++    		}
++    	}
++    	
++    	return reducedFullRecipientsSB.toString();
++    }
++    
+     @Extension
+     public static final class DescriptorImpl extends MavenReporterDescriptor {
+         public String getDisplayName() {
+Index: war/resources/help/tasks/mailer/additionnalRecipientsFilePath.html
+===================================================================
+--- war/resources/help/tasks/mailer/additionnalRecipientsFilePath.html	(revision 0)
++++ war/resources/help/tasks/mailer/additionnalRecipientsFilePath.html	(revision 0)
+@@ -0,0 +1,4 @@
++<div>
++  Provide here a file path related to the workspace location, where will reside additionnal
++  recipient's email (separated either by space or carriage return).
++</div>
+\ No newline at end of file
+Index: war/resources/help/tasks/mailer/additionnalRecipientsFilePath_fr.html
+===================================================================
+--- war/resources/help/tasks/mailer/additionnalRecipientsFilePath_fr.html	(revision 0)
++++ war/resources/help/tasks/mailer/additionnalRecipientsFilePath_fr.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++  Ajouter un chemin de fichier relatif à l'espace de travail, où se trouveront des
++  emails additionnels de destinataires (séparés soit par des espaces, soit par un retour
++  à la ligne).
++</div>
+\ No newline at end of file

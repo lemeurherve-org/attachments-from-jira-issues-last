@@ -1,0 +1,16 @@
+Index: ResultCondition.java
+===================================================================
+--- ResultCondition.java	(revision 31483)
++++ ResultCondition.java	(working copy)
+@@ -23,6 +23,11 @@
+ 		boolean isMet(Result result) {
+ 			return result == Result.FAILURE;
+ 		}
++  },
++  ALWAYS("Stable, unstable, or failed (trigger always)") {
++    boolean isMet(Result result) {
++      return true;
++    }
+ 	};
+ 
+ 	private ResultCondition(String displayName) {

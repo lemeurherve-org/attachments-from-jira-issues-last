@@ -1,0 +1,83 @@
+Jenkins log when docker-test1 and docker-test2 DOES run in parallel:
+====================================================================
+
+Nov 04, 2016 11:13:59 AM com.nirima.jenkins.plugins.docker.DockerCloud provision
+INFO: Asked to provision 1 slave(s) for: docker-slave
+Nov 04, 2016 11:13:59 AM com.nirima.jenkins.plugins.docker.DockerCloud provision
+INFO: Will provision 'kkm', for label: 'docker-slave', in cloud: 'docker'
+Nov 04, 2016 11:13:59 AM com.nirima.jenkins.plugins.docker.DockerCloud addProvisionedSlave
+INFO: Provisioning 'kkm' number '0' on 'docker'; Total containers: '1'
+Nov 04, 2016 11:13:59 AM hudson.slaves.NodeProvisioner$StandardStrategyImpl apply
+INFO: Started provisioning Image of kkm from docker with 1 executors. Remaining excess workload: 0
+Nov 04, 2016 11:13:59 AM com.nirima.jenkins.plugins.docker.DockerCloud provisionWithWait
+INFO: Trying to run container for kkm
+Nov 04, 2016 11:13:59 AM com.nirima.jenkins.plugins.docker.utils.PortUtils$ConnectionCheckSSH execute
+INFO: SSH port is open on *.*.*.*:32791
+Nov 04, 2016 11:13:59 AM com.nirima.jenkins.plugins.docker.launcher.DockerComputerSSHLauncher getSSHLauncher
+INFO: Creating slave SSH launcher for /*.*.*.*:32791
+Nov 04, 2016 11:14:02 AM hudson.slaves.NodeProvisioner$2 run
+INFO: Image of kkm provisioning successfully completed. We have now 2 computer(s)
+Nov 04, 2016 11:14:02 AM com.nirima.jenkins.plugins.docker.DockerCloud provision
+INFO: Asked to provision 1 slave(s) for: docker-slave
+Nov 04, 2016 11:14:02 AM com.nirima.jenkins.plugins.docker.DockerCloud provision
+INFO: Will provision 'kkm', for label: 'docker-slave', in cloud: 'docker'
+Nov 04, 2016 11:14:02 AM com.nirima.jenkins.plugins.docker.DockerCloud addProvisionedSlave
+INFO: Provisioning 'kkm' number '1' on 'docker'; Total containers: '2'
+Nov 04, 2016 11:14:02 AM hudson.slaves.NodeProvisioner$StandardStrategyImpl apply
+INFO: Started provisioning Image of kkm from docker with 1 executors. Remaining excess workload: -0.427
+Nov 04, 2016 11:14:02 AM com.nirima.jenkins.plugins.docker.DockerCloud provisionWithWait
+INFO: Trying to run container for kkm
+Nov 04, 2016 11:14:02 AM com.nirima.jenkins.plugins.docker.utils.PortUtils$ConnectionCheckSSH execute
+INFO: SSH port is open on *.*.*.*:32792
+Nov 04, 2016 11:14:02 AM com.nirima.jenkins.plugins.docker.launcher.DockerComputerSSHLauncher getSSHLauncher
+INFO: Creating slave SSH launcher for /*.*.*.*:32792
+[11/04/16 11:14:05] SSH Launch of docker-4969a4569388 on *.*.*.* completed in 2,880 ms
+Nov 04, 2016 11:14:12 AM hudson.slaves.NodeProvisioner$2 run
+INFO: Image of kkm provisioning successfully completed. We have now 3 computer(s)
+[11/04/16 11:14:15] SSH Launch of docker-29c4aa8ae132 on *.*.*.* completed in 2,998 ms
+Nov 04, 2016 11:14:20 AM hudson.model.Run execute
+INFO: docker-test1 #25 main build action completed: SUCCESS
+Nov 04, 2016 11:14:20 AM com.nirima.jenkins.plugins.docker.DockerSlave _terminate
+INFO: Disconnected computer
+Nov 04, 2016 11:14:20 AM hudson.remoting.SynchronousCommandTransport$ReaderThread run
+SEVERE: I/O error in channel docker-4969a4569388
+java.io.IOException: Unexpected termination of the channel
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:73)
+Caused by: java.io.EOFException
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2353)
+	at java.io.ObjectInputStream$BlockDataInputStream.readShort(ObjectInputStream.java:2822)
+	at java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:804)
+	at java.io.ObjectInputStream.<init>(ObjectInputStream.java:301)
+	at hudson.remoting.ObjectInputStreamEx.<init>(ObjectInputStreamEx.java:48)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+Nov 04, 2016 11:14:20 AM com.nirima.jenkins.plugins.docker.DockerSlave _terminate
+INFO: Stopped container 4969a45693885b4f594c2f65a409ba19a0681487dd48a46ac2817affe33ff64c
+Nov 04, 2016 11:14:20 AM com.nirima.jenkins.plugins.docker.DockerSlave _terminate
+INFO: Shutdowned slave for 4969a45693885b4f594c2f65a409ba19a0681487dd48a46ac2817affe33ff64c
+Nov 04, 2016 11:14:20 AM com.nirima.jenkins.plugins.docker.DockerSlave _terminate
+INFO: Removed container 4969a45693885b4f594c2f65a409ba19a0681487dd48a46ac2817affe33ff64c
+Nov 04, 2016 11:14:30 AM hudson.model.Run execute
+INFO: docker-test2 #11 main build action completed: SUCCESS
+Nov 04, 2016 11:14:30 AM com.nirima.jenkins.plugins.docker.DockerSlave _terminate
+INFO: Disconnected computer
+Nov 04, 2016 11:14:30 AM hudson.remoting.SynchronousCommandTransport$ReaderThread run
+SEVERE: I/O error in channel docker-29c4aa8ae132
+java.io.IOException: Unexpected termination of the channel
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:73)
+Caused by: java.io.EOFException
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2353)
+	at java.io.ObjectInputStream$BlockDataInputStream.readShort(ObjectInputStream.java:2822)
+	at java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:804)
+	at java.io.ObjectInputStream.<init>(ObjectInputStream.java:301)
+	at hudson.remoting.ObjectInputStreamEx.<init>(ObjectInputStreamEx.java:48)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+Nov 04, 2016 11:14:31 AM com.nirima.jenkins.plugins.docker.DockerSlave _terminate
+INFO: Stopped container 29c4aa8ae132f941d96a457406f0c5349b5b3daebdf356537b3a180d6b89ca26
+Nov 04, 2016 11:14:31 AM com.nirima.jenkins.plugins.docker.DockerSlave _terminate
+INFO: Shutdowned slave for 29c4aa8ae132f941d96a457406f0c5349b5b3daebdf356537b3a180d6b89ca26
+Nov 04, 2016 11:14:31 AM com.nirima.jenkins.plugins.docker.DockerSlave _terminate
+INFO: Removed container 29c4aa8ae132f941d96a457406f0c5349b5b3daebdf356537b3a180d6b89ca26

@@ -1,0 +1,127 @@
+Started by user <USER>
+[EnvInject] - Loading node environment variables.
+Building remotely on xcambldm1p.q (linux bld zosconnect) in workspace <workspace>
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] Done
+[mf_test_proj] $ /bin/sh -xe <temp>
++ cd <workspace>
++ USER=<user>
++ PASS=<pass>
++ HOST=<host>
++ ftp -inv <host>
+Connected to <host> (<host>).
+220-FTPD1 IBM FTP CS V2R3 at <env>, 09:05:15 on 2019-04-17.
+220 Connection will close if idle for more than 5 minutes.
+Remote system type is MVS.
+331 Send password please.
+230 <user> is logged on.  Working directory is "<user>.".
+local: SAMPJCL.txt remote: '<PDS>(SAMPJCL)'
+227 Entering Passive Mode (nodes)
+125 Sending data set <PDS>(SAMPJCL) FIXrecfm 80
+250 Transfer completed successfully.
+253 bytes received in 0.00145 secs (174.00 Kbytes/sec)
+221 Quit command received. Goodbye.
+FTP: connected to <host>:21
+Submitted job [JOB03536]
+Job [JOB03536] processing failed. Reason: [NO_RC-JESINTERFACELEVEL_IS_1]
+1                   J E S 2  J O B  L O G  --  S Y S T E M  A E 5 1  --  N O D E  A E P L E X 0 7        
+0 
+ 09.05.15 JOB03536 ---- WEDNESDAY, 17 APR 2019 ----
+ 09.05.15 JOB03536  TSS7000I <user> Last-Used 17 Apr 19 08:33 System=<env> Facility=FTP
+ 09.05.15 JOB03536  TSS7001I Count=00083 Mode=Fail Locktime=None Name=USER
+ 09.05.15 JOB03536  $HASP373 <user>J STARTED - INIT 14   - CLASS A        - SYS <env>
+ 09.05.15 JOB03536  IEF403I <user>J - STARTED - TIME=09.05.15
+ 09.05.15 JOB03536  CSV003I REQUESTED MODULE NOTFOUND NOT FOUND
+ 09.05.15 JOB03536  CSV028I ABEND806-04  JOBNAME=<user>J  STEPNAME=NOTFOUD
+ 09.05.15 JOB03536  IEA995I SYMPTOM DUMP OUTPUT  733
+    733             SYSTEM COMPLETION CODE=806  REASON CODE=00000004
+    733              TIME=09.05.15  SEQ=00730  CPU=0000  ASID=0052
+    733              PSW AT TIME OF ERROR  470C1000   81518ADA  ILC 2  INTC 0D
+    733                NO ACTIVE MODULE FOUND
+    733                NAME=UNKNOWN
+    733                DATA AT PSW  01518AD4 - 8400181E  0A0D18FB  180C181D
+    733                GR 0: 00001F00   1: 84806000
+    733                   2: 00000000   3: 00000000
+    733                   4: 00000000   5: 008F8728
+    733                   6: 000000FF   7: 00000000
+    733                   8: 7F69A050   9: 01519000
+    733                   A: 00000000   B: 00000000
+    733                   C: 00000000   D: 7F69A050
+    733                   E: 84806000   F: 00000004
+    733              END OF SYMPTOM DUMP
+ 09.05.15 JOB03536  IEA848I NO DUMP WAS PRODUCED FOR THIS ABEND, DUE TO SYSTEM OR INSTALLATION REQUEST
+ 09.05.15 JOB03536  IEF450I <user>J NOTFOUD - ABEND=S806 U0000 REASON=00000004  735
+    735                     TIME=09.05.15
+ 09.05.15 JOB03536  -                                              --TIMINGS (MINS.)--            -----PAGING COUNTS----
+ 09.05.15 JOB03536  -STEPNAME PROCSTEP    RC   EXCP   CONN    TCB    SRB  CLOCK   SERV  WORKLOAD  PAGE  SWAP   VIO SWAPS
+ 09.05.15 JOB03536  -NOTFOUD           *S806     15      0    .00    .00     .0   5882  BATCH        0     0     0     0
+ 09.05.15 JOB03536  IEF404I <user>J - ENDED - TIME=09.05.15
+ 09.05.15 JOB03536  -<user>J ENDED.  NAME-UPDATE               TOTAL TCB CPU TIME=    .00 TOTAL ELAPSED TIME=    .0
+ 09.05.15 JOB03536  $HASP395 <user>J ENDED - ABEND=S806
+0------ JES2 JOB STATISTICS ------
+-  17 APR 2019 JOB EXECUTION DATE
+-           10 CARDS READ
+-           99 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-            9 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME
+ !! END OF JES SPOOL FILE !!
+        1 //<user>J JOB (1G890820),'UPDATE',CLASS=A,                             JOB03536
+          //            MSGCLASS=H,REGION=0M,NOTIFY=&SYSUID                               
+          //*                                                                             
+          //*                                                                             
+          IEFC653I SUBSTITUTION JCL - (1G890820),'UPDATE',CLASS=A,MSGCLASS=H,REGION=0M,NOTIFY=<user>
+        2 //NOTFOUD  EXEC PGM=NOTFOUND                                                    
+        3 //SYSABEND DD SYSOUT=*                                                          
+        4 //SYSUDUMP DD SYSOUT=*                                                          
+        5 //SYSTSPRT DD SYSOUT=*                                                          
+        6 //SYMDUMP  DD DUMMY                                                             
+        7 //SYSOUT   DD SYSOUT=*                                                          
+ !! END OF JES SPOOL FILE !!
+ TSS7000I <user> Last-Used 17 Apr 19 08:33 System=<env> Facility=FTP
+ TSS7001I Count=00083 Mode=Fail Locktime=None Name=USER
+ IEFA111I <user>J IS USING THE FOLLOWING JOB RELATED SETTINGS:
+          SWA=ABOVE,TIOT SIZE=32K,DSENQSHR=DISALLOW,GDGBIAS=JOB
+ IEF236I ALLOC. FOR <user>J NOTFOUD
+ IEF237I JES2 ALLOCATED TO SYSABEND
+ IEF237I JES2 ALLOCATED TO SYSUDUMP
+ IEF237I JES2 ALLOCATED TO SYSTSPRT
+ IEF237I DMY  ALLOCATED TO SYMDUMP
+ IEF237I JES2 ALLOCATED TO SYSOUT
+ CSV003I REQUESTED MODULE NOTFOUND NOT FOUND
+ CSV028I ABEND806-04  JOBNAME=<user>J  STEPNAME=NOTFOUD
+ IEA995I SYMPTOM DUMP OUTPUT
+ SYSTEM COMPLETION CODE=806  REASON CODE=00000004
+  TIME=09.05.15  SEQ=00730  CPU=0000  ASID=0052
+  PSW AT TIME OF ERROR  470C1000   81518ADA  ILC 2  INTC 0D
+    NO ACTIVE MODULE FOUND
+    NAME=UNKNOWN
+    DATA AT PSW  01518AD4 - 8400181E  0A0D18FB  180C181D
+    GR 0: 00001F00   1: 84806000
+       2: 00000000   3: 00000000
+       4: 00000000   5: 008F8728
+       6: 000000FF   7: 00000000
+       8: 7F69A050   9: 01519000
+       A: 00000000   B: 00000000
+       C: 00000000   D: 7F69A050
+       E: 84806000   F: 00000004
+  END OF SYMPTOM DUMP
+ IEA848I NO DUMP WAS PRODUCED FOR THIS ABEND, DUE TO SYSTEM OR INSTALLATION REQUEST
+ IEF472I <user>J NOTFOUD - COMPLETION CODE - SYSTEM=806 USER=0000 REASON=00000004
+ IEF285I   <user>.<user>J.JOB03536.D0000101.?         SYSOUT        
+ IEF285I   <user>.<user>J.JOB03536.D0000102.?         SYSOUT        
+ IEF285I   <user>.<user>J.JOB03536.D0000103.?         SYSOUT        
+ IEF285I   <user>.<user>J.JOB03536.D0000104.?         SYSOUT        
+ IEF373I STEP/NOTFOUD /START 2019107.0905
+ IEF032I STEP/NOTFOUD /STOP  2019107.0905 
+         CPU:     0 HR  00 MIN  00.01 SEC    SRB:     0 HR  00 MIN  00.00 SEC    
+         VIRT:     4K  SYS:   236K  EXT:        4K  SYS:    10356K
+         ATB- REAL:                  1044K  SLOTS:                     0K
+              VIRT- ALLOC:      11M SHRD:       0M
+ IEF375I  JOB/<user>J/START 2019107.0905
+ IEF033I  JOB/<user>J/STOP  2019107.0905 
+         CPU:     0 HR  00 MIN  00.01 SEC    SRB:     0 HR  00 MIN  00.00 SEC    
+ !! END OF JES SPOOL FILE !!
+
+Finished: SUCCESS

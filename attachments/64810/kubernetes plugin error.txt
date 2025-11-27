@@ -1,0 +1,27 @@
+2025-08-25 08:26:58.419+0000 [id=133139]	WARNING	o.c.j.p.k.GarbageCollection$PeriodicGarbageCollection#lambda$garbageCollect$7: Unexpected error while calling Kubernetes API
+java.io.IOException: Canceled
+	at PluginClassLoader for okhttp-api//okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.kt:72)
+	at PluginClassLoader for okhttp-api//okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.kt:109)
+	at PluginClassLoader for okhttp-api//okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:201)
+Caused: java.io.InterruptedIOException: timeout
+	at PluginClassLoader for okhttp-api//okhttp3.internal.connection.RealCall.timeoutExit(RealCall.kt:398)
+	at PluginClassLoader for okhttp-api//okhttp3.internal.connection.RealCall.callDone(RealCall.kt:360)
+	at PluginClassLoader for okhttp-api//okhttp3.internal.connection.RealCall.noMoreExchanges$okhttp(RealCall.kt:325)
+	at PluginClassLoader for okhttp-api//okhttp3.internal.connection.RealCall.getResponseWithInterceptorChain$okhttp(RealCall.kt:209)
+	at PluginClassLoader for okhttp-api//okhttp3.internal.connection.RealCall$AsyncCall.run(RealCall.kt:517)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+Caused: java.io.IOException: timeout
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.OperationSupport.waitForResult(OperationSupport.java:504)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.BaseOperation.list(BaseOperation.java:451)
+Caused: io.fabric8.kubernetes.client.KubernetesClientException: Operation: [list]  for kind: [Pod]  with name: [null]  in namespace: [default]  failed.
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.KubernetesClientException.launderThrowable(KubernetesClientException.java:139)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.BaseOperation.list(BaseOperation.java:453)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.BaseOperation.list(BaseOperation.java:419)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.BaseOperation.list(BaseOperation.java:98)
+	at PluginClassLoader for kubernetes//org.csanchez.jenkins.plugins.kubernetes.GarbageCollection$PeriodicGarbageCollection.lambda$garbageCollect$7(GarbageCollection.java:160)
+	at java.base/java.util.Optional.ifPresent(Optional.java:178)
+	at PluginClassLoader for kubernetes//org.csanchez.jenkins.plugins.kubernetes.GarbageCollection$PeriodicGarbageCollection.garbageCollect(GarbageCollection.java:148)
+	at PluginClassLoader for kubernetes//org.csanchez.jenkins.plugins.kubernetes.GarbageCollection$PeriodicGarbageCollection.execute(GarbageCollection.java:136)
+	at hudson.model.AsyncPeriodicWork.lambda$doRun$0(AsyncPeriodicWork.java:102)
+	at java.base/java.lang.Thread.run(Thread.java:1583)

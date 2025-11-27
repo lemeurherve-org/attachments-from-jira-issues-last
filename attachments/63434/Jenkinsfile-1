@@ -1,0 +1,101 @@
+properties([
+        parameters([
+                [
+                        $class     : 'ChoiceParameter',
+                        choiceType : 'PT_SINGLE_SELECT',
+                        name       : 'releaseBranch',
+                        description: 'Choose branch name*',
+                        script     : [
+                                $class: 'GroovyScript',
+                                script: [
+                                        script: """
+                                   def branches = ("ls /var/lib/jenkins/jobs/build-backend-on-dev/branches").execute()
+                                   def sorter = branches.text.readLines().findAll { !it.equals('main') }
+                                   /* Top index is default value */
+                                   sorter.add(0, 'main')
+                                   return sorter
+                                """
+                                ]
+                        ]
+                ],
+                [
+                        $class              : 'CascadeChoiceParameter',
+                        choiceType          : 'PT_SINGLE_SELECT',
+                        name                : 'releaseNumber',
+                        description         : 'Put the release number*',
+                        referencedParameters: 'releaseBranch',
+                        script              : [
+                                $class        : 'GroovyScript',
+                                fallbackScript: [
+                                        classpath: [],
+                                        sandbox  : false,
+                                        script   : "return ['Could not get releaseBranch param']"
+                                ],
+                                script        : [
+                                        classpath: [],
+                                        sandbox  : false,
+                                        script   : """
+                                           if (!releaseBranch.isEmpty()) {
+                                                def builds = ("ls /var/lib/jenkins/jobs/build-backend-on-dev/branches/\$releaseBranch/builds").execute()
+                                                return builds.text.readLines().findAll() { it.isNumber() }.sort { c1, c2 -> (c2 <=> c1) }
+                                           }
+                                           return []     
+                                        """
+                                ]
+                        ]
+                ],
+                [
+                        $class              : 'CascadeChoiceParameter',
+                        choiceType          : 'PT_SINGLE_SELECT',
+                        name                : 'serviceName',
+                        referencedParameters: 'releaseBranch, releaseNumber',
+                        description         : 'Choose service name*',
+                        script              : [
+                                $class        : 'GroovyScript',
+                                fallbackScript: [
+                                        classpath: [],
+                                        sandbox  : false,
+                                        script   : "return ['Could not get either releaseBranch or releaseNumber param(s)']"
+                                ],
+                                script        : [
+                                        classpath: [],
+                                        sandbox  : false,
+                                        script   : """
+                                           if (!(releaseBranch.isEmpty() || releaseNumber.isEmpty())) { 
+                                                def releases = ("ls /var/lib/jenkins/jobs/build-backend-on-dev/branches/\$releaseBranch/builds/\$releaseNumber/release").execute()
+                                                return releases.text.readLines().collect { it.replace('-service.jar', '') }
+                                           }
+                                           return []     
+                                        """
+                                ]
+                        ]
+                ]
+        ])
+])
+
+pipeline {
+    agent any
+
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '6', daysToKeepStr: '', numToKeepStr: '6')
+    }
+
+    stages {
+        stage('Deploy on DEV') {
+            steps {
+                script {
+                    String jenkinsHome = '/var/lib/jenkins'
+                    GString sourceRelease = "${jenkinsHome}/jobs/build-backend-on-dev/branches/${releaseBranch}/builds/${releaseNumber}/release/${serviceName}-service.jar"
+                    GString destRelease = "/path/dev-env/be-bookatop/deploy/${serviceName}-service.jar"
+
+                    com.bookatop.pipeline.Utils sharedUtils = new com.bookatop.pipeline.Utils()
+
+                    String daemonName = sharedUtils.serviceToDaemon(serviceName)
+                    sharedUtils.loadSharedFiles 'deploy-backend-on-dev.sh', 'utils.sh'
+
+                    sh "./deploy-backend-on-dev.sh ${sourceRelease} ${destRelease} ${daemonName}"
+                }
+            }
+        }
+    }
+}

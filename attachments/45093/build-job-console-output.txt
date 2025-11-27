@@ -1,0 +1,310 @@
+Branch indexing
+ > git rev-parse --is-inside-work-tree # timeout=10
+Setting origin to https://stash.company.com/scm/leap/api-common-logging.git
+ > git config remote.origin.url https://stash.company.com/scm/leap/api-common-logging.git # timeout=10
+Fetching origin...
+Fetching upstream changes from origin
+ > git --version # timeout=10
+ > git config --get remote.origin.url # timeout=10
+using GIT_ASKPASS to set credentials stash git read only credential
+ > git fetch --tags --progress origin +refs/heads/*:refs/remotes/origin/*
+Seen branch in repository origin/bugfix/TRISEC-3219
+Seen branch in repository origin/feature/EOPS-1797
+Seen branch in repository origin/feature/TRISEC-2991
+Seen branch in repository origin/integration/M.2017.11.03
+Seen branch in repository origin/integration/M.2018.01.01
+Seen branch in repository origin/integration/M.2018.01.02
+Seen branch in repository origin/integration/M.2018.02.01
+Seen branch in repository origin/integration/M.2018.02.02
+Seen branch in repository origin/integration/M.2018.03.01
+Seen branch in repository origin/integration/M.2018.03.02
+Seen branch in repository origin/integration/M.2018.04.01
+Seen branch in repository origin/integration/M.2018.04.02
+Seen branch in repository origin/integration/M.2018.05.01
+Seen branch in repository origin/integration/M.2018.05.02
+Seen branch in repository origin/integration/M.2018.06.01
+Seen branch in repository origin/integration/M.2018.06.02
+Seen branch in repository origin/master
+Seen branch in repository origin/release/M.2017.11.03
+Seen branch in repository origin/release/M.2018.02.02
+Seen 19 remote branches
+Obtained Jenkinsfile from 889cc0d668e535c6a62038d695fd049e60712c8c
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] podTemplate
+[Pipeline] {
+[Pipeline] echo
+env.SONARQUBE_ENV = SonarQube pilot
+[Pipeline] echo
+env.MAVEN_REPOSITORY = /mvn/.m2nrepo/repository-nochown
+[Pipeline] echo
+env.DOCKER_REGISTRY = stash.company.com:8443
+[Pipeline] echo
+env.K8S_API_URL = api.eng.houston.company.com:7443
+[Pipeline] echo
+env.K8S_CLUSTER_NAME = huos1_k8s_pilot
+[Pipeline] echo
+env.K8S_INGRESS_URL_BASE = eng.houston.company.com
+[Pipeline] node
+Still waiting to schedule task
+‘Jenkins’ doesn’t have label ‘api-build’
+Agent jenkins-slave-r59w1-qs283 is provisioned from template Kubernetes Pod Template
+Agent specification [Kubernetes Pod Template] (api-build): 
+* [jnlp] jenkins/jnlp-slave:3.23-1-alpine(resourceRequestCpu: 250m, resourceRequestMemory: 512Mi)
+* [pmd] stash.company.com:8443/pmd:pmd-bin-5.5.4
+* [owasp-zap] stash.company.com:8443/owasp-zap:2.7.0
+* [kubectl] lachlanevenson/k8s-kubectl:v1.8.7
+* [dind] docker:18.01.0-ce-dind(resourceRequestCpu: 20m, resourceRequestMemory: 512Mi)
+* [docker-cmds] docker:18.01.0-ce
+yaml:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: maven
+spec:
+  containers:
+  - name: maven
+    image: maven:3-jdk-8-alpine
+    volumeMounts:
+      - name: volume-0
+        mountPath: /mvn/.m2nrepo
+    command:
+    - cat
+    tty: true
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+    securityContext:
+      runAsUser: 10000
+      fsGroup: 10000
+
+
+Running on jenkins-slave-r59w1-qs283 in /home/jenkins/workspace/g_feature_feature_EOPS-1797-FUNUKV6MZIMSE3XCCOAWC65YYFKENC7JTN6FENRV6B5AM7S6Z7JA
+[Pipeline] {
+[Pipeline] withFolderProperties
+[Pipeline] {
+[Pipeline] }
+[Pipeline] // withFolderProperties
+[Pipeline] echo
+env.API_NAME = api-common-logging
+[Pipeline] echo
+env.K8S_SERVICE_ACCOUNT_CREDENTIAL = api-common-logging-cicd-jenkins-sa
+[Pipeline] echo
+env.BASE_ENVIRONMENT = 6
+[Pipeline] echo
+env.K8S_NAMESPACE = api-common-logging-cicd
+[Pipeline] echo
+env.AUTH_COOKIE_NAME = AuthCookie16
+[Pipeline] echo
+env.ENDPOINT_UNAUTHENTICATED = /api-common-logging/version.json
+[Pipeline] echo
+env.PATH_APPLICATION_PROPERTIES = /src/main/resources/api-common-logging.properties
+[Pipeline] stage
+[Pipeline] { (Clean workspace)
+[Pipeline] deleteDir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Clone source code)
+[Pipeline] checkout
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository https://stash.company.com/scm/leap/api-common-logging.git
+ > git init /home/jenkins/workspace/g_feature_feature_EOPS-1797-FUNUKV6MZIMSE3XCCOAWC65YYFKENC7JTN6FENRV6B5AM7S6Z7JA # timeout=10
+Fetching upstream changes from https://stash.company.com/scm/leap/api-common-logging.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials stash git read only credential
+ > git fetch --no-tags --progress https://stash.company.com/scm/leap/api-common-logging.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url https://stash.company.com/scm/leap/api-common-logging.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://stash.company.com/scm/leap/api-common-logging.git # timeout=10
+Fetching without tags
+Fetching upstream changes from https://stash.company.com/scm/leap/api-common-logging.git
+using GIT_ASKPASS to set credentials stash git read only credential
+ > git fetch --no-tags --progress https://stash.company.com/scm/leap/api-common-logging.git +refs/heads/*:refs/remotes/origin/*
+Checking out Revision 889cc0d668e535c6a62038d695fd049e60712c8c (feature/EOPS-1797)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 889cc0d668e535c6a62038d695fd049e60712c8c
+Commit message: "EOPS-1797 - Fixed it"
+ > git rev-list --no-walk 889cc0d668e535c6a62038d695fd049e60712c8c # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Maven compile (docker))
+[Pipeline] withCredentials
+[Pipeline] {
+[Pipeline] container
+[Pipeline] {
+[Pipeline] sh
+[g_feature_feature_EOPS-1797-FUNUKV6MZIMSE3XCCOAWC65YYFKENC7JTN6FENRV6B5AM7S6Z7JA] Running shell script
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // podTemplate
+[Pipeline] End of Pipeline
+java.io.EOFException: \n not found: limit=0 content=…
+	at okio.RealBufferedSource.readUtf8LineStrict(RealBufferedSource.java:227)
+	at okhttp3.internal.http1.Http1Codec.readHeaderLine(Http1Codec.java:212)
+	at okhttp3.internal.http1.Http1Codec.readResponseHeaders(Http1Codec.java:189)
+Caused: java.io.IOException: unexpected end of stream on Connection{api.eng.houston.company.com:7443, proxy=DIRECT hostAddress=api.eng.houston.company.com/192.168.116.159:7443 cipherSuite=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 protocol=http/1.1}
+	at okhttp3.internal.http1.Http1Codec.readResponseHeaders(Http1Codec.java:205)
+	at okhttp3.internal.http.CallServerInterceptor.intercept(CallServerInterceptor.java:88)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.connection.ConnectInterceptor.intercept(ConnectInterceptor.java:45)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.internal.cache.CacheInterceptor.intercept(CacheInterceptor.java:93)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.internal.http.BridgeInterceptor.intercept(BridgeInterceptor.java:93)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RetryAndFollowUpInterceptor.intercept(RetryAndFollowUpInterceptor.java:125)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at io.fabric8.kubernetes.client.utils.BackwardsCompatibilityInterceptor.intercept(BackwardsCompatibilityInterceptor.java:119)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at io.fabric8.kubernetes.client.utils.ImpersonatorInterceptor.intercept(ImpersonatorInterceptor.java:66)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at io.fabric8.kubernetes.client.utils.HttpClientUtils$2.intercept(HttpClientUtils.java:107)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:147)
+	at okhttp3.internal.http.RealInterceptorChain.proceed(RealInterceptorChain.java:121)
+	at okhttp3.RealCall.getResponseWithInterceptorChain(RealCall.java:200)
+	at okhttp3.RealCall.execute(RealCall.java:77)
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.handleResponse(OperationSupport.java:379)
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.handleResponse(OperationSupport.java:344)
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.handleGet(OperationSupport.java:313)
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.handleGet(OperationSupport.java:296)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.handleGet(BaseOperation.java:794)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.getMandatory(BaseOperation.java:210)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.get(BaseOperation.java:177)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.waitUntilExists(BaseOperation.java:967)
+	at io.fabric8.kubernetes.client.dsl.base.HasMetadataOperation.waitUntilReady(HasMetadataOperation.java:223)
+	at io.fabric8.kubernetes.client.dsl.base.HasMetadataOperation.waitUntilReady(HasMetadataOperation.java:37)
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.waitUntilContainerIsReady(ContainerExecDecorator.java:417)
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.doLaunch(ContainerExecDecorator.java:255)
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.launch(ContainerExecDecorator.java:236)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:454)
+	at org.jenkinsci.plugins.durabletask.BourneShellScript.launchWithCookie(BourneShellScript.java:185)
+	at org.jenkinsci.plugins.durabletask.FileMonitoringTask.launch(FileMonitoringTask.java:98)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.start(DurableTaskStep.java:268)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:270)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:178)
+	at org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:122)
+	at sun.reflect.GeneratedMethodAccessor460.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:93)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1213)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1022)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.call(PogoMetaClassSite.java:42)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:48)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:113)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:157)
+	at org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:23)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:155)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:155)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:159)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:17)
+Caused: io.fabric8.kubernetes.client.KubernetesClientException: Operation: [get]  for kind: [Pod]  with name: [jenkins-slave-r59w1-qs283]  in namespace: [jenkins]  failed.
+	at io.fabric8.kubernetes.client.KubernetesClientException.launderThrowable(KubernetesClientException.java:64)
+	at io.fabric8.kubernetes.client.KubernetesClientException.launderThrowable(KubernetesClientException.java:72)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.getMandatory(BaseOperation.java:221)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.get(BaseOperation.java:177)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.waitUntilExists(BaseOperation.java:967)
+	at io.fabric8.kubernetes.client.dsl.base.HasMetadataOperation.waitUntilReady(HasMetadataOperation.java:223)
+	at io.fabric8.kubernetes.client.dsl.base.HasMetadataOperation.waitUntilReady(HasMetadataOperation.java:37)
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.waitUntilContainerIsReady(ContainerExecDecorator.java:417)
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.doLaunch(ContainerExecDecorator.java:255)
+	at org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1.launch(ContainerExecDecorator.java:236)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:454)
+	at org.jenkinsci.plugins.durabletask.BourneShellScript.launchWithCookie(BourneShellScript.java:185)
+	at org.jenkinsci.plugins.durabletask.FileMonitoringTask.launch(FileMonitoringTask.java:98)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.start(DurableTaskStep.java:268)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:270)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:178)
+	at org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:122)
+	at sun.reflect.GeneratedMethodAccessor460.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:93)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1213)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1022)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.call(PogoMetaClassSite.java:42)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:48)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:113)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:157)
+	at org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:23)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:155)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:155)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:159)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:129)
+	at com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:17)
+	at WorkflowScript.run(WorkflowScript:107)
+	at ___cps.transform___(Native Method)
+	at com.cloudbees.groovy.cps.impl.ContinuationGroup.methodCall(ContinuationGroup.java:57)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:109)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:82)
+	at sun.reflect.GeneratedMethodAccessor383.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:103)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:82)
+	at sun.reflect.GeneratedMethodAccessor383.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at com.cloudbees.groovy.cps.impl.ContinuationGroup.methodCall(ContinuationGroup.java:60)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:109)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:82)
+	at sun.reflect.GeneratedMethodAccessor383.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at com.cloudbees.groovy.cps.impl.ConstantBlock.eval(ConstantBlock.java:21)
+	at com.cloudbees.groovy.cps.Next.step(Next.java:83)
+	at com.cloudbees.groovy.cps.Continuable$1.call(Continuable.java:174)
+	at com.cloudbees.groovy.cps.Continuable$1.call(Continuable.java:163)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport$ThreadCategoryInfo.use(GroovyCategorySupport.java:122)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport.use(GroovyCategorySupport.java:261)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:163)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$101(SandboxContinuable.java:34)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.lambda$run0$0(SandboxContinuable.java:59)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:108)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:58)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:182)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:332)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$200(CpsThreadGroup.java:83)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:244)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:232)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:64)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:131)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:59)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Finished: FAILURE

@@ -1,0 +1,39 @@
+diff -urN jenkinsci-doxygen-plugin-197189b/src/main/java/hudson/plugins/doxygen/DoxygenArchiver.java jenkinsci-doxygen-plugin-197189b.new2/src/main/java/hudson/plugins/doxygen/DoxygenArchiver.java
+--- jenkinsci-doxygen-plugin-197189b/src/main/java/hudson/plugins/doxygen/DoxygenArchiver.java	2011-06-14 00:07:11.000000000 +0200
++++ jenkinsci-doxygen-plugin-197189b.new2/src/main/java/hudson/plugins/doxygen/DoxygenArchiver.java	2011-09-06 13:02:39.844416734 +0200
+@@ -30,6 +30,7 @@
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.Serializable;
++import java.util.List;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
+@@ -178,6 +179,15 @@
+ 		return true;
+ 	}
+ 
++	// TODO: remove this method and use getExactRuns directly once minimum core is 1.413+
++	private static List<MatrixRun> getMatrixRuns(MatrixBuild build) {
++		// Use MatrixBuild.getExactRuns if available
++		try {
++			return (List<MatrixRun>)build.getClass().getMethod("getExactRuns").invoke(build);
++		} catch (Exception ignore) {}
++
++		return build.getRuns();
++	}
+ 	
+ 	private boolean _perform(AbstractBuild<?, ?> build, Launcher launcher,BuildListener listener){
+ 		
+@@ -202,9 +212,9 @@
+ 					// If label is an instance label it is easy to locate the computer .. but if label is 
+ 					// a group label, we need to find some slave that runs the build and that it is assigned to 
+ 					// that label
+-					for (MatrixRun run : _thebuild.getRuns()){
++					for (MatrixRun run : getMatrixRuns(_thebuild)){
+ 						// Check if this run runs on the node that is assigned this label 
+-						if (run.getBuiltOn().getAssignedLabels().contains(childLabel)){														
++						if (run.getBuiltOn().getAssignedLabels().contains(childLabel)){
+ 							doxygenGeneratedDir = run.getWorkspace().act(parser);
+ 							LOGGER.log(Level.INFO,"Selected node is " + run.getBuiltOn().getDisplayName());
+ 							break;

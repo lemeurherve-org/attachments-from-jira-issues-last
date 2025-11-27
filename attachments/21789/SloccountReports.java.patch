@@ -1,0 +1,41 @@
+--- H:/tmp/sloccount_plugin/org/jenkinsci-sloccount-plugin-c3262d7/src/main/java/hudson/plugins/sloccount/model/SloccountReport.java	Fri Apr 06 09:16:12 2012
++++ H:/tmp/sloccount_plugin/jenkinsci-sloccount-plugin-c3262d7/src/main/java/hudson/plugins/sloccount/model/SloccountReport.java	Wed May 02 17:26:44 2012
+@@ -16,20 +16,23 @@
+     private Map<String, Language> languages = new LinkedHashMap<String, Language>();
+ 
+     /** The longest folder path common to all folders. */
+     private String[] rootFolderPath = null;
+     private transient String fileSeparator;
++    private transient String regex_fileSeparator;
+ 
+     public SloccountReport(){
+         super();
+         this.fileSeparator = System.getProperty("file.separator");
++        this.regex_fileSeparator = this.fileSeparator;
++        
+         if(this.fileSeparator.equals("\\")){
+             // escape the backslash if required (fileSeparator is used as a regex)
+-            this.fileSeparator = "\\\\";
++            this.regex_fileSeparator = "\\\\";
+         }
+     }
+-
++        
+     public SloccountReport(SloccountReport old, FileFilter filter){
+         this();
+         for(File f : old.getFiles()){
+             if(filter.include(f)){
+                 this.add(f.getName(), f.getLanguage(), f.getLineCount());
+@@ -114,11 +117,11 @@
+             return builder.toString();
+         }
+     }
+ 
+     private void updateRootFolderPath(String newFolderName){
+-        String[] newFolderPath = newFolderName.split(this.fileSeparator);
++        String[] newFolderPath = newFolderName.split(this.regex_fileSeparator);
+ 
+         if(this.rootFolderPath == null){
+             this.rootFolderPath = newFolderPath;
+         
+         }else{

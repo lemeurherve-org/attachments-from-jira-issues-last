@@ -1,0 +1,15 @@
+Index: main/core/src/main/java/hudson/scm/SubversionUpdateEventHandler.java
+===================================================================
+--- main/core/src/main/java/hudson/scm/SubversionUpdateEventHandler.java	(revision 8488)
++++ main/core/src/main/java/hudson/scm/SubversionUpdateEventHandler.java	(working copy)
+@@ -111,7 +111,9 @@
+             } else {
+                 out.println(Messages.SubversionUpdateEventHandler_FetchExternal(
+                         ext.getNewURL(), ext.getNewRevision(), event.getFile()));
+-                externals.add(new SubversionSCM.External(modulePath,ext));
++                externals.add(new SubversionSCM.External(modulePath + "/" + event.getPath().substring(0
++                			,event.getPath().length() - ext.getPath().length())
++                		,ext));
+             }
+             return;
+         } else if (action == SVNEventAction.UPDATE_COMPLETED) {

@@ -1,0 +1,20 @@
+@Library('jenkins-testcase-lib') _
+
+pipeline {
+    agent any;
+    
+    stages {
+        stage("1. call") {
+            steps {
+                test("master");
+            }
+        }
+        
+        stage("2. call") {
+            steps {
+                function("kernel");
+            }
+        }
+    }
+}
+

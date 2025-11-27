@@ -1,0 +1,41 @@
+Running: Allocate node : Body : End
+Running: Allocate node : End
+Running: Execute sub-workflows in parallel : Body : End
+Running: Execute sub-workflows in parallel : End
+Running: End of Workflow
+org.jenkinsci.plugins.workflow.cps.steps.ParallelStepException: Parallel step testFullBuild failed
+	at org.jenkinsci.plugins.workflow.cps.steps.ParallelStep$ResultHandler$Callback.checkAllDone(ParallelStep.java:153)
+	at org.jenkinsci.plugins.workflow.cps.steps.ParallelStep$ResultHandler$Callback.onSuccess(ParallelStep.java:110)
+	at org.jenkinsci.plugins.workflow.cps.CpsBodyExecution$SuccessAdapter.receive(CpsBodyExecution.java:311)
+	at com.cloudbees.groovy.cps.Outcome.resumeFrom(Outcome.java:73)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:137)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:164)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:274)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$000(CpsThreadGroup.java:74)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:183)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:181)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:47)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:112)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.nio.file.AccessDeniedException: C:\xxxxxx\builds\52\atomic6401887354071732241.tmp -> C:\xxxxxx\builds\52\program.dat
+	at sun.nio.fs.WindowsException.translateToIOException(Unknown Source)
+	at sun.nio.fs.WindowsException.rethrowAsIOException(Unknown Source)
+	at sun.nio.fs.WindowsFileCopy.move(Unknown Source)
+	at sun.nio.fs.WindowsFileSystemProvider.move(Unknown Source)
+	at java.nio.file.Files.move(Unknown Source)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.rename(CpsThreadGroup.java:376)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.saveProgram(CpsThreadGroup.java:353)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.saveProgram(CpsThreadGroup.java:331)
+	at org.jenkinsci.plugins.workflow.cps.CpsStepContext$3.onSuccess(CpsStepContext.java:482)
+	at org.jenkinsci.plugins.workflow.cps.CpsStepContext$3.onSuccess(CpsStepContext.java:478)
+	at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution$4$1.run(CpsFlowExecution.java:546)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.run(CpsVmExecutorService.java:32)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	... 8 more
+Finished: FAILURE

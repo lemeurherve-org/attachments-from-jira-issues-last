@@ -1,0 +1,35 @@
+Index: PerforceChangeLogSet.java
+===================================================================
+RCS file: /cvs/hudson/hudson/plugins/perforce/src/main/java/hudson/plugins/perforce/PerforceChangeLogSet.java,v
+retrieving revision 1.5
+diff -u -r1.5 PerforceChangeLogSet.java
+--- PerforceChangeLogSet.java	13 Nov 2007 21:47:20 -0000	1.5
++++ PerforceChangeLogSet.java	16 Dec 2007 20:46:37 -0000
+@@ -3,11 +3,14 @@
+ import hudson.Util;
+ import hudson.model.AbstractBuild;
+ import hudson.scm.ChangeLogSet;
++import hudson.util.WriterOutputStream;
+ 
+ import java.io.IOException;
+ import java.io.InputStream;
+ import java.io.OutputStream;
++import java.io.OutputStreamWriter;
+ import java.io.PrintStream;
++import java.nio.charset.Charset;
+ import java.util.ArrayList;
+ import java.util.Calendar;
+ import java.util.Collections;
+@@ -150,7 +153,11 @@
+ 	 * @throws IOException
+ 	 */
+ 	public static void saveToChangeLog(OutputStream outputStream, List<Changelist> changes) throws IOException {
+-		PrintStream stream = new PrintStream(outputStream);
++
++        OutputStreamWriter writer = new OutputStreamWriter(outputStream, Charset.forName("UTF-8"));
++        WriterOutputStream stream1 = new WriterOutputStream(writer);
++        PrintStream stream = new PrintStream(stream1);
++
+ 		stream.println("<?xml version='1.0' encoding='UTF-8'?>");
+ 		stream.println("<changelog>");
+ 		for(Changelist change : changes) {

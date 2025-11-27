@@ -1,0 +1,24 @@
+diff --git a/src/main/java/hudson/scm/SubversionSCM.java b/src/main/java/hudson/scm/SubversionSCM.java
+old mode 100755
+new mode 100644
+index 05c9191..30c1443
+--- a/src/main/java/hudson/scm/SubversionSCM.java
++++ b/src/main/java/hudson/scm/SubversionSCM.java
+@@ -2057,10 +2057,16 @@
+ 
+             ISVNAuthenticationManager sam = createSvnAuthenticationManager(createAuthenticationProvider(context));
+             sam = new FilterSVNAuthenticationManager(sam) {
+-                // If there's no time out, the blocking read operation may hang forever, because TCP itself
++                // If there's no time out, the blocking connect and read operation may hang forever, because TCP itself
+                 // has no timeout. So always use some time out. If the underlying implementation gives us some
+                 // value (which may come from ~/.subversion), honor that, as long as it sets some timeout value.
+                 @Override
++                public int getConnectTimeout(SVNRepository repository) {
++                    int r = super.getConnectTimeout(repository);
++                    if(r<=0)    r = DEFAULT_TIMEOUT;
++                    return r;
++                }
++                @Override
+                 public int getReadTimeout(SVNRepository repository) {
+                     int r = super.getReadTimeout(repository);
+                     if(r<=0)    r = DEFAULT_TIMEOUT;

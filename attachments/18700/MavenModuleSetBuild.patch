@@ -1,0 +1,57 @@
+Index: MavenModuleSetBuild.java
+===================================================================
+--- MavenModuleSetBuild.java	(revision 22755)
++++ MavenModuleSetBuild.java	(working copy)
+@@ -29,6 +29,7 @@
+ import hudson.Util;
+ import hudson.EnvVars;
+ import hudson.scm.ChangeLogSet;
++import hudson.slaves.NodeProperty;
+ import hudson.FilePath.FileCallable;
+ import hudson.maven.MavenBuild.ProxyImpl2;
+ import hudson.maven.reporters.MavenFingerprinter;
+@@ -403,7 +404,6 @@
+                         if (parameters != null)
+                             parameters.createBuildWrappers(MavenModuleSetBuild.this,wrappers);
+ 
+-                        buildEnvironments = new ArrayList<Environment>();
+                         for( BuildWrapper w : wrappers) {
+                             Environment e = w.setUp(MavenModuleSetBuild.this, launcher, listener);
+                             if(e==null)
+@@ -522,7 +522,36 @@
+                 throw e;
+             }
+         }
++        
++        /**
++         * Decorates the {@link Launcher}
++         */
++        @Override
++        protected Launcher createLauncher(BuildListener listener) throws IOException, InterruptedException {
++            Launcher l = super.createLauncher(listener);
+ 
++            for(BuildWrapper bw : project.getBuildWrappers())
++                l = bw.decorateLauncher(MavenModuleSetBuild.this,l,listener);
++
++            buildEnvironments = new ArrayList<Environment>();
++
++            for (NodeProperty nodeProperty: Hudson.getInstance().getGlobalNodeProperties()) {
++                Environment environment = nodeProperty.setUp(MavenModuleSetBuild.this, l, listener);
++                if (environment != null) {
++                    buildEnvironments.add(environment);
++                }
++            }
++
++            for (NodeProperty nodeProperty: Computer.currentComputer().getNode().getNodeProperties()) {
++                Environment environment = nodeProperty.setUp(MavenModuleSetBuild.this, l, listener);
++                if (environment != null) {
++                    buildEnvironments.add(environment);
++                }
++            }
++
++            return l;
++        }
++
+         private void parsePoms(BuildListener listener, PrintStream logger, EnvVars envVars, MavenInstallation mvn) throws IOException, InterruptedException {
+             logger.println("Parsing POMs");
+ 

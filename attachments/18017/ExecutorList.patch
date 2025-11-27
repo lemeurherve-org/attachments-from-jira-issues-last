@@ -1,0 +1,88 @@
+Index: core/src/main/java/hudson/model/ExecutorList.java
+===================================================================
+--- core/src/main/java/hudson/model/ExecutorList.java	(revision 0)
++++ core/src/main/java/hudson/model/ExecutorList.java	(revision 0)
+@@ -0,0 +1,47 @@
++/*
++ * The MIT License
++ * 
++ * Copyright (c) 2009, Sun Microsystems, Inc., Yahoo! Inc
++ * 
++ * Permission is hereby granted, free of charge, to any person obtaining a copy
++ * of this software and associated documentation files (the "Software"), to deal
++ * in the Software without restriction, including without limitation the rights
++ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++ * copies of the Software, and to permit persons to whom the Software is
++ * furnished to do so, subject to the following conditions:
++ * 
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ * 
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++ * THE SOFTWARE.
++ */
++package hudson.model;
++
++import java.util.concurrent.CopyOnWriteArrayList;
++
++/**
++ * Specialized list for holding {@link Executor} instances. Ensures that the
++ * executor has been started before it is added to the list.
++ *
++ * @author Mike Dillon
++ */
++public class ExecutorList<E extends Executor> extends CopyOnWriteArrayList<E> {
++    /**
++     * Appends the specified executor to the end of this list after ensuring it
++     * has been started.
++     *
++     * @throws IllegalThreadStateException if the specified executor was dead.
++     */
++    @Override
++    public boolean add(E executor) {
++        if (!executor.isAlive())
++            executor.start();
++        return super.add(executor);
++    }
++}
+Index: core/src/main/java/hudson/model/Computer.java
+===================================================================
+--- core/src/main/java/hudson/model/Computer.java	(revision 23682)
++++ core/src/main/java/hudson/model/Computer.java	(working copy)
+@@ -67,7 +67,6 @@
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Enumeration;
+-import java.util.concurrent.CopyOnWriteArrayList;
+ import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.Executors;
+ import java.util.concurrent.Future;
+@@ -107,9 +106,9 @@
+ @ExportedBean
+ public /*transient*/ abstract class Computer extends Actionable implements AccessControlled, ExecutorListener {
+ 
+-    private final CopyOnWriteArrayList<Executor> executors = new CopyOnWriteArrayList<Executor>();
++    private final ExecutorList<Executor> executors = new ExecutorList<Executor>();
+     // TODO: 
+-    private final CopyOnWriteArrayList<OneOffExecutor> oneOffExecutors = new CopyOnWriteArrayList<OneOffExecutor>();
++    private final ExecutorList<OneOffExecutor> oneOffExecutors = new ExecutorList<OneOffExecutor>();
+ 
+     private int numExecutors;
+ 
+Index: core/src/main/java/hudson/model/Executor.java
+===================================================================
+--- core/src/main/java/hudson/model/Executor.java	(revision 23682)
++++ core/src/main/java/hudson/model/Executor.java	(working copy)
+@@ -74,7 +74,6 @@
+         this.owner = owner;
+         this.queue = Hudson.getInstance().getQueue();
+         this.number = n;
+-        start();
+     }
+ 
+     @Override

@@ -1,0 +1,14 @@
+Index: main/core/src/main/java/hudson/model/Queue.java
+===================================================================
+--- main/core/src/main/java/hudson/model/Queue.java	(Revision 27401)
++++ main/core/src/main/java/hudson/model/Queue.java	(Arbeitskopie)
+@@ -928,7 +928,8 @@
+             
+             for (Node n : hash.list(p.task.getFullDisplayName())) {
+                 Computer c = n.toComputer();
+-                if (c==null || c.isOffline())    continue;
++                if (n.getMode() == Mode.EXCLUSIVE || c==null || c.isOffline())
++                    continue;
+                 c.startFlyWeightTask(p);
+                 return;
+             }

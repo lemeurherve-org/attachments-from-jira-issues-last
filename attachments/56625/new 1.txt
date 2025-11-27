@@ -1,0 +1,41 @@
+Branch event
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/caches/git-17a837ab9da1cf272d31c132065db8eb/.git # timeout=10
+Setting origin to <repo_url>
+ > git config remote.origin.url <repo_url> # timeout=10
+Fetching & pruning origin...
+Listing remote references...
+ > git config --get remote.origin.url # timeout=10
+ > git --version # timeout=10
+ > git --version # 'git version 1.8.3.1'
+ > git ls-remote -h -t <repo_url> # timeout=10
+Fetching upstream changes from origin
+ > git config --get remote.origin.url # timeout=10
+ > git fetch --tags --progress --prune origin +refs/heads/*:refs/remotes/origin/* # timeout=10
+Checking branches...
+  Checking branch 1.X
+    Met criteria
+Processed 14 branches (query complete)
+Checking tags...
+Processed 1 tags (query complete)
+Checking out git <repo_url> into /var/lib/jenkins/jobs/<folder_name>/jobs/<job_name>/branches/1-X.u7qdgr/workspace@script to read Jenkinsfile
+The recommended git tool is: git
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/jobs/<folder_name>/jobs/<job_name>/branches/1-X.u7qdgr/workspace@script/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url <repo_url> # timeout=10
+Fetching without tags
+Fetching upstream changes from <repo_url>
+ > git --version # timeout=10
+ > git --version # 'git version 1.8.3.1'
+ > git fetch --no-tags --progress <repo_url> +refs/heads/*:refs/remotes/origin/* # timeout=10
+Checking out Revision f2b2357f5dadf5b52415dc196be5688dfc7a226a (1.X)
+ > git config core.sparsecheckout # timeout=10
+ > git read-tree -mu HEAD # timeout=10
+ > git checkout -f f2b2357f5dadf5b52415dc196be5688dfc7a226a # timeout=10
+Commit message: "Pull request #2613: <commit_message>"
+ > git rev-list --no-walk 143bc75342abb9caa1646afc1c7fe0c0a4ff833d # timeout=10
+Posting build status of INPROGRESS to EDN Bitbucket for commit id [f2b2357f5dadf5b52415dc196be5688dfc7a226a] and ref 'refs/heads/1.X'
+Running in Durability level: MAX_SURVIVABILITY
+<other_pipeline_library_clone_information_goes_here>
+[Pipeline] Start of Pipeline
+...

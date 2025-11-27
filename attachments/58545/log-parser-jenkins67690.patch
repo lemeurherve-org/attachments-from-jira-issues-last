@@ -1,0 +1,35 @@
+diff --git a/src/main/java/hudson/plugins/logparser/LogParserDisplayConsts.java b/src/main/java/hudson/plugins/logparser/LogParserDisplayConsts.java
+index 21c5468..651f21e 100755
+--- a/src/main/java/hudson/plugins/logparser/LogParserDisplayConsts.java
++++ b/src/main/java/hudson/plugins/logparser/LogParserDisplayConsts.java
+@@ -33,7 +33,7 @@ public class LogParserDisplayConsts {
+         iconTable.put(LogParserConsts.ERROR, "red.gif");
+         iconTable.put(LogParserConsts.WARNING, "yellow.gif");
+         iconTable.put(LogParserConsts.INFO, "blue.gif");
+-        iconTable.put(LogParserConsts.DEBUG, "grey.gif");
++        iconTable.put(LogParserConsts.DEBUG, "gray.gif");
+ 
+         // How to display in link summary html
+         linkListDisplay.put(LogParserConsts.ERROR, "Error");
+diff --git a/src/main/java/hudson/plugins/logparser/LogParserWriter.java b/src/main/java/hudson/plugins/logparser/LogParserWriter.java
+index d7fe719..18e5a0f 100755
+--- a/src/main/java/hudson/plugins/logparser/LogParserWriter.java
++++ b/src/main/java/hudson/plugins/logparser/LogParserWriter.java
+@@ -118,7 +118,7 @@ public final class LogParserWriter {
+         final String linkListCount = statusCount.get(status).toString();
+ 
+         final String hudsonRoot = Jenkins.get().getRootUrl();
+-        final String iconLocation = String.format("%s/images/16x16/", Functions.getResourcePath());
++        final String iconLocation = String.format("%s/plugin/log-parser/images/", jenkins.model.Jenkins.RESOURCE_PATH).substring(1);
+ 		
+         final String styles = 
+             "<style>\n" 
+@@ -130,7 +130,7 @@ public final class LogParserWriter {
+             + "</style>\n";
+         writer.write(styles);
+ 		
+-        final String linksStart = "<img src=\"" + hudsonRoot + "/" + iconLocation + statusIcon
++        final String linksStart = "<img src=\"" + hudsonRoot + iconLocation + statusIcon
+                 + "\" style=\"margin: 2px;\" width=\"24\" alt=\"" + linkListDisplayStr + " Icon\" height=\"24\" />\n"
+                 + "<a href=\"javascript:toggleList('" + linkListDisplayStr + "')\" target=\"_self\"><STRONG>"
+                 + linkListDisplayStr + " (" + linkListCount + ")</STRONG></a><br />\n"

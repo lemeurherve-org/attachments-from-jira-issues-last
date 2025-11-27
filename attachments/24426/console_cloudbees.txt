@@ -1,0 +1,60 @@
+tarted by user Ben Golding
+Building remotely on s-fef74afa in workspace /scratch/jenkins/workspace/ErgoKeys
+$ sudo /opt/jenkins/sbin/mount-webdav https://repository-ergokeys.forge.cloudbees.com/private ergokeys alert
+/private/ergokeys is a mountpoint
+Using remote perforce client: ErgoKeys_CloudBees--1061089838
+[ErgoKeys] $ /opt/perforce/p4 workspace -o -S //depot/main ErgoKeys_CloudBees--1061089838
+Changing P4 Client Root to: /scratch/jenkins/workspace/ErgoKeys
+Saving new client ErgoKeys_CloudBees--1061089838
+[ErgoKeys] $ /opt/perforce/p4 -s client -S //depot/main -i
+Caught exception communicating with perforce.  Partner exited unexpectedly.
+For Command: /opt/perforce/p4 -s client -S //depot/main -i 
+With Data:
+===================
+Client: ErgoKeys_CloudBees--1061089838
+Description: 
+Root: /scratch/jenkins/workspace/ErgoKeys
+Options: noallwrite clobber nocompress locked nomodtime rmdir
+LineEnd: local
+Stream: //depot/main
+
+===================
+com.tek42.perforce.PerforceException:  Partner exited unexpectedly.
+For Command: /opt/perforce/p4 -s client -S //depot/main -i 
+With Data:
+===================
+Client: ErgoKeys_CloudBees--1061089838
+Description: 
+Root: /scratch/jenkins/workspace/ErgoKeys
+Options: noallwrite clobber nocompress locked nomodtime rmdir
+LineEnd: local
+Stream: //depot/main
+
+===================
+
+	at com.tek42.perforce.parse.AbstractPerforceTemplate.saveToPerforce(AbstractPerforceTemplate.java:267)
+	at com.tek42.perforce.parse.Workspaces.saveWorkspace(Workspaces.java:77)
+	at hudson.plugins.perforce.PerforceSCM.saveWorkspaceIfDirty(PerforceSCM.java:1715)
+	at hudson.plugins.perforce.PerforceSCM.checkout(PerforceSCM.java:844)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1367)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:684)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:88)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:589)
+	at hudson.model.Run.execute(Run.java:1575)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:237)
+ERROR: Unable to communicate with perforce.  Partner exited unexpectedly.
+For Command: /opt/perforce/p4 -s client -S //depot/main -i 
+With Data:
+===================
+Client: ErgoKeys_CloudBees--1061089838
+Description: 
+Root: /scratch/jenkins/workspace/ErgoKeys
+Options: noallwrite clobber nocompress locked nomodtime rmdir
+LineEnd: local
+Stream: //depot/main
+
+===================
+
+Finished: FAILURE

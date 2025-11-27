@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project>
+  <actions/>
+  <description></description>
+  <logRotator>
+    <daysToKeep>10</daysToKeep>
+    <numToKeep>10</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.queueSorter.PrioritySorterJobProperty>
+      <priority>100</priority>
+    </hudson.queueSorter.PrioritySorterJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+          <name>TEST_TYPE</name>
+          <description>What type of build is this?</description>
+          <quoteValue>false</quoteValue>
+          <type>PT_SINGLE_SELECT</type>
+          <value>NORMAL, RELEASE, FULL</value>
+          <propertyFile></propertyFile>
+          <propertyKey></propertyKey>
+          <defaultValue>NORMAL</defaultValue>
+          <defaultPropertyFile></defaultPropertyFile>
+          <defaultPropertyKey></defaultPropertyKey>
+        </com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+        <com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+          <name>CODELINE</name>
+          <description>The codeline</description>
+          <quoteValue>false</quoteValue>
+          <type>PT_SINGLE_SELECT</type>
+          <value>/path/to/codeline</value>
+          <propertyFile></propertyFile>
+          <propertyKey></propertyKey>
+          <defaultValue>/path/to/codeline</defaultValue>
+          <defaultPropertyFile></defaultPropertyFile>
+          <defaultPropertyKey></defaultPropertyKey>
+        </com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+        <com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+          <name>BUILD</name>
+          <description>the build</description>
+          <quoteValue>false</quoteValue>
+          <type>PT_SINGLE_SELECT</type>
+          <value>path/to/build1, path/to/build2</value>
+          <propertyFile></propertyFile>
+          <propertyKey></propertyKey>
+          <defaultValue>path/to/build1</defaultValue>
+          <defaultPropertyFile></defaultPropertyFile>
+          <defaultPropertyKey></defaultPropertyKey>
+        </com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>job_label_1</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector">
+    <hudson.triggers.TimerTrigger>
+      <spec>0 2 * * *</spec>
+    </hudson.triggers.TimerTrigger>
+    <org.jenkinsci.plugins.fstrigger.triggers.FileNameTrigger>
+      <spec>*/15 * * * *</spec>
+      <fileInfo>
+        <org.jenkinsci.plugins.fstrigger.triggers.FileNameTriggerInfo>
+          <filePathPattern>/path/to/file/that/should/cause/the/trigger/filename.tgz</filePathPattern>
+          <strategy>LATEST</strategy>
+          <inspectingContentFile>false</inspectingContentFile>
+          <doNotCheckLastModificationDate>false</doNotCheckLastModificationDate>
+          <contentFileTypes/>
+        </org.jenkinsci.plugins.fstrigger.triggers.FileNameTriggerInfo>
+      </fileInfo>
+    </org.jenkinsci.plugins.fstrigger.triggers.FileNameTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <hudson.matrix.TextAxis>
+      <name>SUITE</name>
+      <values>
+        <string>Suite_1</string>
+        <string>Suite_2</string>
+        <string>Suite_3</string>
+        <string>Suite_4</string>
+        <string>Suite_5</string>
+        <string>Suite_6</string>
+      </values>
+    </hudson.matrix.TextAxis>
+    <hudson.matrix.LabelAxis>
+      <name>TARGET</name>
+      <values>
+        <string>job_label_1</string>
+        <string>job_label_2</string>
+      </values>
+    </hudson.matrix.LabelAxis>
+  </axes>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+/path/to/build_script.sh
+
+exit $?</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <org.tap4j.plugin.TapPublisher>
+      <testResults>*.tap</testResults>
+      <failedTestsMarkBuildAsFailure>true</failedTestsMarkBuildAsFailure>
+      <outputTapToConsole>false</outputTapToConsole>
+    </org.tap4j.plugin.TapPublisher>
+    <org.jenkinsci.plugins.artifactdeployer.ArtifactDeployerPublisher>
+      <deployEvenBuildFail>true</deployEvenBuildFail>
+      <entries>
+        <org.jenkinsci.plugins.artifactdeployer.ArtifactDeployerEntry>
+          <includes>*.tap, *.log</includes>
+          <remote>/path/to/deployment_directory</remote>
+          <flatten>false</flatten>
+          <deleteRemote>false</deleteRemote>
+          <deleteRemoteArtifacts>false</deleteRemoteArtifacts>
+          <deleteRemoteArtifactsByScript>false</deleteRemoteArtifactsByScript>
+        </org.jenkinsci.plugins.artifactdeployer.ArtifactDeployerEntry>
+      </entries>
+    </org.jenkinsci.plugins.artifactdeployer.ArtifactDeployerPublisher>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup>
+      <deleteDirs>false</deleteDirs>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <timeoutMinutes>30</timeoutMinutes>
+      <failBuild>false</failBuild>
+      <writingDescription>false</writingDescription>
+      <timeoutPercentage>0</timeoutPercentage>
+      <timeoutType>absolute</timeoutType>
+      <timeoutMinutesElasticDefault>3</timeoutMinutesElasticDefault>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.xvnc.Xvnc>
+      <takeScreenshot>false</takeScreenshot>
+    </hudson.plugins.xvnc.Xvnc>
+    <matrixtieparent.BuildWrapperMtp>
+      <labelName>job_label_1</labelName>
+    </matrixtieparent.BuildWrapperMtp>
+  </buildWrappers>
+  <runSequentially>false</runSequentially>
+</matrix-project>

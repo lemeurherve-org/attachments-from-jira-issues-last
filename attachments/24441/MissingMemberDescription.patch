@@ -1,0 +1,22 @@
+15a16
+> import java.util.Arrays;
+288a290,293
+> 					boolean hasMemberDescription = true;
+> 					try {
+294a300,309
+> 					} catch (NoSuchElementException e) {
+> 						// Ignore exception
+> 						Logger.info("MISSING MEMBERDESCRIPTION for member: "+ memberName);
+> 						Logger.info("Available fields: ");
+> 						for (final Iterator fieldsIterator = wi.getFields(); fieldsIterator.hasNext();) {
+> 							Field curField = (Field) fieldsIterator.next();
+> 							Logger.info("Name: " + curField.getName()+ ", Value: "+ curField.getValueAsString());
+> 						}
+> 						hasMemberDescription = false;
+> 					}
+298a314
+> 					if (hasMemberDescription) {
+299a316,318
+> 					} else {
+> 						insert.setTimestamp(4, new Timestamp(0));	// Timestamp
+> 					}

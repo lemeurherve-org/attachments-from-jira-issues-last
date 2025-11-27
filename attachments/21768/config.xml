@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>this is a test of included and excluded regions using git-scm</description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>100</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>100</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>true</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <permission>hudson.model.Item.Delete:n</permission>
+      <permission>hudson.model.Item.Build:n</permission>
+      <permission>hudson.model.Item.ExtendedRead:n</permission>
+      <permission>hudson.scm.SCM.Tag:n</permission>
+      <permission>hudson.model.Item.Workspace:n</permission>
+      <permission>hudson.model.Item.Configure:n</permission>
+      <permission>hudson.model.Run.Update:n</permission>
+      <permission>hudson.model.Item.Read:n</permission>
+      <permission>hudson.model.Run.Delete:n</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <org.jenkinsci.plugins.dryrun.DryRunJobProperty>
+      <on>true</on>
+      <enableRunListeners>true</enableRunListeners>
+      <enableSCM>true</enableSCM>
+      <enableTriggers>true</enableTriggers>
+      <enableBuildWrappers>true</enableBuildWrappers>
+      <enableBuilders>false</enableBuilders>
+      <enablePublishers>true</enablePublishers>
+    </org.jenkinsci.plugins.dryrun.DryRunJobProperty>
+    <hudson.queueSorter.PrioritySorterJobProperty>
+      <priority>100</priority>
+    </hudson.queueSorter.PrioritySorterJobProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>origin</name>
+        <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>
+	<url>http://blank.org/~memory/work/jenkins-bug/regions-test.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <disableSubmodules>false</disableSubmodules>
+    <recursiveSubmodules>false</recursiveSubmodules>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <authorOrCommitter>false</authorOrCommitter>
+    <clean>true</clean>
+    <wipeOutWorkspace>true</wipeOutWorkspace>
+    <pruneBranches>false</pruneBranches>
+    <remotePoll>false</remotePoll>
+    <ignoreNotifyCommit>false</ignoreNotifyCommit>
+    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
+    <gitTool>Default</gitTool>
+    <submoduleCfg class="list"/>
+    <relativeTargetDir></relativeTargetDir>
+    <reference></reference>
+    <excludedRegions></excludedRegions>
+    <excludedUsers></excludedUsers>
+    <gitConfigName></gitConfigName>
+    <gitConfigEmail></gitConfigEmail>
+    <skipTag>false</skipTag>
+    <includedRegions>^foo/a/.*</includedRegions>
+    <scmName></scmName>
+  </scm>
+  <assignedNode>Common</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>*/3 * * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>/bin/sh ./jenkins-build.sh
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.sloccount.SloccountPublisher>
+      <pattern></pattern>
+      <encoding></encoding>
+    </hudson.plugins.sloccount.SloccountPublisher>
+    <hudson.tasks.Fingerprinter>
+      <targets></targets>
+      <recordBuildArtifacts>false</recordBuildArtifacts>
+    </hudson.tasks.Fingerprinter>
+    <hudson.plugins.git.GitPublisher>
+      <configVersion>2</configVersion>
+      <pushMerge>false</pushMerge>
+      <pushOnlyIfSuccess>true</pushOnlyIfSuccess>
+    </hudson.plugins.git.GitPublisher>
+    <hudson.plugins.cigame.GamePublisher/>
+    <hudson.tasks.Mailer>
+      <recipients>nathan.mehl@gmail.com</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+    <hudson.plugins.dumpinfo.DumpInfoBuildWrapper>
+      <dumpComputers>true</dumpComputers>
+      <dumpJdks>true</dumpJdks>
+      <dumpPlugins>true</dumpPlugins>
+      <dumpSystemProperties>true</dumpSystemProperties>
+      <dumpEnvironmentVariables>true</dumpEnvironmentVariables>
+    </hudson.plugins.dumpinfo.DumpInfoBuildWrapper>
+  </buildWrappers>
+</project>

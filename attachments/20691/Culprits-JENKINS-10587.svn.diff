@@ -1,0 +1,128 @@
+Index: src/main/java/hudson/model/RadiatorView.java
+===================================================================
+--- src/main/java/hudson/model/RadiatorView.java	(revision 39751)
++++ src/main/java/hudson/model/RadiatorView.java	(working copy)
+@@ -4,23 +4,20 @@
+ import hudson.Util;
+ import hudson.model.Descriptor.FormException;
+ import hudson.util.FormValidation;
++import org.apache.commons.lang.StringUtils;
++import org.kohsuke.stapler.DataBoundConstructor;
++import org.kohsuke.stapler.QueryParameter;
++import org.kohsuke.stapler.StaplerRequest;
+ 
++import javax.servlet.ServletException;
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.HashMap;
+ import java.util.Map;
+-import java.util.TreeSet;
+ import java.util.regex.Pattern;
+ import java.util.regex.PatternSyntaxException;
+ 
+-import javax.servlet.ServletException;
+-
+-import org.apache.commons.lang.StringUtils;
+-import org.kohsuke.stapler.DataBoundConstructor;
+-import org.kohsuke.stapler.QueryParameter;
+-import org.kohsuke.stapler.StaplerRequest;
+-
+ /**
+  * A configurable Radiator-Style job view suitable for use in extreme feedback
+  * systems - ideal for running on a spare PC in the office. Many thanks to
+@@ -46,6 +43,11 @@
+ 	transient ViewEntryColors colors;
+ 
+ 	/**
++	 * User configuration - if to show culprits or not.
++	 */
++	 Boolean showCulprits = true;
++
++	/**
+ 	 * User configuration - show stable builds when there are some unstable
+ 	 * builds.
+ 	 */
+@@ -69,6 +71,8 @@
+ 	/**
+ 	 * @param name
+ 	 *            view name.
++	 * @param showCulprits
++	 *            if to show culprits or not.
+ 	 * @param showStable
+ 	 *            if stable builds should be shown.
+ 	 * @param showStableDetail
+@@ -80,9 +84,10 @@
+ 	 *            prefix of the job name.
+ 	 */
+ 	@DataBoundConstructor
+-	public RadiatorView(String name, Boolean showStable,
++	public RadiatorView(String name, Boolean showCulprits, Boolean showStable,
+ 			Boolean showStableDetail, Boolean highVis, Boolean groupByPrefix) {
+ 		super(name);
++		this.showCulprits = showCulprits;
+ 		this.showStable = showStable;
+ 		this.showStableDetail = showStableDetail;
+ 		this.highVis = highVis;
+@@ -180,6 +185,7 @@
+ 	protected void submit(StaplerRequest req) throws ServletException, IOException, 
+ 			FormException {
+ 		super.submit(req);
++		this.showCulprits = Boolean.parseBoolean(req.getParameter("showCulprits"));
+ 		this.showStable = Boolean.parseBoolean(req.getParameter("showStable"));
+ 		this.showStableDetail = Boolean.parseBoolean(req
+ 				.getParameter("showStableDetail"));
+@@ -187,6 +193,10 @@
+ 		this.groupByPrefix = Boolean.parseBoolean(req.getParameter("groupByPrefix"));
+ 	}
+ 
++	public Boolean getShowCulprits() {
++		return showCulprits;
++	}
++
+ 	public Boolean getShowStable() {
+ 		return showStable;
+ 	}
+Index: src/main/resources/hudson/model/RadiatorView/configure-entries.jelly
+===================================================================
+--- src/main/resources/hudson/model/RadiatorView/configure-entries.jelly	(revision 39751)
++++ src/main/resources/hudson/model/RadiatorView/configure-entries.jelly	(working copy)
+@@ -17,10 +17,14 @@
+     </f:entry>
+   </f:optionalBlock>
+ 
++	<f:entry title="${%Show culprits?}" field="showCulprits"  help="/plugin/radiatorviewplugin/help/showculprits.html">
++		<f:checkbox name="showCulprits" checked="${it.showCulprits}" value="true" field="showCulprits" />
++	</f:entry>
++
+ 	<f:entry title="${%Show stable builds?}" field="showStable"  help="/plugin/radiatorviewplugin/help/showstable.html">
+ 		<f:checkbox name="showStable" checked="${it.showStable}" value="true" field="showStable" />
+ 	</f:entry>
+-	
++
+ 	<f:entry title="${%Show stable detail?}" field="showStableDetail" help="/plugin/radiatorviewplugin/help/showstabledetail.html">
+ 		<f:checkbox name="showStableDetail" checked="${it.showStableDetail}" value="true" field="showStableDetail" />
+ 	</f:entry>
+Index: src/main/resources/hudson/model/RadiatorView/job.jelly
+===================================================================
+--- src/main/resources/hudson/model/RadiatorView/job.jelly	(revision 39751)
++++ src/main/resources/hudson/model/RadiatorView/job.jelly	(working copy)
+@@ -54,7 +54,7 @@
+ 			<p>Build pending (#${job.queueNumber} in queue)</p>
+ 		</j:if>
+ 		<j:if test="${!job.getStable()}">
+-			<j:if test="${job.getCulprit() != &quot; - &quot;}">
++			<j:if test="${job.getCulprit() != &quot; - &quot; &amp;&amp; from.getShowCulprits()}">
+ 				<p>Possible culprit: ${job.culprit}</p>
+ 			</j:if>
+ 			<j:if test="${job.getLastStableBuild() != null}">
+Index: src/main/webapp/help/showculprits.html
+===================================================================
+--- src/main/webapp/help/showculprits.html	(revision 0)
++++ src/main/webapp/help/showculprits.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++<p>Choose whether to show possible culprits for a broken build
++  or to hide them. For public viewable screens you might want
++  to turn of displaying of possible culprits.</p>
++</div>

@@ -1,0 +1,23 @@
+Started by timer
+[Tue Aug 01 16:57:06 IDT 2023] Starting branch indexing...
+ERROR: [Tue Aug 01 16:57:06 IDT 2023] Could not update folder level actions from source io.jenkins.plugins.gitlabbranchsource.GitLabSCMNavigator::http://gitlab.XXXXXXXXXXXXXXXXXXXXXXXX
+[Tue Aug 01 16:57:06 IDT 2023] Finished branch indexing. Indexing took 57 ms
+FATAL: Failed to recompute children of XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+org.gitlab4j.api.GitLabApiException: 404 Project Not Found
+	at org.gitlab4j.api.AbstractApi.validate(AbstractApi.java:678)
+	at org.gitlab4j.api.AbstractApi.get(AbstractApi.java:214)
+	at org.gitlab4j.api.ProjectApi.getProject(ProjectApi.java:748)
+	at org.gitlab4j.api.ProjectApi.getProject(ProjectApi.java:680)
+	at io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource.getGitlabProject(GitLabSCMSource.java:212)
+Caused: java.lang.IllegalStateException: Failed to retrieve project XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+	at io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource.getGitlabProject(GitLabSCMSource.java:217)
+	at io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource.getGitlabProject(GitLabSCMSource.java:204)
+	at io.jenkins.plugins.gitlabbranchsource.GitLabSCMSource.retrieveActions(GitLabSCMSource.java:604)
+	at jenkins.scm.api.SCMSource.fetchActions(SCMSource.java:847)
+	at jenkins.branch.MultiBranchProject.computeChildren(MultiBranchProject.java:611)
+	at com.cloudbees.hudson.plugins.folder.computed.ComputedFolder.updateChildren(ComputedFolder.java:269)
+	at com.cloudbees.hudson.plugins.folder.computed.FolderComputation.run(FolderComputation.java:167)
+	at jenkins.branch.MultiBranchProject$BranchIndexing.run(MultiBranchProject.java:1057)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:442)
+Finished: FAILURE

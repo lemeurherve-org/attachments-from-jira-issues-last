@@ -1,0 +1,183 @@
+node('PLTSTSRV001') {
+  properties([
+    disableConcurrentBuilds(),
+    parameters([
+      string(defaultValue: '', description: 'The PHID of the repository in Phabricator', name: 'PHID', trim: true),
+      string(defaultValue: '', description: 'The commit identifier, if applicable', name: 'COMMIT_ID', trim: true)
+      ])
+    ])
+  timeout(time: 1, unit: 'HOURS') {
+    try {
+      stage('Setup') {
+        if (env.JOB_NAME=='avisalib/default') {
+          env.BRANCH_NAME = 'default'
+        }
+        else if (env.JOB_NAME=='avisalib/development') {
+          env.BRANCH_NAME = 'development'
+        }
+        checkout([$class: 'MercurialSCM', clean: true, credentialsId: REDACTED installation: '(Default)', revision: env.BRANCH_NAME, source: 'REDACTED'])
+        sh '''#!/bin/bash
+        python3 -m venv venv
+        source venv/bin/activate
+        python -m pip install --upgrade pip
+        echo "Installing requirements..."
+        python -m pip install -r requirements.txt
+        deactivate
+        '''
+        currentBuild.result = 'SUCCESS'
+      }
+      stage('Documentation') {
+        echo '=========================== building documentation ============================'
+        sh '''#!/bin/bash
+        source venv/bin/activate
+        sphinx-build -b html docs/source docs/build/html
+        deactivate
+        '''
+        echo '========================== publishing documentation ==========================='
+        sh '''#!/bin/bash
+        echo "Building archive with documentation"
+        cd docs/build
+        ls -la
+        zip -r documentation.zip .
+        '''
+        archiveArtifacts 'docs/build/documentation.zip'
+      }
+      stage('Binary') {
+        echo '============================= building binary ================================='
+        sh '''#!/bin/bash
+        source venv/bin/activate
+        python setup.py bdist_wheel
+        deactivate
+        '''
+        echo '============================= publishing binary =============================='
+        sh '''#!/bin/bash
+        mv dist/avisalib* /usr/share/nginx/html/pypi/avisalib/
+        '''
+      }
+    }
+    catch (e) {
+      echo "Failed with message: ${e.message}"
+      currentBuild.result = 'FAILURE'
+      cleanup()
+    }
+    lock(resource: 'AVISA_TST_SETUP', variable: 'locked_resources') {
+      try {
+        stage('UC + EXPORTFREE') {
+          echo '============================= testing EXPORTFREE =============================='
+          sh '''#!/bin/bash
+          source venv/bin/activate
+          pth=`echo /REDACTED/development/stock.bin`
+          python -m avisalib.cli /dev/ttyUSB0 atflash 0040001E UC \"$pth\"
+          pth=`ls /REDACTED/development/v*ldr | sort -t'-' -n -k2 -r | grep -P '.*\\(EXPORTFREE\\).ldr$' -m 1`
+          python -m avisalib.cli /dev/ttyUSB0 atflash 0040001E DSP \"$pth\"
+          python -m pytest -s -v --ignore=avisalib/test/test_utils.py --deselect=avisalib/test/test_cli.py::test_programming_sequence --junitxml=./testReport-uc-and-exportfree.xml
+          '''
+        }
+      }
+      catch (e) {
+        echo "Failed with message: ${e.message}"
+        currentBuild.result = 'FAILURE'
+      }
+      try {
+        stage('RAM') {
+          echo '================================ testing RAM =================================='
+          sh '''#!/bin/bash
+          source venv/bin/activate
+          pth=`ls /REDACTED/development/v*ldr | sort -t'-' -n -k2 -r | grep -P '.*\\(RAM\\).ldr$' -m 1`
+          python -m avisalib.cli /dev/ttyUSB0 atflash 0040001E DSP \"$pth\"
+          python -m pytest -s -v --ignore=avisalib/test/test_utils.py --deselect=avisalib/test/test_cli.py::test_programming_sequence --junitxml=./testReport-ram.xml
+          '''
+        }
+      }
+      catch (e) {
+        echo "Failed with message: ${e.message}"
+        currentBuild.result = 'FAILURE'
+      }
+      try {
+        stage('RAMSAF') {
+          echo '=============================== testing RAMSAF ================================'
+          sh '''#!/bin/bash
+          source venv/bin/activate
+          pth=`ls /REDACTED/development/v*ldr | sort -t'-' -n -k2 -r | grep -P '.*\\(RAMSAF\\).ldr$' -m 1`
+          python -m avisalib.cli /dev/ttyUSB0 atflash 0040001E DSP \"$pth\"
+          python -m pytest -s -v --ignore=avisalib/test/test_utils.py --deselect=avisalib/test/test_cli.py::test_programming_sequence --junitxml=./testReport-ramsaf.xml
+          '''
+        }
+      }
+      catch (e) {
+        echo "Failed with message: ${e.message}"
+        currentBuild.result = 'FAILURE'
+      }
+      try {
+        stage('SAF') {
+          echo '================================ testing SAF =================================='
+          sh '''#!/bin/bash
+          source venv/bin/activate
+          pth=`ls /REDACTED/development/v*ldr | sort -t'-' -n -k2 -r | grep -P '.*\\(SAF\\).ldr$' -m 1`
+          python -m avisalib.cli /dev/ttyUSB0 atflash 0040001E DSP \"$pth\"
+          python -m pytest -s -v --ignore=avisalib/test/test_utils.py --deselect=avisalib/test/test_cli.py::test_programming_sequence --junitxml=./testReport-saf.xml
+          '''
+        }
+      }
+      catch (e) {
+        echo "Failed with message: ${e.message}"
+        currentBuild.result = 'FAILURE'
+      }
+      try {
+        stage('VEHICLE2') {
+          echo '============================== testing VEHICLE2 ==============================='
+          sh '''#!/bin/bash
+          source venv/bin/activate
+          pth=`ls /REDACTED/development/v*ldr | sort -t'-' -n -k2 -r | grep -P '.*\\(VEHICLE2\\).ldr$' -m 1`
+          python -m avisalib.cli /dev/ttyUSB0 atflash 0040001E DSP \"$pth\"
+          python -m pytest -s -v --ignore=avisalib/test/test_utils.py --deselect=avisalib/test/test_cli.py::test_programming_sequence --junitxml=./testReport-vehicle2.xml
+          '''
+        }
+      }
+      catch (e) {
+        echo "Failed with message: ${e.message}"
+        currentBuild.result = 'FAILURE'
+      }
+    }
+    try {
+      stage('Utils') {
+        echo '=============================== testing utils ================================='
+        sh '''#!/bin/bash
+        source venv/bin/activate
+        python -m pytest -s -v --ignore=avisalib/test/test_cli.py --junitxml=./testReport-utils.xml
+        '''
+      }
+    }
+    catch (e) {
+      echo "Failed with message: ${e.message}"
+      currentBuild.result = 'FAILURE'
+    }
+    try {
+      echo '============================= post-build actions =============================='
+      stage('Post-build actions') {
+        publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'docs/build/html', reportFiles: 'index.html', reportName: 'Documentation', reportTitles: 'Documentation of tests'])
+        junit allowEmptyResults: true, testResults: 'testReport-uc.xml'
+        junit allowEmptyResults: true, testResults: 'testReport-exportfree.xml'
+        junit allowEmptyResults: true, testResults: 'testReport-ram.xml'
+        junit allowEmptyResults: true, testResults: 'testReport-ramsaf.xml'
+        junit allowEmptyResults: true, testResults: 'testReport-saf.xml'
+        junit allowEmptyResults: true, testResults: 'testReport-vehicle2.xml'
+        junit allowEmptyResults: true, testResults: 'testReport-utils.xml'
+        // sending email to people suspected for the build to begin failing
+        emailextrecipients([brokenBuildSuspects()])
+      }
+    }
+    catch (e) {
+      echo "Failed with message: ${e.message}"
+      currentBuild.result = 'FAILURE'
+    }
+    stage('Cleanup') {
+      cleanup()
+    }
+  }
+}
+
+def cleanup() {
+  echo '================================== cleanup ===================================='
+  cleanWs()
+}

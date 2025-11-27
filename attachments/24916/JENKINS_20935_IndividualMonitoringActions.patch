@@ -1,0 +1,511 @@
+Index: java/org/jvnet/hudson/plugins/monitoring/HudsonMonitoringFilter.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/HudsonMonitoringFilter.java	(revision 41033)
++++ java/org/jvnet/hudson/plugins/monitoring/HudsonMonitoringFilter.java	(working copy)
+@@ -18,6 +18,7 @@
+  */
+ package org.jvnet.hudson.plugins.monitoring;
+ 
++import hudson.model.Computer;
+ import hudson.model.Hudson;
+ 
+ import java.io.IOException;
+@@ -29,6 +30,7 @@
+ import javax.servlet.ServletResponse;
+ import javax.servlet.http.HttpServletRequest;
+ import javax.servlet.http.HttpServletResponse;
++import jenkins.model.Jenkins;
+ 
+ import net.bull.javamelody.NodesCollector;
+ import net.bull.javamelody.NodesController;
+@@ -76,9 +78,25 @@
+ 		}
+ 
+ 		if (requestURI.equals(monitoringSlavesUrl)) {
+-			final HttpServletResponse httpResponse = (HttpServletResponse) response;
+-			doMonitoring(httpRequest, httpResponse);
+-			return;
++                    // Handle request
++                    String nodeName = httpRequest.getParameter("name");
++                    final HttpServletResponse httpResponse = (HttpServletResponse) response;
++			
++                    if (nodeName == null) {
++			// Show monitoring info for all nodes
++                        doMonitoring(httpRequest, httpResponse);
++			
++                    } else {
++                        // Show monitoring info for the individual node
++                        Computer cmptr = Jenkins.getInstance().getComputer(nodeName);
++                        if (cmptr != null) {
++                            //TODO: implement
++                            httpResponse.sendError(501, "Individual node monitoring has not been implemented yet");
++                        } else {
++                            httpResponse.sendError(404, "Node "+nodeName+" does not exist");
++                        }
++                    }
++                    return;
+ 		}
+ 
+ 		super.doFilter(request, response, chain);
+@@ -99,6 +117,8 @@
+ 		final NodesController nodesController = new NodesController(getNodesCollector());
+ 		nodesController.doMonitoring(httpRequest, httpResponse);
+ 	}
++        
++        
+ 
+ 	NodesCollector getNodesCollector() {
+ 		return nodesCollector;
+Index: java/org/jvnet/hudson/plugins/monitoring/nodes/AbstractNodeMonitoringAction.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/nodes/AbstractNodeMonitoringAction.java	(revision 0)
++++ java/org/jvnet/hudson/plugins/monitoring/nodes/AbstractNodeMonitoringAction.java	(working copy)
+@@ -0,0 +1,62 @@
++/*
++ * Copyright 2013 by Oleg Nenashev
++ *
++ *     This file is part of the Monitoring plugin.
++ *
++ * The Monitoring plugin is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The Monitoring plugin is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the Monitoring plugin.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.jvnet.hudson.plugins.monitoring.nodes;
++
++import hudson.model.Action;
++import hudson.model.Computer;
++import hudson.model.Hudson;
++import hudson.security.Permission;
++
++/**
++ * Implements a "Monitoring" button for slaves.
++ * This button will be available for everybody with CONFIGURE
++ * permissions for the slave.
++ * @author Oleg Nenashev <o.v.nenashev@gmail.com>
++ * @since TODO: define a version
++ */
++
++public abstract class AbstractNodeMonitoringAction implements Action {
++    private final Computer target;
++
++    public AbstractNodeMonitoringAction(Computer target) {
++        this.target = target;
++    }
++
++    public final Computer getTarget() {
++        return target;
++    }
++
++    @Override
++    public final String getDisplayName() {
++        return hasMonitoringPermissions() ? Messages.NodeMonitoringAction_displayName() : null;
++    }
++
++    @Override
++    public final String getIconFileName() {
++        return hasMonitoringPermissions() ? "monitor.gif" : null;
++    }
++    
++    /**
++     * Checks that user has access permissions to the monitoring page.
++     * By default, requires global configure permissions.
++     */
++    protected boolean hasMonitoringPermissions() {
++        return Hudson.getInstance().hasPermission(Permission.CONFIGURE);
++    }
++}
+Index: java/org/jvnet/hudson/plugins/monitoring/nodes/MasterNodeMonitoringAction.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/nodes/MasterNodeMonitoringAction.java	(revision 0)
++++ java/org/jvnet/hudson/plugins/monitoring/nodes/MasterNodeMonitoringAction.java	(working copy)
+@@ -0,0 +1,39 @@
++/*
++ * Copyright 2013 by Oleg Nenashev
++ *
++ *     This file is part of the Monitoring plugin.
++ *
++ * The Monitoring plugin is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The Monitoring plugin is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the Monitoring plugin.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.jvnet.hudson.plugins.monitoring.nodes;
++
++import hudson.model.Computer;
++import jenkins.model.Jenkins;
++
++/**
++ * Provides a monitoring action for {@link Jenkins.MasterComputer}. 
++ * @author Oleg Nenashev <o.v.nenashev@gmail.com>
++ * @since TODO: define a version
++ */
++public class MasterNodeMonitoringAction extends AbstractNodeMonitoringAction {
++
++    public MasterNodeMonitoringAction(Computer target) {
++        super(target);
++    }
++    
++    @Override
++    public String getUrlName() {
++        return "/monitoring";
++    }
++}
+Index: java/org/jvnet/hudson/plugins/monitoring/nodes/NodesMonitoringActionFactory.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/nodes/NodesMonitoringActionFactory.java	(revision 0)
++++ java/org/jvnet/hudson/plugins/monitoring/nodes/NodesMonitoringActionFactory.java	(working copy)
+@@ -0,0 +1,41 @@
++/*
++ * Copyright 2013 by Oleg Nenashev
++ *
++ *     This file is part of the Monitoring plugin.
++ *
++ * The Monitoring plugin is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The Monitoring plugin is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the Monitoring plugin.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.jvnet.hudson.plugins.monitoring.nodes;
++
++import hudson.Extension;
++import hudson.model.Action;
++import hudson.model.Computer;
++import hudson.model.TransientComputerActionFactory;
++import java.util.Collection;
++import static java.util.Collections.singleton;
++import jenkins.model.Jenkins;
++
++/**
++ * Generates a {@link NodeMonitoringAction} for the each slave computer.
++ * @author Oleg Nenashev <o.v.nenashev@gmail.com>
++ */
++@Extension
++public class NodesMonitoringActionFactory extends TransientComputerActionFactory {
++
++    @Override
++    public Collection<? extends Action> createFor(Computer cmptr) {
++        return singleton((cmptr instanceof Jenkins.MasterComputer) 
++            ? new MasterNodeMonitoringAction(cmptr) : new SlaveNodeMonitoringAction(cmptr));
++    } 
++}
+Index: java/org/jvnet/hudson/plugins/monitoring/nodes/SlaveNodeMonitoringAction.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/nodes/SlaveNodeMonitoringAction.java	(revision 0)
++++ java/org/jvnet/hudson/plugins/monitoring/nodes/SlaveNodeMonitoringAction.java	(working copy)
+@@ -0,0 +1,40 @@
++/*
++ * Copyright 2013 by Oleg Nenashev
++ *
++ *     This file is part of the Monitoring plugin.
++ *
++ * The Monitoring plugin is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The Monitoring plugin is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the Monitoring plugin.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.jvnet.hudson.plugins.monitoring.nodes;
++
++import hudson.model.Computer;
++
++/**
++ * Provides a monitoring action for typical slave nodes. 
++ * Use {@link MasterNodeMonitoringAction} for ${@link Jenkins.MasterComputer}.
++ * @author Oleg Nenashev <o.v.nenashev@gmail.com>
++ * @since TODO: define a version
++ */
++// TODO: integrate with per-node security checks
++public class SlaveNodeMonitoringAction extends AbstractNodeMonitoringAction {
++
++    public SlaveNodeMonitoringAction(Computer target) {
++        super(target);
++    }
++    
++    @Override
++    public String getUrlName() {
++        return "/monitoring/nodes?name=" + getTarget().getName();
++    }
++}
+Index: java/org/jvnet/hudson/plugins/monitoring/nodes/AbstractNodeMonitoringAction.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/nodes/AbstractNodeMonitoringAction.java	(revision 0)
++++ java/org/jvnet/hudson/plugins/monitoring/nodes/AbstractNodeMonitoringAction.java	(working copy)
+@@ -0,0 +1,62 @@
++/*
++ * Copyright 2013 by Oleg Nenashev
++ *
++ *     This file is part of the Monitoring plugin.
++ *
++ * The Monitoring plugin is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The Monitoring plugin is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the Monitoring plugin.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.jvnet.hudson.plugins.monitoring.nodes;
++
++import hudson.model.Action;
++import hudson.model.Computer;
++import hudson.model.Hudson;
++import hudson.security.Permission;
++
++/**
++ * Implements a "Monitoring" button for slaves.
++ * This button will be available for everybody with CONFIGURE
++ * permissions for the slave.
++ * @author Oleg Nenashev <o.v.nenashev@gmail.com>
++ * @since TODO: define a version
++ */
++
++public abstract class AbstractNodeMonitoringAction implements Action {
++    private final Computer target;
++
++    public AbstractNodeMonitoringAction(Computer target) {
++        this.target = target;
++    }
++
++    public final Computer getTarget() {
++        return target;
++    }
++
++    @Override
++    public final String getDisplayName() {
++        return hasMonitoringPermissions() ? Messages.NodeMonitoringAction_displayName() : null;
++    }
++
++    @Override
++    public final String getIconFileName() {
++        return hasMonitoringPermissions() ? "monitor.gif" : null;
++    }
++    
++    /**
++     * Checks that user has access permissions to the monitoring page.
++     * By default, requires global configure permissions.
++     */
++    protected boolean hasMonitoringPermissions() {
++        return Hudson.getInstance().hasPermission(Permission.CONFIGURE);
++    }
++}
+Index: java/org/jvnet/hudson/plugins/monitoring/nodes/MasterNodeMonitoringAction.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/nodes/MasterNodeMonitoringAction.java	(revision 0)
++++ java/org/jvnet/hudson/plugins/monitoring/nodes/MasterNodeMonitoringAction.java	(working copy)
+@@ -0,0 +1,39 @@
++/*
++ * Copyright 2013 by Oleg Nenashev
++ *
++ *     This file is part of the Monitoring plugin.
++ *
++ * The Monitoring plugin is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The Monitoring plugin is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the Monitoring plugin.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.jvnet.hudson.plugins.monitoring.nodes;
++
++import hudson.model.Computer;
++import jenkins.model.Jenkins;
++
++/**
++ * Provides a monitoring action for {@link Jenkins.MasterComputer}. 
++ * @author Oleg Nenashev <o.v.nenashev@gmail.com>
++ * @since TODO: define a version
++ */
++public class MasterNodeMonitoringAction extends AbstractNodeMonitoringAction {
++
++    public MasterNodeMonitoringAction(Computer target) {
++        super(target);
++    }
++    
++    @Override
++    public String getUrlName() {
++        return "/monitoring";
++    }
++}
+Index: java/org/jvnet/hudson/plugins/monitoring/nodes/NodesMonitoringActionFactory.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/nodes/NodesMonitoringActionFactory.java	(revision 0)
++++ java/org/jvnet/hudson/plugins/monitoring/nodes/NodesMonitoringActionFactory.java	(working copy)
+@@ -0,0 +1,41 @@
++/*
++ * Copyright 2013 by Oleg Nenashev
++ *
++ *     This file is part of the Monitoring plugin.
++ *
++ * The Monitoring plugin is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The Monitoring plugin is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the Monitoring plugin.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.jvnet.hudson.plugins.monitoring.nodes;
++
++import hudson.Extension;
++import hudson.model.Action;
++import hudson.model.Computer;
++import hudson.model.TransientComputerActionFactory;
++import java.util.Collection;
++import static java.util.Collections.singleton;
++import jenkins.model.Jenkins;
++
++/**
++ * Generates a {@link NodeMonitoringAction} for the each slave computer.
++ * @author Oleg Nenashev <o.v.nenashev@gmail.com>
++ */
++@Extension
++public class NodesMonitoringActionFactory extends TransientComputerActionFactory {
++
++    @Override
++    public Collection<? extends Action> createFor(Computer cmptr) {
++        return singleton((cmptr instanceof Jenkins.MasterComputer) 
++            ? new MasterNodeMonitoringAction(cmptr) : new SlaveNodeMonitoringAction(cmptr));
++    } 
++}
+Index: java/org/jvnet/hudson/plugins/monitoring/nodes/SlaveNodeMonitoringAction.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/monitoring/nodes/SlaveNodeMonitoringAction.java	(revision 0)
++++ java/org/jvnet/hudson/plugins/monitoring/nodes/SlaveNodeMonitoringAction.java	(working copy)
+@@ -0,0 +1,40 @@
++/*
++ * Copyright 2013 by Oleg Nenashev
++ *
++ *     This file is part of the Monitoring plugin.
++ *
++ * The Monitoring plugin is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * The Monitoring plugin is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with the Monitoring plugin.  If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.jvnet.hudson.plugins.monitoring.nodes;
++
++import hudson.model.Computer;
++
++/**
++ * Provides a monitoring action for typical slave nodes. 
++ * Use {@link MasterNodeMonitoringAction} for ${@link Jenkins.MasterComputer}.
++ * @author Oleg Nenashev <o.v.nenashev@gmail.com>
++ * @since TODO: define a version
++ */
++// TODO: integrate with per-node security checks
++public class SlaveNodeMonitoringAction extends AbstractNodeMonitoringAction {
++
++    public SlaveNodeMonitoringAction(Computer target) {
++        super(target);
++    }
++    
++    @Override
++    public String getUrlName() {
++        return "/monitoring/nodes?name=" + getTarget().getName();
++    }
++}
+Index: resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties
+===================================================================
+--- resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(revision 0)
++++ resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(working copy)
+@@ -0,0 +1 @@
++NodeMonitoringAction.displayName=Monitoring
+\ No newline at end of file
+Index: resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties
+===================================================================
+--- resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(revision 0)
++++ resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(working copy)
+@@ -0,0 +1 @@
++NodeMonitoringAction.displayName=Monitoring
+\ No newline at end of file
+Index: resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties
+===================================================================
+--- resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(revision 0)
++++ resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(working copy)
+@@ -0,0 +1 @@
++NodeMonitoringAction.displayName=Monitoring
+\ No newline at end of file
+Index: resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties
+===================================================================
+--- resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(revision 0)
++++ resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(working copy)
+@@ -0,0 +1 @@
++NodeMonitoringAction.displayName=Monitoring
+\ No newline at end of file
+Index: resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties
+===================================================================
+--- resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(revision 0)
++++ resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(working copy)
+@@ -0,0 +1 @@
++NodeMonitoringAction.displayName=Monitoring
+\ No newline at end of file
+Index: resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties
+===================================================================
+--- resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(revision 0)
++++ resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(working copy)
+@@ -0,0 +1 @@
++NodeMonitoringAction.displayName=Monitoring
+\ No newline at end of file
+Index: resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties
+===================================================================
+--- resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(revision 0)
++++ resources/org/jvnet/hudson/plugins/monitoring/nodes/Messages.properties	(working copy)
+@@ -0,0 +1 @@
++NodeMonitoringAction.displayName=Monitoring
+\ No newline at end of file

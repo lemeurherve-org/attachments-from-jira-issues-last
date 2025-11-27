@@ -1,0 +1,14 @@
+Building remotely on slave-windows in workspace c:\jenkins\workspace\just git
+ > c:\Program Files (x86)\Git\cmd\git.exe rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > c:\Program Files (x86)\Git\cmd\git.exe config remote.origin.url git@github.com:ThorTech/eas-timeserver.git # timeout=10
+Fetching upstream changes from git@github.com:ThorTech/eas-timeserver.git
+ > c:\Program Files (x86)\Git\cmd\git.exe --version # timeout=10
+ > c:\Program Files (x86)\Git\cmd\git.exe -c core.askpass=true fetch --tags --progress git@github.com:ThorTech/eas-timeserver.git +refs/heads/*:refs/remotes/origin/*
+ > c:\Program Files (x86)\Git\cmd\git.exe rev-parse "refs/remotes/origin/master^{commit}" # timeout=10
+ > c:\Program Files (x86)\Git\cmd\git.exe rev-parse "refs/remotes/origin/origin/master^{commit}" # timeout=10
+Checking out Revision 3987661d841c5eca12998521066d1120a1b28bd6 (refs/remotes/origin/master)
+ > c:\Program Files (x86)\Git\cmd\git.exe config core.sparsecheckout # timeout=10
+ > c:\Program Files (x86)\Git\cmd\git.exe checkout -f 3987661d841c5eca12998521066d1120a1b28bd6
+ > c:\Program Files (x86)\Git\cmd\git.exe rev-list 3987661d841c5eca12998521066d1120a1b28bd6 # timeout=10
+Finished: SUCCESS

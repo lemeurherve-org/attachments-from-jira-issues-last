@@ -1,0 +1,110 @@
+//
+// From the destination server
+//
+
+
+
+2011-11-08 09:44:25,269 ERROR [org.apache.catalina.core.ContainerBase.[jboss.web].[localhost].[/jmx-console].[HtmlAdaptor]] Servlet.service() for servlet HtmlAdaptor threw exception
+org.jboss.deployment.DeploymentException: url http://server:18080/project.war could not be opened, does it exist?
+        at org.jboss.deployment.DeploymentInfo.<init>(DeploymentInfo.java:214)
+        at org.jboss.deployment.MainDeployer.deploy(MainDeployer.java:781)
+        at org.jboss.deployment.MainDeployer.redeploy(MainDeployer.java:566)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.jboss.mx.interceptor.ReflectedDispatcher.invoke(ReflectedDispatcher.java:155)
+        at org.jboss.mx.server.Invocation.dispatch(Invocation.java:94)
+        at org.jboss.mx.interceptor.AbstractInterceptor.invoke(AbstractInterceptor.java:133)
+        at org.jboss.mx.server.Invocation.invoke(Invocation.java:88)
+        at org.jboss.mx.interceptor.ModelMBeanOperationInterceptor.invoke(ModelMBeanOperationInterceptor.java:142)
+        at org.jboss.mx.server.Invocation.invoke(Invocation.java:88)
+        at org.jboss.mx.server.AbstractMBeanInvoker.invoke(AbstractMBeanInvoker.java:264)
+        at org.jboss.mx.server.MBeanServerImpl.invoke(MBeanServerImpl.java:659)
+        at org.jboss.jmx.adaptor.control.Server.invokeOpByName(Server.java:258)
+        at org.jboss.jmx.adaptor.html.HtmlAdaptorServlet.invokeOpByName(HtmlAdaptorServlet.java:303)
+        at org.jboss.jmx.adaptor.html.HtmlAdaptorServlet.processRequest(HtmlAdaptorServlet.java:102)
+        at org.jboss.jmx.adaptor.html.HtmlAdaptorServlet.doGet(HtmlAdaptorServlet.java:77)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:690)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:803)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+        at com.tcs.base.SMBBaseFilter.doFilter(SMBBaseFilter.java:128)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+        at org.jboss.web.tomcat.filters.ReplyHeaderFilter.doFilter(ReplyHeaderFilter.java:96)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+        at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:230)
+        at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:175)
+        at org.jboss.web.tomcat.security.SecurityAssociationValve.invoke(SecurityAssociationValve.java:182)
+        at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:524)
+        at org.jboss.web.tomcat.security.JaccContextValve.invoke(JaccContextValve.java:84)
+        at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:127)
+        at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+        at org.jboss.web.tomcat.service.jca.CachedConnectionValve.invoke(CachedConnectionValve.java:157)
+        at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+        at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:262)
+        at org.apache.coyote.http11.Http11AprProcessor.process(Http11AprProcessor.java:856)
+        at org.apache.coyote.http11.Http11AprProtocol$Http11ConnectionHandler.process(Http11AprProtocol.java:566)
+        at org.apache.tomcat.util.net.AprEndpoint$Worker.run(AprEndpoint.java:1508)
+        at java.lang.Thread.run(Thread.java:619)
+
+
+
+//
+// From the Jenkins host
+//
+
+
+
+WARNING: Publisher hudson.plugins.deploy.DeployPublisher aborted due to exception
+org.codehaus.cargo.container.ContainerException: Failed to deploy to [http://172.50.5.155:8080/jmx-console/HtmlAdaptor?action=invokeOpByName&name=jboss.system:service%3DMainDeployer&methodName=redeploy&argType=java.net.URL&arg0=http%3A%2F%2Fserver%3A18080%2Fproject.war]
+        at org.codehaus.cargo.container.jboss.internal.JdkHttpURLConnection.connect(JdkHttpURLConnection.java:76)
+        at org.codehaus.cargo.container.jboss.JBoss4xRemoteDeployer.invokeURL(JBoss4xRemoteDeployer.java:290)
+        at org.codehaus.cargo.container.jboss.JBoss4xRemoteDeployer.invokeRemotely(JBoss4xRemoteDeployer.java:211)
+        at org.codehaus.cargo.container.jboss.JBoss4xRemoteDeployer.redeploy(JBoss4xRemoteDeployer.java:191)
+        at hudson.plugins.deploy.CargoContainerAdapter.deploy(CargoContainerAdapter.java:60)
+        at hudson.plugins.deploy.CargoContainerAdapter$1.invoke(CargoContainerAdapter.java:86)
+        at hudson.plugins.deploy.CargoContainerAdapter$1.invoke(CargoContainerAdapter.java:73)
+        at hudson.FilePath.act(FilePath.java:785)
+        at hudson.FilePath.act(FilePath.java:767)
+        at hudson.plugins.deploy.CargoContainerAdapter.redeploy(CargoContainerAdapter.java:73)
+        at hudson.plugins.deploy.DeployPublisher.perform(DeployPublisher.java:45)
+        at hudson.tasks.BuildStepMonitor$3.perform(BuildStepMonitor.java:36)
+        at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:694)
+        at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:669)
+        at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:647)
+        at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+        at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:616)
+        at hudson.model.Run.run(Run.java:1429)
+        at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+        at hudson.model.ResourceController.execute(ResourceController.java:88)
+        at hudson.model.Executor.run(Executor.java:230)
+Caused by: java.io.FileNotFoundException: http://172.50.5.155:8080/jmx-console/HtmlAdaptor?action=invokeOpByName&name=jboss.system:service%3DMainDeployer&methodName=redeploy&argType=java.net.URL&arg0=http%3A%2F%2Fserver%3A18080%2Fproject.war
+        at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1434)
+        at org.codehaus.cargo.container.jboss.internal.JdkHttpURLConnection.connect(JdkHttpURLConnection.java:69)
+        ... 20 more
+java.io.FileNotFoundException: http://172.50.5.155:8080/jmx-console/HtmlAdaptor?action=invokeOpByName&name=jboss.system:service%3DMainDeployer&methodName=redeploy&argType=java.net.URL&arg0=http%3A%2F%2Fserver%3A18080%2Fproject.war
+        at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1434)
+        at org.codehaus.cargo.container.jboss.internal.JdkHttpURLConnection.connect(JdkHttpURLConnection.java:69)
+        at org.codehaus.cargo.container.jboss.JBoss4xRemoteDeployer.invokeURL(JBoss4xRemoteDeployer.java:290)
+        at org.codehaus.cargo.container.jboss.JBoss4xRemoteDeployer.invokeRemotely(JBoss4xRemoteDeployer.java:211)
+        at org.codehaus.cargo.container.jboss.JBoss4xRemoteDeployer.redeploy(JBoss4xRemoteDeployer.java:191)
+        at hudson.plugins.deploy.CargoContainerAdapter.deploy(CargoContainerAdapter.java:60)
+        at hudson.plugins.deploy.CargoContainerAdapter$1.invoke(CargoContainerAdapter.java:86)
+        at hudson.plugins.deploy.CargoContainerAdapter$1.invoke(CargoContainerAdapter.java:73)
+        at hudson.FilePath.act(FilePath.java:785)
+        at hudson.FilePath.act(FilePath.java:767)
+        at hudson.plugins.deploy.CargoContainerAdapter.redeploy(CargoContainerAdapter.java:73)
+        at hudson.plugins.deploy.DeployPublisher.perform(DeployPublisher.java:45)
+        at hudson.tasks.BuildStepMonitor$3.perform(BuildStepMonitor.java:36)
+        at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:694)
+        at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:669)
+        at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:647)
+        at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+        at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:616)
+        at hudson.model.Run.run(Run.java:1429)
+        at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+        at hudson.model.ResourceController.execute(ResourceController.java:88)
+        at hudson.model.Executor.run(Executor.java:230)

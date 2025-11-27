@@ -1,0 +1,42 @@
+[EnvInject] - Loading node environment variables.
+Building on master in workspace D:\Jenkins_Workspace\XYZ
+ > git rev-parse --is-inside-work-tree # timeout=120
+Fetching changes from the remote Git repository
+ > git config remote.origin.url http://XYZ # timeout=120
+Fetching upstream changes from http://XYZ
+ > git --version # timeout=120
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --progress http://XYZ +refs/heads/*:refs/remotes/origin/* --depth=1 # timeout=120
+ERROR: Error fetching remote repo 'origin'
+hudson.plugins.git.GitException: Failed to fetch from http://XYZ
+	at hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:797)
+	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1051)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1082)
+	at hudson.scm.SCM.checkout(SCM.java:495)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1278)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:604)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:86)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:529)
+	at hudson.model.Run.execute(Run.java:1720)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:401)
+Caused by: hudson.plugins.git.GitException: Command "git fetch --tags --progress http://XYZ +refs/heads/*:refs/remotes/origin/* --depth=1" returned status code 128:
+stdout: 
+stderr: Fatal: UriFormatException encountered.
+'rt_s' is not recognized as an internal or external command,
+operable program or batch file.
+error: unable to read askpass response from 'C:\Users\SVC-JE~1\AppData\Local\Temp\pass5178336589726312388.bat'
+bash: /dev/tty: No such device or address
+error: failed to execute prompt script (exit code 1)
+fatal: could not read Password for 'http://<USERNAME XYZ>@XYZ:8086': No error
+
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1752)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:1495)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.access$300(CliGitAPIImpl.java:64)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$1.execute(CliGitAPIImpl.java:315)
+	at hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:795)
+	... 11 more
+ERROR: null
+
+XYZ --> Spacer for removed content for privacy reasons.

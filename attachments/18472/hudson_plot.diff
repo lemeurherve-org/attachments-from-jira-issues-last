@@ -1,0 +1,509 @@
+Index: src/main/java/hudson/plugins/plot/PlotPointFactory.java
+===================================================================
+--- src/main/java/hudson/plugins/plot/PlotPointFactory.java	(revision 0)
++++ src/main/java/hudson/plugins/plot/PlotPointFactory.java	(revision 0)
+@@ -0,0 +1,288 @@
++/*
++ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  
++ * Copyrights licensed under the MIT License.
++ */
++
++package hudson.plugins.plot;
++
++import java.io.File;
++import java.io.FileReader;
++import java.io.IOException;
++import java.io.PrintStream;
++import java.io.InputStream;
++import java.io.InputStreamReader;
++import java.util.ArrayList;
++import java.util.HashSet;
++import java.util.logging.Logger;
++import java.util.List;
++import java.util.Properties;
++import java.util.regex.Pattern;
++import java.util.Set;
++
++import hudson.FilePath;
++import hudson.model.AbstractProject;;
++
++import au.com.bytecode.opencsv.CSVReader;
++import au.com.bytecode.opencsv.CSVWriter;
++
++/**
++ * @author areese
++ *
++ * Factory class for creating an array of PlotPoints from either a properties file with a single value
++ * or a CSV file with multiple values.
++ */
++public class PlotPointFactory
++{
++    private static transient final Logger LOGGER = Logger.getLogger(PlotPointFactory.class.getName());
++    private static transient final Pattern PAT_SPLIT = Pattern.compile(","); 
++	private transient AbstractProject project;
++	private transient Properties properties;
++	private transient String defaultLabel;
++	private transient Set<String> strExclusionSet;
++	private transient Set<Integer> colExclusionSet;
++	
++	
++	private static enum InclusionFlag
++	{
++		OFF,
++		INCLUDE_BY_STRING,
++		EXCLUDE_BY_STRING,
++		INCLUDE_BY_COLUMN,
++		EXCLUDE_BY_COLUMN,
++	};
++
++	private transient InclusionFlag inclusionFlag = InclusionFlag.OFF;
++	
++	public PlotPointFactory(AbstractProject project, Properties properties,String defaultLabel)
++	{
++		this.project = project;
++		this.properties = properties;
++		this.defaultLabel = defaultLabel;
++
++		loadExclusionSet();
++	}
++
++	/**
++	 * Loads any array of plot points from a properites file.
++	 * The original format is YVALUE & URL per properties file.
++	 * If a CSV_FILE entry exists in the properties file this will return an array
++	 * of plot points from the data in the csv file.
++	 * Since csv cannot support urls easily, the urls can be specified in the properties
++	 * file as URL_0 where the number is the 0 based column of the csv file that the url coresponds to.   
++	 * @param properties
++	 * @return
++	 */
++	public PlotPoint[] loadPlotPoints()
++	{
++		String csvFileName = properties.getProperty("CSV_FILE");
++		// if csv file was specified, load it.
++		if (csvFileName!=null)
++			return loadCsvPlotPoints(csvFileName);
++		
++		// otherwise behave as before and just load YVALUE an URL from the properties file.
++		return new PlotPoint[]{new PlotPoint(properties.getProperty("YVALUE"),properties.getProperty("URL"),defaultLabel)};
++	}
++	
++	/**
++	 * Load a set of plot points from a csv file.
++	 * Each point is labeled with the column title that is in the first row.
++	 * Only columns that have been included using the properties file will be returned. 
++	 * @return PlotPoint[] array of plot points.
++	 */
++	private PlotPoint[] loadCsvPlotPoints(String filename)
++	{
++        CSVReader reader = null;
++		InputStream in = null;
++		InputStreamReader inputReader = null;
++		
++        try {
++			List<PlotPoint> ret = new ArrayList<PlotPoint>();
++	
++			FilePath[] seriesFiles = null;
++	        FilePath workspaceRootDir = project.getWorkspace();
++	        try {
++	            seriesFiles = workspaceRootDir.list(filename);
++	        } catch (Exception e) {
++	        	LOGGER.warning("Exception trying to retrieve series files: " + e);
++	            return null;
++	        }
++	
++	        if (seriesFiles != null && seriesFiles.length < 1) {
++	        	LOGGER.info("No plot data file found: " + filename);
++	            return null;
++	        }
++	        
++	        try {
++	            LOGGER.fine("Loading plot series data from: " + filename);
++	            in = seriesFiles[0].read();
++	        } catch (Exception e) {
++	        	LOGGER.warning("Exception reading plot series data from: " + seriesFiles[0] + " " + e);
++	            return null;
++	        }
++	
++	    	LOGGER.fine("Loaded CSV Plot file: " + filename);
++	    	
++	        // load existing plot file
++        	inputReader = new InputStreamReader(in);
++            reader = new CSVReader(inputReader);
++            String[] nextLine;
++
++            // save the header line to use it for the plot labels.
++            String[] headerLine=reader.readNext();
++
++        	// read each line of the CSV file and add to rawPlotData
++            while ((nextLine = reader.readNext()) != null)
++            {
++            	for (int index = 0; index < nextLine.length; index++)
++            	{
++                	String point = nextLine[index];
++                	String label = headerLine[index];
++
++                	if (label == null || label.length()<=0)
++                	{
++                		// if there isn't a label, use the default and an index.
++                		label = defaultLabel + "_" + index; 
++                	}
++                	
++                	//LOGGER.finest("Loaded point: " + point);
++                	
++            		// create a new point with the yvalue from the csv file and url from the URL_index in the properties file.
++                	if (!excludePoint(label,index)) {
++                		ret.add(new PlotPoint(point,properties.getProperty("URL_"+index),label));
++                	} else {
++                    	LOGGER.finest("excluded CSV Column: " + index + " : " + label);
++                	}
++            	}
++            }
++        
++            return ret.toArray(new PlotPoint[ret.size()]);
++
++        } catch (IOException ioe) {
++            //ignore
++        	LOGGER.fine("Exception: " + ioe);
++        } finally {
++        	if (in != null) {
++                try {
++                    in.close();
++                } catch (IOException ignore) {
++                    //ignore
++                }
++        	}
++        	
++        	if (inputReader != null) {
++                try {
++                	inputReader.close();
++                } catch (IOException ignore) {
++                    //ignore
++                }
++            }
++
++        	if (reader != null) {
++                try {
++                    reader.close();
++                } catch (IOException ignore) {
++                    //ignore
++                }
++            }
++        }
++
++        return null;
++	}
++	
++	/**
++	 * This function checks the exclusion/inclusion filters from the properties file and
++	 * returns true if a point should be excluded.
++	 * @return true if the point should be excluded based on label or column
++	 */
++	private boolean excludePoint(String label,int index)
++	{
++		if (inclusionFlag == InclusionFlag.OFF)
++			return false;
++		
++		boolean retVal=false;
++		
++		switch (inclusionFlag)
++		{
++			case INCLUDE_BY_STRING:
++				// if the set contains it, don't exclude it.
++				retVal = !(strExclusionSet.contains(label));
++				break;
++				
++			case EXCLUDE_BY_STRING:
++				// if the set doesn't contain it, exclude it.
++				retVal = strExclusionSet.contains(label);
++				break;
++				
++			case INCLUDE_BY_COLUMN:
++				// if the set contains it, don't exclude it.
++				retVal = !(colExclusionSet.contains(Integer.valueOf(index)));
++				break;
++
++			case EXCLUDE_BY_COLUMN:
++				// if the set doesn't contain it, don't exclude it.
++				retVal = colExclusionSet.contains(Integer.valueOf(index));
++				break;
++		}
++		
++    	LOGGER.finest(((retVal)?"excluded":"included") + " CSV Column: " + index + " : " + label);
++		
++		return retVal;
++	}
++	
++	/**
++	 * This function loads the set of columns that should be included or excluded.
++	 */
++	private void loadExclusionSet()
++	{
++		String exclusionType = properties.getProperty("EXCLUDE_FLAG");
++		if (exclusionType==null)
++			return;
++
++		inclusionFlag = InclusionFlag.valueOf(exclusionType);
++
++		if (inclusionFlag == InclusionFlag.OFF)
++			return;
++		
++		String exclusionValues = properties.getProperty("EXCLUDE_VALUES");
++		if (exclusionValues==null)
++			return;
++		
++		switch (inclusionFlag) 
++		{
++			case INCLUDE_BY_STRING:
++			case EXCLUDE_BY_STRING:
++				strExclusionSet = new HashSet<String>();
++				break;
++				
++			case INCLUDE_BY_COLUMN:
++			case EXCLUDE_BY_COLUMN:
++				colExclusionSet = new HashSet<Integer>();
++				break;
++		}
++
++		for (String str : PAT_SPLIT.split(exclusionValues))
++		{
++			if (str==null || str.length()<=0)
++				continue;
++			
++			switch (inclusionFlag) 
++			{
++				case INCLUDE_BY_STRING:
++				case EXCLUDE_BY_STRING:
++			    	LOGGER.finest(inclusionFlag + " CSV Column: " + str);
++					strExclusionSet.add(str);
++					break;
++					
++				case INCLUDE_BY_COLUMN:
++				case EXCLUDE_BY_COLUMN:
++					try {
++				    	LOGGER.finest(inclusionFlag + " CSV Column: " + str);
++						colExclusionSet.add(Integer.valueOf(str));
++					} catch (NumberFormatException nfe) {
++						// ignore badly formatted columns.
++					}
++					break;
++			}
++		}
++	}
++}
+
+Property changes on: src/main/java/hudson/plugins/plot/PlotPointFactory.java
+___________________________________________________________________
+Name: svn:executable
+   + *
+
+Index: src/main/java/hudson/plugins/plot/PlotPoint.java
+===================================================================
+--- src/main/java/hudson/plugins/plot/PlotPoint.java	(revision 0)
++++ src/main/java/hudson/plugins/plot/PlotPoint.java	(revision 0)
+@@ -0,0 +1,82 @@
++/*
++ * Copyright (c) 2009 Yahoo! Inc.  All rights reserved.  
++ * Copyrights licensed under the MIT License.
++ */
++
++package hudson.plugins.plot;
++
++@SuppressWarnings("hiding")
++public class PlotPoint
++{
++	/**
++	 * YValue for a plot point
++	 */
++	private String yvalue;
++	
++	/**
++	 * Url for a plot point, can be null
++	 */
++	private String url;
++
++	/**
++	 * Label for a plot point
++	 */
++	private String label;
++
++	/**
++	 */
++	public PlotPoint(String yvalue, String url, String label)
++	{
++		this.yvalue = yvalue;
++		this.url = url;
++		this.label = label;
++	}
++
++	/**
++	 * @return the yvalue for this point. 
++	 */
++	public String getYvalue()
++	{
++		return yvalue;
++	}
++
++	/**
++	 * @param yvalue set the yvalue for this point.
++	 */
++	public void setYvalue(String yvalue)
++	{
++		this.yvalue = yvalue;
++	}
++
++	/**
++	 * @return url for this point.
++	 */
++	public String getUrl()
++	{
++		return url;
++	}
++
++	/**
++	 * @param url set the url for this point.
++	 */
++	public void setUrl(String url)
++	{
++		this.url = url;
++	} 
++
++	/**
++	 * @return label for this point.
++	 */
++	public String getLabel()
++	{
++		return label;
++	}
++
++	/**
++	 * @param label set the label for this point.
++	 */
++	public void setLabel(String label)
++	{
++		this.label = label;
++	} 
++}
+Index: src/main/java/hudson/plugins/plot/Plot.java
+===================================================================
+--- src/main/java/hudson/plugins/plot/Plot.java	(revision 14207)
++++ src/main/java/hudson/plugins/plot/Plot.java	(working copy)
+@@ -412,17 +412,23 @@
+         loadPlotData();
+         // extract the data for each data series
+         for (Series series : getSeries()) {
+-            Properties seriesData = loadSeriesData(series,project.getWorkspace(),logger);
++            PlotPoint[] seriesData = loadSeriesData(series,project.getWorkspace(),logger);
+             if (seriesData != null) {
+-                rawPlotData.add(new String[] {
+-                    seriesData.getProperty("YVALUE"),
+-                    series.getLabel(),
+-                    build.getNumber() + "", // convert to a string
+-                    build.getTimestamp().getTimeInMillis() + "",
+-                    seriesData.getProperty("URL")
+-                });
++        		for (PlotPoint point : seriesData) {
++        			if (point == null)
++        				continue;
++
++        			rawPlotData.add(new String[] {
++        				point.getYvalue(),
++        				point.getLabel(),
++        				build.getNumber() + "", // convert to a string
++        				build.getTimestamp().getTimeInMillis() + "",
++        				point.getUrl()
++    				});
++        		}
+             }
+         }
++        
+         // save the updated plot data to disk
+         savePlotData();
+     }
+@@ -632,7 +638,7 @@
+      * @return a properties object that contains the retrieved series data
+      *         from the workspace
+      */
+-    private Properties loadSeriesData(Series series, FilePath workspaceRootDir, PrintStream logger) {
++    private PlotPoint[] loadSeriesData(Series series, FilePath workspaceRootDir, PrintStream logger) {
+         InputStream in = null;
+         FilePath[] seriesFiles = null;
+         try {
+@@ -650,7 +656,7 @@
+             logger.println("Saving plot series data from: " + seriesFiles[0]);
+             Properties data = new Properties();
+             data.load(in);
+-            return data;
++            return new PlotPointFactory(project, data, series.getLabel()).loadPlotPoints();
+         } catch (Exception e) {
+             logger.println("Exception reading plot series data from: " + seriesFiles[0]);
+             return null;
+Index: src/main/webapp/help-series.html
+===================================================================
+--- src/main/webapp/help-series.html	(revision 14207)
++++ src/main/webapp/help-series.html	(working copy)
+@@ -1,11 +1,38 @@
+ <div>
+   Mandatory. Specifies the path to the Java property file (key=value pairs), relative to
+   <a href='ws/'>the workspace root</a>, that
+-  contains the data value for this data series.  The file must
+-  contain a <code>YVALUE</code> property and may optionally
+-  contain a <code>URL</code> property. If present, the URL will be 
++  contains the data value for this data series.  
++  <p>
++  The file must contain either a <code>YVALUE</code> property or a <code>CSV_FILE</code> property
++  and may optionally contain a <code>URL</code> property. If present, the URL will be 
+   opened when the data point on the plot is clicked.
++  </p>
+   <p>
++  If the file contains a <code>CSV_FILE</code> property, the plugin will look for a csv file relative to the 
++  workspace root.  It will plot all of the points in the csv file, each series will be named by the column header
++  found in the csv file.
++  </p>
++  <p>
++  When using the <code>CSV_FILE</code> option a few other options may also be applied. 
++<br>  
++  Optionally, <code>URL_columnNumber</code> properties may be added to allow each data point from the csv file to have urls when clicked.
++  Column numbers in the csv file are 0 based.
++<br>  
++  Optionally, An inclusion/exclusion filter may also be configured.  This allows specific columns to be included or excluded from the plot.
++  This is done using the <code>EXCLUDE_FLAG</code> and <code>EXCLUDE_VALUES</code> properties together.
++<br>  
++  Valid values are for <code>EXCLUDE_FLAG</code> are:
++  <ul>
++  <li>OFF</li> 
++  <li>INCLUDE_BY_STRING  -  include only the columns whose names explicitly appear in the list</li> 
++  <li>EXCLUDE_BY_STRING  -  exclude only the columns whose names explicitly appear in the list</li> 
++  <li>INCLUDE_BY_COLUMN  -  include only the columns where the index names explicitly appears in the list</li>
++  <li>EXCLUDE_BY_COLUMN  -  exclude  only the columns where the index names explicitly appears in the list</li>
++  </ul>
++<br>  
++  The <code>EXCLUDE_VALUES</code> property should contain a comma seperated list of column names or indexes to include or exclude from the plot.
++</p>  
++  <p>
+   The specification of this file can use wildcards like <code>build/report/*/report.properties</code>
+   but only the first file resolved by the wildcard will be used.
+   See <a href='http://ant.apache.org/manual/CoreTypes/fileset.html'>
+@@ -16,4 +43,22 @@
+   YVALUE=3.342
+   URL=http://foo.bar/
+   </pre>
++
++  A CSV based properties file may be:
++  <pre>
++  CSV_FILE=csv.csv
++  URL_0=http://foo.bar/Avg
++  URL_1=http://foo.bar/Median
++  URL_2=http://foo.bar/90
++  URL_3=http://foo.bar/Min
++  URL_4=http://foo.bar/Max
++  EXCLUDE_FLAG=EXCLUDE_BY_STRING
++  EXCLUDE_VALUES=max,samples,errors,error %
++  </pre>
++  
++  An example of the CSV contents may be:
++  <pre>
++	Avg,Median,90,min,max,samples,errors,error %
++	528.75,201,1172,2,17732,97560,360,0.37%
++  </pre>
+ </div>

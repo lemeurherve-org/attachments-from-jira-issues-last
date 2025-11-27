@@ -1,0 +1,346 @@
+Index: dist/mindist.pom
+===================================================================
+--- dist/mindist.pom	(revision 38025)
++++ dist/mindist.pom	(working copy)
+@@ -21,7 +21,7 @@
+       <plugin>
+         <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
+         <artifactId>maven-antrun-extended-plugin</artifactId>
+-        <version>1.38</version>
++        <version>1.41</version>
+         <executions>
+           <execution>
+             <phase>package</phase>
+Index: dist/remote-control.pom
+===================================================================
+--- dist/remote-control.pom	(revision 38025)
++++ dist/remote-control.pom	(working copy)
+@@ -21,7 +21,7 @@
+       <plugin>
+         <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
+         <artifactId>maven-antrun-extended-plugin</artifactId>
+-        <version>1.38</version>
++        <version>1.41</version>
+         <executions>
+           <execution>
+             <phase>package</phase>
+Index: dist/package.sh
+===================================================================
+--- dist/package.sh	(revision 38025)
++++ dist/package.sh	(working copy)
+@@ -1,11 +1,12 @@
+ #!/bin/bash -ex
+ 
+ # incoming version of Selenium Grid
+-version=1.0.6
++version=1.0.8
+ # outgoing version of the packages in Maven
+-distVersion=1.0.6-hudson-1
++distVersion=1.0.8-hudson-2
+ 
+ # download and extract
+@@ -15,41 +16,59 @@
+   unzip -q selenium-grid-$version-$type.zip -d work/$type
+ done
+ 
+-# extract the source tree
+-(cd src; git archive $version) | (mkdir -p work/src; cd work/src; tar xf -)
+-
+-mkdir -p work/src
+-ln -s ../../../../selenium-grid/hub work/src/hub
+-ln -s ../../../../selenium-grid/remote-control work/src/remote-control
+-ln -s ../../../../selenium-grid/infrastructure work/src/infrastructure
+-
+ # remove unused files
+-pushd work/bin/*
+-  rm -rf doc examples vendor/testng*.jar lib/*-demo-*.jar sample-scripts
++pushd work/bin/selenium-grid-$version/
++  #rm -rf doc examples vendor/testng*.jar lib/*-demo-*.jar sample-scripts
++  rm -rf doc examples lib/*-demo-*.jar
+   pushd lib
+     # selenium-grid-remote-contorl-standalone-1.0.3 contains incompatible Jetty that causes http://clearspace.openqa.org/thread/17117
+     # with vendor/selenium-server.jar, so use the standalone version
+-    rm $(find . -name '*.jar' | grep -v standalone | grep -v remote-control)
+-    rm selenium-grid-remote-control-standalone-*.jar
++    #rm $(find . -name '*.jar' | grep -v standalone | grep -v remote-control)
++    #rm selenium-grid-remote-control-standalone-*.jar
+     # instead we need commons-httpclient
+-    cp ~/.m2/repository/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar .
+-    cp ~/.m2/repository/log4j/log4j/1.2.14/log4j-1.2.14.jar .
++    #cp lib/commons-httpclient-3.1.jar .
++    cp $work/../lib/log4j-1.2.14.jar .
+   popd
+-  tar czf ../selenium-grid-$version-min.tgz .
++  tar czf $work/bin/selenium-grid-$version-min.tgz .
+ popd
+ 
++#SOURCES
++# OPTION#1 download and extract the source tree
++#(cd src; git archive $version) | (mkdir -p work/src; cd work/src; tar xf -)
++#git clone git://github.com/ph7/selenium-grid.git work/src
++
++#OPTION#2  link create links to the source tree
++#mkdir -p $work/src
++srcdir=/sem/selenium-grid/src
++#ln -s $srcdir/hub $work/src/hub
++#ln -s $srcdir/remote-control $work/src/remote-control
++#ln -s $srcdir/infrastructure $work/src/infrastructure
++#ls -l work/src
++
++
+ for dir in hub/src/main/java remote-control/src/main/java infrastructure/core/src/main infrastructure/webserver/src/main/java; do
+   pushd work/src/$dir
+-    zip -qu $work/sources.jar -r .
++    ls -lGgF
++    zip -urv $work/sources.jar .
+   popd
+ done
+ 
+ cp *.pom work
+ pushd work
++  #prepare pom files  - replace VERSION and DIST_VERSION values to current version
+   perl -pi -e "s/\@VERSION\@/${version}/g" *.pom
+   perl -pi -e "s/\@DIST_VERSION\@/${distVersion}/g" *.pom
++  #create jar packages --NOTE: works with skipped major maven intructions
+   for pom in *.pom; do
+-    mvn -f $pom $1
++    mvn -f $pom $1  package
+   done
++  ls -l target
+ popd
+ 
++#Install created jar  files into local maven repository
++cp $work/bin/selenium-grid-$version-min.tgz  $work/selenium-grid-$distVersion-min.tgz
++#mvn install:install-file -DgroupId=org.jvnet.hudson -DartifactId=selenium-grid -Dversion=$distVersion -Dclassifier=min -Dpackaging=tgz -Dfile=$work/selenium-grid-$distVersion-min.tgz
++
++#mvn install:install-file -DgroupId=org.jvnet.hudson -DartifactId=selenium-grid -Dversion=$distVersion -Dpackaging=jar -Dfile=$work/target/selenium-grid-$distVersion.jar
++#mvn install:install-file -DgroupId=org.jvnet.hudson -DartifactId=selenium-grid-remote-control -Dversion=$distVersion -Dpackaging=jar -Dfile=$work/target/selenium-grid-remote-control-$distVersion.jar
++#mvn install:install-file -DgroupId=org.jvnet.hudson -DartifactId=selenium-grid-hub-standalone -Dversion=$distVersion -Dpackaging=jar -Dfile=$work/target/selenium-grid-hub-standalone-$distVersion.jar
+Index: dist/hub.pom
+===================================================================
+--- dist/hub.pom	(revision 38025)
++++ dist/hub.pom	(working copy)
+@@ -21,7 +21,7 @@
+       <plugin>
+         <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
+         <artifactId>maven-antrun-extended-plugin</artifactId>
+-        <version>1.38</version>
++        <version>1.41</version>
+         <executions>
+           <execution>
+             <phase>package</phase>
+Index: src/test/java/hudson/plugins/selenium/SeleniumTest.java
+===================================================================
+--- src/test/java/hudson/plugins/selenium/SeleniumTest.java	(revision 38025)
++++ src/test/java/hudson/plugins/selenium/SeleniumTest.java	(working copy)
+@@ -15,12 +15,12 @@
+         // system config to set the root URL
+         submit(new WebClient().goTo("configure").getFormByName("config"));
+ 
+-        createSlave(new Label("foo"));
++        //createSlave(new Label("foo")); //class Label is abstract now
+         waitForRC();
+         Thread.sleep(3000);
+ 
+         Selenium browser = new DefaultSelenium("localhost",
+-            4444, "foo:*firefox /usr/lib/firefox-3.6.3/firefox-bin", "http://www.google.com");
++            4444, "*firefox", "http://www.google.com");  // /usr/lib/firefox-3.6.3/firefox-bin
+         browser.start();
+ 
+         try {
+@@ -48,7 +48,7 @@
+     }
+ 
+     public void testLabelMatch() throws Exception {
+-        createSlave(new Label("foo"));
++        createSlave(); //new Label("foo")); //class Label is abstract now
+ 
+         Selenium browser = new DefaultSelenium("localhost",
+             4444, "bar:*firefox /usr/lib/firefox-3.6.3/firefox-bin", "http://www.google.com");
+Index: src/main/java/hudson/plugins/selenium/HubLauncher.java
+===================================================================
+--- src/main/java/hudson/plugins/selenium/HubLauncher.java	(revision 38025)
++++ src/main/java/hudson/plugins/selenium/HubLauncher.java	(working copy)
+@@ -3,6 +3,7 @@
+ import com.thoughtworks.selenium.grid.configuration.HubConfiguration;
+ import com.thoughtworks.selenium.grid.hub.HubRegistry;
+ import com.thoughtworks.selenium.grid.hub.HubServlet;
++import com.thoughtworks.selenium.grid.hub.HeartbeatServlet;
+ import com.thoughtworks.selenium.grid.hub.management.LifecycleManagerServlet;
+ import com.thoughtworks.selenium.grid.hub.management.RegistrationServlet;
+ import com.thoughtworks.selenium.grid.hub.management.UnregistrationServlet;
+@@ -34,6 +35,7 @@
+     }
+ 
+     public Void call() throws Exception {
++
+         HubRegistry r = HubRegistry.registry();
+         // hack up the pool
+         Field pool = r.getClass().getDeclaredField("pool");
+@@ -51,12 +53,14 @@
+     }
+ 
+     private void start() throws Exception {
++        Logger.getLogger("com.thoughtworks.selenium").setLevel(logLevel);
++//        Logger.getLogger("org.apache.commons.httpclient").setLevel(logLevel); //common.httpclient  is not used now
++
+         final ContextHandlerCollection contexts;
+         final HubConfiguration configuration;
+         final Server server;
+         final Context root;
+ 
+-
+         configuration = HubRegistry.registry().gridConfiguration().getHub();
+         server = new Server(configuration.getPort());
+ 
+@@ -71,10 +75,30 @@
+         root.addServlet(new ServletHolder(new RegistrationServlet()), "/registration-manager/register");
+         root.addServlet(new ServletHolder(new UnregistrationServlet()), "/registration-manager/unregister");
+         root.addServlet(new ServletHolder(new LifecycleManagerServlet()), "/lifecycle-manager");
++        root.addServlet(new ServletHolder(new HeartbeatServlet()), "/heartbeat");
+ 
++        startRemoteControlPoller();
++        ensureRemoteControlPollerStopOnShutdown();
++
+         server.start();
+ 
+-        Logger.getLogger("com.thoughtworks.selenium").setLevel(logLevel);
+-        Logger.getLogger("org.apache.commons.httpclient").setLevel(logLevel);
+     }
++
++    protected static void startRemoteControlPoller() {
++        final Thread pollerThread;
++
++        pollerThread = new Thread(
++                HubRegistry.registry().remoteControlPoller(),
++                "RC Poller Heartbeat");
++        pollerThread.start();
++    }
++
++    protected static void ensureRemoteControlPollerStopOnShutdown() {
++        Runtime.getRuntime().addShutdownHook(new Thread() {
++            public void run() {
++                HubRegistry.registry().remoteControlPoller().stop();
++            }
++        });
++    }
++
+ }
+Index: src/main/java/hudson/plugins/selenium/PluginImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/selenium/PluginImpl.java	(revision 38025)
++++ src/main/java/hudson/plugins/selenium/PluginImpl.java	(working copy)
+@@ -213,7 +213,8 @@
+         FilePath distDir = install(rootDir, listener);
+         return Channels.newJVM("Selenium RC",listener,distDir,
+                 new ClasspathBuilder()
+-                        .addAll(distDir,"vendor/selenium-server-*.jar, lib/selenium-grid-remote-control-*.jar, lib/commons-httpclient-*.jar"),
++                        .addAll(distDir,"vendor/selenium-server-*.jar, lib/selenium-grid-remote-control-*.jar"), //commons-httpclient is not used
++//                .addAll(distDir,"vendor/selenium-server-*.jar, lib/selenium-grid-remote-control-*.jar, lib/commons-httpclient-*.jar"),
+                 null);
+     }
+ 
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 38025)
++++ pom.xml	(working copy)
+@@ -8,17 +8,40 @@
+   </parent>
+   
+   <artifactId>selenium</artifactId>
+-  <version>1.4-SNAPSHOT</version>
++  <version>1.4-SNAPSHOT-2</version>
+   <packaging>hpi</packaging>
+-  <name>Hudson Selenium plugin</name>
++  <name>Selenium Grid Plugin</name>
+   <url>http://wiki.hudson-ci.org/display/HUDSON/Selenium+Plugin</url>
+ 
++  <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
++  <repositories>
++    <repository>
++      <id>m.g.o-public</id>
++      <url>http://maven.glassfish.org/content/groups/public/</url>
++    </repository>
++    <repository>
++      <id>m.k.o-thirdparty</id>
++      <url>http://maven.kungfuters.org/content/repositories/thirdparty/</url>
++    </repository>
++  </repositories>
++
++  <pluginRepositories>
++    <pluginRepository>
++      <id>m.g.o-public</id>
++      <url>http://maven.glassfish.org/content/groups/public/</url>
++    </pluginRepository>
++    <pluginRepository>
++      <id>m.k.o-thirdparty</id>
++      <url>http://maven.kungfuters.org/content/repositories/thirdparty/</url>
++    </pluginRepository>
++  </pluginRepositories>
++
+   <build>
+     <plugins>
+       <plugin>
+         <groupId>org.jvnet.hudson.tools</groupId>
+         <artifactId>maven-hpi-plugin</artifactId>
+-        <version>1.53-SNAPSHOT</version>
++        <version>1.57</version>
+         <extensions>true</extensions>
+         <configuration>
+           <showDeprecation>true</showDeprecation>
+@@ -27,7 +50,7 @@
+       <plugin>
+         <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
+         <artifactId>maven-antrun-extended-plugin</artifactId>
+-        <version>1.38</version>
++        <version>1.41</version>
+         <executions>
+           <execution>
+             <!-- bundle the selenium grid distribution in the hpi file. -->
+@@ -99,6 +122,6 @@
+   </dependencies>
+ 
+   <properties>
+-    <selenium.version>1.0.7-hudson-1</selenium.version>
++    <selenium.version>1.0.8-hudson-2</selenium.version>
+   </properties>
+ </project>
+Index: readme.txt
+===================================================================
+--- readme.txt	(revision 38025)
++++ readme.txt	(working copy)
+@@ -1,3 +1,23 @@
++Hudson plugin to integrate Selenium Grid version 1.0.8.
++
++Web links:
++  Hudson: http://hudson-ci.org/
++  Selenium Grid: http://selenium-grid.seleniumhq.org/
++  Selenium Plugin: http://wiki.hudson-ci.org/display/HUDSON/Selenium+Plugin
++
++NOTES:
++1. Commands to create the package: mvn -Dmaven.test.skip=true package
++2. Packages for 1.0.8-hudson-2 were created manually  
++  and may require registeration in the local Maven repository with the script: 
++  dist/reg2mvn.sh
++
++KNOWN ISSUES:
++1. /dist/package.sh script fails to create intermediate packages. 
++
++
++TODO: fix packaging scripts (pom.xml and dist/*.sh)
++
++
+ TODO: reverse-proxy selenium from Hudson for easier configuration
+ 
+ TODO: launch multiple RCs per node
+@@ -9,7 +29,7 @@
+ -----------
+ 
+ A single selenium RC instance is capable of starting any browser --- it does so by using the browser string
+-given per session. But this is bit problematic with Slenium Grid, which wants to pick the right node
++given per session. But this is bit problematic with Selenium Grid, which wants to pick the right node
+ based on the browser (so say someone said "*safari" and you don't want a Windows node to pick that up.)
+ 
+ So it does this by adding a translation layer.
+
+

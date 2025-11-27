@@ -1,0 +1,1026 @@
+Thread Dump
+builder_localhost runner_localhost
+Channel reader thread: builder_localhost
+
+"Channel reader thread: builder_localhost" Id=215 Group=main WAITING on com.trilead.ssh2.channel.Channel@1439420b
+	at java.lang.Object.wait(Native Method)
+	-  waiting on com.trilead.ssh2.channel.Channel@1439420b
+	at java.lang.Object.wait(Object.java:502)
+	at com.trilead.ssh2.channel.FifoBuffer.read(FifoBuffer.java:212)
+	at com.trilead.ssh2.channel.Channel$Output.read(Channel.java:127)
+	at com.trilead.ssh2.channel.ChannelManager.getChannelData(ChannelManager.java:936)
+	at com.trilead.ssh2.channel.ChannelInputStream.read(ChannelInputStream.java:58)
+	at com.trilead.ssh2.channel.ChannelInputStream.read(ChannelInputStream.java:79)
+	at hudson.remoting.FlightRecorderInputStream.read(FlightRecorderInputStream.java:86)
+	at hudson.remoting.ChunkedInputStream.readHeader(ChunkedInputStream.java:72)
+	at hudson.remoting.ChunkedInputStream.readUntilBreak(ChunkedInputStream.java:103)
+	at hudson.remoting.ChunkedCommandTransport.readBlock(ChunkedCommandTransport.java:39)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+Channel reader thread: runner_localhost
+
+"Channel reader thread: runner_localhost" Id=265 Group=main WAITING on com.trilead.ssh2.channel.Channel@608e17b5
+	at java.lang.Object.wait(Native Method)
+	-  waiting on com.trilead.ssh2.channel.Channel@608e17b5
+	at java.lang.Object.wait(Object.java:502)
+	at com.trilead.ssh2.channel.FifoBuffer.read(FifoBuffer.java:212)
+	at com.trilead.ssh2.channel.Channel$Output.read(Channel.java:127)
+	at com.trilead.ssh2.channel.ChannelManager.getChannelData(ChannelManager.java:936)
+	at com.trilead.ssh2.channel.ChannelInputStream.read(ChannelInputStream.java:58)
+	at com.trilead.ssh2.channel.ChannelInputStream.read(ChannelInputStream.java:79)
+	at hudson.remoting.FlightRecorderInputStream.read(FlightRecorderInputStream.java:86)
+	at hudson.remoting.ChunkedInputStream.readHeader(ChunkedInputStream.java:72)
+	at hudson.remoting.ChunkedInputStream.readUntilBreak(ChunkedInputStream.java:103)
+	at hudson.remoting.ChunkedCommandTransport.readBlock(ChunkedCommandTransport.java:39)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+Computer.threadPoolForRemoting [#3850]
+
+"Computer.threadPoolForRemoting [#3850]" Id=7135 Group=main TIMED_WAITING on java.util.concurrent.SynchronousQueue$TransferStack@3494350
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.SynchronousQueue$TransferStack@3494350
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:460)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:362)
+	at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:941)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1073)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+DestroyJavaVM
+
+"DestroyJavaVM" Id=36 Group=main RUNNABLE
+
+FilePath.localPool [#178]
+
+"FilePath.localPool [#178]" Id=7138 Group=main RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:454)
+	at hudson.Functions.getThreadInfos(Functions.java:1225)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:98)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:95)
+	at hudson.remoting.LocalChannel$1.call(LocalChannel.java:52)
+	at jenkins.util.ContextResettingExecutorService$2.call(ContextResettingExecutorService.java:46)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@760b5700
+
+Handling GET /threadDump from 2620:52:0:2b11:cb14:5c4d:ed14:e701 : RequestHandlerThread[#881] Jenkins/threadDump.jelly
+
+"Handling GET /threadDump from 2620:52:0:2b11:cb14:5c4d:ed14:e701 : RequestHandlerThread[#881] Jenkins/threadDump.jelly" Id=7137 Group=main RUNNABLE
+	at java.lang.Throwable.getStackTraceElement(Native Method)
+	at java.lang.Throwable.getOurStackTrace(Throwable.java:827)
+	-  locked hudson.remoting.Command$Source@2f01274
+	at java.lang.Throwable.writeObject(Throwable.java:979)
+	-  locked hudson.remoting.Command$Source@2f01274
+	at sun.reflect.GeneratedMethodAccessor78.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at java.io.ObjectStreamClass.invokeWriteObject(ObjectStreamClass.java:1028)
+	at java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1496)
+	at java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1432)
+	at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1178)
+	at java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1548)
+	at java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1509)
+	at java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1432)
+	at java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1178)
+	at java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:348)
+	at hudson.remoting.Command.writeTo(Command.java:88)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.write(AbstractSynchronousByteArrayCommandTransport.java:43)
+	at hudson.remoting.Channel.send(Channel.java:609)
+	-  locked hudson.remoting.Channel@1002a935
+	at hudson.remoting.Request.callAsync(Request.java:205)
+	at hudson.remoting.Channel.callAsync(Channel.java:856)
+	at hudson.util.RemotingDiagnostics.getThreadDumpAsync(RemotingDiagnostics.java:92)
+	at jenkins.model.Jenkins.getAllThreadDumps(Jenkins.java:3815)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.commons.jexl.util.introspection.UberspectImpl$VelMethodImpl.invoke(UberspectImpl.java:258)
+	at org.apache.commons.jexl.parser.ASTMethod.execute(ASTMethod.java:104)
+	at org.apache.commons.jexl.parser.ASTReference.execute(ASTReference.java:83)
+	at org.apache.commons.jexl.parser.ASTReference.value(ASTReference.java:57)
+	at org.apache.commons.jexl.parser.ASTReferenceExpression.value(ASTReferenceExpression.java:51)
+	at org.apache.commons.jexl.ExpressionImpl.evaluate(ExpressionImpl.java:80)
+	at hudson.ExpressionFactory2$JexlExpression.evaluate(ExpressionFactory2.java:74)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$3.run(CoreTagLibrary.java:134)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.CallTagLibScript$1.run(CallTagLibScript.java:99)
+	at org.apache.commons.jelly.tags.define.InvokeBodyTag.doTag(InvokeBodyTag.java:91)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:269)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$1.run(CoreTagLibrary.java:98)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$2.run(CoreTagLibrary.java:105)
+	at org.kohsuke.stapler.jelly.CallTagLibScript.run(CallTagLibScript.java:120)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.CallTagLibScript$1.run(CallTagLibScript.java:99)
+	at org.apache.commons.jelly.tags.define.InvokeBodyTag.doTag(InvokeBodyTag.java:91)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:269)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.ReallyStaticTagLibrary$1.run(ReallyStaticTagLibrary.java:99)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.ReallyStaticTagLibrary$1.run(ReallyStaticTagLibrary.java:99)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.ReallyStaticTagLibrary$1.run(ReallyStaticTagLibrary.java:99)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.kohsuke.stapler.jelly.ReallyStaticTagLibrary$1.run(ReallyStaticTagLibrary.java:99)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$2.run(CoreTagLibrary.java:105)
+	at org.kohsuke.stapler.jelly.CallTagLibScript.run(CallTagLibScript.java:120)
+	at org.apache.commons.jelly.tags.core.CoreTagLibrary$2.run(CoreTagLibrary.java:105)
+	at org.kohsuke.stapler.jelly.JellyViewScript.run(JellyViewScript.java:95)
+	at org.kohsuke.stapler.jelly.DefaultScriptInvoker.invokeScript(DefaultScriptInvoker.java:63)
+	at org.kohsuke.stapler.jelly.DefaultScriptInvoker.invokeScript(DefaultScriptInvoker.java:53)
+	at org.kohsuke.stapler.jelly.JellyFacet$1.dispatch(JellyFacet.java:97)
+	at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:715)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:845)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:649)
+	at org.kohsuke.stapler.Stapler.service(Stapler.java:238)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:812)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1669)
+	at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:135)
+	at hudson.util.PluginServletFilter.doFilter(PluginServletFilter.java:138)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at hudson.security.csrf.CrumbFilter.doFilter(CrumbFilter.java:49)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:84)
+	at hudson.security.UnwrapSecurityExceptionFilter.doFilter(UnwrapSecurityExceptionFilter.java:51)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at jenkins.security.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:117)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.providers.anonymous.AnonymousProcessingFilter.doFilter(AnonymousProcessingFilter.java:125)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.rememberme.RememberMeProcessingFilter.doFilter(RememberMeProcessingFilter.java:142)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.AbstractProcessingFilter.doFilter(AbstractProcessingFilter.java:271)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at jenkins.security.BasicHeaderProcessor.doFilter(BasicHeaderProcessor.java:92)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.context.HttpSessionContextIntegrationFilter.doFilter(HttpSessionContextIntegrationFilter.java:249)
+	at hudson.security.HttpSessionContextIntegrationFilter2.doFilter(HttpSessionContextIntegrationFilter2.java:67)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at hudson.security.ChainedServletFilter.doFilter(ChainedServletFilter.java:90)
+	at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:171)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at org.kohsuke.stapler.compression.CompressionFilter.doFilter(CompressionFilter.java:49)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at hudson.util.CharacterEncodingFilter.doFilter(CharacterEncodingFilter.java:82)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at org.kohsuke.stapler.DiagnosticThreadNameFilter.doFilter(DiagnosticThreadNameFilter.java:30)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1652)
+	at org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:585)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:143)
+	at org.eclipse.jetty.security.SecurityHandler.handle(SecurityHandler.java:553)
+	at org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:223)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1127)
+	at org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:515)
+	at org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:185)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1061)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:141)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:97)
+	at org.eclipse.jetty.server.Server.handle(Server.java:499)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:311)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:257)
+	at org.eclipse.jetty.io.AbstractConnection$2.run(AbstractConnection.java:544)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@d73033e
+
+IOHub#1: Selector[keys:0, gen:0] / Computer.threadPoolForRemoting [#19]
+
+"IOHub#1: Selector[keys:0, gen:0] / Computer.threadPoolForRemoting [#19]" Id=307 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@147fd79c
+	-  locked java.util.Collections$UnmodifiableSet@20b173d5
+	-  locked sun.nio.ch.EPollSelectorImpl@31fea966
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.jenkinsci.remoting.protocol.IOHub.run(IOHub.java:436)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@61f30bd4
+
+Jenkins cron thread
+
+"Jenkins cron thread" Id=37 Group=main WAITING on java.util.TaskQueue@318574c8
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.util.TaskQueue@318574c8
+	at java.lang.Object.wait(Object.java:502)
+	at java.util.TimerThread.mainLoop(Timer.java:526)
+	at java.util.TimerThread.run(Timer.java:505)
+
+Jenkins UDP 33848 monitoring thread
+
+"Jenkins UDP 33848 monitoring thread" Id=165 Group=main RUNNABLE (in native)
+	at java.net.PlainDatagramSocketImpl.receive0(Native Method)
+	-  locked java.net.PlainDatagramSocketImpl@b88fc72
+	at java.net.AbstractPlainDatagramSocketImpl.receive(AbstractPlainDatagramSocketImpl.java:143)
+	-  locked java.net.PlainDatagramSocketImpl@b88fc72
+	at java.net.DatagramSocket.receive(DatagramSocket.java:812)
+	-  locked java.net.DatagramPacket@c5c352f
+	-  locked java.net.MulticastSocket@70928b15
+	at hudson.UDPBroadcastThread.run(UDPBroadcastThread.java:84)
+
+jenkins.util.Timer [#10]
+
+"jenkins.util.Timer [#10]" Id=163 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#1]
+
+"jenkins.util.Timer [#1]" Id=38 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#2]
+
+"jenkins.util.Timer [#2]" Id=151 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#3]
+
+"jenkins.util.Timer [#3]" Id=152 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#4]
+
+"jenkins.util.Timer [#4]" Id=153 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#5]
+
+"jenkins.util.Timer [#5]" Id=154 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#6]
+
+"jenkins.util.Timer [#6]" Id=155 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#7]
+
+"jenkins.util.Timer [#7]" Id=156 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#8]
+
+"jenkins.util.Timer [#8]" Id=157 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+jenkins.util.Timer [#9]
+
+"jenkins.util.Timer [#9]" Id=162 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7d226c72
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+JGit-WorkQueue
+
+"JGit-WorkQueue" Id=342 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7114ad89
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@7114ad89
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+JmDNS(intel-wildcatpass-02-khw-lab-eng-bos-rh-com.local.).State.Timer
+
+"JmDNS(intel-wildcatpass-02-khw-lab-eng-bos-rh-com.local.).State.Timer" Id=171 Group=main TIMED_WAITING on java.util.TaskQueue@189e8e38
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.util.TaskQueue@189e8e38
+	at java.util.TimerThread.mainLoop(Timer.java:552)
+	at java.util.TimerThread.run(Timer.java:505)
+
+JmDNS(intel-wildcatpass-02-khw-lab-eng-bos-rh-com.local.).Timer
+
+"JmDNS(intel-wildcatpass-02-khw-lab-eng-bos-rh-com.local.).Timer" Id=170 Group=main TIMED_WAITING on java.util.TaskQueue@8bd1121
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.util.TaskQueue@8bd1121
+	at java.util.TimerThread.mainLoop(Timer.java:552)
+	at java.util.TimerThread.run(Timer.java:505)
+
+LauncherControlThread[ControlPort=-1]
+
+"LauncherControlThread[ControlPort=-1]" Id=34 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at winstone.Launcher.run(Launcher.java:243)
+	at java.lang.Thread.run(Thread.java:748)
+
+NioChannelHub keys=0 gen=0: Computer.threadPoolForRemoting [#18]
+
+"NioChannelHub keys=0 gen=0: Computer.threadPoolForRemoting [#18]" Id=306 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@65523235
+	-  locked java.util.Collections$UnmodifiableSet@f7bda34
+	-  locked sun.nio.ch.EPollSelectorImpl@24ff2fd5
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.jenkinsci.remoting.nio.NioChannelHub.run(NioChannelHub.java:545)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@8d691f3
+
+org.eclipse.jetty.server.session.HashSessionManager@1ed4004bTimer
+
+"org.eclipse.jetty.server.session.HashSessionManager@1ed4004bTimer" Id=23 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@112c67c0
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@112c67c0
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+Ping thread for channel hudson.remoting.Channel@1002a935:builder_localhost
+
+"Ping thread for channel hudson.remoting.Channel@1002a935:builder_localhost" Id=218 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:91)
+
+Ping thread for channel hudson.remoting.Channel@166c8c65:runner_localhost
+
+"Ping thread for channel hudson.remoting.Channel@166c8c65:runner_localhost" Id=267 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:91)
+
+RemoteInvocationHandler [#7]
+
+"RemoteInvocationHandler [#7]" Id=2718 Group=main TIMED_WAITING on java.lang.ref.ReferenceQueue$Lock@409e8c9a
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@409e8c9a
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at hudson.remoting.RemoteInvocationHandler$Unexporter.run(RemoteInvocationHandler.java:572)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.AtmostOneThreadExecutor$Worker.run(AtmostOneThreadExecutor.java:110)
+	at java.lang.Thread.run(Thread.java:748)
+
+RequestHandlerThread[#1]-selector-ServerConnectorManager@2f897d2e/0
+
+"RequestHandlerThread[#1]-selector-ServerConnectorManager@2f897d2e/0" Id=26 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@6a62ab06
+	-  locked java.util.Collections$UnmodifiableSet@19c3078c
+	-  locked sun.nio.ch.EPollSelectorImpl@34f26dec
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.select(SelectorManager.java:600)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.run(SelectorManager.java:549)
+	at org.eclipse.jetty.util.thread.NonBlockingThread.run(NonBlockingThread.java:52)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@76a4ebf2
+
+RequestHandlerThread[#2]-selector-ServerConnectorManager@2f897d2e/1
+
+"RequestHandlerThread[#2]-selector-ServerConnectorManager@2f897d2e/1" Id=27 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@d0fdbb5
+	-  locked java.util.Collections$UnmodifiableSet@5f51d2d
+	-  locked sun.nio.ch.EPollSelectorImpl@310d7983
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.select(SelectorManager.java:600)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.run(SelectorManager.java:549)
+	at org.eclipse.jetty.util.thread.NonBlockingThread.run(NonBlockingThread.java:52)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@2e8c1c9b
+
+RequestHandlerThread[#3]-selector-ServerConnectorManager@2f897d2e/2
+
+"RequestHandlerThread[#3]-selector-ServerConnectorManager@2f897d2e/2" Id=28 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@7eded58c
+	-  locked java.util.Collections$UnmodifiableSet@5f8d7828
+	-  locked sun.nio.ch.EPollSelectorImpl@6d36c044
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.select(SelectorManager.java:600)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.run(SelectorManager.java:549)
+	at org.eclipse.jetty.util.thread.NonBlockingThread.run(NonBlockingThread.java:52)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@53fe15ff
+
+RequestHandlerThread[#4]-selector-ServerConnectorManager@2f897d2e/3
+
+"RequestHandlerThread[#4]-selector-ServerConnectorManager@2f897d2e/3" Id=29 Group=main RUNNABLE (in native)
+	at sun.nio.ch.EPollArrayWrapper.epollWait(Native Method)
+	at sun.nio.ch.EPollArrayWrapper.poll(EPollArrayWrapper.java:269)
+	at sun.nio.ch.EPollSelectorImpl.doSelect(EPollSelectorImpl.java:93)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@38b3282f
+	-  locked java.util.Collections$UnmodifiableSet@561c92b7
+	-  locked sun.nio.ch.EPollSelectorImpl@4c259f88
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.select(SelectorManager.java:600)
+	at org.eclipse.jetty.io.SelectorManager$ManagedSelector.run(SelectorManager.java:549)
+	at org.eclipse.jetty.util.thread.NonBlockingThread.run(NonBlockingThread.java:52)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@449a4f23
+
+RequestHandlerThread[#5]-acceptor-0@12031ee1-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}
+
+"RequestHandlerThread[#5]-acceptor-0@12031ee1-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}" Id=30 Group=main RUNNABLE (in native)
+	at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:422)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:250)
+	-  locked java.lang.Object@5c1dca9a
+	at org.eclipse.jetty.server.ServerConnector.accept(ServerConnector.java:377)
+	at org.eclipse.jetty.server.AbstractConnector$Acceptor.run(AbstractConnector.java:500)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@78e4deb0
+
+RequestHandlerThread[#6]-acceptor-1@296e6a16-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}
+
+"RequestHandlerThread[#6]-acceptor-1@296e6a16-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}" Id=31 Group=main BLOCKED on java.lang.Object@5c1dca9a owned by "RequestHandlerThread[#5]-acceptor-0@12031ee1-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}" Id=30
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:233)
+	-  blocked on java.lang.Object@5c1dca9a
+	at org.eclipse.jetty.server.ServerConnector.accept(ServerConnector.java:377)
+	at org.eclipse.jetty.server.AbstractConnector$Acceptor.run(AbstractConnector.java:500)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@6e9175d8
+
+RequestHandlerThread[#7]-acceptor-2@50cab535-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}
+
+"RequestHandlerThread[#7]-acceptor-2@50cab535-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}" Id=32 Group=main BLOCKED on java.lang.Object@5c1dca9a owned by "RequestHandlerThread[#5]-acceptor-0@12031ee1-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}" Id=30
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:233)
+	-  blocked on java.lang.Object@5c1dca9a
+	at org.eclipse.jetty.server.ServerConnector.accept(ServerConnector.java:377)
+	at org.eclipse.jetty.server.AbstractConnector$Acceptor.run(AbstractConnector.java:500)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@7d0b7e3c
+
+RequestHandlerThread[#879]
+
+"RequestHandlerThread[#879]" Id=7134 Group=main TIMED_WAITING on java.util.concurrent.SynchronousQueue$TransferStack@f64793d
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.SynchronousQueue$TransferStack@f64793d
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:460)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:362)
+	at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:941)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1073)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+RequestHandlerThread[#880]
+
+"RequestHandlerThread[#880]" Id=7136 Group=main TIMED_WAITING on java.util.concurrent.SynchronousQueue$TransferStack@f64793d
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.SynchronousQueue$TransferStack@f64793d
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:460)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:362)
+	at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:941)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1073)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+RequestHandlerThread[#8]-acceptor-3@3c36826b-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}
+
+"RequestHandlerThread[#8]-acceptor-3@3c36826b-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}" Id=33 Group=main BLOCKED on java.lang.Object@5c1dca9a owned by "RequestHandlerThread[#5]-acceptor-0@12031ee1-ServerConnector@1cc4f2d1{HTTP/1.1}{0.0.0.0:8080}" Id=30
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:233)
+	-  blocked on java.lang.Object@5c1dca9a
+	at org.eclipse.jetty.server.ServerConnector.accept(ServerConnector.java:377)
+	at org.eclipse.jetty.server.AbstractConnector$Acceptor.run(AbstractConnector.java:500)
+	at winstone.BoundedExecutorService$1.run(BoundedExecutorService.java:77)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@15bb5034
+
+Scheduler-1887400018
+
+"Scheduler-1887400018" Id=184 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@454290c2
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@454290c2
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+SocketListener(intel-wildcatpass-02-khw-lab-eng-bos-rh-com.local.)
+
+"SocketListener(intel-wildcatpass-02-khw-lab-eng-bos-rh-com.local.)" Id=169 Group=main RUNNABLE (in native)
+	at java.net.PlainDatagramSocketImpl.receive0(Native Method)
+	-  locked java.net.PlainDatagramSocketImpl@564a3327
+	at java.net.AbstractPlainDatagramSocketImpl.receive(AbstractPlainDatagramSocketImpl.java:143)
+	-  locked java.net.PlainDatagramSocketImpl@564a3327
+	at java.net.DatagramSocket.receive(DatagramSocket.java:812)
+	-  locked java.net.DatagramPacket@75f7dac
+	-  locked java.net.MulticastSocket@6bdccc31
+	at javax.jmdns.impl.SocketListener.run(SocketListener.java:41)
+
+Thread-6
+
+"Thread-6" Id=200 Group=main RUNNABLE (in native)
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(SocketInputStream.java:116)
+	at java.net.SocketInputStream.read(SocketInputStream.java:171)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.fill_buffer(CipherInputStream.java:41)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.internal_read(CipherInputStream.java:52)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.getBlock(CipherInputStream.java:79)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.read(CipherInputStream.java:108)
+	at com.trilead.ssh2.transport.TransportConnection.receiveMessage(TransportConnection.java:232)
+	at com.trilead.ssh2.transport.TransportManager.receiveLoop(TransportManager.java:706)
+	at com.trilead.ssh2.transport.TransportManager$1.run(TransportManager.java:502)
+	at java.lang.Thread.run(Thread.java:748)
+
+Thread-8
+
+"Thread-8" Id=258 Group=main RUNNABLE (in native)
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(SocketInputStream.java:116)
+	at java.net.SocketInputStream.read(SocketInputStream.java:171)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.fill_buffer(CipherInputStream.java:41)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.internal_read(CipherInputStream.java:52)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.getBlock(CipherInputStream.java:79)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.read(CipherInputStream.java:108)
+	at com.trilead.ssh2.transport.TransportConnection.receiveMessage(TransportConnection.java:232)
+	at com.trilead.ssh2.transport.TransportManager.receiveLoop(TransportManager.java:706)
+	at com.trilead.ssh2.transport.TransportManager$1.run(TransportManager.java:502)
+	at java.lang.Thread.run(Thread.java:748)
+
+WorkflowRun.copyLogs [#1]
+
+"WorkflowRun.copyLogs [#1]" Id=350 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+WorkflowRun.copyLogs [#2]
+
+"WorkflowRun.copyLogs [#2]" Id=354 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+WorkflowRun.copyLogs [#3]
+
+"WorkflowRun.copyLogs [#3]" Id=355 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+WorkflowRun.copyLogs [#4]
+
+"WorkflowRun.copyLogs [#4]" Id=356 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+WorkflowRun.copyLogs [#5]
+
+"WorkflowRun.copyLogs [#5]" Id=361 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6c1fa825
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+Finalizer
+
+"Finalizer" Id=3 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@10d2fd0e
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@10d2fd0e
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+
+Java2D Disposer
+
+"Java2D Disposer" Id=24 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@6e69cb90
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@6e69cb90
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	at sun.java2d.Disposer.run(Disposer.java:148)
+	at java.lang.Thread.run(Thread.java:748)
+
+Reference Handler
+
+"Reference Handler" Id=2 Group=system WAITING on java.lang.ref.Reference$Lock@37e86ff5
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@37e86ff5
+	at java.lang.Object.wait(Object.java:502)
+	at java.lang.ref.Reference.tryHandlePending(Reference.java:191)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:153)
+
+Signal Dispatcher
+
+"Signal Dispatcher" Id=4 Group=system RUNNABLE
+
+builder_localhost
+Channel reader thread: channel
+
+"Channel reader thread: channel" Id=23 Group=main RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:255)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:265)
+	-  locked java.io.BufferedInputStream@147ad2bd
+	at hudson.remoting.FlightRecorderInputStream.read(FlightRecorderInputStream.java:86)
+	at hudson.remoting.ChunkedInputStream.readHeader(ChunkedInputStream.java:72)
+	at hudson.remoting.ChunkedInputStream.readUntilBreak(ChunkedInputStream.java:103)
+	at hudson.remoting.ChunkedCommandTransport.readBlock(ChunkedCommandTransport.java:39)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+JGit-WorkQueue
+
+"JGit-WorkQueue" Id=1178 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@47ada843
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@47ada843
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+main
+
+"main" Id=1 Group=main TIMED_WAITING on hudson.remoting.Channel@7fbe847c
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.Channel@7fbe847c
+	at hudson.remoting.Channel.join(Channel.java:997)
+	at hudson.remoting.Launcher.main(Launcher.java:680)
+	at hudson.remoting.Launcher.runWithStdinStdout(Launcher.java:595)
+	at hudson.remoting.Launcher.run(Launcher.java:277)
+	at hudson.remoting.Launcher.main(Launcher.java:218)
+
+Ping thread for channel hudson.remoting.Channel@7fbe847c:channel
+
+"Ping thread for channel hudson.remoting.Channel@7fbe847c:channel" Id=28 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:91)
+
+pool-1-thread-2206 for channel id=74786
+
+"pool-1-thread-2206 for channel id=74786" Id=2946 Group=main RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:454)
+	at hudson.Functions.getThreadInfos(Functions.java:1225)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:98)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:95)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:336)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@4eefac18
+
+RemoteInvocationHandler [#64]
+
+"RemoteInvocationHandler [#64]" Id=2911 Group=main TIMED_WAITING on java.lang.ref.ReferenceQueue$Lock@2fc2c769
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@2fc2c769
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at hudson.remoting.RemoteInvocationHandler$Unexporter.run(RemoteInvocationHandler.java:572)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.AtmostOneThreadExecutor$Worker.run(AtmostOneThreadExecutor.java:110)
+	at java.lang.Thread.run(Thread.java:748)
+
+Finalizer
+
+"Finalizer" Id=3 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@19372453
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@19372453
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+
+Reference Handler
+
+"Reference Handler" Id=2 Group=system WAITING on java.lang.ref.Reference$Lock@20774193
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@20774193
+	at java.lang.Object.wait(Object.java:502)
+	at java.lang.ref.Reference.tryHandlePending(Reference.java:191)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:153)
+
+Signal Dispatcher
+
+"Signal Dispatcher" Id=4 Group=system RUNNABLE
+
+runner_localhost
+Channel reader thread: channel
+
+"Channel reader thread: channel" Id=23 Group=main RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:255)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:265)
+	-  locked java.io.BufferedInputStream@7c106b05
+	at hudson.remoting.FlightRecorderInputStream.read(FlightRecorderInputStream.java:86)
+	at hudson.remoting.ChunkedInputStream.readHeader(ChunkedInputStream.java:72)
+	at hudson.remoting.ChunkedInputStream.readUntilBreak(ChunkedInputStream.java:103)
+	at hudson.remoting.ChunkedCommandTransport.readBlock(ChunkedCommandTransport.java:39)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+JGit-WorkQueue
+
+"JGit-WorkQueue" Id=1159 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@5fafba92
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@5fafba92
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+main
+
+"main" Id=1 Group=main TIMED_WAITING on hudson.remoting.Channel@7fbe847c
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.Channel@7fbe847c
+	at hudson.remoting.Channel.join(Channel.java:997)
+	at hudson.remoting.Launcher.main(Launcher.java:680)
+	at hudson.remoting.Launcher.runWithStdinStdout(Launcher.java:595)
+	at hudson.remoting.Launcher.run(Launcher.java:277)
+	at hudson.remoting.Launcher.main(Launcher.java:218)
+
+Ping thread for channel hudson.remoting.Channel@7fbe847c:channel
+
+"Ping thread for channel hudson.remoting.Channel@7fbe847c:channel" Id=25 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:91)
+
+pool-1-thread-1537 for channel id=74787
+
+"pool-1-thread-1537 for channel id=74787" Id=2355 Group=main RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:454)
+	at hudson.Functions.getThreadInfos(Functions.java:1225)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:98)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:95)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:336)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.ThreadPoolExecutor$Worker@6de0ff43
+
+RemoteInvocationHandler [#510]
+
+"RemoteInvocationHandler [#510]" Id=2250 Group=main TIMED_WAITING on java.lang.ref.ReferenceQueue$Lock@4608640b
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@4608640b
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at hudson.remoting.RemoteInvocationHandler$Unexporter.run(RemoteInvocationHandler.java:572)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.AtmostOneThreadExecutor$Worker.run(AtmostOneThreadExecutor.java:110)
+	at java.lang.Thread.run(Thread.java:748)
+
+Finalizer
+
+"Finalizer" Id=3 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@504f6e9c
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@504f6e9c
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:209)
+
+Reference Handler
+
+"Reference Handler" Id=2 Group=system WAITING on java.lang.ref.Reference$Lock@55e270a2
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@55e270a2
+	at java.lang.Object.wait(Object.java:502)
+	at java.lang.ref.Reference.tryHandlePending(Reference.java:191)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:153)
+
+Signal Dispatcher
+
+"Signal Dispatcher" Id=4 Group=system RUNNABLE
+

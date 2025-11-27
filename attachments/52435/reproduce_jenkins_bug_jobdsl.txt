@@ -1,0 +1,60 @@
+String job_pipeline = """
+pipeline {
+
+    agent {
+		label 'master'
+    }
+
+	stages {
+		stage('Checkout') {
+			steps {
+                script {
+                    checkout([
+                        \$class: 'GitSCM',
+                        branches: [[name: "origin/\${env.BRANCH}ready/**"]],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [
+                            [\$class: 'CloneOption', noTags: false, reference: '', shallow: false, timeout: 15, honorRefspec: true],
+                            [\$class: 'PruneStaleBranch'],
+                            [\$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: false]
+                        ],
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[credentialsId: "\${env.CRED}", url: "\${env.REPO}"]],
+                        browser: [\$class: 'BitbucketWeb', repoUrl: "\${env.REPO}"]
+                    ])
+                }
+
+			}
+		}
+	}
+}
+"""
+
+folder = JOB_NAME.split('/').dropRight(1).join('/')
+
+job = pipelineJob("${folder}/PollBugJob") {
+  description("Job example for bug report")
+  
+  environmentVariables {
+    env('REPO', "https://git-unisource.md-man.biz:7990/scm/ci/user-utils.git")
+    env('BRANCH', "test-branch/")
+    env('CRED', "BuildUser")
+  }
+  
+  definition {
+    cps {
+      script(job_pipeline)
+      sandbox()
+    }
+  }
+}
+
+job.with {
+  configure {
+    def params = it / 'properties' / 'org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty' / 'triggers'
+    params << 'hudson.triggers.SCMTrigger' {
+              'spec'("* * * * *")
+              'ignorePostCommitHooks'('false')
+    }
+  }
+}

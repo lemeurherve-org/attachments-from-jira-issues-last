@@ -1,0 +1,90 @@
+Index: src/main/java/hudson/plugins/promoted_builds/Promotion.java
+===================================================================
+--- src/main/java/hudson/plugins/promoted_builds/Promotion.java	(revision 12989)
++++ src/main/java/hudson/plugins/promoted_builds/Promotion.java	(working copy)
+@@ -1,9 +1,13 @@
+ package hudson.plugins.promoted_builds;
+ 
+ import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
+ import hudson.model.BuildListener;
+ import hudson.model.Result;
++import hudson.Launcher;
+ import hudson.tasks.BuildStep;
++import hudson.tasks.BuildTrigger;
++import hudson.tasks.BuildStepCompatibilityLayer;
+ 
+ import java.io.File;
+ import java.io.IOException;
+@@ -103,17 +107,46 @@
+         }
+ 
+         private boolean build(BuildListener listener, List<BuildStep> steps) throws IOException, InterruptedException {
+-            for( BuildStep bs : steps )
+-                if(!bs.perform(Promotion.this, launcher, listener))
++            for( BuildStep bs : steps ) {
++                if ( bs instanceof BuildTrigger) {
++                    BuildTrigger bt = (BuildTrigger)bs;
++                    for(AbstractProject p : bt.getChildProjects()) {
++                        listener.getLogger().println("  scheduling build for " + p.getDisplayName());
++                        p.scheduleBuild();
++                    }
++                } else if(!bs.perform(Promotion.this, launcher, listener)) {
++                    listener.getLogger().println("failed build " + bs + " " + getResult());
+                     return false;
++                } else  {
++                    listener.getLogger().println("build " + bs + " " + getResult());
++                }
++            }
+             return true;
+         }
+ 
+         private boolean preBuild(BuildListener listener, List<BuildStep> steps) {
+-            for( BuildStep bs : steps )
+-                if(!bs.prebuild(Promotion.this,listener))
++            boolean allOk = true;
++            for( BuildStep bs : steps ) {
++                if(bs instanceof BuildStepCompatibilityLayer && ! overridesPerform(bs.getClass())) {
++                    listener.getLogger().println(bs + " doesn't support Promotion");
++                    allOk = false;
++                } else if(!bs.prebuild(Promotion.this,listener)) {
++                    listener.getLogger().println("failed pre build " + bs + " " + getResult());
+                     return false;
+-            return true;
++                }
++            }
++            return allOk;
+         }
++        
++        private boolean overridesPerform(Class<? extends BuildStep> bsc) {
++           try {
++                Class<?> declarer = bsc.getMethod("perform", AbstractBuild.class, Launcher.class, BuildListener.class).getDeclaringClass();
++                return ! declarer.equals(BuildStepCompatibilityLayer.class);
++            } catch (NoSuchMethodException noSuchMethodException) {
++                return false;
++            } catch (SecurityException securityException) {
++                throw new RuntimeException(securityException);
++            }
++        }
+     }
+ }
+Index: src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/index.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/index.jelly	(revision 12989)
++++ src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/index.jelly	(working copy)
+@@ -34,6 +34,7 @@
+           <j:choose>
+             <local:re-promote-button />
+             <j:when test="${p.isPromotionSuccessful()}">
++              <img src="${imagesURL}/16x16/blue.gif" alt="Unstable" width="16" height="16" />
+               Successfully promoted (<a href="${p.name}/lastSuccessful">record</a>)
+             </j:when>
+             <j:when test="${!p.isPromotionAttempted()}">
+@@ -48,6 +49,7 @@
+               </j:choose>
+             </j:when>
+             <j:otherwise>
++              <img src="${imagesURL}/16x16/red.gif" alt="Unstable" width="16" height="16" />
+               Promotion failed (<a href="${p.name}/lastFailed">record</a>)
+             </j:otherwise>
+           </j:choose>

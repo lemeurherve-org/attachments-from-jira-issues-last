@@ -1,0 +1,936 @@
+Index: src/main/java/hudson/EnvVars.java
+===================================================================
+--- src/main/java/hudson/EnvVars.java	(revision 14772)
++++ src/main/java/hudson/EnvVars.java	(working copy)
+@@ -7,9 +7,13 @@
+ import java.io.File;
+ import java.io.IOException;
+ import java.util.Collections;
++import java.util.LinkedHashMap;
++import java.util.List;
+ import java.util.Map;
+ import java.util.TreeMap;
+ 
++import org.kohsuke.stapler.DataBoundConstructor;
++
+ /**
+  * Environment variables.
+  *
+@@ -107,4 +111,25 @@
+      * variable of the slave agent.
+      */
+     public static final Map<String,String> masterEnvVars = new EnvVars(System.getenv());
++    
++    
++    public static Map<String,String> toMap(List<Entry> list) {
++        Map<String,String> envVars = new LinkedHashMap<String,String>();
++        if (envVars != null) {
++        	for (EnvVars.Entry e: list) {
++        		envVars.put(e.key.toUpperCase(), e.value);
++        	}
++        }
++        return envVars;
++    }
++    
++    public static class Entry {
++    	public final String key, value;
++
++    	@DataBoundConstructor
++		public Entry(String key, String value) {
++			this.key = key;
++			this.value = value;
++		}
++    }
+ }
+Index: src/main/java/hudson/Util.java
+===================================================================
+--- src/main/java/hudson/Util.java	(revision 14772)
++++ src/main/java/hudson/Util.java	(working copy)
+@@ -109,6 +109,21 @@
+     }
+ 
+     /**
++     * Replaces the occurrence of '$key' by <tt>properties.get('key')</tt>, for each of the property maps passed.
++     *
++     * <p>
++     * Unlike shell, undefined variables are left as-is (this behavior is the same as Ant.)
++     *
++     */
++    public static String replaceMacro(String s, Map<String,String>... properties) {
++    	for (Map<String,String> p: properties) {
++    		s = replaceMacro(s, new VariableResolver.ByMap<String>(p));
++    	}
++    	return s;
++    }
++
++    
++    /**
+      * Replaces the occurrence of '$key' by <tt>resolver.get('key')</tt>.
+      *
+      * <p>
+Index: src/main/java/hudson/maven/MavenModuleSetBuild.java
+===================================================================
+--- src/main/java/hudson/maven/MavenModuleSetBuild.java	(revision 14772)
++++ src/main/java/hudson/maven/MavenModuleSetBuild.java	(working copy)
+@@ -687,7 +687,7 @@
+                 logger.println("Parsing "+pom);
+ 
+             try {
+-                MavenEmbedder embedder = mavenHome.createEmbedder(listener,profiles);
++                MavenEmbedder embedder = mavenHome.forCurrentNode().createEmbedder(listener,profiles);
+                 MavenProject mp = embedder.readProject(pom);
+                 Map<MavenProject,String> relPath = new HashMap<MavenProject,String>();
+                 MavenUtil.resolveModules(embedder,mp,getRootPath(),relPath,listener);
+Index: src/main/java/hudson/maven/MavenProcessFactory.java
+===================================================================
+--- src/main/java/hudson/maven/MavenProcessFactory.java	(revision 14772)
++++ src/main/java/hudson/maven/MavenProcessFactory.java	(working copy)
+@@ -1,9 +1,10 @@
+ package hudson.maven;
+ 
++import static hudson.Util.fixNull;
+ import hudson.FilePath;
+ import hudson.Launcher;
+ import hudson.Proc;
+-import static hudson.Util.fixNull;
++import hudson.Util;
+ import hudson.maven.agent.Main;
+ import hudson.model.BuildListener;
+ import hudson.model.Computer;
+@@ -11,8 +12,8 @@
+ import hudson.model.Hudson;
+ import hudson.model.JDK;
+ import hudson.model.Node;
++import hudson.model.TaskListener;
+ import hudson.model.Run.RunnerAbortedException;
+-import hudson.model.TaskListener;
+ import hudson.remoting.Callable;
+ import hudson.remoting.Channel;
+ import hudson.remoting.RemoteInputStream;
+@@ -234,9 +235,12 @@
+             listener.error("Maven '%s' doesn't have its home set",mvn.getName());
+             throw new RunnerAbortedException();
+         }
++        
++        mvn = mvn.forCurrentNode();
+ 
+         // find classworlds.jar
+-        String classWorldsJar = launcher.getChannel().call(new GetClassWorldsJar(mvn.getMavenHome(),listener));
++        String mavenHome = hudson.Util.replaceMacro(mvn.getMavenHome(), envVars);
++        String classWorldsJar = launcher.getChannel().call(new GetClassWorldsJar(mavenHome,listener));
+ 
+         boolean isMaster = getCurrentNode()== Hudson.getInstance();
+         FilePath slaveRoot=null;
+@@ -247,8 +251,9 @@
+         JDK jdk = mms.getJDK();
+         if(jdk==null)
+             args.add("java");
+-        else
+-            args.add(jdk.getJavaHome()+"/bin/java");
++        else {
++        	args.add(jdk.forCurrentNode().getJavaHome()+"/bin/java");
++        }
+ 
+         if(debugPort!=0)
+             args.add("-Xrunjdwp:transport=dt_socket,server=y,address="+debugPort);
+@@ -264,7 +269,7 @@
+         args.add(Main.class.getName());
+ 
+         // M2_HOME
+-        args.add(mvn.getMavenHome());
++        args.add(Util.replaceMacro(mvn.getMavenHome(), envVars));
+ 
+         // remoting.jar
+         args.add(launcher.getChannel().call(new GetRemotingJar()));
+Index: src/main/java/hudson/model/AbstractBuild.java
+===================================================================
+--- src/main/java/hudson/model/AbstractBuild.java	(revision 14772)
++++ src/main/java/hudson/model/AbstractBuild.java	(working copy)
+@@ -387,9 +387,16 @@
+         // see http://www.nabble.com/Run-Job-with-JDK-1.4.2-tf4468601.html
+         env.put("CLASSPATH","");
+ 
+-        JDK jdk = project.getJDK();
+-        if(jdk !=null)
+-            jdk.buildEnvVars(env);
++        // add node-specific env vars
++    	env.putAll(Executor.currentExecutor().getOwner().getNode().getEnvVars());
++
++    	// add default env vars
++    	env.putAll(Hudson.getInstance().getEnvVars());
++
++    	JDK jdk = project.getJDK();
++        if(jdk !=null) {
++        	jdk.forCurrentNode().buildEnvVars(env);
++        }
+         project.getScm().buildEnvVars(this,env);
+ 
+         ParametersAction parameters = getAction(ParametersAction.class);
+Index: src/main/java/hudson/model/Hudson.java
+===================================================================
+--- src/main/java/hudson/model/Hudson.java	(revision 14772)
++++ src/main/java/hudson/model/Hudson.java	(working copy)
+@@ -1,11 +1,14 @@
+ package hudson.model;
+ 
+-import com.thoughtworks.xstream.XStream;
++import static hudson.Util.fixEmpty;
++import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
++import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
++import static org.acegisecurity.ui.rememberme.TokenBasedRememberMeServices.ACEGI_SECURITY_HASHED_REMEMBER_ME_COOKIE_KEY;
+ import hudson.BulkChange;
++import hudson.EnvVars;
+ import hudson.FilePath;
+ import hudson.Functions;
+ import hudson.Launcher;
+-import hudson.Launcher.LocalLauncher;
+ import hudson.Plugin;
+ import hudson.PluginManager;
+ import hudson.PluginWrapper;
+@@ -13,17 +16,17 @@
+ import hudson.StructuredForm;
+ import hudson.TcpSlaveAgentListener;
+ import hudson.Util;
+-import static hudson.Util.fixEmpty;
+ import hudson.WebAppMain;
+ import hudson.XmlFile;
++import hudson.Launcher.LocalLauncher;
++import hudson.lifecycle.Lifecycle;
++import hudson.lifecycle.WindowsInstallerLink;
+ import hudson.logging.LogRecorderManager;
+-import hudson.lifecycle.WindowsInstallerLink;
+-import hudson.lifecycle.Lifecycle;
+ import hudson.model.Descriptor.FormException;
+ import hudson.model.listeners.ItemListener;
+ import hudson.model.listeners.JobListener;
++import hudson.model.listeners.SCMListener;
+ import hudson.model.listeners.JobListener.JobListenerAdapter;
+-import hudson.model.listeners.SCMListener;
+ import hudson.remoting.LocalChannel;
+ import hudson.remoting.VirtualChannel;
+ import hudson.scm.CVSSCM;
+@@ -46,13 +49,13 @@
+ import hudson.security.PermissionGroup;
+ import hudson.security.SecurityMode;
+ import hudson.security.SecurityRealm;
++import hudson.slaves.Cloud;
+ import hudson.slaves.ComputerListener;
+-import hudson.slaves.RetentionStrategy;
+-import hudson.slaves.NodeList;
+-import hudson.slaves.Cloud;
+ import hudson.slaves.DumbSlave;
+ import hudson.slaves.NodeDescriptor;
++import hudson.slaves.NodeList;
+ import hudson.slaves.NodeProvisioner;
++import hudson.slaves.RetentionStrategy;
+ import hudson.tasks.BuildStep;
+ import hudson.tasks.BuildWrapper;
+ import hudson.tasks.BuildWrappers;
+@@ -69,56 +72,26 @@
+ import hudson.util.CopyOnWriteList;
+ import hudson.util.CopyOnWriteMap;
+ import hudson.util.DaemonThreadFactory;
++import hudson.util.DescribableList;
+ import hudson.util.FormFieldValidator;
++import hudson.util.Futures;
+ import hudson.util.HudsonIsLoading;
++import hudson.util.HudsonIsRestarting;
+ import hudson.util.MultipartFormDataParser;
+ import hudson.util.RemotingDiagnostics;
+ import hudson.util.TextFile;
+ import hudson.util.XStream2;
+-import hudson.util.HudsonIsRestarting;
+-import hudson.util.DescribableList;
+-import hudson.util.Futures;
+ import hudson.widgets.Widget;
+-import net.sf.json.JSONObject;
+-import org.acegisecurity.*;
+-import org.acegisecurity.context.SecurityContextHolder;
+-import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
+-import org.acegisecurity.ui.AbstractProcessingFilter;
+-import static org.acegisecurity.ui.rememberme.TokenBasedRememberMeServices.ACEGI_SECURITY_HASHED_REMEMBER_ME_COOKIE_KEY;
+-import org.apache.commons.logging.LogFactory;
+-import org.apache.commons.jelly.Script;
+-import org.apache.commons.jelly.JellyException;
+-import org.kohsuke.stapler.MetaClass;
+-import org.kohsuke.stapler.QueryParameter;
+-import org.kohsuke.stapler.Stapler;
+-import org.kohsuke.stapler.StaplerProxy;
+-import org.kohsuke.stapler.StaplerRequest;
+-import org.kohsuke.stapler.StaplerResponse;
+-import org.kohsuke.stapler.StaplerFallback;
+-import org.kohsuke.stapler.WebApp;
+-import org.kohsuke.stapler.jelly.JellyClassLoaderTearOff;
+-import org.kohsuke.stapler.jelly.JellyRequestDispatcher;
+-import org.kohsuke.stapler.framework.adjunct.AdjunctManager;
+-import org.kohsuke.stapler.export.Exported;
+-import org.kohsuke.stapler.export.ExportedBean;
+-import org.xml.sax.InputSource;
+ 
+-import javax.servlet.ServletContext;
+-import javax.servlet.ServletException;
+-import javax.servlet.http.Cookie;
+-import javax.servlet.http.HttpServletRequest;
+-import javax.servlet.http.HttpServletResponse;
+-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+-import javax.servlet.http.HttpSession;
+ import java.io.File;
+ import java.io.FileFilter;
+ import java.io.FileInputStream;
+ import java.io.FileOutputStream;
+ import java.io.IOException;
++import java.io.InputStream;
+ import java.io.PrintWriter;
+-import java.io.InputStream;
+ import java.net.URL;
++import java.nio.charset.Charset;
+ import java.security.SecureRandom;
+ import java.text.NumberFormat;
+ import java.text.ParseException;
+@@ -132,30 +105,66 @@
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Map;
+-import java.util.Map.Entry;
++import java.util.Properties;
+ import java.util.Set;
+ import java.util.Stack;
+ import java.util.StringTokenizer;
+ import java.util.Timer;
+ import java.util.TreeSet;
+-import java.util.Properties;
++import java.util.Map.Entry;
+ import java.util.concurrent.Callable;
+ import java.util.concurrent.ConcurrentHashMap;
+ import java.util.concurrent.CopyOnWriteArrayList;
+ import java.util.concurrent.ExecutionException;
+ import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.Future;
++import java.util.concurrent.LinkedBlockingQueue;
+ import java.util.concurrent.ThreadPoolExecutor;
+ import java.util.concurrent.TimeUnit;
+-import java.util.concurrent.LinkedBlockingQueue;
+ import java.util.concurrent.TimeoutException;
+ import java.util.logging.Level;
+ import java.util.logging.LogRecord;
+ import java.util.logging.Logger;
+ import java.util.regex.Pattern;
+-import java.nio.charset.Charset;
++
+ import javax.servlet.RequestDispatcher;
++import javax.servlet.ServletContext;
++import javax.servlet.ServletException;
++import javax.servlet.http.Cookie;
++import javax.servlet.http.HttpServletRequest;
++import javax.servlet.http.HttpServletResponse;
++import javax.servlet.http.HttpSession;
+ 
++import net.sf.json.JSONObject;
++
++import org.acegisecurity.AccessDeniedException;
++import org.acegisecurity.AcegiSecurityException;
++import org.acegisecurity.Authentication;
++import org.acegisecurity.GrantedAuthority;
++import org.acegisecurity.GrantedAuthorityImpl;
++import org.acegisecurity.context.SecurityContextHolder;
++import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
++import org.acegisecurity.ui.AbstractProcessingFilter;
++import org.apache.commons.jelly.JellyException;
++import org.apache.commons.jelly.Script;
++import org.apache.commons.logging.LogFactory;
++import org.kohsuke.stapler.MetaClass;
++import org.kohsuke.stapler.QueryParameter;
++import org.kohsuke.stapler.Stapler;
++import org.kohsuke.stapler.StaplerFallback;
++import org.kohsuke.stapler.StaplerProxy;
++import org.kohsuke.stapler.StaplerRequest;
++import org.kohsuke.stapler.StaplerResponse;
++import org.kohsuke.stapler.WebApp;
++import org.kohsuke.stapler.export.Exported;
++import org.kohsuke.stapler.export.ExportedBean;
++import org.kohsuke.stapler.framework.adjunct.AdjunctManager;
++import org.kohsuke.stapler.jelly.JellyClassLoaderTearOff;
++import org.kohsuke.stapler.jelly.JellyRequestDispatcher;
++import org.xml.sax.InputSource;
++
++import com.thoughtworks.xstream.XStream;
++
+ /**
+  * Root object of the system.
+  *
+@@ -221,6 +230,8 @@
+      * Message displayed in the top page.
+      */
+     private String systemMessage;
++    
++    private Map<String,String> envVars;
+ 
+     /**
+      * Root directory of the system.
+@@ -568,6 +579,13 @@
+     public String getSecretKey() {
+         return secretKey;
+     }
++    
++    public Map<String, String> getEnvVars() {
++    	if (envVars == null) {
++    		envVars = new HashMap<String, String>();
++    	}
++    	return envVars;
++    }
+ 
+     /**
+      * Gets the SCM descriptor by name. Primarily used for making them web-visible.
+@@ -1935,6 +1953,9 @@
+                 pluginManager.getPlugin(o.getString("name")).getPlugin().configure(o);
+ 
+             clouds.rebuildHetero(req,json, Cloud.ALL, "cloud");
++            
++            List<EnvVars.Entry> env = req.bindJSONToList(EnvVars.Entry.class, json.get("env"));
++            envVars = EnvVars.toMap(env);
+ 
+             save();
+             if(result)
+Index: src/main/java/hudson/model/JDK.java
+===================================================================
+--- src/main/java/hudson/model/JDK.java	(revision 14772)
++++ src/main/java/hudson/model/JDK.java	(working copy)
+@@ -1,8 +1,11 @@
+ package hudson.model;
+ 
++import hudson.tasks.Maven.MavenInstallation;
+ import hudson.util.StreamTaskListener;
+ import hudson.util.NullStream;
++import hudson.EnvVars;
+ import hudson.Launcher;
++import hudson.Util;
+ 
+ import java.io.File;
+ import java.io.IOException;
+@@ -75,6 +78,23 @@
+     }
+ 
+     /**
++     * Returns a copy of this JDK in which the variables in the path have
++     * been resolved using the properties for the current node. Can only be called during
++     * a build.
++     * 
++     * @return
++     */
++    @SuppressWarnings("unchecked")
++	public JDK forCurrentNode() {
++    	String javaHome = Util.replaceMacro(
++    			this.javaHome, 
++    			Computer.currentComputer().getNode().getEnvVars(), 
++    			Hudson.getInstance().getEnvVars(), 
++    			EnvVars.masterEnvVars);
++    	return new JDK(name, javaHome);
++    }
++    
++    /**
+      * Checks if "java" is in PATH on the given node.
+      *
+      * <p>
+Index: src/main/java/hudson/model/Node.java
+===================================================================
+--- src/main/java/hudson/model/Node.java	(revision 14772)
++++ src/main/java/hudson/model/Node.java	(working copy)
+@@ -1,18 +1,20 @@
+ package hudson.model;
+ 
++import hudson.ExtensionPoint;
+ import hudson.FilePath;
+ import hudson.Launcher;
+-import hudson.ExtensionPoint;
++import hudson.node_monitors.NodeMonitor;
+ import hudson.security.AccessControlled;
+ import hudson.slaves.NodeDescriptor;
+-import hudson.node_monitors.NodeMonitor;
+ import hudson.util.ClockDifference;
+ import hudson.util.EnumConverter;
+-import org.kohsuke.stapler.Stapler;
+ 
+ import java.io.IOException;
++import java.util.Map;
+ import java.util.Set;
+ 
++import org.kohsuke.stapler.Stapler;
++
+ /**
+  * Base type of Hudson slaves (although in practice, you probably extend {@link Slave} to define a new slave type.)
+  *
+@@ -142,6 +144,14 @@
+      *      if the operation is aborted.
+      */
+     ClockDifference getClockDifference() throws IOException, InterruptedException;
++    
++    /**
++     * Provides a list of environment variables that will be set for every build on this slave.
++     * 
++     * @return
++     * 		a map of environment variable name -> value, possibly empty, always non-null
++     */
++    Map<String,String> getEnvVars();
+ 
+     /**
+      * Constants that control how Hudson allocates jobs to slaves.
+Index: src/main/java/hudson/model/ParameterizedProjectTask.java
+===================================================================
+--- src/main/java/hudson/model/ParameterizedProjectTask.java	(revision 14772)
++++ src/main/java/hudson/model/ParameterizedProjectTask.java	(working copy)
+@@ -53,7 +53,7 @@
+      * Cancels a scheduled build.
+      */
+     public void doCancelQueue( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+-        project.checkPermission(AbstractProject.BUILD);
++        project.checkPermission(AbstractProject.ABORT);
+ 
+         Hudson.getInstance().getQueue().cancel(this);
+         rsp.forwardToPreviousPage(req);
+Index: src/main/java/hudson/model/Slave.java
+===================================================================
+--- src/main/java/hudson/model/Slave.java	(revision 14772)
++++ src/main/java/hudson/model/Slave.java	(working copy)
+@@ -1,38 +1,47 @@
+ package hudson.model;
+ 
++import hudson.EnvVars;
+ import hudson.FilePath;
+ import hudson.Launcher;
++import hudson.Util;
+ import hudson.Launcher.RemoteLauncher;
+-import hudson.Util;
++import hudson.model.Descriptor.FormException;
++import hudson.remoting.Callable;
++import hudson.remoting.VirtualChannel;
+ import hudson.security.ACL;
+ import hudson.security.Permission;
++import hudson.slaves.CommandLauncher;
+ import hudson.slaves.ComputerLauncher;
++import hudson.slaves.DumbSlave;
++import hudson.slaves.JNLPLauncher;
+ import hudson.slaves.RetentionStrategy;
+-import hudson.slaves.CommandLauncher;
+-import hudson.slaves.JNLPLauncher;
+ import hudson.slaves.SlaveComputer;
+-import hudson.slaves.DumbSlave;
+-import hudson.model.Descriptor.FormException;
+-import hudson.remoting.Callable;
+-import hudson.remoting.VirtualChannel;
+ import hudson.tasks.DynamicLabeler;
+ import hudson.tasks.LabelFinder;
+ import hudson.util.ClockDifference;
+-import org.kohsuke.stapler.StaplerRequest;
+-import org.kohsuke.stapler.StaplerResponse;
+-import org.kohsuke.stapler.DataBoundConstructor;
+-import org.apache.commons.io.IOUtils;
+ 
+-import javax.servlet.ServletException;
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.InputStream;
+ import java.io.Serializable;
++import java.net.MalformedURLException;
+ import java.net.URL;
+ import java.net.URLConnection;
+-import java.net.MalformedURLException;
+-import java.util.*;
++import java.util.Collections;
++import java.util.HashMap;
++import java.util.HashSet;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.Set;
+ 
++import javax.servlet.ServletException;
++
++import org.apache.commons.io.IOUtils;
++import org.kohsuke.stapler.DataBoundConstructor;
++import org.kohsuke.stapler.StaplerRequest;
++import org.kohsuke.stapler.StaplerResponse;
++
+ /**
+  * Information about a Hudson slave node.
+  *
+@@ -71,6 +80,11 @@
+      * Job allocation strategy.
+      */
+     private Mode mode;
++    
++    /**
++     * Slave-specific environment variables
++     */
++    private Map<String,String> envVars;
+ 
+     /**
+      * Slave availablility strategy.
+@@ -97,12 +111,12 @@
+ 
+     @DataBoundConstructor
+     public Slave(String name, String description, String remoteFS, String numExecutors,
+-                 Mode mode, String label, ComputerLauncher launcher, RetentionStrategy retentionStrategy) throws FormException {
+-        this(name,description,remoteFS,Util.tryParseNumber(numExecutors, 1).intValue(),mode,label,launcher,retentionStrategy);
++                 Mode mode, String label, ComputerLauncher launcher, RetentionStrategy retentionStrategy, List<EnvVars.Entry> env) throws FormException {
++        this(name,description,remoteFS,Util.tryParseNumber(numExecutors, 1).intValue(),mode,label,launcher,retentionStrategy, env);
+     }
+ 
+     public Slave(String name, String description, String remoteFS, int numExecutors,
+-                 Mode mode, String label, ComputerLauncher launcher, RetentionStrategy retentionStrategy) throws FormException {
++                 Mode mode, String label, ComputerLauncher launcher, RetentionStrategy retentionStrategy, List<EnvVars.Entry> env) throws FormException {
+         this.name = name;
+         this.description = description;
+         this.numExecutors = numExecutors;
+@@ -111,6 +125,9 @@
+         this.label = Util.fixNull(label).trim();
+         this.launcher = launcher;
+         this.retentionStrategy = retentionStrategy;
++        
++        this.envVars = EnvVars.toMap(env);
++        
+         getAssignedLabels();    // compute labels now
+ 
+         if (name.equals(""))
+@@ -293,7 +310,14 @@
+         return new FilePath(ch,absolutePath);
+     }
+ 
+-    /**
++	public Map<String, String> getEnvVars() {
++    	if (envVars == null) {
++    		envVars = new HashMap<String, String>();
++    	}
++		return Collections.unmodifiableMap(envVars);
++	}
++
++	/**
+      * Root directory on this slave where all the job workspaces are laid out.
+      * @return
+      *      null if not connected.
+Index: src/main/java/hudson/slaves/DumbSlave.java
+===================================================================
+--- src/main/java/hudson/slaves/DumbSlave.java	(revision 14772)
++++ src/main/java/hudson/slaves/DumbSlave.java	(working copy)
+@@ -1,7 +1,12 @@
+ package hudson.slaves;
+ 
++import hudson.EnvVars;
+ import hudson.model.Slave;
+ import hudson.model.Descriptor.FormException;
++
++import java.util.Collections;
++import java.util.List;
++
+ import org.kohsuke.stapler.DataBoundConstructor;
+ 
+ /**
+@@ -11,11 +16,16 @@
+  * @author Kohsuke Kawaguchi
+  */
+ public final class DumbSlave extends Slave {
++	
+     @DataBoundConstructor
++    public DumbSlave(String name, String description, String remoteFS, String numExecutors, Mode mode, String label, ComputerLauncher launcher, RetentionStrategy retentionStrategy, List<EnvVars.Entry> env) throws FormException {
++        super(name, description, remoteFS, numExecutors, mode, label, launcher, retentionStrategy, env);
++    }
++
+     public DumbSlave(String name, String description, String remoteFS, String numExecutors, Mode mode, String label, ComputerLauncher launcher, RetentionStrategy retentionStrategy) throws FormException {
+-        super(name, description, remoteFS, numExecutors, mode, label, launcher, retentionStrategy);
++        super(name, description, remoteFS, numExecutors, mode, label, launcher, retentionStrategy, Collections.EMPTY_LIST);
+     }
+-
++    
+     public DescriptorImpl getDescriptor() {
+         return DescriptorImpl.INSTANCE;
+     }
+@@ -31,4 +41,5 @@
+     static {
+         NodeDescriptor.ALL.add(DescriptorImpl.INSTANCE);
+     }
++
+ }
+Index: src/main/java/hudson/tasks/Ant.java
+===================================================================
+--- src/main/java/hudson/tasks/Ant.java	(revision 14772)
++++ src/main/java/hudson/tasks/Ant.java	(working copy)
+@@ -8,7 +8,10 @@
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
+ import hudson.model.BuildListener;
++import hudson.model.Computer;
+ import hudson.model.Descriptor;
++import hudson.model.Executor;
++import hudson.model.Hudson;
+ import hudson.model.ParametersAction;
+ import hudson.model.TaskListener;
+ import hudson.remoting.Callable;
+@@ -106,6 +109,8 @@
+         ArgumentListBuilder args = new ArgumentListBuilder();
+ 
+         AntInstallation ai = getAnt();
++        if (ai != null) ai = ai.forCurrentNode();
++
+         if(ai==null) {
+             args.add(launcher.isUnix() ? "ant" : "ant.bat");
+         } else {
+@@ -154,7 +159,7 @@
+ 
+         Map<String,String> env = build.getEnvVars();
+         if(ai!=null)
+-            env.put("ANT_HOME",ai.getAntHome());
++            env.put("ANT_HOME", Util.replaceMacro(ai.getAntHome(), env));
+         if(antOpts!=null)
+             env.put("ANT_OPTS",antOpts);
+ 
+@@ -345,6 +350,23 @@
+         public boolean getExists() throws IOException, InterruptedException {
+             return getExecutable(new Launcher.LocalLauncher(TaskListener.NULL))!=null;
+         }
++        
++        /**
++         * Returns a copy of this AntInstallation in which the variables in the path have
++         * been resolved using the properties for the current node. Can only be called during
++         * a build.
++         * 
++         * @return
++         */
++        @SuppressWarnings("unchecked")
++		public AntInstallation forCurrentNode() {
++        	String antHome = Util.replaceMacro(
++        			this.antHome, 
++        			Computer.currentComputer().getNode().getEnvVars(), 
++        			Hudson.getInstance().getEnvVars(), 
++        			EnvVars.masterEnvVars);
++        	return new AntInstallation(name, antHome);
++        }
+ 
+         private static final long serialVersionUID = 1L;
+      }
+Index: src/main/java/hudson/tasks/Maven.java
+===================================================================
+--- src/main/java/hudson/tasks/Maven.java	(revision 14772)
++++ src/main/java/hudson/tasks/Maven.java	(working copy)
+@@ -1,19 +1,23 @@
+ package hudson.tasks;
+ 
+ import hudson.CopyOnWrite;
+-import hudson.FilePath.FileCallable;
++import hudson.EnvVars;
+ import hudson.Functions;
+ import hudson.Launcher;
++import hudson.Util;
++import hudson.FilePath.FileCallable;
+ import hudson.Launcher.LocalLauncher;
+-import hudson.Util;
+-import hudson.EnvVars;
+ import hudson.maven.MavenEmbedder;
+ import hudson.maven.MavenUtil;
+ import hudson.maven.RedeployPublisher;
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
+ import hudson.model.BuildListener;
++import hudson.model.Computer;
+ import hudson.model.Descriptor;
++import hudson.model.Executor;
++import hudson.model.Hudson;
++import hudson.model.Node;
+ import hudson.model.ParametersAction;
+ import hudson.remoting.Callable;
+ import hudson.remoting.VirtualChannel;
+@@ -22,21 +26,23 @@
+ import hudson.util.NullStream;
+ import hudson.util.StreamTaskListener;
+ import hudson.util.VariableResolver;
+-import org.kohsuke.stapler.StaplerRequest;
+-import org.kohsuke.stapler.StaplerResponse;
+-import org.kohsuke.stapler.DataBoundConstructor;
+-import org.apache.maven.embedder.MavenEmbedderException;
+ 
+-import javax.servlet.ServletException;
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.Serializable;
+ import java.util.Map;
++import java.util.Properties;
+ import java.util.StringTokenizer;
+-import java.util.Properties;
+ 
++import javax.servlet.ServletException;
++
+ import net.sf.json.JSONObject;
+ 
++import org.apache.maven.embedder.MavenEmbedderException;
++import org.kohsuke.stapler.DataBoundConstructor;
++import org.kohsuke.stapler.StaplerRequest;
++import org.kohsuke.stapler.StaplerResponse;
++
+ /**
+  * Build by using Maven.
+  *
+@@ -177,14 +183,16 @@
+             normalizedTarget = Util.replaceMacro(normalizedTarget,env);
+ 
+             ArgumentListBuilder args = new ArgumentListBuilder();
+-            MavenInstallation ai = getMaven();
+-            if(ai==null) {
++            MavenInstallation mi = getMaven();
++            if (mi != null) mi = mi.forCurrentNode();
++            
++            if(mi==null) {
+                 String execName = proj.getWorkspace().act(new DecideDefaultMavenCommand(normalizedTarget));
+                 args.add(execName);
+             } else {
+-                String exec = ai.getExecutable(launcher);
++                String exec = mi.getExecutable(launcher);
+                 if(exec==null) {
+-                    listener.fatalError(Messages.Maven_NoExecutable(ai.getMavenHome()));
++                    listener.fatalError(Messages.Maven_NoExecutable(mi.getMavenHome()));
+                     return false;
+                 }
+                 args.add(exec);
+@@ -195,7 +203,7 @@
+             args.addKeyValuePairsFromPropertyString("-D",properties,vr);
+             args.addTokenized(normalizedTarget);
+ 
+-            if(ai!=null) {
++            if(mi!=null) {
+                 // if somebody has use M2_HOME they will get a classloading error
+                 // when M2_HOME points to a different version of Maven2 from
+                 // MAVEN_HOME (as Maven 2 gives M2_HOME priority.)
+@@ -203,8 +211,8 @@
+                 // The other solution would be to set M2_HOME if we are calling Maven2 
+                 // and MAVEN_HOME for Maven1 (only of use for strange people that
+                 // are calling Maven2 from Maven1)
+-                env.put("M2_HOME",ai.getMavenHome());
+-                env.put("MAVEN_HOME",ai.getMavenHome());
++                env.put("M2_HOME", mi.getMavenHome());
++                env.put("MAVEN_HOME", mi.getMavenHome());
+             }
+             // just as a precaution
+             // see http://maven.apache.org/continuum/faqs.html#how-does-continuum-detect-a-successful-build
+@@ -359,9 +367,7 @@
+             if(File.separatorChar=='\\')
+                 execName += ".bat";
+ 
+-            String m2Home = Util.replaceMacro(getMavenHome(),EnvVars.masterEnvVars);
+-
+-            return new File(m2Home, "bin/" + execName);
++            return new File(getMavenHome(), "bin/" + execName);
+         }
+ 
+         /**
+@@ -380,10 +386,27 @@
+         public MavenEmbedder createEmbedder(BuildListener listener, String profiles) throws MavenEmbedderException, IOException {
+             return MavenUtil.createEmbedder(listener,getHomeDir(),profiles);
+         }
++        
++        /**
++         * Returns a copy of this MavenInstallation in which the variables in the path have
++         * been resolved using the properties for the current node. Can only be called during
++         * a build.
++         * 
++         * @return
++         */
++        @SuppressWarnings("unchecked")
++		public MavenInstallation forCurrentNode() {
++        	String mavenHome = Util.replaceMacro(
++        			this.mavenHome, 
++        			Computer.currentComputer().getNode().getEnvVars(), 
++        			Hudson.getInstance().getEnvVars(), 
++        			EnvVars.masterEnvVars);
++        	return new MavenInstallation(name, mavenHome);
++        }
+ 
+         private static final long serialVersionUID = 1L;
+     }
+-
++    
+     /**
+      * Optional interface that can be implemented by {@link AbstractProject}
+      * that has "contextual" {@link MavenInstallation} associated with it.
+Index: src/main/resources/hudson/model/Hudson/configure.jelly
+===================================================================
+--- src/main/resources/hudson/model/Hudson/configure.jelly	(revision 14772)
++++ src/main/resources/hudson/model/Hudson/configure.jelly	(working copy)
+@@ -66,6 +66,27 @@
+                        title="${%statsBlurb}"
+                        help="/help/system-config/usage-statistics.html" />
+ 
++	  <f:section title="${%Environment Variables}">
++	    <f:entry title="${%Default Environment Variables}"
++	      description="${%Environment variables that will be available for all builds. Paths to various tools can also contains references to environment variables. These variables can be overridden per slave.}">
++	      <f:repeatable var="env" items="${it.envVars.entrySet()}">
++	        <table width="100%">
++	          <f:entry title="${%name}">
++	            <input class="setting-input" name="env.key" type="text" value="${env.key}"/>
++	          </f:entry>
++	          <f:entry title="${%value}">
++	            <input class="setting-input" name="env.value" type="text" value="${env.value}"/>
++	          </f:entry>
++	          <f:entry title="">
++	            <div align="right">
++	              <f:repeatableDeleteButton />
++	            </div>
++	          </f:entry>
++	        </table>
++	      </f:repeatable>
++	    </f:entry>
++	  </f:section>
++
+       <f:section title="${%JDKs}">
+         <f:entry title="${%JDK installations}"
+                  description="${%List of JDK installations on this system}">
+Index: src/main/resources/hudson/slaves/DumbSlave/configure-entries.jelly
+===================================================================
+--- src/main/resources/hudson/slaves/DumbSlave/configure-entries.jelly	(revision 14772)
++++ src/main/resources/hudson/slaves/DumbSlave/configure-entries.jelly	(working copy)
+@@ -62,4 +62,25 @@
+       </j:forEach>
+     </f:dropdownList>
+   </j:if>
++  
++  <f:section title="${%Environment Variables}">
++    <f:entry title="${%Environment Variables}"
++      description="${%Environment variables that override or supplement the default environment variables specified in the main configuration page.}">
++      <f:repeatable var="env" items="${it.envVars.entrySet()}">
++        <table width="100%">
++          <f:entry title="${%name}">
++            <input class="setting-input" name="env.key" type="text" value="${env.key}"/>
++          </f:entry>
++          <f:entry title="${%value}">
++            <input class="setting-input" name="env.value" type="text" value="${env.value}"/>
++          </f:entry>
++          <f:entry title="">
++            <div align="right">
++              <f:repeatableDeleteButton />
++            </div>
++          </f:entry>
++        </table>
++      </f:repeatable>
++    </f:entry>
++  </f:section>
+ </j:jelly>
+Index: src/test/java/hudson/slaves/NodeListTest.java
+===================================================================
+--- src/test/java/hudson/slaves/NodeListTest.java	(revision 14772)
++++ src/test/java/hudson/slaves/NodeListTest.java	(working copy)
+@@ -16,6 +16,7 @@
+ 
+ import java.io.File;
+ import java.io.IOException;
++import java.util.Map;
+ import java.util.Set;
+ 
+ import org.apache.commons.io.FileUtils;
+@@ -100,6 +101,10 @@
+         public boolean hasPermission(Permission permission) {
+             throw new UnsupportedOperationException();
+         }
++
++		public Map<String, String> getEnvVars() {
++			throw new UnsupportedOperationException();
++		}
+     }
+     static class EphemeralNode extends DummyNode implements hudson.slaves.EphemeralNode {
+         public Cloud getCloud() {

@@ -1,0 +1,198 @@
+Index: hudson/main/core/src/main/java/hudson/scm/SubversionChangeLogBuilder.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/scm/SubversionChangeLogBuilder.java,v
+retrieving revision 1.5
+diff -u -w -r1.5 SubversionChangeLogBuilder.java
+--- hudson/main/core/src/main/java/hudson/scm/SubversionChangeLogBuilder.java	19 Sep 2007 13:12:53 -0000	1.5
++++ hudson/main/core/src/main/java/hudson/scm/SubversionChangeLogBuilder.java	3 Oct 2007 16:51:22 -0000
+@@ -9,6 +9,7 @@
+ import org.tmatesoft.svn.core.SVNException;
+ import org.tmatesoft.svn.core.SVNURL;
+ import org.tmatesoft.svn.core.auth.ISVNAuthenticationProvider;
++import org.tmatesoft.svn.core.wc.SVNClientManager;
+ import org.tmatesoft.svn.core.wc.SVNLogClient;
+ import org.tmatesoft.svn.core.wc.SVNRevision;
+ import org.tmatesoft.svn.core.wc.SVNWCClient;
+@@ -57,7 +58,9 @@
+     public boolean run(Collection<String> externals, Result changeLog) throws IOException, InterruptedException {
+         boolean changelogFileCreated = false;
+ 
+-        SVNLogClient svnlc = SubversionSCM.createSvnClientManager(createAuthenticationProvider()).getLogClient();
++        final SVNClientManager manager = SubversionSCM.createSvnClientManager(createAuthenticationProvider());
++        try {
++			SVNLogClient svnlc = manager.getLogClient();
+         TransformerHandler th = createTransformerHandler();
+         th.setResult(changeLog);
+         SVNXMLLogHandler logHandler = new SVNXMLLogHandler(th);
+@@ -78,6 +81,9 @@
+         }
+ 
+         return changelogFileCreated;
++        } finally {
++        	manager.dispose();
++        }
+     }
+ 
+     private String getUrlForPath(FilePath path) throws IOException, InterruptedException {
+@@ -142,7 +148,9 @@
+         }
+ 
+         public String invoke(File p, VirtualChannel channel) throws IOException {
+-            SVNWCClient svnwc = SubversionSCM.createSvnClientManager(authProvider).getWCClient();
++            final SVNClientManager manager = SubversionSCM.createSvnClientManager(authProvider);
++            try {
++				final SVNWCClient svnwc = manager.getWCClient();
+ 
+             SVNInfo info;
+             try {
+@@ -152,6 +160,9 @@
+                 e.printStackTrace();
+                 return null;
+             }
++            } finally {
++            	manager.dispose();
++            }
+         }
+ 
+         private static final long serialVersionUID = 1L;
+Index: hudson/main/core/src/main/java/hudson/scm/SubversionSCM.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/scm/SubversionSCM.java,v
+retrieving revision 1.106
+diff -u -w -r1.106 SubversionSCM.java
+--- hudson/main/core/src/main/java/hudson/scm/SubversionSCM.java	24 Sep 2007 15:47:54 -0000	1.106
++++ hudson/main/core/src/main/java/hudson/scm/SubversionSCM.java	3 Oct 2007 16:51:22 -0000
+@@ -367,19 +367,20 @@
+         }
+ 
+         public List<String> invoke(File ws, VirtualChannel channel) throws IOException {
+-            SVNUpdateClient svnuc = createSvnClientManager(authProvider).getUpdateClient();
+-            List<String> externals = new ArrayList<String>(); // store discovered externals to here
+-            SVNRevision revision = SVNRevision.create(timestamp);
++            final SVNClientManager manager = createSvnClientManager(authProvider);
++            try {
++				final SVNUpdateClient svnuc = manager.getUpdateClient();
++	            final List<String> externals = new ArrayList<String>(); // store discovered externals to here
++	            final SVNRevision revision = SVNRevision.create(timestamp);
+             if(update) {
+-
+-                for (ModuleLocation l : locations) {
++	                for (final ModuleLocation l : locations) {
+                     try {
+                         listener.getLogger().println("Updating "+ l.remote);
+ 
+                         svnuc.setEventHandler(new SubversionUpdateEventHandler(listener, externals, l.local));
+                         svnuc.doUpdate(new File(ws, l.local).getCanonicalFile(), revision, true);
+ 
+-                    } catch (SVNException e) {
++	                    } catch (final SVNException e) {
+                         e.printStackTrace(listener.error("Failed to update "+l.remote));
+                         // trouble-shooting probe for #591
+                         if(e.getErrorMessage().getErrorCode()== SVNErrorCode.WC_NOT_LOCKED) {
+@@ -391,21 +392,24 @@
+             } else {
+                 Util.deleteContentsRecursive(ws);
+ 
+-                for (ModuleLocation l : locations) {
++	                for (final ModuleLocation l : locations) {
+                     try {
+-                        SVNURL url = SVNURL.parseURIEncoded(l.remote);
++	                        final SVNURL url = SVNURL.parseURIEncoded(l.remote);
+                         listener.getLogger().println("Checking out "+url);
+ 
+                         svnuc.setEventHandler(new SubversionUpdateEventHandler(listener, externals, l.local));
+                         svnuc.doCheckout(url, new File(ws, l.local).getCanonicalFile(), SVNRevision.HEAD, revision, true);
+ 
+-                    } catch (SVNException e) {
++	                    } catch (final SVNException e) {
+                         e.printStackTrace(listener.error("Failed to check out "+l.remote));
+                         return null;
+                     }
+                 }
+             }
+             return externals;
++            } finally {
++            	manager.dispose();
++            }
+         }
+ 
+         private static final long serialVersionUID = 1L;
+@@ -489,8 +493,13 @@
+      *      The target to run "svn info".
+      */
+     private static SVNInfo parseSvnInfo(File workspace, ISVNAuthenticationProvider authProvider) throws SVNException {
+-        SVNWCClient svnWc = createSvnClientManager(authProvider).getWCClient();
++        final SVNClientManager manager = createSvnClientManager(authProvider);
++        try {
++        	final SVNWCClient svnWc = manager.getWCClient();
+         return svnWc.doInfo(workspace,SVNRevision.WORKING);
++        } finally {
++        	manager.dispose();
++        }
+     }
+ 
+     /**
+@@ -500,8 +509,13 @@
+      *      The target to run "svn info".
+      */
+     private static SVNInfo parseSvnInfo(SVNURL remoteUrl, ISVNAuthenticationProvider authProvider) throws SVNException {
+-        SVNWCClient svnWc = createSvnClientManager(authProvider).getWCClient();
++        final SVNClientManager manager = createSvnClientManager(authProvider);
++        try {
++        	final SVNWCClient svnWc = manager.getWCClient();
+         return svnWc.doInfo(remoteUrl, SVNRevision.HEAD, SVNRevision.HEAD);
++        } finally {
++        	manager.dispose();
++        }
+     }
+ 
+     /**
+@@ -527,7 +541,9 @@
+         public Map<String,SvnInfo> invoke(File ws, VirtualChannel channel) throws IOException {
+             Map<String/*module name*/,SvnInfo> revisions = new HashMap<String,SvnInfo>();
+ 
+-            SVNWCClient svnWc = createSvnClientManager(authProvider).getWCClient();
++            final SVNClientManager manager = createSvnClientManager(authProvider);
++            try {
++				final SVNWCClient svnWc = manager.getWCClient();
+             // invoke the "svn info"
+             for( ModuleLocation module : locations ) {
+                 try {
+@@ -548,6 +564,9 @@
+             }
+ 
+             return revisions;
++            } finally {
++            	manager.dispose();
++            }
+         }
+         private static final long serialVersionUID = 1L;
+     }
+Index: hudson/main/core/src/main/java/hudson/scm/SubversionTagAction.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/scm/SubversionTagAction.java,v
+retrieving revision 1.6
+diff -u -w -r1.6 SubversionTagAction.java
+--- hudson/main/core/src/main/java/hudson/scm/SubversionTagAction.java	7 Jun 2007 16:06:58 -0000	1.6
++++ hudson/main/core/src/main/java/hudson/scm/SubversionTagAction.java	3 Oct 2007 16:51:22 -0000
+@@ -148,8 +148,8 @@
+         @Override
+         protected void perform(TaskListener listener) {
+             try {
+-                SVNClientManager cm = SubversionSCM.createSvnClientManager(SubversionSCM.DescriptorImpl.DESCRIPTOR.createAuthenticationProvider());
+-
++                final SVNClientManager cm = SubversionSCM.createSvnClientManager(SubversionSCM.DescriptorImpl.DESCRIPTOR.createAuthenticationProvider());
++                try {
+                 for (Entry<SvnInfo, String> e : tagSet.entrySet()) {
+                     PrintStream logger = listener.getLogger();
+                     logger.println("Tagging "+e.getKey()+" to "+e.getValue());
+@@ -171,6 +171,9 @@
+                     SubversionTagAction.this.tags.get(e.getKey()).add(e.getValue());
+                 build.save();
+                 workerThread = null;
++                } finally {
++                	cm.dispose();
++                }
+            } catch (Throwable e) {
+                e.printStackTrace(listener.fatalError(e.getMessage()));
+            }

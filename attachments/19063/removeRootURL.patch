@@ -1,0 +1,55 @@
+Index: java/org/jvnet/hudson/plugins/DownstreamBuildViewAction.java
+===================================================================
+--- java/org/jvnet/hudson/plugins/DownstreamBuildViewAction.java	(revision 26355)
++++ java/org/jvnet/hudson/plugins/DownstreamBuildViewAction.java	(working copy)
+@@ -19,7 +19,6 @@
+ public class DownstreamBuildViewAction extends AbstractDownstreamBuildViewAction {
+ 
+     private List<DownstreamBuilds> downstreamBuildList;
+-    private transient String rootURL;
+ 
+     public DownstreamBuildViewAction(AbstractBuild<?, ?> build) {
+         super(build);
+@@ -28,7 +27,6 @@
+             List<AbstractProject> childs = buildTrigger.getChildProjects();
+             downstreamBuildList = findDownstream(childs, 1, new ArrayList<Integer>());
+         }
+-        rootURL = Hudson.getInstance().getRootUrl();
+     }
+ 
+     private List<DownstreamBuilds> findDownstream(
+@@ -90,10 +88,6 @@
+             this.projectUrl = projectUrl;
+         }
+ 
+-        public String getRootURL() {
+-            return rootURL;
+-        }
+-
+         public String getBuildNumber() {
+             return buildNumber;
+         }
+@@ -155,10 +149,6 @@
+         }
+     }
+ 
+-    public String getRootURL() {
+-        return rootURL;
+-    }
+-
+     public List<DownstreamBuilds> getDownstreamBuildList() {
+         return downstreamBuildList;
+     }
+Index: resources/org/jvnet/hudson/plugins/DownstreamBuildViewAction/DownstreamBuilds/index.jelly
+===================================================================
+--- resources/org/jvnet/hudson/plugins/DownstreamBuildViewAction/DownstreamBuilds/index.jelly	(revision 26355)
++++ resources/org/jvnet/hudson/plugins/DownstreamBuildViewAction/DownstreamBuilds/index.jelly	(working copy)
+@@ -24,7 +24,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+ 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+ 	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+-		<img src="${it.rootURL}/images/16x16/${it.imageUrl}" style="vertical-align: middle;"/>
++		<img src="${rootURL}/images/16x16/${it.imageUrl}" style="vertical-align: middle;"/>
+ 		<span>${"%child_project(it.projectName,it.buildNumber,it.projectUrl,rootURL,it.statusMessage)"}</span>
+ 		
+       <j:forEach var="p" items="${it.childs}" varStatus="counter">

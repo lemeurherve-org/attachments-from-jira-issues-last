@@ -1,0 +1,100 @@
+Index: src/main/java/hudson/plugins/trac/TracProjectProperty.java
+===================================================================
+--- src/main/java/hudson/plugins/trac/TracProjectProperty.java	(Revision 33078)
++++ src/main/java/hudson/plugins/trac/TracProjectProperty.java	(Arbeitskopie)
+@@ -25,8 +25,19 @@
+      */
+     public final String tracWebsite;
+ 
++    /**
++     * Prefix for Trac's source code browser.
++     * Null if this is not configured yet.
++     */
++    public final String tracSCMPrefix;
++
++    @Deprecated
++    public TracProjectProperty(String tracWebsite) {
++        this(tracWebsite, null);
++    }
++
+     @DataBoundConstructor
+-    public TracProjectProperty(String tracWebsite) {
++    public TracProjectProperty(String tracWebsite, String tracSCMPrefix) {
+         // normalize
+         if(tracWebsite==null || tracWebsite.length()==0)
+             tracWebsite=null;
+@@ -34,7 +45,10 @@
+             if(!tracWebsite.endsWith("/"))
+                 tracWebsite += '/';
+         }
++        if(tracSCMPrefix==null || tracSCMPrefix.length()==0)
++            tracSCMPrefix=null;
+         this.tracWebsite = tracWebsite;
++        this.tracSCMPrefix = tracSCMPrefix;
+     }
+ 
+     @Override
+Index: src/main/java/hudson/plugins/trac/TracRepositoryBrowser.java
+===================================================================
+--- src/main/java/hudson/plugins/trac/TracRepositoryBrowser.java	(Revision 33078)
++++ src/main/java/hudson/plugins/trac/TracRepositoryBrowser.java	(Arbeitskopie)
+@@ -33,19 +33,31 @@
+         else            return new URL(tpp.tracWebsite);
+     }
+ 
++    private String getPath(Path path) {
++        String pathValue = path.getValue();
++        LogEntry cs = path.getLogEntry();
++        AbstractProject<?,?> p = (AbstractProject<?,?>)cs.getParent().build.getProject();
++        TracProjectProperty tpp = p.getProperty(TracProjectProperty.class);
++        if(tpp != null && tpp.tracSCMPrefix != null && pathValue != null
++            && pathValue.startsWith(tpp.tracSCMPrefix))
++            return pathValue.substring(tpp.tracSCMPrefix.length());
++        else
++            return pathValue;
++    }
++
+     @Override
+     public URL getDiffLink(Path path) throws IOException {
+         if(path.getEditType()!= EditType.EDIT)
+             return null;    // no diff if this is not an edit change
+         URL baseUrl = getTracWebURL(path.getLogEntry());
+         int revision = path.getLogEntry().getRevision();
+-        return new URL(baseUrl, "changeset/" + revision + path.getValue() + "#file0");
++        return new URL(baseUrl, "changeset/" + revision + getPath(path) + "#file0");
+     }
+ 
+     @Override
+     public URL getFileLink(Path path) throws IOException {
+         URL baseUrl = getTracWebURL(path.getLogEntry());
+-        return baseUrl == null ? null : new URL(baseUrl, "browser" + path.getValue() + "#L1");
++        return baseUrl == null ? null : new URL(baseUrl, "browser" + getPath(path) + "#L1");
+     }
+ 
+     @Override
+Index: src/main/resources/hudson/plugins/trac/TracProjectProperty/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/trac/TracProjectProperty/config.jelly	(Revision 33078)
++++ src/main/resources/hudson/plugins/trac/TracProjectProperty/config.jelly	(Arbeitskopie)
+@@ -1,6 +1,10 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+-  <f:entry title="Trac website"
+-    help="/plugin/trac/help-global.html">
++  <f:entry title="Trac website" help="/plugin/trac/help-global.html">
+     <f:textbox name="trac.tracWebsite" value="${instance.tracWebsite}" />
+   </f:entry>
++  <f:advanced>
++    <f:entry title="Trac source repository browser prefix" help="/plugin/trac/help-scmprefix.html">
++      <f:textbox name="trac.tracSCMPrefix" value="${instance.tracSCMPrefix}" />
++    </f:entry>
++  </f:advanced>
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/webapp/help-scmprefix.html
+===================================================================
+--- src/main/webapp/help-scmprefix.html	(Revision 0)
++++ src/main/webapp/help-scmprefix.html	(Revision 0)
+@@ -0,0 +1,3 @@
++<div>
++  Set the prefix of the Trac source repository browser.
++</div>

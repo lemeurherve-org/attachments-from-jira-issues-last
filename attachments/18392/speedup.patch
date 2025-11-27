@@ -1,0 +1,93 @@
+Index: src/main/java/hudson/plugins/warnings/parser/ErlcParser.java
+===================================================================
+--- src/main/java/hudson/plugins/warnings/parser/ErlcParser.java	(Revision 13311)
++++ src/main/java/hudson/plugins/warnings/parser/ErlcParser.java	(Arbeitskopie)
+@@ -13,13 +13,13 @@
+     /** Warning type of this parser. */
+     static final String WARNING_TYPE = "erlc";
+     /** Pattern of erlc compiler warnings. */
+-    private static final String ERLC_WARNING_PATTERN = "(.*\\.(?:erl|yrl|mib|bin|rel|asn1|idl)):(\\d*):\\s*([wW]arning:)?\\s*(.*)";
++    private static final String ERLC_WARNING_PATTERN = "^(.+\\.(?:erl|yrl|mib|bin|rel|asn1|idl)):(\\d*): ([wW]arning: )?(.+)$";
+ 
+     /**
+      * Creates a new instance of <code>ErlcCompileParser</code>.
+      */
+     public ErlcParser() {
+-        super(ERLC_WARNING_PATTERN);
++        super(ERLC_WARNING_PATTERN, true);
+     }
+ 
+     /** {@inheritDoc} */
+@@ -31,9 +31,10 @@
+         final String category;
+         final String message = matcher.group(4);
+         final String group3 = matcher.group(3);
+-        if ("warning:".equalsIgnoreCase(group3)) {
++
++        if ("warning: ".equalsIgnoreCase(group3)) {
+             priority = Priority.NORMAL;
+-            category = "ERLC " + group3.substring(0, group3.length() - 1);
++            category = "ERLC " + group3.substring(0, group3.length() - 2);
+         }
+         else {
+             priority = Priority.HIGH;
+Index: src/main/java/hudson/plugins/warnings/parser/GnatParser.java
+===================================================================
+--- src/main/java/hudson/plugins/warnings/parser/GnatParser.java	(Revision 13311)
++++ src/main/java/hudson/plugins/warnings/parser/GnatParser.java	(Arbeitskopie)
+@@ -13,7 +13,7 @@
+     /** Warning type of this parser. */
+     static final String WARNING_TYPE = "gnat";
+     /** Pattern of Gnat compiler warnings. */
+-    private static final String GNAT_WARNING_PATTERN = "^([^\\s]+):(\\d+):(\\d+): ((error:)|(warning:)|(\\(style\\))) (.+)$";
++    private static final String GNAT_WARNING_PATTERN = "^(.+.(?:ads|adb)):(\\d+):(\\d+): ((?:error:)|(?:warning:)|(?:\\(style\\))) (.+)$";
+ 
+     /**
+      * Creates a new instance of <code>GnatParser</code>.
+@@ -42,6 +42,6 @@
+             category = "GNAT error";
+         }
+         return new Warning(matcher.group(1), getLineNumber(matcher.group(2)), WARNING_TYPE,
+-                category, matcher.group(8), priority);
++                category, matcher.group(5), priority);
+     }
+ }
+Index: src/main/java/hudson/plugins/warnings/parser/GccParser.java
+===================================================================
+--- src/main/java/hudson/plugins/warnings/parser/GccParser.java	(Revision 13311)
++++ src/main/java/hudson/plugins/warnings/parser/GccParser.java	(Arbeitskopie)
+@@ -13,12 +13,12 @@
+     /** Warning type of this parser. */
+     static final String WARNING_TYPE = "gcc";
+     /** Pattern of gcc compiler warnings. */
+-    private static final String GCC_WARNING_PATTERN = "(.*\\.[chpsola0-9]+):(?:(\\d*):(?:\\d*:)*\\s*(warning|error)\\s*:|\\s*undefined reference to)(.*)";
++    private static final String GCC_WARNING_PATTERN = "^(.*\\.[chpsola0-9]+):(?:(\\d*):(?:\\d*:)*\\s*(warning|error)\\s*:|\\s*undefined reference to)(.*)$";
+     /**
+      * Creates a new instance of <code>GccParser</code>.
+      */
+     public GccParser() {
+-        super(GCC_WARNING_PATTERN);
++        super(GCC_WARNING_PATTERN, true);
+     }
+ 
+     /** {@inheritDoc} */
+Index: src/main/java/hudson/plugins/warnings/parser/MsBuildParser.java
+===================================================================
+--- src/main/java/hudson/plugins/warnings/parser/MsBuildParser.java	(Revision 13311)
++++ src/main/java/hudson/plugins/warnings/parser/MsBuildParser.java	(Arbeitskopie)
+@@ -13,13 +13,13 @@
+     /** Warning type of this parser. */
+     static final String WARNING_TYPE = "MSBuild";
+     /** Pattern of MSBuild compiler warnings. */
+-    private static final String MS_BUILD_WARNING_PATTERN = "(.*)\\((\\d*).*\\)\\s*:\\s*([Ww]arning|(?:fatal\\s*)?[Ee]rror)\\s*([^:]*):\\s*(.*)";
++    private static final String MS_BUILD_WARNING_PATTERN = "^(.*)\\((\\d*).*\\)\\s*:\\s*([Ww]arning|(?:fatal\\s*)?[Ee]rror)\\s*([^:]*):\\s*(.*)$";
+ 
+     /**
+      * Creates a new instance of <code>MsBuildParser</code>.
+      */
+     public MsBuildParser() {
+-        super(MS_BUILD_WARNING_PATTERN);
++        super(MS_BUILD_WARNING_PATTERN, true);
+     }
+ 
+     /** {@inheritDoc} */

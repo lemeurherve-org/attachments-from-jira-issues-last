@@ -1,0 +1,126 @@
+Started by user Geo
+Building on master in workspace C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace
+[workspace] $ cmd /c call C:\Users\ADMIN\AppData\Local\Temp\hudson7030851339848823292.bat
+
+C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace>E:\NUnit\nunit-console\nunit3-console.exe E:\Geo\Projects\Automation\Automation\bin\Debug\Automation.dll --result=result.xml;format=nunit3 
+NUnit Console Runner 3.6.1 
+Copyright (C) 2017 Charlie Poole
+
+Runtime Environment
+   OS Version: Microsoft Windows NT 6.1.7601 Service Pack 1
+  CLR Version: 4.0.30319.42000
+
+Test Files
+    E:\Geo\Projects\Automation\Automation\bin\Debug\Automation.dll
+
+=> Automation.Features.CCMFeature.AddTwoNumbers
+Given I have entered 50 into the calculator
+No matching step definition found for the step. Use the following code to create one:
+        [Given(@"I have entered (.*) into the calculator")]
+public void GivenIHaveEnteredIntoTheCalculator(int p0)
+{
+    ScenarioContext.Current.Pending();
+}
+
+And I have entered 70 into the calculator
+No matching step definition found for the step. Use the following code to create one:
+        [Given(@"I have entered (.*) into the calculator")]
+public void GivenIHaveEnteredIntoTheCalculator(int p0)
+{
+    ScenarioContext.Current.Pending();
+}
+
+When I press add
+No matching step definition found for the step. Use the following code to create one:
+        [When(@"I press add")]
+public void WhenIPressAdd()
+{
+    ScenarioContext.Current.Pending();
+}
+
+Then the result should be 120 on the screen
+No matching step definition found for the step. Use the following code to create one:
+        [Then(@"the result should be (.*) on the screen")]
+public void ThenTheResultShouldBeOnTheScreen(int p0)
+{
+    ScenarioContext.Current.Pending();
+}
+
+=> Automation.Features.SubFeature.SubSmokeTest("Geo","geouunw","1234567",System.String[])
+Given I have an active Sub user Geo with username geouunw and password 1234567
+done: LoginSteps.GivenIHaveAnActiveSubUserWithUsernameAndPassword("Geo", "geouunw", "1234567") (0.0s)
+And he is on Sub login page
+done: LoginSteps.GivenHeIsOnSubLoginPage() (9.2s)
+When he logs in using his credentials
+done: LoginSteps.WhenHeLogsInUsingHisCredentials() (2.9s)
+Then he should land on the Accounts homepage
+done: LoginSteps.ThenHeShouldLandOnTheAccountsHomePage() (0.3s)
+
+Run Settings
+    DisposeRunners: True
+    WorkDirectory: C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace
+    ImageRuntimeVersion: 4.0.30319
+    ImageTargetFrameworkName: .NETFramework,Version=v4.5.2
+    ImageRequiresX86: False
+    ImageRequiresDefaultAppDomainAssemblyResolver: False
+    NumberOfTestWorkers: 2
+
+Test Run Summary
+  Overall result: Passed
+  Test Count: 2, Passed: 1, Failed: 0, Warnings: 0, Inconclusive: 1, Skipped: 0
+  Start time: 2017-04-29 20:23:07Z
+    End time: 2017-04-29 20:23:37Z
+    Duration: 29.814 seconds
+
+Results (nunit3) saved as result.xml
+
+C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace>exit 0 
+[workspace] $ cmd /c call C:\Users\ADMIN\AppData\Local\Temp\hudson6392856300376824262.bat
+
+C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace>E:\Pickles\Pickles.exe --feature-directory="E:\Geo\Projects\Automation\Automation\Features" --output-directory=Output --link-results-file=.\result.xml 
+Pickles v.2.15.0.0
+ 
+Generating documentation based on the following parameters 
+---------------------------------------------------------- 
+Feature Directory              : E:\Geo\Projects\Automation\Automation\Features 
+Output Directory               : C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace\Output 
+Project Name                   :  
+Project Version                :  
+Language                       : en 
+Incorporate Test Results?      : Yes 
+Include Experimental Features? : No 
+Exclude Tag                    :  
+Test Result Format        : NUnit 
+Test Result File          : C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace\result.xml 
+Writing HTML to C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace\Output 
+Pickles completed successfully 
+
+C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace>exit 0 
+[htmlpublisher] Archiving HTML reports...
+[htmlpublisher] Archiving at BUILD level C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\workspace\Output to C:\Users\Admin\.jenkins\jobs\Selenium Automation Test\builds\42\htmlreports\Pickles_Report
+Recording NUnit tests results
+ERROR: Step ‘Publish NUnit test result report’ aborted due to exception: 
+java.io.IOException: Could not transform the NUnit report. Please report this issue to the plugin author
+	at hudson.plugins.nunit.NUnitArchiver.invoke(NUnitArchiver.java:71)
+	at hudson.plugins.nunit.NUnitArchiver.invoke(NUnitArchiver.java:29)
+	at hudson.FilePath.act(FilePath.java:996)
+	at hudson.FilePath.act(FilePath.java:974)
+	at hudson.plugins.nunit.NUnitPublisher.perform(NUnitPublisher.java:153)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:779)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:720)
+	at hudson.model.Build$BuildExecution.post2(Build.java:185)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:665)
+	at hudson.model.Run.execute(Run.java:1753)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:404)
+Caused by: org.xml.sax.SAXParseException; systemId: file:/C:/Users/Admin/.jenkins/jobs/Selenium%20Automation%20Test/workspace/temporary-junit-reports/temp-junit.xml; lineNumber: 2; columnNumber: 3; Content is not allowed in prolog.
+	at com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at javax.xml.parsers.DocumentBuilder.parse(Unknown Source)
+	at hudson.plugins.nunit.NUnitReportTransformer.splitJUnitFile(NUnitReportTransformer.java:102)
+	at hudson.plugins.nunit.NUnitReportTransformer.transform(NUnitReportTransformer.java:72)
+	at hudson.plugins.nunit.NUnitArchiver.invoke(NUnitArchiver.java:66)
+	... 13 more
+Finished: FAILURE

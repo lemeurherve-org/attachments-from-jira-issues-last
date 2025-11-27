@@ -1,0 +1,483 @@
+Started by user Jardina, Jason
+Running as SYSTEM
+[EnvInject] - Loading node environment variables.
+Building remotely on  (STUDIO_POOL) in workspace c:\jenkins\workspace\19.1_CI_Build_Signed
+The recommended git tool is: NONE
+using credential 5b742162-8466-43eb-86da-5956433431b8
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ 
+ > git --version # timeout=10
+ > git --version # 'git version 2.28.0.windows.1'
+
+Seen 1,532 remote branches
+ > git show-ref --tags -d # timeout=10
+
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f b66c04586eff660bdea99058860003a108f917a7 # timeout=10
+Commit message: "Minor cleanup from code review. Nothing substantial."
+ > git rev-list --no-walk b66c04586eff660bdea99058860003a108f917a7 # timeout=10
+Run condition [And] enabling prebuild for step [Set the build result]
+Run condition [File exists] enabling prebuild for step [BuilderChain]
+Run condition [File exists] enabling prebuild for step [BuilderChain]
+Checking for pre-build
+Executing pre-build step
+Checking if email needs to be generated
+No emails were triggered.
+[EnvInject] - Executing scripts and injecting environment variables after the SCM step.
+[EnvInject] - Injecting as environment variables the properties file path 'c:/jenkins/jobs/8.0_Shared_Properties/8_0.properties'
+[EnvInject] - Variables injected successfully.
+[EnvInject] - Injecting as environment variables the properties content 
+[EnvInject] - Variables injected successfully.
+[Build Cause] check if build was triggered by [SCMTrigger]
+Run condition [And] preventing perform for step [Set the build result]
+[EnvInject] - Injecting environment variables from a build step.
+[EnvInject] - Injecting as environment variables the properties file path 'emailrecipients.properties'
+[EnvInject] - Variables injected successfully.
+[19.1_CI_Build_Signed] $ cmd /c call C:\Users\ROBODE~1\AppData\Local\Temp\jenkins8162507446803861231.bat
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>echo "Resetting modified tracked files..." 
+"Resetting modified tracked files..."
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>git reset --hard 
+HEAD is now at b66c04586e Minor cleanup from code review. Nothing substantial.
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>exit 0 
+[19.1_CI_Build_Signed] $ cmd /c call C:\Users\ROBODE~1\AppData\Local\Temp\jenkins1434665213638540261.bat
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>echo Generating Commit History artifact... 
+Generating Commit History artifact...
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>IF [b66c04586eff660bdea99058860003a108f917a7] == [b66c04586eff660bdea99058860003a108f917a7] (git log -1  1>"c:\jenkins\workspace\19.1_CI_Build_Signed\Commit_History.txt" )  ELSE (IF [b66c04586eff660bdea99058860003a108f917a7] == [] (git log -1  1>"c:\jenkins\workspace\19.1_CI_Build_Signed\Commit_History.txt" )  ELSE (git log b66c04586eff660bdea99058860003a108f917a7..  1>"c:\jenkins\workspace\19.1_CI_Build_Signed\Commit_History.txt" ) ) 
+
+$ c:\cygwin64\bin\cygpath -w /bin/bash
+[19.1_CI_Build_Signed] $ C:\cygwin64\bin\bash.exe C:\Users\ROBODE~1\AppData\Local\Temp\jenkins7119801786060772967.sh
+BUILD_VERSION_NUMBER_NEW=19.1.23375.0
+GIT_BRANCH=origin/19.1_
+GIT_BRANCH_RAW=19.1_
+[EnvInject] - Injecting environment variables from a build step.
+[EnvInject] - Injecting as environment variables the properties file path 'c:/jenkins/jobs/8.0_Shared_Properties/currbuild.properties'
+[EnvInject] - Variables injected successfully.
+Run condition [File exists] enabling perform for step [BuilderChain]
+$ c:\cygwin64\bin\cygpath -w /bin/bash
+[19.1_CI_Build_Signed] $ C:\cygwin64\bin\bash.exe C:\Users\ROBODE~1\AppData\Local\Temp\jenkins1629274257806964940.sh
+++ cat 'c:\jenkins\workspace\19.1_CI_Build_Signed/
++ BRANCH_EMAIL_LIST1=' '
++ echo 'BRANCH_EMAIL_LIST= '
+[EnvInject] - Injecting environment variables from a build step.
+[EnvInject] - Injecting as environment variables the properties file path 'c:/jenkins/workspace/19.1_CI_Build_Signed/branch_email.properties'
+[EnvInject] - Variables injected successfully.
+$ c:\cygwin64\bin\cygpath -w /bin/bash
+[19.1_CI_Build_Signed] $ C:\cygwin64\bin\bash.exe C:\Users\ROBODE~1\AppData\Local\Temp\jenkins7939312677457662401.sh
+BUILD_VERSION_NUMBER_NEW=19.1.23375.0
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>exit 0 
+[19.1_CI_Build_Signed] $ cmd /c call C:\Users\ROBODE~1\AppData\Local\Temp\jenkins6912776001230113596.bat
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>echo Performing non-signed incremental build... 
+Performing non-signed incremental build...
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>c:\jenkins\workspace\19.1_CI_Build_Signed\RebuildAll_Signed.cmd release 
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>set DoSignedBuild=true 
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>pushd c:\jenkins\workspace\19.1_CI_Build_Signed\Scripts 
+
+c:\jenkins\workspace\19.1_CI_Build_Signed\Scripts>if "release" == "" goto Error 
+
+c:\jenkins\workspace\19.1_CI_Build_Signed\Scripts>if /I "release" == "release" goto ReleaseOnly 
+
+c:\jenkins\workspace\19.1_CI_Build_Signed\Scripts>call DeleteBin.cmd release 
+
+Clean Release...
+
+======================================
+Build started at 17:30:42.40
+======================================
+
+======================================
+Build started at 17:30:42.40
+Build ended at   17:31:44.89
+======================================
+
+Build Release...
+
+======================================
+Build started at 17:31:44.90
+======================================
+
+======================================
+Build started at 17:31:44.90
+Build ended at   17:50:23.86
+======================================
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>echo Building installers... 
+Building installers...
+
+c:\jenkins\workspace\19.1_CI_Build_Signed>cd c:\jenkins\workspace\19.1_CI_Build_Signed\Setup 
+
+c:\jenkins\workspace\19.1_CI_Build_Signed\Setup>BuildInstallation.cmd
+=============================================
+Installer generation
+=============================================
+
+Building installers...
+ 
+Checking builds status 
+Build required. 
+Retrieving Product Version (19.1.23375.0)
+Changing the Product Version generated a new Product Code to support major upgrades.
+ 
+[ DefaultBuild ] 
+Prepare build 
+Preparing files 
+Creating CAB file(s) 
+Signing CAB file(s) 
+Creating MSI database 
+Writing Summary Information 
+Creating MSI database 
+Writing Summary Information 
+Signing MSI 
+Creating EXE file 
+Signing EXE file 
+Validating MSI 
+ 
+Total build time: 1 min 40 sec.
+ 
+Build finished successfully.
+ 
+Checking builds status 
+Build required. 
+Retrieving Product Version (19.1.23375.0)
+Changing the Product Version generated a new Product Code to support major upgrades.
+
+[ DefaultBuild ] 
+Prepare build 
+Preparing files 
+Creating CAB file(s) 
+Signing CAB file(s) 
+Creating MSI database 
+Writing Summary Information 
+Creating MSI database 
+Writing Summary Information 
+Signing MSI 
+Creating EXE file 
+Signing EXE file 
+Validating MSI 
+ 
+Total build time: 1 min 48 sec.
+ 
+Build finished successfully.
+ 
+Checking builds status 
+Build required. 
+Retrieving Product Version (19.1.23375.0) 
+Changing the Product Version generated a new Product Code to support major upgrades.
+ 
+[ DefaultBuild ] 
+Prepare build 
+Preparing files 
+Creating CAB file(s) 
+Signing CAB file(s) 
+Creating MSI database 
+Writing Summary Information 
+Creating MSI database 
+Writing Summary Information 
+Signing MSI 
+Creating EXE file 
+Signing EXE file 
+Validating MSI 
+ 
+Total build time: 1 min 47 sec.
+ 
+Build finished successfully.
+ 
+Checking builds status 
+Build required. 
+Retrieving Product Version (19.1.23375.0)
+Changing the Product Version generated a new Product Code to support major upgrades.
+ 
+[ DefaultBuild ] 
+Prepare build 
+Preparing files 
+Creating CAB file(s) 
+Signing CAB file(s) 
+Creating MSI database 
+Writing Summary Information 
+Creating MSI database 
+Writing Summary Information 
+Signing MSI 
+Creating EXE file 
+Signing EXE file 
+Validating MSI 
+ 
+Total build time: 2 sec.
+ 
+Build finished successfully.
+Installers done building
+
+
+Archiving artifacts
+Started calculate disk usage of build
+Finished Calculation of disk usage of build in 0 seconds
+Started calculate disk usage of workspace
+Finished Calculation of disk usage of workspace in  9 second
+Checking for post-build
+Performing post-build step
+Checking if email needs to be generated
+Email was triggered for: Success
+Sending email for trigger: Success
+messageContentType = text/plain; charset=UTF-8
+Request made to attach build log
+
+Adding recipients from project recipient list
+Analyzing: , 
+Looking for: 
+	starting at: 0
+	firstFoundIdx: 2
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 26
+	firstFoundIdx: 27
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 48
+	firstFoundIdx: 49
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 68
+	firstFoundIdx: 69
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 92
+	firstFoundIdx: 93
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 126
+	firstFoundIdx: 127
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 160
+	firstFoundIdx: 161
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 184
+	firstFoundIdx: 185
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 209
+	firstFoundIdx: 210
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 234
+	firstFoundIdx: 235
+	firstFoundIdx-substring: 
+	=> found type: 0
+Analyzing: , 
+Looking for: 
+	starting at: 0
+	firstFoundIdx: 2
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 26
+	firstFoundIdx: 27
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 48
+	firstFoundIdx: 49
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 68
+	firstFoundIdx: 69
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 92
+	firstFoundIdx: 93
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 126
+	firstFoundIdx: 127
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 160
+	firstFoundIdx: 161
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 184
+	firstFoundIdx: 185
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 209
+	firstFoundIdx: 210
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 234
+	firstFoundIdx: 235
+	firstFoundIdx-substring: 
+	=> found type: 0
+Analyzing: , 
+Looking for: 
+	starting at: 0
+	firstFoundIdx: 2
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 26
+	firstFoundIdx: 27
+	firstFoundIdx-substring: 
+Looking for: 
+	starting at: 48
+	firstFoundIdx: 49
+	firstFoundIdx-substring: d
+	=> found type: 0
+Looking for: 
+	starting at: 68
+	firstFoundIdx: 69
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 92
+	firstFoundIdx: 93
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 126
+	firstFoundIdx: 127
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 160
+	firstFoundIdx: 161
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 184
+	firstFoundIdx: 185
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 209
+	firstFoundIdx: 210
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 234
+	firstFoundIdx: 235
+	firstFoundIdx-substring: 
+	=> found type: 0
+  Collecting change authors...
+    build: 23375
+
+Adding recipients from trigger recipient list
+Analyzing: , 
+	starting at: 0
+	firstFoundIdx: 2
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 26
+	firstFoundIdx: 27
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 48
+	firstFoundIdx: 49
+	firstFoundIdx-substring: 
+    => found type: 0
+Looking for: 
+	starting at: 68
+	firstFoundIdx: 69
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 92
+	firstFoundIdx: 93
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 126
+	firstFoundIdx: 127
+	firstFoundIdx-substring: 
+	=> found type: 0
+Analyzing: , 
+	starting at: 0
+	firstFoundIdx: 2
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 26
+	firstFoundIdx: 27
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 48
+	firstFoundIdx: 49
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 68
+	firstFoundIdx: 69
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 92
+	firstFoundIdx: 93
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 126
+	firstFoundIdx: 127
+	firstFoundIdx-substring: 
+	=> found type: 0
+Analyzing: , 
+Looking for: 
+	starting at: 0
+	firstFoundIdx: 2
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 26
+	firstFoundIdx: 27
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 48
+	firstFoundIdx: 49
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 68
+	firstFoundIdx: 69
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 92
+	firstFoundIdx: 93
+	firstFoundIdx-substring: 
+	=> found type: 0
+Looking for: 
+	starting at: 126
+	firstFoundIdx: 127
+	firstFoundIdx-substring: 
+	=> found type: 0
+Successfully created MimeMessage
+Sending email to: (email addresses from the recipients list)
+Finished: SUCCESS

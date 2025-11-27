@@ -1,0 +1,109 @@
+Index: src/main/resources/tabview/files.jelly
+===================================================================
+--- src/main/resources/tabview/files.jelly	(revision 13956)
++++ src/main/resources/tabview/files.jelly	(working copy)
+@@ -1,6 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <table class="pane sortable" id="files">
+     <tr>
+       <td class="pane-header">${%File}</td>
+Index: src/main/resources/tabview/types.jelly
+===================================================================
+--- src/main/resources/tabview/types.jelly	(revision 13956)
++++ src/main/resources/tabview/types.jelly	(working copy)
+@@ -1,6 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <table class="pane sortable" id="modules">
+     <tr>
+       <td class="pane-header">${%Type}</td>
+Index: src/main/resources/tabview/modules.jelly
+===================================================================
+--- src/main/resources/tabview/modules.jelly	(revision 13956)
++++ src/main/resources/tabview/modules.jelly	(working copy)
+@@ -1,6 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <table class="pane sortable" id="modules">
+     <tr>
+       <td class="pane-header">${%Module}</td>
+Index: src/main/resources/tabview/packages.jelly
+===================================================================
+--- src/main/resources/tabview/packages.jelly	(revision 13956)
++++ src/main/resources/tabview/packages.jelly	(working copy)
+@@ -1,6 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <table class="pane sortable" id="packages">
+     <tr>
+       <td class="pane-header">${%Package}</td>
+Index: src/main/resources/tabview/main.jelly
+===================================================================
+--- src/main/resources/tabview/main.jelly	(revision 13956)
++++ src/main/resources/tabview/main.jelly	(working copy)
+@@ -1,6 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <j:if test="${it.hasAnnotations()}">
+     <script type="text/javascript" src="${rootURL}/plugin/checkstyle/yui/utilities.js"></script>
+     <script type="text/javascript" src="${rootURL}/plugin/checkstyle/yui/tabview-min.js"></script>
+Index: src/main/resources/tabview/categories.jelly
+===================================================================
+--- src/main/resources/tabview/categories.jelly	(revision 13956)
++++ src/main/resources/tabview/categories.jelly	(working copy)
+@@ -1,6 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <table class="pane sortable" id="modules">
+     <tr>
+       <td class="pane-header">${%Category}</td>
+Index: src/main/resources/tabview/details.jelly
+===================================================================
+--- src/main/resources/tabview/details.jelly	(revision 13956)
++++ src/main/resources/tabview/details.jelly	(working copy)
+@@ -1,6 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <j:forEach var="warning" items="${annotations}">
+     <table class="pane" id="details">
+       <tr>
+Index: src/main/resources/tabview/warnings.jelly
+===================================================================
+--- src/main/resources/tabview/warnings.jelly	(revision 13956)
++++ src/main/resources/tabview/warnings.jelly	(working copy)
+@@ -1,6 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <table class="pane sortable" id="warnings">
+     <tr>
+       <td class="pane-header">${%File}</td>
+Index: src/main/resources/tabview/fixed.jelly
+===================================================================
+--- src/main/resources/tabview/fixed.jelly	(revision 13956)
++++ src/main/resources/tabview/fixed.jelly	(working copy)
+@@ -1,7 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+   xmlns:i="jelly:fmt" xmlns:local="local">
+-
++  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+   <j:set var="annotations" value="${it.container.annotations}" />
+   <table class="pane sortable" id="fixed">
+     <tr>

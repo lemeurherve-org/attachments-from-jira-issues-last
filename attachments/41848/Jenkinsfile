@@ -1,0 +1,103 @@
+node('kubernetes') {
+    stage("Pods Running"){
+            def label = "mypod-${UUID.randomUUID().toString()}"   
+			parallel (
+				"stream 0" : { 
+						testPod(label, 50)
+                   },
+				"stream 1" : { 
+						testPod(label, 150)
+                   },
+				"stream 2" : { 
+						testPod(label, 150)
+                   },
+				"stream 3" : { 
+						testPod(label, 300)
+                   },
+				"stream 4" : { 
+						testPod(label, 300)
+                   },
+				"stream 5" : { 
+						testPod(label, 300)
+                   },
+				"stream 6" : { 
+						testPod(label, 300)
+                   },
+				"stream 7" : { 
+						testPod(label, 300)
+                   },
+				"stream 8" : { 
+						testPod(label, 300)
+                   },
+				"stream 9" : { 
+						testPod(label, 300)
+                   },
+				"stream 10" : { 
+						testPod(label, 300)
+                   },
+				"stream 11" : { 
+						testPod(label, 300)
+                   },
+				"stream 12" : { 
+						testPod(label, 300)
+                   },
+				"stream 13" : { 
+						testPod(label, 300)
+                   },
+				"stream 14" : { 
+						testPod(label, 300)
+                   },
+				"stream 15" : { 
+						testPod(label, 300)
+                   },
+				"stream 16" : { 
+						testPod(label, 300)
+                   },
+				"stream 17" : { 
+						testPod(label, 300)
+                   },
+				"stream 18" : { 
+						testPod(label, 300)
+                   },
+				"stream 19" : { 
+						testPod(label, 300)
+                   },
+				"stream 20" : { 
+						testPod(label, 300)
+                   },
+				"stream 21" : { 
+						testPod(label, 300)
+                   }
+			)
+				
+                        
+                
+    } 
+}
+
+
+def testPod(label, cmdSet) {
+    podTemplate(label:label, cloud: 'kubernetes', 
+        containers:[
+            containerTemplate(
+                name:'test-container', 
+                image:'alpine', 
+                ttyEnabled: true, 
+                resourceRequestCpu: '100m',
+                command: 'cat'), 
+            containerTemplate(
+                name: 'jnlp',
+                image: 'jenkins/jnlp-slave:3.10-1-alpine',
+                args: '${computer.jnlpmac} ${computer.name}'
+                )
+            ]
+    ){
+        node(label){
+            container('test-container'){
+                stage ('podTemplate'){
+                    sleep cmdSet
+                }
+            }
+        }
+    }
+}

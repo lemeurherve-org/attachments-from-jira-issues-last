@@ -1,0 +1,74 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.8.7-SNAPSHOT">
+          <name>paramA</name>
+          <randomName>choice-parameter-27096335563766</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1369.v9b_98a_4e95b_2d">
+              <script>return [&quot;AAA&quot;,&quot;BBB&quot;,&quot;CCC&quot;]</script>
+              <sandbox>true</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1369.v9b_98a_4e95b_2d">
+              <script>return[&quot;ERROR paramA&quot;]</script>
+              <sandbox>true</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JENKINS-74967-fs</projectName>
+          <projectFullName>JENKINS-74967-fs</projectFullName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>true</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.8.7-SNAPSHOT">
+          <name>paramB</name>
+          <randomName>choice-parameter-27096337815866</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1369.v9b_98a_4e95b_2d">
+              <script>if (paramA.equals(&quot;AAA&quot;)) {
+                            return [&quot;AAA-1&quot;,&quot;AAA-2&quot;,&quot;AAA-3&quot;]
+                        }
+                        else if (paramA.equals(&quot;BBB&quot;)) {
+                            return [&quot;BBB-1&quot;,&quot;BBB-2&quot;,&quot;BBB-3&quot;]
+                        }
+                        else if (paramA.equals(&quot;CCC&quot;)) {
+                            return [&quot;CCC-1&quot;,&quot;CCC-2&quot;,&quot;CCC-3&quot;]
+                        }
+                        else {
+                            return [&quot;UNK&quot;]
+                        }</script>
+              <sandbox>true</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1369.v9b_98a_4e95b_2d">
+              <script>return[&quot;ERROR paramB&quot;]</script>
+              <sandbox>true</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>JENKINS-74967-fs</projectName>
+          <projectFullName>JENKINS-74967-fs</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>paramA</referencedParameters>
+          <choiceType>PT_RADIO</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders/>
+  <publishers/>
+  <buildWrappers/>
+</project>

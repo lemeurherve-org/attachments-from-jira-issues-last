@@ -1,0 +1,173 @@
+#!groovy
+timestamps {
+    try {
+        stage('Initialize') {
+            properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '15', artifactNumToKeepStr: '10', daysToKeepStr: '15', numToKeepStr: '10')), [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 1, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project'], pipelineTriggers([])])
+            timeout(1) {
+                def tokens = "${env.JOB_NAME}".tokenize('/')
+                def buildName = tokens[tokens.size()-1]
+                echo "Execute Build: ${buildName}"
+                pullRequest = "${buildName}".trim().startsWith("PR-")
+                buildNamePostfix = "${currentBuild.displayName }"
+                currentBuild.displayName  = "${buildName}" + "${buildNamePostfix}"
+                if (pullRequest) {
+                    echo "Build is a PullRequest Job of ${env.CHANGE_TITLE}"
+                    currentBuild.description = "${env.CHANGE_TITLE}"
+                } else {
+                    echo "Build is a Branch Job"
+                }
+            }
+        }
+        parallel buildBranch: {
+            node('BUILD') {
+                executeWithEnv({
+                    timeout(30) {
+                        stage('Checkout (B)') {
+                            checkout scm
+                        }
+                        dir('PROJECT-DIR') {
+                            stage('Build') {
+                                exec("mvn -e -B -T1C clean install -U -DskipTests=true -DskipCheckstyle=true -Dbuild.tag=${env.BUILD_TAG} -Pdistribution")
+                            }//stage
+                            stage('ArchiveArtifacts'){
+                                archiveArtifacts allowEmptyArchive: false, artifacts: '**/target/ntip-distribution*.zip', fingerprint: true
+                            }//stage
+                        }//dir
+                        echo "### buildBranch finished successfully ###"
+                    }//timeout
+                })//executeWithEnv
+            }//node
+        }, //buildBranch
+        unitTestBranch: {
+            node('BUILD') {
+                executeWithEnv({
+                    timeout(30) {
+                        stage('Checkout (UT)') {
+                            checkout scm
+                        }
+                        dir('PROJECT-DIR') {
+                            stage('UnitTests') {
+                                exec("mvn -e -B -T1C install -U -Dmaven.test.failure.ignore=true -DskipUnitTests=false -DskipBcTests=true -DskipCheckstyle=true")
+                                junit allowEmptyResults: true, healthScaleFactor: 1.0, testResults: '**/target/unit-surefire-reports/*.xml'
+                            }//stage
+                        }//dir
+                        echo "### unitTestBranch finished successfully ###"
+                    }//timeout
+                })//executeWithEnv
+            }//node
+        }, //unitTestBranch
+        bctBranch: {
+            node('BUILD') {
+                executeWithEnv({
+                    timeout(30) {
+                        stage('Checkout (BCT)') {
+                            checkout scm
+                        }
+                        dir('PROJECT-DIR') {
+                            stage('BCTests') {
+                                exec("mvn -e -B -T1C install -U -Dmaven.test.failure.ignore=true -DskipUnitTests=true -DskipBcTests=false -DskipCheckstyle=true")
+                                junit allowEmptyResults: true, healthScaleFactor: 1.0, testResults: '**/target/bct-surefire-reports/*.xml'
+                            }//stage
+                        }//dir
+                        echo "### bctBranch finished successfully ###"
+                    }//timeout
+                })//executeWithEnv
+            }//node
+        }, //bctBranch
+        failFast: true // if any of the three branches fail, fail the entire build immediately
+        
+    } catch (e) {
+        echo "Caught exception: ${e}, Message: ${e.getMessage()}, Cause: ${e.getCause()}"
+        if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException || (e instanceof hudson.AbortException && "script returned exit code 143".equals(e.getMessage()))) {
+            echo "Change build result to ABORTED --> ${e}" // FlowInterruptedException is thrown when a build is force-aborted manually
+            currentBuild.result = "ABORTED" // hudson.AbortException is thrown with this message when a shell script is aborted: https://issues.jenkins-ci.org/browse/JENKINS-28822?focusedCommentId=234280#comment-234280
+        } else {
+            echo "Change build result to FAILURE --> ${e}"
+            currentBuild.result = "FAILURE" // If any other exception was thrown then the build is failed
+        }
+       throw e // don't swallow the exception
+    } finally { // send notifications only for failure or unstable builds
+        if (currentBuild.result == "FAILURE" || currentBuild.result == "UNSTABLE") {
+            def to = emailextrecipients([
+                [$class: 'DevelopersRecipientProvider'], // committers to this build
+                [$class: 'CulpritsRecipientProvider'], // anyone who has committed since the last successful build
+                [$class: 'RequesterRecipientProvider'] // the person who has manually started the build
+            ])
+            echo "Sending mail about this ${currentBuild.result} build to: $to" // log the recipient list and the result
+            if (to != null && !to.isEmpty()) { // send only if there is at least one recipient
+                mail to: to, subject: "${env.BRANCH_NAME} #${env.BUILD_NUMBER} has finished with ${currentBuild.result}", body: "See: ${env.BUILD_URL}"
+            }
+        } else {
+            if (currentBuild.result == null) { // SUCCESS is only set after the script exits -> if there is no sign of error so far, then it's a success
+                echo "Nothing went wrong, the build result is SUCCESS"
+            } else { // the only remaining possibilities are NOT_BUILT and ABORTED
+                echo "Do not send an email, the build was [ ${currentBuild.result} ]"
+            }
+        }//else
+    }//finally
+}// timestamps
+
+// execute a script (batch or shell) command depending on the architecture of the node where this command is being run
+def exec(command) {
+    if(isUnix()){
+        try {
+            sh command
+        } catch (e) {
+            message = "Caught exception: ${e}"
+            if (e instanceof hudson.AbortException && "script returned exit code 143".equals(e.getMessage())) {
+                message += "\r\nAborted execution while a shell script was running in this branch - nothing wrong happened here"
+            } // hudson.AbortException is thrown with this message when a shell script is aborted: https://issues.jenkins-ci.org/browse/JENKINS-28822?focusedCommentId=234280#comment-234280
+            echo message + "\r\nExecuted command: sh ${command}"
+            throw e
+        }
+    } else {
+        try {
+            bat command
+        } catch (e) {
+            echo "Caught exception: ${e}\r\nExecuted command: bat ${command}"
+            throw e
+        }
+    }
+}//exec
+
+// execute the given closure using the specified environment
+def executeWithEnv(command) {
+    
+    // path cleaning, adapted from: https://issues.jenkins-ci.org/browse/JENKINS-38706?focusedCommentId=272795&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-272795
+    def path = pwd()
+    def branchName = env.BRANCH_NAME
+    def pathSeparator = '/'
+    
+    if(!isUnix()) { // on Windows (IntegrationTest hosts) we need \ as separator
+        pathSeparator = '\\\\' // We need to split on '\'. In Java, we need to escape it: '\\'. But as split takes a regexp, we need to prefix it with another (escaped) \, therefore '\\\\'
+    }
+    
+    if (branchName) {
+        path = path.split(pathSeparator)
+        def currentWs = path[-1] // -1 as index denotes the first item from the end (the last one)
+        def workspaceRoot = path[0..<-1].join(pathSeparator) // joins all path elements from 0 to (not including) the last, effectively stripping the last path part
+        // Here is where we make branch names safe for directories by replacing all special characters except '_' with '_'
+        // Of concern are the list of non-permitted characters for windows (/\:*?"<>|) and - for linux, but it's easier to replace all non-word characters
+        def newWorkspace = env.BRANCH_NAME.replaceAll("\\W", '_')
+        if (newWorkspace.length() > 61) {
+            newWorkspace = newWorkspace.substring(0,61) // trim the overall length to 60 characters - even though git doesn't have a limit, OSes do have.
+        }
+        if (currentWs =~ '@') { // Add on the '@n' suffix if it was there
+            newWorkspace = "${newWorkspace}@${currentWs.split('@')[-1]}"
+        }
+        path = "${workspaceRoot}${pathSeparator}${newWorkspace}"
+    }
+    ws(path) {
+        if(isUnix()) {
+            withEnv([ 'DISPLAY=:0' ]) {
+                withMaven(jdk: 'Java', maven: 'Maven', mavenLocalRepo: '.repository', mavenOpts: '-Xmx4G -Xms4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200', mavenSettingsConfig: 'maven-settings') {
+                    command()
+                }
+            }
+        } else {
+            withMaven(jdk: 'Java', maven: 'Maven', mavenLocalRepo: '.repository', mavenOpts: '-Xmx4G -Xms4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200', mavenSettingsConfig: 'maven-settings') {
+                command()
+            }
+        }//else
+    }
+}//executeWithEnv

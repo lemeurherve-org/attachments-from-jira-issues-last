@@ -1,0 +1,47 @@
+node('master') {
+   server='dom02-ci'
+    port='9990'
+    username='admin'
+    password='admin123'
+    
+  stage('Checkout') {
+     checkout([$class: 'MercurialSCM', clean: true, credentialsId: 'kiln', revision: 'default', source: 'http://pdfogbugz01.pdir.dk/kiln/Code/FDSOA/domains/archive', modules: 'archive'])
+  }
+  
+  stage('Build') {
+     withMaven(jdk: 'jdk1.8.0_102', maven: 'Maven-3.3.9') {
+        bat "mvn -f archive\\pom.xml  -B clean deploy"
+     }
+
+     step([$class: 'ArtifactArchiver', artifacts: 'archive/target/*.war, archive/pom.xml', fingerprint: true])
+     step([$class: 'JUnitResultArchiver', testResults: '**/target/*-reports/TEST-*.xml'])
+     step([$class: 'JacocoPublisher'])
+   }
+   
+   stage ('Deploy pre-CI') {
+		withMaven(jdk: 'jdk1.8.0_102', maven: 'Maven-3.3.9') {
+			bat "mvn -f archive/pom.xml wildfly:undeploy -Dwildfly.hostname=${server} -Dwildfly.port=${port} -Dwildfly.username=${username}  -Dwildfly.password=${password}"
+			bat "mvn -f archive/pom.xml wildfly:deploy-only -Dwildfly.hostname=${server} -Dwildfly.port=${port} -Dwildfly.username=${username}  -Dwildfly.password=${password}"
+		}
+	}
+  
+  stage ('Handle TFS') {
+      // Look at Changes
+  //  echo   getChangeString()
+    def changeLogSets = currentBuild.changeSets
+    for (int i = 0; i < changeLogSets.size(); i++) {
+        echo "SOME..."
+        def entries = changeLogSets[i].items
+        for (int j = 0; j < entries.length; j++) {
+            def entry = entries[j]
+            echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+            def files = new ArrayList(entry.affectedFiles)
+            for (int k = 0; k < files.size(); k++) {
+                def file = files[k]
+                echo "  ${file.editType.name} ${file.path}"
+            }
+        }
+    }
+  } 
+}
+

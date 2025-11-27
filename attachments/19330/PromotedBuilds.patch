@@ -1,0 +1,136 @@
+Index: src/main/resources/hudson/plugins/promoted_builds/PromotedProjectAction/index.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/promoted_builds/PromotedProjectAction/index.jelly	(revision 30032)
++++ src/main/resources/hudson/plugins/promoted_builds/PromotedProjectAction/index.jelly	(working copy)
+@@ -7,7 +7,7 @@
+       <!-- list promotions that are already attained -->
+       <j:forEach var="c" items="${it.processes}">
+         <h2>
+-          <img src="${imagesURL}/32x32/star-gold.gif"/> ${c.name}
++          <img src="${rootURL}/plugin/promoted-builds/icons/32x32/${c.getIcon()}"/> ${c.name}
+         </h2>
+         
+         <j:set var="b" value="${it.getLatest(c)}" />
+Index: src/main/resources/hudson/plugins/promoted_builds/JobPropertyImpl/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/promoted_builds/JobPropertyImpl/config.jelly	(revision 30032)
++++ src/main/resources/hudson/plugins/promoted_builds/JobPropertyImpl/config.jelly	(working copy)
+@@ -8,6 +8,15 @@
+             <f:entry title="Name">
+               <f:textbox name="config.name" value="${s.name}" />
+             </f:entry>
++            <f:entry title="Icon">
++              <select class="setting-input" name="config.icon">
++                <f:option selected="${s.icon=='star-gold.png'}" value="star-gold.png">Gold star</f:option> 
++                <f:option selected="${s.icon=='star-green.png'}" value="star-blue.png">Green star</f:option> 
++                <f:option selected="${s.icon=='star-blue.png'}" value="star-blue.png">Blue star</f:option> 
++                <f:option selected="${s.icon=='star-red.png'}" value="star-red.png">Red star</f:option> 
++                <f:option selected="${s.icon=='star-orange.png'}" value="star-orange.png">Orange star</f:option> 
++              </select> 
++            </f:entry>
+             <f:section title="Criteria">
+               <f:nested>
+                 <table style="width:100%">
+Index: src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/badge.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/badge.jelly	(revision 30032)
++++ src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/badge.jelly	(working copy)
+@@ -1,9 +1,11 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <j:if test="${it.hasPromotion()}">
+-    <a href="${link}promotion/">
+-      <img width="16" height="16"
+-        title="Promoted build"
+-        src="${imagesURL}/16x16/star-gold.gif"/>
+-    </a>
++    <j:forEach var="c" items="${it.getPromotions()}">
++      <a href="${link}promotion/">
++        <img width="16" height="16"
++          title="${c.name}"
++          src="${rootURL}/plugin/promoted-builds/icons/16x16/${c.getIcon()}"/>
++      </a>
++    </j:forEach>
+   </j:if>
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/index.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/index.jelly	(revision 30032)
++++ src/main/resources/hudson/plugins/promoted_builds/PromotedBuildAction/index.jelly	(working copy)
+@@ -18,7 +18,7 @@
+       <!-- list promotions that are already attained -->
+       <j:forEach var="p" items="${it.promotions}">
+         <h2>
+-          <img src="${imagesURL}/32x32/star-gold.gif"/> ${p.name}
++          <img src="${rootURL}/plugin/promoted-builds/icons/32x32/${p.getIcon()}"/> ${p.name}
+         </h2>
+ 
+         <!-- history of this promotion -->
+Index: src/main/java/hudson/plugins/promoted_builds/PromotionProcess.java
+===================================================================
+--- src/main/java/hudson/plugins/promoted_builds/PromotionProcess.java	(revision 30032)
++++ src/main/java/hudson/plugins/promoted_builds/PromotionProcess.java	(working copy)
+@@ -37,6 +37,7 @@
+             new DescribableList<PromotionCondition, PromotionConditionDescriptor>(this);
+ 
+     private List<BuildStep> buildSteps = new ArrayList<BuildStep>();
++    private String icon;
+ 
+     /*package*/ PromotionProcess(JobPropertyImpl property, String name) {
+         super(property, name);
+@@ -48,6 +49,7 @@
+ 
+         buildSteps = (List)Descriptor.newInstancesFromHeteroList(
+                 req, c, "buildStep", (List) PromotionProcess.getAll());
++        icon = c.getString("icon");
+         save();
+     }
+ 
+@@ -97,6 +99,13 @@
+         return getOwner().getJDK();
+     }
+ 
++    public String getIcon() {
++    	if ((icon == null) || icon.equals(""))
++    		return "star-gold.gif";
++    	else
++    		return icon;
++	}
++
+     /**
+      * Checks if all the conditions to promote a build is met.
+      *
+Index: src/main/java/hudson/plugins/promoted_builds/Status.java
+===================================================================
+--- src/main/java/hudson/plugins/promoted_builds/Status.java	(revision 30032)
++++ src/main/java/hudson/plugins/promoted_builds/Status.java	(working copy)
+@@ -27,7 +27,7 @@
+     /**
+      * Matches with {@link PromotionProcess#name}.
+      */
+-    public final String name;
++    public final String name, icon;
+ 
+     private final PromotionBadge[] badges;
+ 
+@@ -55,6 +55,7 @@
+ 
+     public Status(PromotionProcess process, Collection<? extends PromotionBadge> badges) {
+         this.name = process.getName();
++        this.icon = process.getIcon();
+         this.badges = badges.toArray(new PromotionBadge[badges.size()]);
+     }
+ 
+@@ -62,6 +63,12 @@
+         return name;
+     }
+ 
++    public String getIcon() {
++    	if ((this.icon == null) || this.icon.equals(""))
++    		return "star-gold.png";
++    	else
++    		return this.icon;
++    }
+     /**
+      * Gets the parent {@link Status} that owns this object.
+      */

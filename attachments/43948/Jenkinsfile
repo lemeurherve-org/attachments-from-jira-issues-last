@@ -1,0 +1,52 @@
+#!groovy?
+pipeline {
+  agent { label 'windows' }
+  environment {
+    settingsXml = '-s F:/Data/var/maven/settings.xml'
+  }
+  options {
+    disableConcurrentBuilds()
+  }
+  tools {
+    maven 'maven3.5.4'
+    jdk 'jdk8'
+  }
+  triggers {
+    upstream(upstreamProjects: "projectA" + env.BRANCH_NAME.replaceAll("/", "%2F"), threshold: hudson.model.Result.SUCCESS)
+  }
+  stages {
+    stage ('Update dependencies and test') {
+      steps {
+        withMaven(maven: 'maven3.5.4', jdk: 'jdk8', mavenSettingsFilePath: 'F:/Data/var/maven/settings.xml') {
+      	    bat "mvn clean"
+      	    bat "mvn test -U"
+      	}
+      }
+      post {
+		always {
+		  junit 'target/surefire-reports/**/*.xml' 
+		}
+	  }
+    }
+    stage ('Build') {
+      steps {
+        withMaven(maven: 'maven3.5.4', jdk: 'jdk8', mavenSettingsFilePath: 'F:/Data/var/maven/settings.xml') {
+      	  bat "mvn install -Dmaven.test.skip=true"
+      	}
+      }
+	}
+	stage ('Deploy') {
+      when {
+        anyOf {
+          branch 'release'
+          branch 'master'
+        }
+      }
+      steps {
+        withMaven(maven: 'maven3.5.4', jdk: 'jdk8', mavenSettingsFilePath: 'F:/Data/var/maven/settings.xml') {
+      	  bat "mvn deploy -Dmaven.test.skip=true"
+      	}
+      }
+	}
+  }
+}

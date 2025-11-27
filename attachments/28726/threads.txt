@@ -1,0 +1,239 @@
+Computer.threadPoolForRemoting [#34] id=190 (0xbe) state=RUNNABLE cpu=69% (running in native)
+    at java.net.Inet4AddressImpl.lookupAllHostAddr(Native Method)
+    at java.net.InetAddress$1.lookupAllHostAddr(InetAddress.java:901)
+    at java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1293)
+    at java.net.InetAddress.getAllByName0(InetAddress.java:1246)
+    at java.net.InetAddress.getAllByName(InetAddress.java:1162)
+    at java.net.InetAddress.getAllByName(InetAddress.java:1098)
+    at jcifs.UniAddress.getAllByName(UniAddress.java:299)
+    at jcifs.UniAddress.getByName(UniAddress.java:245)
+    at jcifs.smb.Dfs.getTrustedDomains(Dfs.java:62)
+    at jcifs.smb.Dfs.resolve(Dfs.java:167)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.SmbFileOutputStream.writeDirect(SmbFileOutputStream.java:245)
+    at jcifs.smb.SmbFileOutputStream.write(SmbFileOutputStream.java:216)
+    at hudson.Util.copyStream(Util.java:448)
+    at hudson.Util.copyStreamAndClose(Util.java:460)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.copySlaveJar(ManagedWindowsServiceLauncher.java:465)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:342)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@4fe86b48
+
+Computer.threadPoolForRemoting [#3] id=97 (0x61) state=BLOCKED cpu=77%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.TransactNamedPipeOutputStream.write(TransactNamedPipeOutputStream.java:65)
+    at rpc.ncacn_np.RpcTransport.send(RpcTransport.java:113)
+    at rpc.DefaultConnection.transmitFragment(DefaultConnection.java:127)
+    at rpc.DefaultConnection.transmit(DefaultConnection.java:61)
+    at rpc.ConnectionOrientedEndpoint.send(ConnectionOrientedEndpoint.java:223)
+    at rpc.ConnectionOrientedEndpoint.call(ConnectionOrientedEndpoint.java:113)
+    at rpc.Stub.call(Stub.java:112)
+    at org.jinterop.winreg.smb.JIWinRegStub.winreg_EnumKey(JIWinRegStub.java:386)
+    at hudson.util.jna.DotNet.isInstalled(DotNet.java:81)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:292)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@1e3b5fc9
+
+Computer.threadPoolForRemoting [#7] id=109 (0x6d) state=BLOCKED cpu=82%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.SmbFile.open0(SmbFile.java:989)
+    at jcifs.smb.SmbFile.open(SmbFile.java:1006)
+    at jcifs.smb.SmbFileOutputStream.<init>(SmbFileOutputStream.java:142)
+    at jcifs.smb.SmbFileOutputStream.<init>(SmbFileOutputStream.java:97)
+    at jcifs.smb.SmbFileOutputStream.<init>(SmbFileOutputStream.java:67)
+    at jcifs.smb.SmbFile.getOutputStream(SmbFile.java:2853)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:300)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@28e11430
+
+Computer.threadPoolForRemoting [#10] id=118 (0x76) state=BLOCKED cpu=82%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.TransactNamedPipeOutputStream.write(TransactNamedPipeOutputStream.java:65)
+    at rpc.ncacn_np.RpcTransport.send(RpcTransport.java:113)
+    at rpc.DefaultConnection.transmitFragment(DefaultConnection.java:127)
+    at rpc.DefaultConnection.transmit(DefaultConnection.java:61)
+    at rpc.ConnectionOrientedEndpoint.send(ConnectionOrientedEndpoint.java:223)
+    at rpc.ConnectionOrientedEndpoint.call(ConnectionOrientedEndpoint.java:113)
+    at rpc.Stub.call(Stub.java:112)
+    at org.jinterop.winreg.smb.JIWinRegStub.winreg_EnumKey(JIWinRegStub.java:386)
+    at hudson.util.jna.DotNet.isInstalled(DotNet.java:81)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:292)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@7ab044ae
+
+Computer.threadPoolForRemoting [#11] id=121 (0x79) state=BLOCKED cpu=88%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.TransactNamedPipeOutputStream.write(TransactNamedPipeOutputStream.java:65)
+    at rpc.ncacn_np.RpcTransport.send(RpcTransport.java:113)
+    at rpc.DefaultConnection.transmitFragment(DefaultConnection.java:127)
+    at rpc.DefaultConnection.transmit(DefaultConnection.java:61)
+    at rpc.ConnectionOrientedEndpoint.send(ConnectionOrientedEndpoint.java:223)
+    at rpc.ConnectionOrientedEndpoint.call(ConnectionOrientedEndpoint.java:113)
+    at rpc.Stub.call(Stub.java:112)
+    at org.jinterop.winreg.smb.JIWinRegStub.winreg_CloseKey(JIWinRegStub.java:198)
+    at hudson.util.jna.DotNet.isInstalled(DotNet.java:91)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:292)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@24429dd0
+
+Computer.threadPoolForRemoting [#23] id=157 (0x9d) state=BLOCKED cpu=83%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.SmbFileOutputStream.writeDirect(SmbFileOutputStream.java:245)
+    at jcifs.smb.SmbFileOutputStream.write(SmbFileOutputStream.java:216)
+    at hudson.Util.copyStream(Util.java:448)
+    at hudson.Util.copyStreamAndClose(Util.java:460)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:302)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@75036873
+
+Computer.threadPoolForRemoting [#32] id=183 (0xb7) state=BLOCKED cpu=88%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.TransactNamedPipeOutputStream.write(TransactNamedPipeOutputStream.java:65)
+    at rpc.ncacn_np.RpcTransport.send(RpcTransport.java:113)
+    at rpc.DefaultConnection.transmitFragment(DefaultConnection.java:127)
+    at rpc.DefaultConnection.transmit(DefaultConnection.java:61)
+    at rpc.ConnectionOrientedEndpoint.send(ConnectionOrientedEndpoint.java:223)
+    at rpc.ConnectionOrientedEndpoint.call(ConnectionOrientedEndpoint.java:113)
+    at rpc.Stub.call(Stub.java:112)
+    at org.jinterop.winreg.smb.JIWinRegStub.winreg_EnumKey(JIWinRegStub.java:386)
+    at hudson.util.jna.DotNet.isInstalled(DotNet.java:81)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:292)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@11aebb85
+
+Computer.threadPoolForRemoting [#33] id=186 (0xba) state=BLOCKED cpu=89%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.TransactNamedPipeOutputStream.write(TransactNamedPipeOutputStream.java:65)
+    at rpc.ncacn_np.RpcTransport.send(RpcTransport.java:113)
+    at rpc.DefaultConnection.transmitFragment(DefaultConnection.java:127)
+    at rpc.DefaultConnection.transmit(DefaultConnection.java:61)
+    at rpc.ConnectionOrientedEndpoint.send(ConnectionOrientedEndpoint.java:223)
+    at rpc.ConnectionOrientedEndpoint.call(ConnectionOrientedEndpoint.java:113)
+    at rpc.Stub.call(Stub.java:112)
+    at org.jinterop.winreg.smb.JIWinRegStub.winreg_EnumKey(JIWinRegStub.java:386)
+    at hudson.util.jna.DotNet.isInstalled(DotNet.java:81)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:292)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@54148fd0
+
+Computer.threadPoolForRemoting [#40] id=203 (0xcb) state=BLOCKED cpu=73%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.SmbFileOutputStream.writeDirect(SmbFileOutputStream.java:245)
+    at jcifs.smb.SmbFileOutputStream.write(SmbFileOutputStream.java:216)
+    at hudson.Util.copyStream(Util.java:448)
+    at hudson.Util.copyStreamAndClose(Util.java:460)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:300)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@457daeb5
+
+Computer.threadPoolForRemoting [#47] id=218 (0xda) state=BLOCKED cpu=86%
+    - waiting to lock <0x5f47124a> (a jcifs.smb.Dfs)
+     owned by Computer.threadPoolForRemoting [#34] id=190
+    at jcifs.smb.Dfs.resolve(Dfs.java:159)
+    at jcifs.smb.SmbFile.resolveDfs(SmbFile.java:671)
+    at jcifs.smb.SmbFile.send(SmbFile.java:773)
+    at jcifs.smb.TransactNamedPipeOutputStream.write(TransactNamedPipeOutputStream.java:65)
+    at rpc.ncacn_np.RpcTransport.send(RpcTransport.java:113)
+    at rpc.DefaultConnection.transmitFragment(DefaultConnection.java:127)
+    at rpc.DefaultConnection.transmit(DefaultConnection.java:61)
+    at rpc.ConnectionOrientedEndpoint.send(ConnectionOrientedEndpoint.java:223)
+    at rpc.ConnectionOrientedEndpoint.call(ConnectionOrientedEndpoint.java:113)
+    at rpc.Stub.call(Stub.java:112)
+    at org.jinterop.winreg.smb.JIWinRegStub.winreg_EnumKey(JIWinRegStub.java:386)
+    at hudson.util.jna.DotNet.isInstalled(DotNet.java:81)
+    at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:292)
+    at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:228)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+    at java.lang.Thread.run(Thread.java:745)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.ThreadPoolExecutor$Worker@582a0ad7

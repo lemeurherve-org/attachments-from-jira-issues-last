@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<maven2-moduleset plugin="maven-plugin@2.12.1">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>20</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.security.AuthorizationMatrixProperty>
+      <permission>hudson.model.Item.Read:external</permission>
+      <permission>hudson.model.Item.Discover:external</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.28"/>
+    <hudson.plugins.heavy__job.HeavyJobProperty plugin="heavy-job@1.1">
+      <weight>1</weight>
+    </hudson.plugins.heavy__job.HeavyJobProperty>
+    <org.jvnet.hudson.plugins.shelveproject.ShelveProjectProperty plugin="shelve-project-plugin@1.5"/>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.5.7">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://aaa.bbb.ccc.eee/repository/bioml/trunk/KNIME.COM/server</remote>
+        <credentialsId>1234567</credentialsId>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>false</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://aaa.bbb.ccc.eee/repository/bioml/trunk/KNIME/org.knime.core.util</remote>
+        <credentialsId>1234567</credentialsId>
+        <local>server/org.knime.core.util</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>false</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://aaa.bbb.ccc.eee/repository/bioml/trunk/KNIME.COM/professional/com.knime.licenses</remote>
+        <credentialsId>1234567</credentialsId>
+        <local>server/com.knime.licenses</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>false</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://aaa.bbb.ccc.eee/repository/bioml/trunk/KNIME_Deployment/org.knime.build.config</remote>
+        <credentialsId>1234567</credentialsId>
+        <local>KNIME_Deployment/org.knime.build.config</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>false</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <browser class="hudson.scm.browsers.WebSVN">
+      <url>https://aaa.bbb.ccc.eee/websvn/wsvn/bioml/</url>
+    </browser>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.UpdateWithCleanUpdater"/>
+    <ignoreDirPropChanges>false</ignoreDirPropChanges>
+    <filterChangelog>false</filterChangelog>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>OracleJDK 8</jdk>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>H 22,12 * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>com.knime.enterprise</groupId>
+    <artifactId>serverbuild</artifactId>
+  </rootModule>
+  <rootPOM>server/com.knime.enterprise.serverbuild/pom.xml</rootPOM>
+  <goals>clean install sonar:sonar deploy -DskipTests=false -Pmaster-build</goals>
+  <mavenName>Maven 3.2</mavenName>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <archivingDisabled>true</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>true</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <blockTriggerWhenBuilding>true</blockTriggerWhenBuilding>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters/>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>server/**/target/*.war,hudsonBuild.properties,install-packages/*</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>true</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>true</caseSensitive>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>Deploy-Testserver-trunk, Server-UnitTests-trunk, Server-Integration-Tests-trunk</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+    <hudson.plugins.emailext.ExtendedEmailPublisher plugin="email-ext@2.40.5">
+      <recipientList>$DEFAULT_RECIPIENTS</recipientList>
+      <configuredTriggers>
+        <hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <recipientProviders>
+              <hudson.plugins.emailext.plugins.recipients.ListRecipientProvider/>
+              <hudson.plugins.emailext.plugins.recipients.DevelopersRecipientProvider/>
+              <hudson.plugins.emailext.plugins.recipients.CulpritsRecipientProvider/>
+            </recipientProviders>
+            <attachmentsPattern></attachmentsPattern>
+            <attachBuildLog>false</attachBuildLog>
+            <compressBuildLog>false</compressBuildLog>
+            <replyTo>$PROJECT_DEFAULT_REPLYTO</replyTo>
+            <contentType>project</contentType>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+        <hudson.plugins.emailext.plugins.trigger.UnstableTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <recipientProviders>
+              <hudson.plugins.emailext.plugins.recipients.DevelopersRecipientProvider/>
+              <hudson.plugins.emailext.plugins.recipients.ListRecipientProvider/>
+              <hudson.plugins.emailext.plugins.recipients.CulpritsRecipientProvider/>
+            </recipientProviders>
+            <attachmentsPattern></attachmentsPattern>
+            <attachBuildLog>false</attachBuildLog>
+            <compressBuildLog>false</compressBuildLog>
+            <replyTo>$PROJECT_DEFAULT_REPLYTO</replyTo>
+            <contentType>project</contentType>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.UnstableTrigger>
+      </configuredTriggers>
+      <contentType>default</contentType>
+      <defaultSubject>$DEFAULT_SUBJECT</defaultSubject>
+      <defaultContent>$DEFAULT_CONTENT</defaultContent>
+      <attachmentsPattern></attachmentsPattern>
+      <presendScript>$DEFAULT_PRESEND_SCRIPT</presendScript>
+      <attachBuildLog>false</attachBuildLog>
+      <compressBuildLog>false</compressBuildLog>
+      <replyTo>$DEFAULT_REPLYTO</replyTo>
+      <saveOutput>false</saveOutput>
+      <disabled>false</disabled>
+    </hudson.plugins.emailext.ExtendedEmailPublisher>
+  </publishers>
+  <buildWrappers/>
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>rm -rf install-packages tmp
+mkdir -p install-packages tmp external # do not remove &quot;external&quot;
+
+cd external
+wget -qN https://aaa.bbb.ccc.ddd/apache/dist/tomee/tomee-1.7.1/apache-tomee-1.7.1-plus.tar.gz
+wget -qN http://mirror.switch.ch/mirror/apache/dist/tomee/tomee-1.7.1/apache-tomee-1.7.1-plus.zip</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Maven>
+      <targets>install deploy</targets>
+      <mavenName>Maven 3.2</mavenName>
+      <pom>com.knime.enterprise.mavenconfig/pom.xml</pom>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+    </hudson.tasks.Maven>
+  </prebuilders>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>WAR=$(ls -1 $WORKSPACE/server/com.knime.enterprise.war*/target/*.war)
+VERSION=${WAR##*_}
+VERSION=${VERSION%%.war}
+
+cp -al &quot;$WAR&quot; &quot;$WORKSPACE/tmp/com.knime.enterprise.server.war&quot;
+rsync -a --exclude=&apos;.svn*&apos; $WORKSPACE/server/com.knime.enterprise.server.install/. &quot;$WORKSPACE/tmp/&quot;
+
+for sketcher in &quot;$WORKSPACE&quot;/server/com.knime.enterprise.sketcher*/target/*.war; do
+  sketcherBasename=${sketcher##*/}
+  cp &quot;$sketcher&quot; &quot;$WORKSPACE/tmp/sketchers/${sketcherBasename%_*.war}.war&quot;
+done
+
+cd &quot;$WORKSPACE/install-packages&quot;
+cp -al &quot;$WORKSPACE/tmp&quot; knime_server_installation_$VERSION
+
+# Linux
+cp -al &quot;$WORKSPACE/external/&quot;apache-tomee*.tar.gz knime_server_installation_$VERSION
+tar -czf knime_server_installation_${VERSION}_linux.tar.gz knime_server_installation_$VERSION
+
+# MacOS
+tar -czf knime_server_installation_${VERSION}_macosx.tar.gz knime_server_installation_$VERSION
+
+# Windows
+rm knime_server_installation_$VERSION/apache-tomee*.tar.gz
+cp -al &quot;$WORKSPACE/external/&quot;apache-tomee*.zip knime_server_installation_$VERSION
+zip -qr9 knime_server_installation_${VERSION}_windows.zip knime_server_installation_$VERSION
+</command>
+    </hudson.tasks.Shell>
+    <com.meyling.hudson.plugin.job__exporter.ExporterBuilder plugin="job-exporter@0.4"/>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>FAILURE</name>
+    <ordinal>2</ordinal>
+    <color>RED</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>

@@ -1,0 +1,87 @@
+Building remotely on indxL3A6498 in workspace C:\S101
+[S101] $ cmd /c call C:\Windows\TEMP\hudson4725905021035268238.bat
+
+C:\S101>cd ai.app.2015.mahindra.s101\app\build 
+
+C:\S101\ai.app.2015.mahindra.s101\app\build>make s101_ahu QAC=YES 
+
+C:\S101\ai.app.2015.mahindra.s101\app\build>..\..\..\build.utility\gnu.make\bin\make.exe -r s101_ahu QAC=YES 
+
+
+Build Prep s101_ahu...
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: Entering directory `C:/S101/ai.app.2015.mahindra.s101/app/build'
+Checking Config...
+No config change
+Generating NVM...
+NVM Preprocessed OK
+
+
+NVM Utility v.1.0.1
+
+
+1 include directories
+
+NVM Util: 0 Errors, 0 Warnings, 0 Infos
+
+NVM Generated OK
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: Leaving directory `C:/S101/ai.app.2015.mahindra.s101/app/build'
+
+Build Target s101_ahu First Pass
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: Entering directory `C:/S101/ai.app.2015.mahindra.s101/app/build'
+Preparing Checksum file...
+Compiling ../src/s101_ahu/app_chksum.c
+echo "../src/s101_ahu/app_chksum.c" >> ../met/s101_ahu/raw_qac_file_list.txt
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: [../obj/s101_ahu/app_chksum.o] Error 4 (ignored)
+I/src -I/protected
+process_begin: CreateProcess((null), I/src -I/protected, ...) failed.
+make (e=2): The system cannot find the file specified.
+
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: [../obj/s101_ahu/app_chksum.o] Error 2 (ignored)
+Linking   ../exec/s101_ahu/s101_ahu.out
+  ==>  Created ../exec/s101_ahu/s101_ahu.out
+C:/S101/compiler.ghs.v850e/gsrec.exe ../exec/s101_ahu/s101_ahu.out -hex386 -pad2 0x4008 0xffffb 0xFFFE -o ../exec/s101_ahu/s101_ahu.hex
+  ==>  Created ../exec/s101_ahu/s101_ahu_app.hex
+checksum value is 0xc3341f04
+
+Variant s101_ahu Initial Pass done
+
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: Leaving directory `C:/S101/ai.app.2015.mahindra.s101/app/build'
+Build s101_ahu Second Pass
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: Entering directory `C:/S101/ai.app.2015.mahindra.s101/app/build'
+Preparing Checksum file...
+Compiling ../src/s101_ahu/app_chksum.c
+echo "../src/s101_ahu/app_chksum.c" >> ../met/s101_ahu/raw_qac_file_list.txt
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: [../obj/s101_ahu/app_chksum.o] Error 4 (ignored)
+I/src -I/protected
+process_begin: CreateProcess((null), I/src -I/protected, ...) failed.
+make (e=2): The system cannot find the file specified.
+
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: [../obj/s101_ahu/app_chksum.o] Error 2 (ignored)
+Linking   ../exec/s101_ahu/s101_ahu.out
+  ==>  Created ../exec/s101_ahu/s101_ahu.out
+C:/S101/compiler.ghs.v850e/gsrec.exe ../exec/s101_ahu/s101_ahu.out -hex386 -pad2 0x4008 0xffffb 0xFFFE -o ../exec/s101_ahu/s101_ahu.hex
+C:/S101/compiler.ghs.v850e/gsrec.exe -L ../exec/s101_ahu/s101_ahu.out -o ../exec/s101_ahu/s101_ahu.s19
+  ==>  Created ../exec/s101_ahu/s101_ahu.s19
+  ==>  Created ../exec/s101_ahu/s101_ahu_app.hex
+  ==>  Created ../exec/s101_ahu/s101_ahu_boot_app.hex
+  ==>  Created ../exec/s101_ahu/s101_ahu_boot_app.s19
+  ==>  Memory Statistics
+ccperl ../build/cre_ghs.pl ../exec/s101_ahu/s101_ahu.map ../obj/s101_ahu long > ../exec/s101_ahu/s101_ahu.mem
+Generating QAC Project Warning Summary Report.....Please wait...
+Generating QAC Function Metric Report.....Please wait...
+ccperl ../build/qacfuncsum.pl ../met/s101_ahu ../exec/s101_ahu/qac_fnsum_s101_ahu.csv
+
+Variant s101_ahu Final Pass done
+
+C:\S101\build.utility\gnu.make\bin\make.exe[1]: Leaving directory `C:/S101/ai.app.2015.mahindra.s101/app/build'
+[WARNINGS] Parsing warnings in console log with parser GHS Multi Compiler
+[htmlpublisher] Archiving HTML reports...
+[htmlpublisher] Archiving at PROJECT level C:\S101\ai.app.2015.mahindra.s101\app\met\s101_ahu to C:\Jenkins\jobs\CI_S101_Dev\htmlreports\QAC_HTML_Reports
+Programming Research Quality Assurance Plugin version 1.2.2
+This job will create a report with the following selected parameters:
+QAR project file or file list:	qacfilelist.lst
+QAR selected product:		QA?C
+QAR selected report type:	Compliance
+
+Build step 'Programming Research Report' marked build as failure
+Finished: FAILURE

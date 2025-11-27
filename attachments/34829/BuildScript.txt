@@ -1,0 +1,40 @@
+using System;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
+using System.Collections.Generic;
+
+class BuildScript
+{
+    static private string[] SCENES = FindEnabledEditorScenes();
+
+    static private string APP_NAME = "SuperImportantProject";
+	
+    [MenuItem("saBuild/Build Windows/64bit")]
+    static void PerformWindows64Build()
+    {
+        GenericBuild(SCENES, APP_NAME + "/" + APP_NAME + "_64.exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
+    }
+
+    private static string[] FindEnabledEditorScenes()
+    {
+
+        List<string> EditorScenes = new List<string>();
+        foreach (EditorBuildSettingsScene scene in EditorBuildSettings.scenes)
+        {
+            if (scene.enabled) EditorScenes.Add(scene.path);
+        }
+        return EditorScenes.ToArray();
+    }
+
+    static void GenericBuild(string[] scenes, string target_dir, BuildTarget build_target, BuildOptions build_options)
+    {
+        EditorUserBuildSettings.SwitchActiveBuildTarget(build_target);
+        string res = BuildPipeline.BuildPlayer(scenes, target_dir, build_target, build_options);
+        if (!String.IsNullOrEmpty(res))
+        {
+            throw new Exception("BuildPlayer failure: " + res);
+        }
+    }
+}
+

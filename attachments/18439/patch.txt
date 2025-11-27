@@ -1,0 +1,141 @@
+### Eclipse Workspace Patch 1.0
+#P hudson-main
+Index: test/src/main/java/org/jvnet/hudson/test/HudsonTestCase.java
+===================================================================
+--- test/src/main/java/org/jvnet/hudson/test/HudsonTestCase.java	(revision 13715)
++++ test/src/main/java/org/jvnet/hudson/test/HudsonTestCase.java	(working copy)
+@@ -378,8 +378,11 @@
+         name = "/" + name + ".zip";
+         URL res = getClass().getResource(name);
+         if(res==null)   throw new IllegalArgumentException("No such data set found: "+name);
+-
+-        return with(new CopyExisting(res));
++        if(res.toString().startsWith("jar:")){
++        	return with(new CopyExisting(name.substring(1)));
++        } else {
++            return with(new CopyExisting(res));
++        }
+     }
+ 
+     public HudsonTestCase with(HudsonHomeLoader homeLoader) {
+Index: test/src/main/java/org/jvnet/hudson/test/HudsonHomeLoader.java
+===================================================================
+--- test/src/main/java/org/jvnet/hudson/test/HudsonHomeLoader.java	(revision 13715)
++++ test/src/main/java/org/jvnet/hudson/test/HudsonHomeLoader.java	(working copy)
+@@ -3,8 +3,14 @@
+ import hudson.FilePath;
+ 
+ import java.io.File;
++import java.io.FileOutputStream;
+ import java.io.IOException;
+ import java.net.URL;
++import java.nio.ByteBuffer;
++import java.nio.channels.Channels;
++import java.nio.channels.FileChannel;
++import java.nio.channels.ReadableByteChannel;
++import java.nio.channels.WritableByteChannel;
+ import java.lang.reflect.Method;
+ 
+ /**
+@@ -13,7 +19,7 @@
+  * @author Kohsuke Kawaguchi
+  */
+ public interface HudsonHomeLoader {
+-    /**
++    /** 
+      * Returns a directory to be used as <tt>HUDSON_HOME</tt>
+      *
+      * @throws Exception
+@@ -35,13 +41,15 @@
+      */
+     public static final class CopyExisting implements HudsonHomeLoader {
+         private final File source;
+-
++        private final String classpathString;
++        
+         /**
+          * Either a zip file or a directory that contains the home image.
+          */
+         public CopyExisting(File source) {
+             if(source==null)    throw new IllegalArgumentException();
+             this.source = source;
++            classpathString = null;
+         }
+ 
+         /**
+@@ -51,23 +59,69 @@
+          * This is useful in case you want to have a test data in the resources.
+          * Only file URL is supported. 
+          */
++        public CopyExisting(String classPathSource) {
++            if(classPathSource==null)    throw new IllegalArgumentException();
++        	this.classpathString = classPathSource;
++        	source = null;
++        }
++        
++        /**
++         * Extracts from a zip file in the resource.
++         *
++         * <p>
++         * This is useful in case you want to have a test data in the resources.
++         * Only file URL is supported. 
++         */
+         public CopyExisting(URL source) {
+             if(!source.getProtocol().equals("file"))
+                 throw new UnsupportedOperationException("Unsupported protocol: "+source);
+             this.source = new File(source.getPath());
++            classpathString = null;
+         }
+ 
+         public File allocate() throws Exception {
+             File target = NEW.allocate();
+-            if(source.isDirectory())
+-                new FilePath(source).copyRecursiveTo("**/*",new FilePath(target));
+-            else
+-            if(source.getName().endsWith(".zip"))
+-                new FilePath(source).unzip(new FilePath(target));
++            if(source != null){
++                if(source.isDirectory())
++                    new FilePath(source).copyRecursiveTo("**/*",new FilePath(target));
++                else
++                if(source.getName().endsWith(".zip"))
++                    new FilePath(source).unzip(new FilePath(target));
++            } else if (classpathString != null){
++            	File tempSource = new File(target.getAbsolutePath()+classpathString);
++            	FileChannel outChannel = new FileOutputStream(tempSource).getChannel();
++            	System.out.println(this.getClass().getClassLoader().getResource(classpathString).toString());
++            	ReadableByteChannel inChannel = Channels.newChannel(HudsonHomeLoader.class.getClassLoader().getResourceAsStream(classpathString));
++                fastChannelCopy(inChannel, outChannel);
++                inChannel.close();  
++                outChannel.close();
++                if(tempSource.getName().endsWith(".zip"))
++                    new FilePath(tempSource).unzip(new FilePath(target));
++            }
+             return target;
+         }
++        
++        public static void fastChannelCopy(final ReadableByteChannel src, final WritableByteChannel dest) throws IOException {  
++   	     final ByteBuffer buffer = ByteBuffer.allocateDirect(64 * 1024);  
++   	     while (src.read(buffer) != -1) {  
++   	       // prepare the buffer to be drained  
++   	       buffer.flip();  
++   	       // write to the channel, may block  
++   	       dest.write(buffer);  
++   	       // If partial transfer, shift remainder down  
++   	       // If buffer is empty, same as doing clear()  
++   	       buffer.compact();  
++   	     }  
++   	     // EOF will leave buffer in fill state  
++   	     buffer.flip();  
++   	     // make sure the buffer is fully drained.  
++   	     while (buffer.hasRemaining()) {  
++   	       dest.write(buffer);  
++   	     }  
++        }
+     }
+-
++ 
++    
+     /**
+      * Allocates a new directory by copying from a test resource
+      */

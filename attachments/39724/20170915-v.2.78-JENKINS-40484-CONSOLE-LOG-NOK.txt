@@ -1,0 +1,91 @@
+NOK
+
+BS centos7 fully system and plugins updated.
+docker ce 17.06
+jenkins 2.78
+
+Started by user Nuno
+Replayed #215
+[Pipeline] node
+Running on centos-buildserver-03 in /var/lib/jenkins/workspace/Tests/withMaven tests/withMaven-test2
+[Pipeline] {
+[Pipeline] deleteDir
+[Pipeline] stage
+[Pipeline] { (build)
+[Pipeline] sh
+[withMaven-test2] Running shell script
++ echo /usr/local/bin:/usr/bin
+/usr/local/bin:/usr/bin
+[Pipeline] sh
+[withMaven-test2] Running shell script
++ which nohup
+/usr/bin/nohup
+[Pipeline] sh
+[withMaven-test2] Running shell script
++ which sh
+/usr/bin/sh
+[Pipeline] sh
+[withMaven-test2] Running shell script
++ docker inspect -f . maven:3.5.0-jdk-8-cbf114925530
+.
+[Pipeline] withDockerContainer
+centos-buildserver-03 does not seem to be running inside a container
+$ docker run -t -d -u 995:991 -w "/var/lib/jenkins/workspace/Tests/withMaven tests/withMaven-test2" -v "/var/lib/jenkins/workspace/Tests/withMaven tests/withMaven-test2:/var/lib/jenkins/workspace/Tests/withMaven tests/withMaven-test2:rw,z" -v "/var/lib/jenkins/workspace/Tests/withMaven tests/withMaven-test2@tmp:/var/lib/jenkins/workspace/Tests/withMaven tests/withMaven-test2@tmp:rw,z" -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** --entrypoint cat maven:3.5.0-jdk-8-cbf114925530
+[Pipeline] {
+[Pipeline] git
+Cloning the remote Git repository
+Cloning repository https://github.com/spring-projects/spring-petclinic.git
+ > git init /var/lib/jenkins/workspace/Tests/withMaven tests/withMaven-test2 # timeout=10
+Fetching upstream changes from https://github.com/spring-projects/spring-petclinic.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/spring-projects/spring-petclinic.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url https://github.com/spring-projects/spring-petclinic.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/spring-projects/spring-petclinic.git # timeout=10
+Fetching upstream changes from https://github.com/spring-projects/spring-petclinic.git
+ > git fetch --tags --progress https://github.com/spring-projects/spring-petclinic.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 101c9dc69064633f697d93dcf0918bb4f74ff7ed (refs/remotes/origin/master)
+Commit message: "Update Spring Boot and Thymeleaf versions"
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 101c9dc69064633f697d93dcf0918bb4f74ff7ed
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b master 101c9dc69064633f697d93dcf0918bb4f74ff7ed
+ > git rev-list 101c9dc69064633f697d93dcf0918bb4f74ff7ed # timeout=10
+[Pipeline] sh
+[withMaven-test2] Running shell script
++ echo /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+[Pipeline] sh
+[withMaven-test2] Running shell script
++ which nohup
+/usr/bin/nohup
+[Pipeline] sh
+[withMaven-test2] Running shell script
++ which sh
+/bin/sh
+[Pipeline] withMaven
+[withMaven] Options: []
+[withMaven] Available options: 
+[withMaven] use JDK installation provided by the build agent
+$ docker exec caa054158a9a8a4ef38834264d7e1a7f6796aec9d3ce452d421078b16975b106 env printenv MAVEN_HOME
+[withMaven] use Maven installation provided by the build agent with the environment variable MAVEN_HOME=/usr/share/maven
+[Pipeline] {
+[Pipeline] sh
+[withMaven-test2] Running shell script
+[Pipeline] }
+[Pipeline] // withMaven
+[Pipeline] }
+$ docker stop --time=1 caa054158a9a8a4ef38834264d7e1a7f6796aec9d3ce452d421078b16975b106
+$ docker rm -f caa054158a9a8a4ef38834264d7e1a7f6796aec9d3ce452d421078b16975b106
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+[withMaven] pipelineGraphPublisher - triggerDownstreamPipelines
+[withMaven] Skip downstream job triggering for upstream build with ignored result status Tests/withMaven tests/withMaven-test2 #216: FAILURE
+ERROR: script returned exit code -2
+Finished: FAILURE

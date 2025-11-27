@@ -1,0 +1,99 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>XXXXXXXXX_Lab_06</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>set</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+    <com.microfocus.application.automation.tools.run.RunFromFileBuilder plugin="hp-application-automation-tools-plugin@6.6">
+      <ResultFilename>ApiResults.xml</ResultFilename>
+      <ParamFileName>ApiRun.txt</ParamFileName>
+      <runFromFileModel>
+        <fsTests>C:\XXXXXXXXX_Workspace\Scenario\LR_IDB_Demo.lrs
+</fsTests>
+        <fsTimeout></fsTimeout>
+        <fsUftRunMode>Fast</fsUftRunMode>
+        <controllerPollingInterval>30</controllerPollingInterval>
+        <perScenarioTimeOut>600</perScenarioTimeOut>
+        <ignoreErrorStrings></ignoreErrorStrings>
+        <analysisTemplate></analysisTemplate>
+        <displayController>false</displayController>
+        <mcServerName></mcServerName>
+        <fsUserName></fsUserName>
+        <fsPassword>{AQAAABAAAAAQKplRIL24iStceR/zY4S0jd5QwrJqBjCeZaUOXJ1MxOI=}</fsPassword>
+        <mcTenantId></mcTenantId>
+        <fsReportPath></fsReportPath>
+        <fsDeviceId></fsDeviceId>
+        <fsOs></fsOs>
+        <fsManufacturerAndModel></fsManufacturerAndModel>
+        <fsTargetLab></fsTargetLab>
+        <fsAutActions></fsAutActions>
+        <fsLaunchAppName></fsLaunchAppName>
+        <fsInstrumented></fsInstrumented>
+        <fsDevicesMetrics></fsDevicesMetrics>
+        <fsExtraApps></fsExtraApps>
+        <fsJobId></fsJobId>
+        <useSSL>true</useSSL>
+      </runFromFileModel>
+      <fileSystemTestSetModel>
+        <fileSystemTestSet>
+          <com.microfocus.application.automation.tools.model.FileSystemTestModel>
+            <tests>
+</tests>
+            <parallelRunnerEnvironments>
+              <com.microfocus.application.automation.tools.model.ParallelRunnerEnvironmentModel>
+                <environment></environment>
+                <environmentType>Web</environmentType>
+              </com.microfocus.application.automation.tools.model.ParallelRunnerEnvironmentModel>
+            </parallelRunnerEnvironments>
+          </com.microfocus.application.automation.tools.model.FileSystemTestModel>
+        </fileSystemTestSet>
+      </fileSystemTestSetModel>
+      <isParallelRunnerEnabled>false</isParallelRunnerEnabled>
+      <summaryDataLogModel>
+        <logVusersStates>true</logVusersStates>
+        <logErrorCount>true</logErrorCount>
+        <logTransactionStatistics>true</logTransactionStatistics>
+        <pollingInterval>30</pollingInterval>
+      </summaryDataLogModel>
+      <uftSettingsModel>
+        <selectedNode>master</selectedNode>
+        <fsTestPath>C:\XXXXXXXXX_Workspace\Scenario\LR_IDB_Demo.lrs
+</fsTestPath>
+        <numberOfReruns>0</numberOfReruns>
+        <cleanupTest></cleanupTest>
+        <onCheckFailedTest>false</onCheckFailedTest>
+        <fsTestType>Rerun the entire set of tests</fsTestType>
+        <rerunSettingsModels>
+          <com.microfocus.application.automation.tools.uft.model.RerunSettingsModel>
+            <test></test>
+            <checked>false</checked>
+            <numberOfReruns>0</numberOfReruns>
+            <cleanupTest></cleanupTest>
+          </com.microfocus.application.automation.tools.uft.model.RerunSettingsModel>
+        </rerunSettingsModels>
+      </uftSettingsModel>
+      <resultFileNames/>
+    </com.microfocus.application.automation.tools.run.RunFromFileBuilder>
+  </builders>
+  <publishers>
+    <com.microfocus.application.automation.tools.results.RunResultRecorder plugin="hp-application-automation-tools-plugin@6.6">
+      <__resultsPublisherModel>
+        <archiveTestResultsMode>ONLY_ARCHIVE_FAILED_TESTS_REPORT</archiveTestResultsMode>
+      </__resultsPublisherModel>
+    </com.microfocus.application.automation.tools.results.RunResultRecorder>
+  </publishers>
+  <buildWrappers/>
+</project>

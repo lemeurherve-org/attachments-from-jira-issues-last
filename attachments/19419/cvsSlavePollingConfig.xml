@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>&lt;img src=&quot;http://wiki.eclipse.org/images/d/d4/Egg-incubation.png&quot; align=&quot;left&quot;/&gt;Continuous Integration build happens every 10 minutes, if there are new changes since the last build.&#xd;
+&#xd;
+&#xd;
+</description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>5</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <permission>hudson.model.Run.Update:ROLE_CALLISTO-DEV</permission>
+      <permission>hudson.model.Run.Update:hvoormann</permission>
+      <permission>hudson.model.Run.Update:dacarver</permission>
+      <permission>hudson.model.Run.Delete:ROLE_CALLISTO-DEV</permission>
+      <permission>hudson.model.Run.Delete:hvoormann</permission>
+      <permission>hudson.model.Run.Delete:dacarver</permission>
+      <permission>hudson.model.Item.Read:ROLE_CALLISTO-DEV</permission>
+      <permission>hudson.model.Item.Read:hvoormann</permission>
+      <permission>hudson.model.Item.Read:dacarver</permission>
+      <permission>hudson.model.Item.Read:anonymous</permission>
+      <permission>hudson.model.Item.Configure:ROLE_CALLISTO-DEV</permission>
+      <permission>hudson.model.Item.Configure:hvoormann</permission>
+      <permission>hudson.model.Item.Configure:dacarver</permission>
+      <permission>hudson.model.Item.Delete:ROLE_CALLISTO-DEV</permission>
+      <permission>hudson.model.Item.Build:ROLE_CALLISTO-DEV</permission>
+      <permission>hudson.model.Item.Build:hvoormann</permission>
+      <permission>hudson.model.Item.Build:dacarver</permission>
+      <permission>hudson.model.Item.Workspace:ROLE_CALLISTO-DEV</permission>
+      <permission>hudson.model.Item.Workspace:hvoormann</permission>
+      <permission>hudson.model.Item.Workspace:dacarver</permission>
+      <permission>hudson.model.Item.Workspace:anonymous</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty/>
+    <hudson.plugins.descriptionsetter.JobByDescription/>
+  </properties>
+  <scm class="hudson.scm.CVSSCM">
+    <cvsroot>:pserver:anonymous@dev.eclipse.org:/cvsroot/webtools</cvsroot>
+    <module>incubator/sourceediting/development/org.eclipse.wst.xml.vex.releng
+incubator/sourceediting/plugins/org.eclipse.wst.xml.vex.core
+incubator/sourceediting/plugins/org.eclipse.wst.xml.vex.ui
+incubator/sourceediting/features/org.eclipse.wst.xml.vex_tests.feature</module>
+    <canUseUpdate>false</canUseUpdate>
+    <flatten>false</flatten>
+    <isTag>false</isTag>
+    <excludedRegions></excludedRegions>
+  </scm>
+  <assignedNode>build2</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>Base Java 5.0 Installation (/shared/common)</jdk>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>*/30 * * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Ant>
+      <targets>run</targets>
+      <antName>apache-ant-1.7.1</antName>
+      <buildFile>incubator/sourceediting/development/org.eclipse.wst.xml.vex.releng/build.xml</buildFile>
+      <properties>#relengBaseBuilderDir=/opt/public/cbi/build/org.eclipse.releng.basebuilder
+#relengCommonBuilderDir=/opt/public/cbi/build/org.eclipse.dash.common.releng
+#ANTCONTRIB_MIRROR=https://build.eclipse.org/hudson/job/cbi-prereq-binaries/lastStableBuild/artifact/antcontrib/
+#ANT4ECLIPSE_MIRROR=https://build.eclipse.org/hudson/job/cbi-prereq-binaries/lastStableBuild/artifact/ant4eclipse/
+build.steps=buildUpdate,buildZips,buildTests,generateDigests,test,map2psf,publish</properties>
+    </hudson.tasks.Ant>
+  </builders>
+  <publishers>
+    <hudson.plugins.dry.DryPublisher>
+      <threshold></threshold>
+      <newThreshold></newThreshold>
+      <failureThreshold></failureThreshold>
+      <newFailureThreshold></newFailureThreshold>
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <pluginName>[DRY] </pluginName>
+      <thresholdLimit>low</thresholdLimit>
+      <defaultEncoding></defaultEncoding>
+      <useDeltaValues>false</useDeltaValues>
+      <pattern>**/athena/cpd*.xml</pattern>
+    </hudson.plugins.dry.DryPublisher>
+    <hudson.plugins.findbugs.FindBugsPublisher>
+      <threshold></threshold>
+      <newThreshold></newThreshold>
+      <failureThreshold></failureThreshold>
+      <newFailureThreshold></newFailureThreshold>
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <pluginName>[FINDBUGS] </pluginName>
+      <thresholdLimit>low</thresholdLimit>
+      <defaultEncoding></defaultEncoding>
+      <useDeltaValues>false</useDeltaValues>
+      <pattern>**/athena/fb*.xml</pattern>
+    </hudson.plugins.findbugs.FindBugsPublisher>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>build/athena/*.zip, incubator/**/psfs/*.psf</artifacts>
+      <latestOnly>true</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>**/testresults/xml/*.xml</testResults>
+      <testDataPublishers/>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.plugins.chucknorris.CordellWalkerRecorder>
+      <factGenerator/>
+    </hudson.plugins.chucknorris.CordellWalkerRecorder>
+    <hudson.plugins.emailext.ExtendedEmailPublisher>
+      <recipientList></recipientList>
+      <configuredTriggers>
+        <hudson.plugins.emailext.plugins.trigger.FixedTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>false</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.FixedTrigger>
+        <hudson.plugins.emailext.plugins.trigger.UnstableTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>false</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.UnstableTrigger>
+        <hudson.plugins.emailext.plugins.trigger.StillUnstableTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>false</includeCulprits>
+            <sendToRecipientList>false</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.StillUnstableTrigger>
+        <hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+          <email>
+            <recipientList></recipientList>
+            <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+            <body>$PROJECT_DEFAULT_CONTENT</body>
+            <sendToDevelopers>true</sendToDevelopers>
+            <includeCulprits>false</includeCulprits>
+            <sendToRecipientList>true</sendToRecipientList>
+          </email>
+        </hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+      </configuredTriggers>
+      <contentType>default</contentType>
+      <defaultSubject>$DEFAULT_SUBJECT</defaultSubject>
+      <defaultContent>$DEFAULT_CONTENT</defaultContent>
+    </hudson.plugins.emailext.ExtendedEmailPublisher>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.xvnc.Xvnc>
+      <takeScreenshot>false</takeScreenshot>
+    </hudson.plugins.xvnc.Xvnc>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <timeoutMinutes>90</timeoutMinutes>
+      <failBuild>true</failBuild>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+  </buildWrappers>
+</project>

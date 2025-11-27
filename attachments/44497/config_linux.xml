@@ -1,0 +1,48 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<com.amazon.jenkins.ec2fleet.cloud.FleetNode plugin="ec2-fleet@1.1.7">
+  <name>i-039c5960f7a50f683</name>
+  <description>Fleet slave fori-039c5960f7a50f683</description>
+  <remoteFS>/tmp/jenkins-5c05ed21</remoteFS>
+  <numExecutors>1</numExecutors>
+  <mode>NORMAL</mode>
+  <retentionStrategy class="com.amazon.jenkins.ec2fleet.IdleRetentionStrategy">
+    <maxIdleMinutes>20</maxIdleMinutes>
+    <parent>
+      <name>FleetCloud</name>
+      <credentialsId>9704de4e-6d84-4a03-98b7-8778cb12785d</credentialsId>
+      <region>us-east-1</region>
+      <fleet>sfr-37151cd5-b8e0-4646-a146-210dd06c2d59</fleet>
+      <fsRoot></fsRoot>
+      <computerConnector class="hudson.plugins.sshslaves.SSHConnector" plugin="ssh-slaves@1.26">
+        <port>22</port>
+        <credentialsId>b6a4fe2c-9ba5-4052-b91c-7a15e913df37</credentialsId>
+        <jvmOptions>-Xmx8192m</jvmOptions>
+        <javaPath></javaPath>
+        <maxNumRetries>0</maxNumRetries>
+        <retryWaitTime>0</retryWaitTime>
+        <sshHostKeyVerificationStrategy class="hudson.plugins.sshslaves.verifiers.ManuallyTrustedKeyVerificationStrategy">
+          <requireInitialManualTrust>false</requireInitialManualTrust>
+        </sshHostKeyVerificationStrategy>
+      </computerConnector>
+      <privateIpUsed>true</privateIpUsed>
+      <labelString>linux</labelString>
+      <idleMinutes>20</idleMinutes>
+      <minSize>2</minSize>
+      <maxSize>24</maxSize>
+      <numExecutors>1</numExecutors>
+    </parent>
+  </retentionStrategy>
+  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.26">
+    <host>10.0.0.186</host>
+    <port>22</port>
+    <credentialsId>b6a4fe2c-9ba5-4052-b91c-7a15e913df37</credentialsId>
+    <jvmOptions>-Xmx8192m</jvmOptions>
+    <maxNumRetries>0</maxNumRetries>
+    <retryWaitTime>0</retryWaitTime>
+    <sshHostKeyVerificationStrategy class="hudson.plugins.sshslaves.verifiers.ManuallyTrustedKeyVerificationStrategy" reference="../../retentionStrategy/parent/computerConnector/sshHostKeyVerificationStrategy"/>
+  </launcher>
+  <label>linux</label>
+  <nodeProperties/>
+  <userId>SYSTEM</userId>
+  <cloudName>FleetCloud</cloudName>
+</com.amazon.jenkins.ec2fleet.cloud.FleetNode>

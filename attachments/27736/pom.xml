@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mycompany.app</groupId>
+  <artifactId>my-app</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>my-app</name>
+  <url>http://maven.apache.org</url>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>echo</id>
+            <phase>compile</phase>
+            <configuration>
+              <tasks>
+                <echo message="MAVEN_HOME=${env.MAVEN_HOME}"/>
+                <echo message="GERRIT_EVENT_TYPE=${env.GERRIT_EVENT_TYPE}"/>
+                <echo message="GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}"/>
+                <echo message="GERRIT_BRANCH=${env.GERRIT_BRANCH}"/>
+                <echo message="GERRIT_CHANGE_OWNER=${env.GERRIT_CHANGE_OWNER}"/>
+                <echo message="GERRIT_CHANGE_OWNER_NAME=${env.GERRIT_CHANGE_OWNER_NAME}"/>
+                <echo message="GERRIT_CHANGE_OWNER_EMAIL=${env.GERRIT_CHANGE_OWNER_EMAIL}"/>
+                <echo message="GERRIT_CHANGE_SUBJECT=${env.GERRIT_CHANGE_SUBJECT}"/>
+                <echo message="GIT_COMMIT=${env.GIT_COMMIT}"/>
+                <echo message="GIT_URL=${env.GIT_URL}"/>
+                <echo message="GIT_BRANCH=${env.GIT_BRANCH}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+</build>
+</project>

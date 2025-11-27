@@ -1,0 +1,154 @@
+Index: src/main/java/hudson/plugins/ec2/EC2Cloud.java
+===================================================================
+--- src/main/java/hudson/plugins/ec2/EC2Cloud.java	(revision 27046)
++++ src/main/java/hudson/plugins/ec2/EC2Cloud.java	(working copy)
+@@ -51,6 +51,7 @@
+     private final String accessId;
+     private final Secret secretKey;
+     private final EC2PrivateKey privateKey;
++    private final String hostName;
+ 
+     /**
+      * Upper bound on how many instances we may provision.
+@@ -60,11 +61,12 @@
+     private transient KeyPairInfo usableKeyPair;
+ 
+     @DataBoundConstructor
+-    public EC2Cloud(String accessId, String secretKey, String privateKey, String instanceCapStr, List<SlaveTemplate> templates) {
++    public EC2Cloud(String accessId, String secretKey, String privateKey, String hostName, String instanceCapStr, List<SlaveTemplate> templates) {
+         super("ec2");
+         this.accessId = accessId.trim();
+         this.secretKey = Secret.fromString(secretKey.trim());
+         this.privateKey = new EC2PrivateKey(privateKey);
++	this.hostName = hostName;
+         if(instanceCapStr.equals(""))
+             this.instanceCap = Integer.MAX_VALUE;
+         else
+@@ -92,6 +94,10 @@
+         return privateKey;
+     }
+ 
++    public String getHostName() {
++        return hostName;
++    }
++
+     public String getInstanceCapStr() {
+         if(instanceCap==Integer.MAX_VALUE)
+             return "";
+@@ -238,13 +244,46 @@
+      * Connects to EC2 and returns {@link Jec2}, which can then be used to communicate with EC2.
+      */
+     public Jec2 connect() {
+-        return new Jec2(accessId,secretKey.toString());
++        /* TODO: Permit port selection as well */
++        return connect(accessId, secretKey, hostName);
+     }
+ 
++    /***
++     * Connect to an EC2 instance.
++     * @return Jec2
++     */
++    public static Jec2 connect(String accessId, String secretKey, String hostName) {
++        return connect(accessId, Secret.fromString(secretKey), hostName);
++    }
++
++    /***
++     * Connect to an EC2 instance.
++     * @return Jec2
++     */
++    public static Jec2 connect(String accessId, Secret secretKey, String hostName) {
++        return new Jec2(accessId, secretKey.toString(), true, convertHostName(hostName));
++    }
++
++    /***
++     *
++     */
++    public static String convertHostName(String hostName) {
++	System.out.println(hostName);
++        if (hostName == null || hostName.length()==0) {
++            hostName = "us-east-1";
++	    System.out.println("fpp");
++	}
++        if (!hostName.contains("."))
++            hostName = hostName + ".ec2.amazonaws.com";
++	System.out.println(hostName);
++	return hostName;
++    }
++
+     /**
+      * Connects to S3 and returns {@link S3Service}.
+      */
+     public S3Service connectS3() throws S3ServiceException {
++        /* XXX: TODO: Connect to the S3 for the endpoint. */
+         return new RestS3Service(new AWSCredentials(accessId,secretKey.toString()));
+     }
+ 
+@@ -322,9 +361,10 @@
+ 
+         public FormValidation doTestConnection(
+                                      @QueryParameter String accessId, @QueryParameter String secretKey,
+-                                     @QueryParameter String privateKey) throws IOException, ServletException {
++                                     @QueryParameter String privateKey,
++                                     @QueryParameter String hostName) throws IOException, ServletException {
+             try {
+-                Jec2 jec2 = new Jec2(accessId,Secret.fromString(secretKey).toString());
++                Jec2 jec2 = connect(accessId, secretKey, hostName);
+                 jec2.describeInstances(Collections.<String>emptyList());
+ 
+                 if(accessId==null)
+@@ -349,9 +389,11 @@
+         }
+ 
+         public FormValidation doGenerateKey(StaplerResponse rsp,
+-                                     @QueryParameter String accessId, @QueryParameter String secretKey) throws IOException, ServletException {
++                                     @QueryParameter String accessId,
++                                     @QueryParameter String secretKey,
++                                     @QueryParameter String hostName) throws IOException, ServletException {
+             try {
+-                Jec2 jec2 = new Jec2(accessId,Secret.fromString(secretKey).toString());
++                Jec2 jec2 = connect(accessId, secretKey, hostName);
+                 List<KeyPairInfo> existingKeys = jec2.describeKeyPairs(Collections.<String>emptyList());
+ 
+                 int n = 0;
+Index: src/main/resources/hudson/plugins/ec2/EC2Cloud/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/ec2/EC2Cloud/config.jelly	(revision 27046)
++++ src/main/resources/hudson/plugins/ec2/EC2Cloud/config.jelly	(working copy)
+@@ -8,8 +8,11 @@
+   <f:entry title="${%EC2 RSA Private Key}" field="privateKey">
+     <f:textarea />
+   </f:entry>
+-  <f:validateButton title="${%Generate Key}" progress="${%Generate...}" method="generateKey" with="secretKey,accessId" />
+-  <f:validateButton title="${%Test Connection}" progress="${%Testing...}" method="testConnection" with="secretKey,accessId,privateKey" />
++  <f:entry title="${%Host name}" field="hostName">
++    <f:textbox />
++  </f:entry>
++  <f:validateButton title="${%Generate Key}" progress="${%Generate...}" method="generateKey" with="secretKey,accessId,hostName" />
++  <f:validateButton title="${%Test Connection}" progress="${%Testing...}" method="testConnection" with="secretKey,accessId,privateKey,hostName" />
+   <f:advanced>
+     <f:entry title="${%Instance Cap}" field="instanceCapStr">
+       <f:textbox />
+Index: src/main/resources/hudson/plugins/ec2/EC2Cloud/help-hostName.html
+===================================================================
+--- src/main/resources/hudson/plugins/ec2/EC2Cloud/help-hostName.html	(revision 0)
++++ src/main/resources/hudson/plugins/ec2/EC2Cloud/help-hostName.html	(revision 0)
+@@ -0,0 +1,6 @@
++<div>
++    What EC2 API to connect to. If a dotted hostname is provided that host is
++    used. If no hostname is provided, us-east-1 is used as the hostname. Finally
++    if a non-dotted hostname is provided, .ec2.amazonaws.com is appended to the
++    hostname.
++</div>
+\ No newline at end of file
+Index: src/main/resources/index.jelly
+===================================================================
+--- src/main/resources/index.jelly	(revision 27046)
++++ src/main/resources/index.jelly	(working copy)
+@@ -1,3 +1,5 @@
+ <div>
+-  This plugin integrates Hudson with <a href="http://aws.amazon.com/ec2/">Amazon EC2</a>.
++  This plugin integrates Hudson with 
++  <a href="http://aws.amazon.com/ec2/">Amazon EC2</a> or anything implementing
++  the EC2 API's such as an Ubuntu.
+ </div>
+\ No newline at end of file

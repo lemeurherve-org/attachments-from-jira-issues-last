@@ -1,0 +1,155 @@
+Thread Dump
+pool-1-thread-2
+
+"pool-1-thread-2" Id=11 RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.getThreadInfo(ThreadImpl.java:359)
+	at hudson.Functions.getThreadInfos(Functions.java:583)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:47)
+	at hudson.util.RemotingDiagnostics$GetThreadDump.call(RemotingDiagnostics.java:43)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:69)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:23)
+	at hudson.remoting.Request$2.run(Request.java:200)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:441)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:885)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:619)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@cc258a
+
+
+pool-1-thread-1
+
+"pool-1-thread-1" Id=10 RUNNABLE (in native)
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.PlainSocketImpl.doConnect(PlainSocketImpl.java:333)
+	-  locked java.net.PlainSocketImpl@19ff66f
+	at java.net.PlainSocketImpl.connectToAddress(PlainSocketImpl.java:195)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:182)
+	at java.net.Socket.connect(Socket.java:518)
+	at java.net.Socket.connect(Socket.java:468)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:157)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:389)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:516)
+	-  locked sun.net.www.http.HttpClient@136193e
+	at sun.net.www.http.HttpClient.(HttpClient.java:233)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:306)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:318)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:788)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:729)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:654)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:977)
+	-  locked sun.net.www.protocol.http.HttpURLConnection@a16605
+	at org.apache.maven.wagon.providers.http.LightweightHttpWagon.fillInputData(LightweightHttpWagon.java:85)
+	at org.apache.maven.wagon.StreamWagon.get(StreamWagon.java:68)
+	at org.apache.maven.artifact.manager.DefaultWagonManager.getRemoteFile(DefaultWagonManager.java:369)
+	at org.apache.maven.artifact.manager.DefaultWagonManager.getArtifact(DefaultWagonManager.java:282)
+	at org.apache.maven.artifact.manager.DefaultWagonManager.getArtifact(DefaultWagonManager.java:244)
+	at org.apache.maven.artifact.resolver.DefaultArtifactResolver.resolve(DefaultArtifactResolver.java:124)
+	at org.apache.maven.artifact.resolver.DefaultArtifactResolver.resolve(DefaultArtifactResolver.java:63)
+	at org.apache.maven.project.DefaultMavenProjectBuilder.findModelFromRepository(DefaultMavenProjectBuilder.java:467)
+	at org.apache.maven.project.DefaultMavenProjectBuilder.buildFromRepository(DefaultMavenProjectBuilder.java:225)
+	at org.apache.maven.plugin.version.DefaultPluginVersionManager.resolveMetaVersion(DefaultPluginVersionManager.java:695)
+	at org.apache.maven.plugin.version.DefaultPluginVersionManager.resolvePluginVersion(DefaultPluginVersionManager.java:183)
+	at org.apache.maven.plugin.version.DefaultPluginVersionManager.resolvePluginVersion(DefaultPluginVersionManager.java:87)
+	at org.apache.maven.plugin.DefaultPluginManager.verifyPlugin(DefaultPluginManager.java:158)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.verifyPlugin(DefaultLifecycleExecutor.java:1252)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.bindPluginToLifecycle(DefaultLifecycleExecutor.java:1216)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.constructLifecycleMappings(DefaultLifecycleExecutor.java:982)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:453)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalAndHandleFailures(DefaultLifecycleExecutor.java:306)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:140)
+	at org.apache.maven.lifecycle.LifecycleExecutorInterceptor.execute(LifecycleExecutorInterceptor.java:42)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:322)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:115)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:256)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)
+	at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)
+	at hudson.maven.agent.Main.launch(Main.java:111)
+	at hudson.maven.MavenBuilder.call(MavenBuilder.java:129)
+	at hudson.maven.MavenModuleSetBuild$Builder.call(MavenModuleSetBuild.java:522)
+	at hudson.maven.MavenModuleSetBuild$Builder.call(MavenModuleSetBuild.java:468)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:69)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:23)
+	at hudson.remoting.Request$2.run(Request.java:200)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:441)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:885)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:619)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@30f369
+
+
+Channel reader thread: channel
+
+"Channel reader thread: channel" Id=9 RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:199)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	-  locked java.io.BufferedInputStream@1bc850f
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2247)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2540)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2550)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1297)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+
+Attach Listener
+
+"Attach Listener" Id=5 RUNNABLE
+
+
+Signal Dispatcher
+
+"Signal Dispatcher" Id=4 RUNNABLE
+
+
+Finalizer
+
+"Finalizer" Id=3 WAITING on java.lang.ref.ReferenceQueue$Lock@1c3a0c7
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@1c3a0c7
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:116)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:132)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
+
+
+Reference Handler
+
+"Reference Handler" Id=2 WAITING on java.lang.ref.Reference$Lock@70856b
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@70856b
+	at java.lang.Object.wait(Object.java:485)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+
+
+main
+
+"main" Id=1 WAITING on hudson.remoting.Channel@1473a2e
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.Channel@1473a2e
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.Channel.join(Channel.java:477)
+	at hudson.remoting.Launcher.main(Launcher.java:69)
+	at hudson.remoting.Launcher.main(Launcher.java:52)
+	at hudson.remoting.Launcher.main(Launcher.java:48)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at hudson.maven.agent.Main.main(Main.java:82)
+	at hudson.maven.agent.Main.main(Main.java:36)
+

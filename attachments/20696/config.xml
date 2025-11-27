@@ -1,0 +1,269 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>&lt;b&gt;&lt;i&gt;Configurable&lt;/b&gt;&lt;/i&gt;  Smoke Test Suit for &lt;i&gt;Sentilla Enegry Manager (SEM)&lt;/i&gt;.&#xd;
+&lt;p&gt;Test environment :  &lt;i&gt;OS: MS Windows XP.&lt;/i&gt;&lt;p/&gt;&#xd;
+&lt;i&gt;Options:&lt;/i&gt;&#xd;
+&lt;ul&gt;&#xd;
+&lt;li&gt;Choose BROWSER and SEM_SERVER_ADDRESS.&lt;/li&gt;&#xd;
+&lt;li&gt;Check tests to run.&lt;/li&gt;&#xd;
+&lt;/ul&gt;&#xd;
+&#xd;
+ &#xd;
+&lt;dl &gt; &lt;span style=&apos;color:blue;font-weight:bold&apos;&gt;SEM_CI build descriptions &lt;/span&gt;&#xd;
+  &lt;dt&gt;regex: &lt;/dt&gt;&#xd;
+&lt;dd style=&apos;color:blue&apos;&gt;&lt;code &gt; &#xd;
+(java\.lang\.OutOfMemoryError[\s\S]+)|(java\.io\.IOException[\s\S]+)|(?:\[INFO\] Found ([\d]+[\s]+[\w]+) messages found in the (Glassfish SERVER LOG): ([\S]+) from ([\w]+))&#xd;
+  &lt;/code&gt; &lt;/dd&gt;&#xd;
+&lt;dt&gt;desc:&lt;/dt&gt;&#xd;
+  &lt;dd style=&apos;color:blue&apos;&gt;&lt;code&gt;&lt;pre&gt;\1\2\3&lt;span style=&quot;visibility:\6hidden&quot;&gt; in&lt;span&gt; &lt;a href=&quot;\5&quot;&gt;\6 \4&lt;/a&gt;   &lt;/pre&gt;&lt;/code&gt; &#xd;
+  &lt;/dd&gt;&#xd;
+  &lt;/dl&gt;&#xd;
+&#xd;
+&#xd;
+&#xd;
+&lt;pre&gt; &#xd;
+OK for set description:&#xd;
+regex: &#xd;
+\[INFO\]\sREPORTFILENAME\=([\w-\.]+)[\s]+REPORTURL\=([\w-\.\:\/]+)&#xd;
+desc :  &#xd;
+Report: &lt;a href=&quot;\2&quot;&gt;\1&lt;/a&gt;&#xd;
+&#xd;
+regex:  (?:[^&apos;]\[INFO\]\sREPORTFILENAME\=([\w-\.]+)[\s]+REPORTURL\=([\w-\.\:\/]+))|(?:[^&apos;]\[ERROR\][\s]*SERVER\=([\s\S^&apos;]+))&#xd;
+&#xd;
+\3 &lt;a href=&quot;\2&quot; title=&quot;Selenium Test Report&quot;&gt;\1&lt;/a&gt;&#xd;
+&#xd;
+&#xd;
+FAIL descriptions&#xd;
+regex: &#xd;
+(?:[^&apos;]\[INFO\]\sREPORT_FILE_NAME\:[\s]*([\w-\.]+)[\s]+REPORT_URL\:[\s]*([\w-\.\:\/]+))|(?:[^&apos;]\[ERROR\][\s]*SERVER\=([\s\S^&apos;]+))|(Exception\:[\s\S])&#xd;
+desc :  &#xd;
+FAIL&lt;span style=&quot;\2\3\4visibility:\1hidden&quot;&gt;:&lt;span&gt; \3 \4&lt;a href=&quot;\2&quot; title=&quot;Selenium Test Report&quot;&gt;\1&lt;/a&gt;&#xd;
+&#xd;
+#TODO:&#xd;
+#Version[\s]+((\d+(?:\.[\d]+){1,})[\s]+(?:\([\d]+\)))/g  ?&#xd;
+&#xd;
+&#xd;
+================&#xd;
+(?:[^&apos;]\[INFO\]\sREPORT_FILE_NAME\:[\s]*([\w-\.]+)[\s]+REPORT_URL\:[\s]*([\w-\.\:\/]+))&#xd;
+&#xd;
+OK&lt;span style=&quot;visibility:\1hidden&quot;&gt;:&lt;span&gt; &lt;a href=&quot;\2&quot; title=&quot;Selenium Test Report&quot;&gt;\1&lt;/a&gt;&#xd;
+&#xd;
+(?:[^&apos;]\[INFO\]\sREPORT_FILE_NAME\:[\s]*([\w-\.]+)[\s]+REPORT_URL\:[\s]*([\w-\.\:\/]+))|(?:[^&apos;]\[ERROR\][\s]*SERVER\=([\s\S^&apos;]+))&#xd;
+FAIL&lt;span style=&quot;\1\3visibility:\1hidden&quot;&gt;:&lt;span&gt; \3 &lt;a href=&quot;\2&quot; title=&quot;Selenium Test Report&quot;&gt;\1&lt;/a&gt;&#xd;
+&#xd;
+&lt;/pre&gt;&#xd;
+&lt;br&gt;&lt;span style=&quot;visibility:hidden&quot;&gt;HIDDEN?&lt;span&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>SERVER</name>
+          <description> where the SEM application to be tested.</description>
+          <choices>
+            <string>darkblue</string>
+            <string>deepblue</string>
+            <string>sky</string>
+            <string>sem</string>
+            <string>lightblue</string>
+            <string>lighterblue</string>
+            <string>192.168.8.60</string>
+            <string>192.168.8.64</string>
+            <string>192.168.8.96</string>
+            <string>192.168.8.99</string>
+            <string>192.168.8.131</string>
+            <string>192.168.8.132</string>
+            <string>192.168.8.139</string>
+            <string>172.31.253.121</string>
+            <string>ec2-50-18-29-84.us-west-1.compute.amazonaws.com</string>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>ENVIRONMENT</name>
+          <description> only.</description>
+          <choices>
+            <string>ff35:*chrome</string>
+            <string>windows</string>
+            <string>:*firefox</string>
+            <string>:*iexplore</string>
+            <string>ie7</string>
+            <string>ie8</string>
+            <string>ie7:*iehta</string>
+            <string>ie8:*iehta</string>
+            <string>ie7:*iexplore</string>
+            <string>ie8:*iexplore</string>
+            <string>ff35:*firefox</string>
+            <string>ff36:*firefox</string>
+            <string>firefoxf35:*firefox</string>
+            <string>firefoxf36:*firefox</string>
+            <string>ff35</string>
+            <string>ff36</string>
+            <string>ff35:*chrome</string>
+            <string>ff36:*chrome</string>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>test_smoke</name>
+          <description>Test Case SEM#000: Front End start page smoke - Test unauthorized area.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>test_login_smoke</name>
+          <description>test</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>SEMCILOG</name>
+          <description>Select kind of SEM-CI build (tail=ok or failed)</description>
+          <choices>
+            <string>tail /var/lib/hudson/jobs/SEM-CI/builds/2011-08-10_02-23-31/log </string>
+            <string>cat /var/lib/hudson/jobs/SEM-CI/builds/547/log   fail</string>
+            <string>cat /var/lib/hudson/jobs/SEM-CI/builds/538/log   fail</string>
+            <string>cat /var/lib/hudson/jobs/SEM-CI/builds/522/log   fail</string>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.sidebar__link.ProjectLinks>
+      <links>
+        <hudson.plugins.sidebar__link.LinkAction>
+          <url>/job/set_description/ws/last-test-report.htm</url>
+          <text>Last Text Report</text>
+          <icon>document.gif</icon>
+        </hudson.plugins.sidebar__link.LinkAction>
+        <hudson.plugins.sidebar__link.LinkAction>
+          <url>/job/set_description/ws/test-report.htm</url>
+          <text>Text Report</text>
+          <icon>document.gif</icon>
+        </hudson.plugins.sidebar__link.LinkAction>
+      </links>
+    </hudson.plugins.sidebar__link.ProjectLinks>
+    <org.jenkinsci.plugins.envinject.EnvInjectJobProperty>
+      <info/>
+      <on>false</on>
+      <keepSystemVariables>false</keepSystemVariables>
+    </org.jenkinsci.plugins.envinject.EnvInjectJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>true</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>true</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>echo &quot;BUILD_NUMBER=$BUILD_NUMBER --The current build number&quot;
+echo &quot;BUILD_ID=$BUILD_ID --The current build id&quot;
+echo &quot;JOB_NAME=$JOB_NAME --Name of the project of this build&quot;
+echo &quot;BUILD_TAG=$BUILD_TAG --Convenient to put into a resource file, a jar file, etc for easier identification.&quot;
+echo &quot;EXECUTOR_NUMBER=$EXECUTOR_NUMBER --The unique number that identifies the current executor&quot;
+echo &quot;NODE_NAME=$NODE_NAME --Name of the slave if the build is on a slave, or &quot;&quot; if run on master&quot;
+echo &quot;NODE_LABELS=$NODE_LABELS --Whitespace-separated list of labels that the node is assigned.&quot;
+echo &quot;JAVA_HOME=$JAVA_HOME&quot;
+echo &quot;WORKSPACE=$WORKSPACE --The absolute path of the workspace.&quot;
+echo &quot;HUDSON_URL=$HUDSON_URL --Full URL of Hudson, like http://server:port/hudson/&quot;
+echo &quot;JENKINS_URL=$JENKINS_URL --Full URL of Jenkins, like http://server:port/jenkins/&quot;
+echo &quot;BUILD_URL=$BUILD_URL --Full URL of this build, like http://server:port/jenkins/job/foo/15/&quot;
+echo &quot;JOB_URL=$JOB_URL --Full URL of this job, like http://server:port/jenkins/job/foo/&quot;
+echo &quot;SVN_REVISION=$SVN_REVISION --For Subversion-based projects, this variable contains the revision number of the module.&quot;
+echo &quot;CVS_BRANCH=$CVS_BRANCH --For CVS-based projects, this variable contains the branch of the module. If CVS is configured to check out the trunk, this environment variable will not be set.&quot;
+
+date
+echo &quot;Shell commands for Jenkins(Hudson) project SEM-CI__CONFIGURABLE_TESTS&quot;
+echo &quot;Check connection...&quot;
+if ping -c 4 $SERVER; then echo &quot;[INFO] SERVER=$SERVER - ping OK&quot;; else echo &quot;[ERROR] SERVER=$SERVER - ping FAILED &quot;; exit 1; fi
+for RC in demoTop ares
+do
+if ping -c 4 $RC ; then echo $RC ping OK; else echo $RC ping failed: HOST UNREACHABLE; fi
+done
+
+echo &quot;***START TESTS INITIALIZATION: System information.&quot;
+echo &quot;[INFO] SEM_SERVER_ADDRESS=$SEM_SERVER_ADDRESS&quot;
+echo &quot;[INFO] ENVIRONMENT=$ENVIRONMENT&quot;
+
+date
+echo WORKSPACE=$WORKSPACE
+echo LOGFILE=$LOGFILE
+
+date &gt; $LOGFILE
+ls -l  &gt;&gt; $LOGFILE 
+
+echo PYTHONPATH=$PYTHONPATH
+echo PATH=$PATH
+
+cd /var/lib/hudson/jobs/SEM-CI/workspace/trunk/qa/selenium/python/sempy
+pwd #; pwd &gt;&gt; $LOGFILE
+ls -l &gt;&gt; $LOGFILE
+svn up; svn info #; svn info &gt;&gt;  $LOGFILE
+
+export REPORTFILENAME=${BUILD_NUMBER}-${SEM_SERVER_ADDRESS#https://}-${ENVIRONMENT//:*/}.htm
+export REPORTFILE=${WORKSPACE}/${REPORTFILENAME}
+export REPORTURL=${JOB_URL}ws/${REPORTFILENAME}
+
+#echo &quot;[INFO] REPORTFILENAME=$REPORTFILENAME REPORTURL=$REPORTURL REPORTFILE=$REPORTFILE&quot;
+
+echo &quot;----------------------------------------------------------------------&quot;
+#echo &quot;***START TESTS.&quot;
+#echo &quot; See Test Report: $REPORTURL &quot; 
+#echo &quot;----------------------------------------------------------------------&quot;
+#echo &quot;Version 3.3.1.4 (12797) Copyright  2009-2010 Sentilla Corporation. All Rights Reserved.&quot; &gt; $REPORTFILE
+
+#python sem_selectable_tests.py -f $REPORTFILE -u $SEM_SERVER_ADDRESS -e $ENVIRONMENT -t &quot;SEM Tests&quot; -d &quot;Configurable SEM Tests driven by Selenium and Python unittest.&quot; 
+
+#echo &quot;SEM-CI_Glassfish-Sanity_check #64 completed. Result was FAILURE. Local copy of the Glassfish SERVER LOG: http://ci:8080/job/SEM-CI_Glassfish-Sanity_check/ws/SEM-CI#456_server.log&quot;
+
+# ok
+#tail /var/lib/hudson/jobs/SEM-CI/builds/2011-08-10_02-23-31/log 
+
+# fail
+#cat /var/lib/hudson/jobs/SEM-CI/builds/547/log ; cat log
+#cat /var/lib/hudson/jobs/SEM-CI/builds/538/log ; cat log
+#cat /var/lib/hudson/jobs/SEM-CI/builds/522/log ; cat log
+
+$SEMCILOG
+
+
+
+
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.logparser.LogParserPublisher>
+      <unstableOnWarning>false</unstableOnWarning>
+      <failBuildOnError>false</failBuildOnError>
+      <parsingRulesPath>/var/lib/hudson/parsing_rules4build</parsingRulesPath>
+    </hudson.plugins.logparser.LogParserPublisher>
+    <hudson.plugins.descriptionsetter.DescriptionSetterPublisher>
+      <regexp>(java\.lang\.OutOfMemoryError[\s\S]+)|(java\.io\.IOException[\s\S]+)|(?:\[INFO\] Found ([\d]+[\s]+[\w]+) messages found in the (Glassfish SERVER LOG): ([\S]+) from ([\w]+))</regexp>
+      <regexpForFailed>(java\.lang\.OutOfMemoryError[\s\S]+)|(java\.io\.IOException[\s\S]+)|(?:\[INFO\] Found ([\d]+[\s]+[\w]+) messages found in the (Glassfish SERVER LOG): ([\S]+) from ([\w]+))</regexpForFailed>
+      <description>\1\2\3&lt;span style=&quot;visibility:\6hidden&quot;&gt; in&lt;span&gt; &lt;a href=&quot;\5&quot;&gt;\6 \4&lt;/a&gt;</description>
+      <descriptionForFailed>\1\2\3&lt;span style=&quot;visibility:\6hidden&quot;&gt; in&lt;span&gt; &lt;a href=&quot;\5&quot;&gt;\6 \4&lt;/a&gt;</descriptionForFailed>
+      <setForMatrix>false</setForMatrix>
+    </hudson.plugins.descriptionsetter.DescriptionSetterPublisher>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <timeoutMinutes>400</timeoutMinutes>
+      <failBuild>false</failBuild>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+    <hudson.plugins.dumpinfo.DumpInfoBuildWrapper>
+      <dumpComputers>true</dumpComputers>
+      <dumpJdks>true</dumpJdks>
+      <dumpPlugins>true</dumpPlugins>
+      <dumpSystemProperties>true</dumpSystemProperties>
+      <dumpEnvironmentVariables>true</dumpEnvironmentVariables>
+    </hudson.plugins.dumpinfo.DumpInfoBuildWrapper>
+    <hudson.plugins.setenv.SetEnvBuildWrapper>
+      <localVarText>SEM_SERVER_ADDRESS=https://${SERVER}
+PYTHONPATH=/var/lib/hudson/jobs/SEM-CI/workspace/trunk/qa/selenium/python/sempy:/var/lib/hudson/jobs/SEM-CI/workspace/trunk/qa/selenium/python/selenium-python-client-driver-1.0.1
+PATH=${PATH}:${PYTHONPATH}
+LOGFILE=${WORKSPACE}/${JOB_NAME}#${BUILD_NUMBER}.log
+</localVarText>
+    </hudson.plugins.setenv.SetEnvBuildWrapper>
+    <hudson.plugins.screenshot.ScreenshotBuildWrapper/>
+  </buildWrappers>
+</project>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jenkins.advancedqueue.PriorityConfiguration plugin="PrioritySorter@2.2">
+  <jobGroups class="linked-list">
+    <jenkins.advancedqueue.JobGroup>
+      <id>0</id>
+      <priority>4</priority>
+      <view>Sonar</view>
+      <useJobFilter>false</useJobFilter>
+      <jobPattern>.*</jobPattern>
+      <usePriorityStrategies>true</usePriorityStrategies>
+      <priorityStrategies>
+        <jenkins.advancedqueue.JobGroup_-PriorityStrategyHolder>
+          <id>0</id>
+          <priorityStrategy class="jenkins.advancedqueue.priority.strategy.UserIdCauseStrategy">
+            <priority>3</priority>
+          </priorityStrategy>
+        </jenkins.advancedqueue.JobGroup_-PriorityStrategyHolder>
+      </priorityStrategies>
+    </jenkins.advancedqueue.JobGroup>
+    <jenkins.advancedqueue.JobGroup>
+      <id>1</id>
+      <priority>3</priority>
+      <view>All</view>
+      <useJobFilter>false</useJobFilter>
+      <jobPattern>.*</jobPattern>
+      <usePriorityStrategies>true</usePriorityStrategies>
+      <priorityStrategies>
+        <jenkins.advancedqueue.JobGroup_-PriorityStrategyHolder>
+          <id>0</id>
+          <priorityStrategy class="jenkins.advancedqueue.priority.strategy.UserIdCauseStrategy">
+            <priority>2</priority>
+          </priorityStrategy>
+        </jenkins.advancedqueue.JobGroup_-PriorityStrategyHolder>
+      </priorityStrategies>
+    </jenkins.advancedqueue.JobGroup>
+  </jobGroups>
+</jenkins.advancedqueue.PriorityConfiguration>

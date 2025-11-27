@@ -1,0 +1,28 @@
+From d44b6124d04a59ec5c5fc5d7b1d6a74b83333e9d Mon Sep 17 00:00:00 2001
+From: Adam Monsen <haircut@gmail.com>
+Date: Sun, 30 May 2010 13:21:30 -0700
+Subject: [PATCH] [FIXED HUDSON-6665] getAffectedFiles() for git
+
+---
+ src/main/java/hudson/plugins/git/GitChangeSet.java |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/git/GitChangeSet.java b/src/main/java/hudson/plugins/git/GitChangeSet.java
+index dd3b94d..e33ba04 100644
+--- a/src/main/java/hudson/plugins/git/GitChangeSet.java
++++ b/src/main/java/hudson/plugins/git/GitChangeSet.java
+@@ -116,6 +116,11 @@ public class GitChangeSet extends ChangeLogSet.Entry {
+     }
+ 
+     @Override
++    public Collection<Path> getAffectedFiles() {
++        return getPaths();
++    }
++
++    @Override
+     @Exported
+     public User getAuthor() {
+         if (this.author == null) {
+-- 
+1.7.1
+

@@ -1,0 +1,25 @@
+Index: src/main/java/hudson/plugins/buckminster/targetPlatform/TargetPlatformPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/buckminster/targetPlatform/TargetPlatformPublisher.java	(revision 37111)
++++ src/main/java/hudson/plugins/buckminster/targetPlatform/TargetPlatformPublisher.java	(working copy)
+@@ -113,8 +113,20 @@
+ 
+ 	public TargetPlatformReference getTargetPlatformReference(
+ 			AbstractProject<?,?> project) {
++		// Exclude MatrixProject, each configuration will be processed as a MatrixConfiguration
++		// (configurations with no parameter are sill processed when no axes are defined)
++		// see: http://issues.hudson-ci.org/browse/HUDSON-7722
++		if(project instanceof MatrixProject) {
++			return null;
++		}
+ 		TargetPlatformReference reference = new TargetPlatformReference();
+ 		reference.setName(targetPlatformName);
++		// Replace axes property references for MatrixConfiguration
++		// see: http://issues.hudson-ci.org/browse/HUDSON-7722
++		if(project instanceof MatrixConfiguration) {
++			reference.setName(Util.replaceMacro(targetPlatformName, 
++					((MatrixConfiguration)project).getCombination()));
++		}
+ 		reference.setFullName(project.getFullName() + "/" + targetPlatformName);
+ 		if (project.getLastSuccessfulBuild() != null) {
+ 			//windows paths need to be converted to unix paths

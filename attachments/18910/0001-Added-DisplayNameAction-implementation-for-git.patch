@@ -1,0 +1,61 @@
+From 00cd4fced4f7dd857a7b290126f55e6e8897f4f8 Mon Sep 17 00:00:00 2001
+From: Peter Collingbourne <collingbourne2@llnl.gov>
+Date: Tue, 17 Nov 2009 00:47:35 -0800
+Subject: [PATCH 1/2] Added DisplayNameAction implementation for git
+
+---
+ .../java/hudson/plugins/git/util/BuildData.java    |   24 +++++++++++++++++++-
+ 1 files changed, 23 insertions(+), 1 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/git/util/BuildData.java b/src/main/java/hudson/plugins/git/util/BuildData.java
+index 9b38676..da1725b 100644
+--- a/src/main/java/hudson/plugins/git/util/BuildData.java
++++ b/src/main/java/hudson/plugins/git/util/BuildData.java
+@@ -2,6 +2,7 @@ package hudson.plugins.git.util;
+ 
+ import hudson.model.Action;
+ import hudson.model.Api;
++import hudson.model.DisplayNameAction;
+ import hudson.plugins.git.Branch;
+ import hudson.plugins.git.Revision;
+ 
+@@ -15,7 +16,7 @@ import org.kohsuke.stapler.export.ExportedBean;
+ import org.spearce.jgit.lib.ObjectId;
+ 
+ @ExportedBean( defaultVisibility = 999)
+-public class BuildData implements Action, Serializable, Cloneable
++public class BuildData implements Action, Serializable, Cloneable, DisplayNameAction
+ {
+ 	private static final long serialVersionUID = 1L;
+ 
+@@ -43,6 +44,27 @@ public class BuildData implements Action, Serializable, Cloneable
+         return "git";
+     }
+ 
++    public String getDisplayNameText()
++    {
++        String branchNames = null;
++        for (Branch b : getLastBuiltRevision().getBranches()) {
++            String name = b.getName();
++            String branchName;
++            int nameSlash = name.indexOf('/');
++            if (nameSlash != -1) {
++                branchName = name.substring(nameSlash+1);
++            } else {
++                branchName = name;
++            }
++            if (branchNames != null) {
++                branchNames += ", " + branchName;
++            } else {
++                branchNames = branchName;
++            }
++        }
++        return branchNames;
++    }
++
+     /**
+      * Return true if the history shows this SHA1 has been built.
+      * False otherwise.
+-- 
+1.6.3.3
+

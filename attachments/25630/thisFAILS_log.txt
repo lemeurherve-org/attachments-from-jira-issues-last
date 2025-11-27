@@ -1,0 +1,44 @@
+[EnvInject] - Loading node environment variables.
+[EnvInject] - Preparing an environment for the build.
+[EnvInject] - Keeping Jenkins system variables.
+[EnvInject] - Keeping Jenkins build variables.
+[EnvInject] - Executing and processing the following script content: 
+touch onSlave
+
+[jenkins] $ /bin/sh -xe /tmp/hudson3284441857063532890.sh
+ERROR: SEVERE ERROR occurs
+org.jenkinsci.lib.envinject.EnvInjectException: Error occurs on execution script file path
+	at org.jenkinsci.plugins.envinject.service.EnvInjectScriptExecutor.executeScriptContent(EnvInjectScriptExecutor.java:99)
+	at org.jenkinsci.plugins.envinject.service.EnvInjectScriptExecutor.executeScriptSection(EnvInjectScriptExecutor.java:49)
+	at org.jenkinsci.plugins.envinject.service.EnvInjectEnvVars.executeScript(EnvInjectEnvVars.java:107)
+	at org.jenkinsci.plugins.envinject.EnvInjectListener.setUpEnvironmentJobPropertyObject(EnvInjectListener.java:179)
+	at org.jenkinsci.plugins.envinject.EnvInjectListener.setUpEnvironment(EnvInjectListener.java:44)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.createLauncher(AbstractBuild.java:575)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:481)
+	at hudson.model.Run.execute(Run.java:1688)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:231)
+Caused by: java.io.IOException: Cannot run program "/bin/sh" (in directory "/home/slavehome/jenkins"): error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1041)
+	at hudson.Proc$LocalProc.<init>(Proc.java:244)
+	at hudson.Proc$LocalProc.<init>(Proc.java:216)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:773)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:353)
+	at hudson.Launcher$RemoteLaunchCallable.call(Launcher.java:998)
+	at hudson.Launcher$RemoteLaunchCallable.call(Launcher.java:965)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:328)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:135)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:130)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1022)
+	... 14 more
+Finished: FAILURE

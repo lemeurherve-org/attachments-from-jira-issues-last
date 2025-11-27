@@ -1,0 +1,234 @@
+From 1990ab91fd319a1674c2007950cd92dc68c3a181 Mon Sep 17 00:00:00 2001
+From: Bryan Jacobs <bjacobs@woti.com>
+Date: Mon, 30 Jul 2012 13:39:47 -0400
+Subject: [PATCH] Bug #14394: repair branch choice logic
+
+Expand environment variables in the "branch to build" field.
+---
+ src/main/java/hudson/plugins/git/BranchSpec.java   |   35 ++++++++++++++------
+ src/main/java/hudson/plugins/git/GitSCM.java       |    4 +-
+ .../java/hudson/plugins/git/util/BuildChooser.java |    9 +++--
+ .../plugins/git/util/DefaultBuildChooser.java      |   12 ++++--
+ .../plugins/git/util/InverseBuildChooser.java      |    5 ++-
+ 5 files changed, 44 insertions(+), 21 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/git/BranchSpec.java b/src/main/java/hudson/plugins/git/BranchSpec.java
+index 2901927..4f5b502 100644
+--- a/src/main/java/hudson/plugins/git/BranchSpec.java
++++ b/src/main/java/hudson/plugins/git/BranchSpec.java
+@@ -1,5 +1,6 @@
+ package hudson.plugins.git;
+ 
++import hudson.EnvVars;
+ import java.io.Serializable;
+ import java.util.ArrayList;
+ import java.util.Collection;
+@@ -42,38 +43,52 @@ public class BranchSpec implements Serializable {
+         else
+             this.name = name;
+     }
+-    
++
+     public boolean matches(String item) {
+-        return getPattern().matcher(item).matches();
++        return matches(item, null);
++    }
++    
++    public boolean matches(String item, EnvVars environment) {
++        if (environment != null) {
++            item = environment.expand(item);
++            if (environment.expand(this.name).equals(item)) {
++                return true;
++            }
++        }
++        return getPattern(environment).matcher(item).matches();
+     }
+     
+-    public List<String> filterMatching(Collection<String> branches) {
++    public List<String> filterMatching(Collection<String> branches, EnvVars environment) {
+         List<String> items = new ArrayList<String>();
+         
+-        for(String b : branches) {
+-            if(matches(b))
++        for (String b : branches) {
++            if (matches(b, environment))
+                 items.add(b);
+         }
+         
+         return items;
+     }
+     
+-    public List<Branch> filterMatchingBranches(Collection<Branch> branches) {
++    public List<Branch> filterMatchingBranches(Collection<Branch> branches, EnvVars environment) {
+         List<Branch> items = new ArrayList<Branch>();
+         
+-        for(Branch b : branches) {
+-            if(matches(b.getName()))
++        for (Branch b : branches) {
++            if (matches(b.getName(), environment))
+                 items.add(b);
+         }
+         
+         return items;
+     }
+     
+-    private Pattern getPattern() {
++    private Pattern getPattern(EnvVars environment) {
+         // return the saved pattern if available
+         if (pattern != null)
+             return pattern;
+-        
++
++        if (environment != null) {
++            String name = environment.expand(this.name);
++        }
++
+         // if an unqualified branch was given add a "*/" so it will match branches
+         // from remote repositories as the user probably intended
+         String qualifiedName;
+diff --git a/src/main/java/hudson/plugins/git/GitSCM.java b/src/main/java/hudson/plugins/git/GitSCM.java
+index 4bee2a2..39bd67c 100644
+--- a/src/main/java/hudson/plugins/git/GitSCM.java
++++ b/src/main/java/hudson/plugins/git/GitSCM.java
+@@ -745,7 +745,7 @@ public class GitSCM extends SCM implements Serializable {
+                     listener.getLogger().println("Polling for changes in");
+ 
+                     Collection<Revision> origCandidates = buildChooser.getCandidateRevisions(
+-                            true, singleBranch, git, listener, buildData, context);
++                            true, singleBranch, git, listener, buildData, context, environment);
+ 
+                     List<Revision> candidates = new ArrayList<Revision>();
+ 
+@@ -1173,7 +1173,7 @@ public class GitSCM extends SCM implements Serializable {
+                 }
+ 
+                 Collection<Revision> candidates = buildChooser.getCandidateRevisions(
+-                        false, singleBranch, git, listener, buildData, context);
++                        false, singleBranch, git, listener, buildData, context, environment);
+                 if (candidates.size() == 0) {
+                     return null;
+                 }
+diff --git a/src/main/java/hudson/plugins/git/util/BuildChooser.java b/src/main/java/hudson/plugins/git/util/BuildChooser.java
+index 88a93e9..ac0a1a2 100644
+--- a/src/main/java/hudson/plugins/git/util/BuildChooser.java
++++ b/src/main/java/hudson/plugins/git/util/BuildChooser.java
+@@ -1,5 +1,6 @@
+ package hudson.plugins.git.util;
+ 
++import hudson.EnvVars;
+ import hudson.DescriptorExtensionList;
+ import hudson.ExtensionPoint;
+ import hudson.model.Describable;
+@@ -64,9 +65,10 @@ public abstract class BuildChooser implements ExtensionPoint, Describable<BuildC
+      * @throws GitException
+      */
+     public Collection<Revision> getCandidateRevisions(boolean isPollCall, String singleBranch,
+-                               IGitAPI git, TaskListener listener, BuildData buildData, BuildChooserContext context) throws GitException, IOException, InterruptedException {
++                               IGitAPI git, TaskListener listener, BuildData buildData, BuildChooserContext context,
++                               EnvVars environment) throws GitException, IOException, InterruptedException {
+         // fallback to the previous signature
+-        return getCandidateRevisions(isPollCall,singleBranch,git,listener,buildData);
++        return getCandidateRevisions(isPollCall,singleBranch,git,listener,buildData,environment);
+     }
+ 
+ 
+@@ -75,7 +77,8 @@ public abstract class BuildChooser implements ExtensionPoint, Describable<BuildC
+      *      Use and override {@link #getCandidateRevisions(boolean, String, IGitAPI, TaskListener, BuildData, BuildChooserContext)}
+      */
+     public Collection<Revision> getCandidateRevisions(boolean isPollCall, String singleBranch,
+-                               IGitAPI git, TaskListener listener, BuildData buildData) throws GitException, IOException {
++                               IGitAPI git, TaskListener listener, BuildData buildData,
++                               EnvVars environment) throws GitException, IOException {
+         throw new UnsupportedOperationException("getCandidateRevisions method must be overridden");
+     }
+ 
+diff --git a/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java b/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java
+index 54dc39a..c372c3a 100644
+--- a/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java
++++ b/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java
+@@ -1,6 +1,7 @@
+ package hudson.plugins.git.util;
+ 
+ import hudson.Extension;
++import hudson.EnvVars;
+ import hudson.model.TaskListener;
+ import hudson.plugins.git.Branch;
+ import hudson.plugins.git.BranchSpec;
+@@ -43,7 +44,8 @@ public class DefaultBuildChooser extends BuildChooser {
+      * @throws GitException
+      */
+     public Collection<Revision> getCandidateRevisions(boolean isPollCall, String singleBranch,
+-                                                      IGitAPI git, TaskListener listener, BuildData data)
++                                                      IGitAPI git, TaskListener listener, BuildData data,
++                                                      EnvVars environment)
+         throws GitException, IOException {
+ 
+         verbose(listener,"getCandidateRevisions({0},{1},,,{2}) considering branches to build",isPollCall,singleBranch,data);
+@@ -51,7 +53,7 @@ public class DefaultBuildChooser extends BuildChooser {
+         // if the branch name contains more wildcards then the simple usecase
+         // does not apply and we need to skip to the advanced usecase
+         if (singleBranch == null || singleBranch.contains("*"))
+-            return getAdvancedCandidateRevisions(isPollCall,listener,new GitUtils(listener,git),data);
++            return getAdvancedCandidateRevisions(isPollCall,listener,new GitUtils(listener,git),data,environment);
+ 
+         // check if we're trying to build a specific commit
+         // this only makes sense for a build, there is no
+@@ -92,6 +94,7 @@ public class DefaultBuildChooser extends BuildChooser {
+         } else {
+             // singleBranch contains a '/', so is in most case a fully qualified branch
+             // doesn't seem we can distinguish unqualified branch with '/' in name, so expect users to fully qualify
++            verbose(listener, "Using {0} directly", singleBranch);
+             revisions.addAll(getHeadRevision(isPollCall, singleBranch, git, listener, data));
+         }
+ 
+@@ -170,7 +173,7 @@ public class DefaultBuildChooser extends BuildChooser {
+      * @throws IOException
+      * @throws GitException
+      */
+-    private List<Revision> getAdvancedCandidateRevisions(boolean isPollCall, TaskListener listener, GitUtils utils, BuildData data) throws GitException, IOException {
++    private List<Revision> getAdvancedCandidateRevisions(boolean isPollCall, TaskListener listener, GitUtils utils, BuildData data, EnvVars environment) throws GitException, IOException {
+         // 1. Get all the (branch) revisions that exist
+         List<Revision> revs = new ArrayList<Revision>(utils.getAllBranchRevisions());
+         verbose(listener, "Starting with all the branches: {0}", revs);
+@@ -185,7 +188,8 @@ public class DefaultBuildChooser extends BuildChooser {
+                 Branch b = j.next();
+                 boolean keep = false;
+                 for (BranchSpec bspec : gitSCM.getBranches()) {
+-                    if (bspec.matches(b.getName())) {
++                    verbose(listener, "Testing \"{0}\" against \"{1}\"", environment.expand(bspec.getName()), environment.expand(b.getName()));
++                    if (bspec.matches(b.getName(), environment)) {
+                         keep = true;
+                         break;
+                     }
+diff --git a/src/main/java/hudson/plugins/git/util/InverseBuildChooser.java b/src/main/java/hudson/plugins/git/util/InverseBuildChooser.java
+index 4ea2c25..7c21716 100644
+--- a/src/main/java/hudson/plugins/git/util/InverseBuildChooser.java
++++ b/src/main/java/hudson/plugins/git/util/InverseBuildChooser.java
+@@ -1,5 +1,6 @@
+ package hudson.plugins.git.util;
+ 
++import hudson.EnvVars;
+ import hudson.Extension;
+ import hudson.model.TaskListener;
+ import hudson.plugins.git.Branch;
+@@ -45,7 +46,7 @@ public class InverseBuildChooser extends BuildChooser {
+     @Override
+     public Collection<Revision> getCandidateRevisions(boolean isPollCall,
+             String singleBranch, IGitAPI git, TaskListener listener,
+-            BuildData buildData) throws GitException, IOException {
++            BuildData buildData, EnvVars environment) throws GitException, IOException {
+ 
+         GitUtils utils = new GitUtils(listener, git);
+         List<Revision> branchRevs = new ArrayList<Revision>(utils.getAllBranchRevisions());
+@@ -62,7 +63,7 @@ public class InverseBuildChooser extends BuildChooser {
+                 // Check whether this branch matches a branch spec from the job config
+                 for (BranchSpec spec : specifiedBranches) {
+                     // If the branch matches, throw it away as we do *not* want to build it
+-                    if (spec.matches(branch.getName()) || HEAD.matches(branch.getName())) {
++                    if (spec.matches(branch.getName(), environment) || HEAD.matches(branch.getName(), environment)) {
+                         j.remove();
+                         break;
+                     }
+-- 
+1.7.9
+

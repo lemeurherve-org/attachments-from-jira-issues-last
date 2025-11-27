@@ -1,0 +1,393 @@
+From 10c82a14efb5333a17e5a5196e331deb0dedbe69 Mon Sep 17 00:00:00 2001
+From: Marc van Kalmthout <Marc.van.Kalmthout@sioux.eu>
+Date: Sun, 8 Sep 2024 20:29:42 +0200
+Subject: [PATCH] Add global Timestamp format configuration field.
+
+If this field is left blank or the Timestamper plugin is not installed, the default internal Jenkins timestamp format is used.
+The default value is empty, so the plugin behavior will remain the same unless the Timestamp format is specified.
+
+An error is shown in the configuration GUI in case the format string is not a valid SimpleDateFormat pattern.
+If a non-empty format string is provided and the Timestamper plugin is not installed, a warning message is shown.
+
+The dependency on the Timestamper plugin is optional, so the plugin can be used without it.
+
+Help documentation is available.
+---
+ pom.xml                                       |  1 +
+ .../plugins/logparser/LogParserParser.java    | 21 +++++-
+ .../plugins/logparser/LogParserPublisher.java | 66 ++++++++++++++++++-
+ .../logparser/LogParserPublisher/global.jelly |  3 +
+ src/main/webapp/global_timestamp_format.html  | 24 +++++++
+ .../logparser/LogParserPublisherTest.java     | 30 +++++----
+ .../logparser/ConfigurationAsCodeTest.java    | 19 ++++++
+ ...tion-as-code-timestamp-format-invalid.yaml |  3 +
+ ...onfiguration-as-code-timestamp-format.yaml |  3 +
+ 9 files changed, 154 insertions(+), 16 deletions(-)
+ create mode 100644 src/main/webapp/global_timestamp_format.html
+ create mode 100644 src/test/resources/org/jenkinsci/plugins/logparser/configuration-as-code-timestamp-format-invalid.yaml
+ create mode 100644 src/test/resources/org/jenkinsci/plugins/logparser/configuration-as-code-timestamp-format.yaml
+
+diff --git a/pom.xml b/pom.xml
+index d88e350..799029b 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -149,6 +149,7 @@
+         <dependency>
+             <groupId>org.jenkins-ci.plugins</groupId>
+             <artifactId>timestamper</artifactId>
++            <optional>true</optional>
+         </dependency>
+ 
+     </dependencies>
+diff --git a/src/main/java/hudson/plugins/logparser/LogParserParser.java b/src/main/java/hudson/plugins/logparser/LogParserParser.java
+index 6f6cc6b..7690a6c 100755
+--- a/src/main/java/hudson/plugins/logparser/LogParserParser.java
++++ b/src/main/java/hudson/plugins/logparser/LogParserParser.java
+@@ -43,9 +43,11 @@ public class LogParserParser {
+ 
+     final private VirtualChannel channel;
+     final private boolean preformattedHtml;
++    final private String timestampFormat;
+ 
+     public LogParserParser(final FilePath parsingRulesFile,
+-            final boolean preformattedHtml, final VirtualChannel channel)
++            final boolean preformattedHtml, final VirtualChannel channel,
++            final String timestampFormat)
+             throws IOException {
+ 
+         // init logger
+@@ -63,6 +65,8 @@ public class LogParserParser {
+         this.extraTags = this.compiledPatternsPlusError.getExtraTags();
+ 
+         this.preformattedHtml = preformattedHtml;
++        // empty string means do not use Timestamper
++        this.timestampFormat = timestampFormat;
+         this.channel = channel;
+ 
+         // Count of lines in this status
+@@ -336,6 +340,18 @@ public class LogParserParser {
+         return markedLine.toString();
+     }
+ 
++     private BufferedReader createBufferedReader(Run<?, ?> build, Charset charset) throws IOException {
++        if (this.timestampFormat.isEmpty()) {
++            // Do not use Timestamper plugin
++            InputStreamReader streamReader = new InputStreamReader(build.getLogInputStream(), charset);
++            return new BufferedReader(streamReader);
++        } else {
++            String query = "time=" + this.timestampFormat + "&appendLog";
++            return TimestamperAPI.get().read(build, query);
++        }
++    }
++    
++
+     private void parseLogBody(final Run<?, ?> build, final BufferedWriter writer, final InputStream log,
+                         final Logger logger) throws IOException, InterruptedException {
+ 
+@@ -351,8 +367,7 @@ public class LogParserParser {
+ 
+         // Read log file from start - line by line and apply the statuses as
+         // found by the threads.
+-        String query = "time=yyyy-MM-dd HH:MM:ss.SSS&appendLog";
+-        try (BufferedReader reader = TimestamperAPI.get().read(build, query)) {
++        try (BufferedReader reader = createBufferedReader(build, charset)) {
+             String line;
+             String status;
+             int line_num = 0;
+diff --git a/src/main/java/hudson/plugins/logparser/LogParserPublisher.java b/src/main/java/hudson/plugins/logparser/LogParserPublisher.java
+index 089475d..e915084 100755
+--- a/src/main/java/hudson/plugins/logparser/LogParserPublisher.java
++++ b/src/main/java/hudson/plugins/logparser/LogParserPublisher.java
+@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+ import hudson.Extension;
+ import hudson.FilePath;
+ import hudson.Launcher;
++import hudson.PluginWrapper;
+ import hudson.Util;
+ import hudson.model.AbstractProject;
+ import hudson.model.Action;
+@@ -15,6 +16,7 @@ import hudson.tasks.BuildStepDescriptor;
+ import hudson.tasks.BuildStepMonitor;
+ import hudson.tasks.Publisher;
+ import hudson.tasks.Recorder;
++import hudson.util.FormValidation;
+ import hudson.util.ListBoxModel;
+ import jenkins.model.Jenkins;
+ import jenkins.tasks.SimpleBuildStep;
+@@ -22,11 +24,13 @@ import net.sf.json.JSONObject;
+ import org.jenkinsci.Symbol;
+ import org.kohsuke.stapler.DataBoundConstructor;
+ import org.kohsuke.stapler.DataBoundSetter;
++import org.kohsuke.stapler.QueryParameter;
+ import org.kohsuke.stapler.StaplerRequest;
+ 
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.Serializable;
++import java.text.SimpleDateFormat;
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.logging.Level;
+@@ -105,6 +109,8 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
+         try {
+             // Create a parser with the parsing rules as configured : colors, regular expressions, etc.
+             boolean preformattedHtml = !((DescriptorImpl) getDescriptor()).getLegacyFormatting();
++            // empty string: do not use the timestamper
++            String timestampFormat = isTimestamperPluginInstalled() ? ((DescriptorImpl) getDescriptor()).getTimestampFormat() : "";
+             final FilePath parsingRulesFile;
+             if (useProjectRule) {
+                 parsingRulesFile = new FilePath(workspace, projectRulePath);
+@@ -117,7 +123,7 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
+             } else {
+                 parsingRulesFile = new FilePath(new File(parsingRulesPath));
+             }
+-            final LogParserParser parser = new LogParserParser(parsingRulesFile, preformattedHtml, launcher.getChannel());
++            final LogParserParser parser = new LogParserParser(parsingRulesFile, preformattedHtml, launcher.getChannel(), timestampFormat);
+             // Parse the build's log according to these rules and get the result
+             result = parser.parseLog(build);
+ 
+@@ -156,6 +162,8 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
+ 
+         private List<ParserRuleFile> parsingRulesGlobal = new ArrayList<>();
+         private boolean useLegacyFormatting = false;
++        // By default the timestamper is not used to keep the behavior backward compatible.
++        private String  timestampFormat = "";
+ 
+         public DescriptorImpl() {
+             super(LogParserPublisher.class);
+@@ -196,11 +204,25 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
+             this.useLegacyFormatting = useLegacyFormatting;
+         }
+ 
++        public String getTimestampFormat() {
++            return timestampFormat;
++        }
++
++        @DataBoundSetter
++        public void setTimestampFormat(String timestampFormat) throws FormException {
++            validateTimestampFormat(timestampFormat);
++            this.timestampFormat = timestampFormat;
++        }
++
+         @Override
+         public boolean configure(final StaplerRequest req, final JSONObject json)
+                 throws FormException {
+             useLegacyFormatting = false;
++            timestampFormat = "";
+             parsingRulesGlobal = new ArrayList<>();
++
++            validateTimestampFormat(json.optString("timestampFormat", ""));
++
+             req.bindJSON(this, json);
+             save();
+             return true;
+@@ -213,6 +235,43 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
+             }
+             return items;
+         }
++
++        public FormValidation doCheckTimestampFormat(@QueryParameter String value) {
++            if (!value.isEmpty()){
++                if (!isValidTimestampFormat(value)) {
++                    return FormValidation.error("Invalid SimpleDateFormat pattern");
++                }
++                if(!isTimestamperPluginInstalled()) {
++                    return FormValidation.warning(
++                        "The Timestamper plugin must be installed and enabled for for the Timestamp format feature to work." +
++                        "Until then, the format is ignored."
++                        );
++                } 
++            }
++            return FormValidation.ok();
++        }
++        
++        private void validateTimestampFormat(String timestampFormat) throws FormException {
++            // To avoid the system does not start 
++            if (!timestampFormat.isEmpty()) {
++                if (!isValidTimestampFormat(timestampFormat)) {
++                    throw new FormException(
++                        "Invalid SimpleDateFormat pattern for Log Parser plugin timestampFormat : " + timestampFormat,
++                        "timestampFormat"
++                    );
++                }
++            }
++        }
++
++        private static boolean isValidTimestampFormat(String format) {
++            try {
++                new SimpleDateFormat(format);
++            } catch (IllegalArgumentException e) {
++                return false;
++            }
++            return true;
++        }
++    
+     }
+ 
+     public BuildStepMonitor getRequiredMonitorService() {
+@@ -229,4 +288,9 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
+         // the available parsing rules from there
+         return ((DescriptorImpl) this.getDescriptor()).getParsingRulesGlobal();
+     }
++
++    public static boolean isTimestamperPluginInstalled() {
++        PluginWrapper timestamperPlugin = Jenkins.get().getPluginManager().getPlugin("timestamper");
++        return timestamperPlugin != null && timestamperPlugin.isActive();
++    }
+ }
+diff --git a/src/main/resources/hudson/plugins/logparser/LogParserPublisher/global.jelly b/src/main/resources/hudson/plugins/logparser/LogParserPublisher/global.jelly
+index 2033d48..19e4140 100644
+--- a/src/main/resources/hudson/plugins/logparser/LogParserPublisher/global.jelly
++++ b/src/main/resources/hudson/plugins/logparser/LogParserPublisher/global.jelly
+@@ -11,6 +11,9 @@
+         </f:entry>
+       </f:repeatableProperty>
+     </f:entry>
++    <f:entry title="Timestamp format" help="/plugin/log-parser/global_timestamp_format.html" field="timestampFormat">
++      <f:textbox/>
++    </f:entry>
+     <f:advanced>
+       <f:entry title="Use Legacy Formatting (variable width font)" help="/plugin/log-parser/global_legacy_formatting.html" field="legacyFormatting">
+         <f:checkbox />
+diff --git a/src/main/webapp/global_timestamp_format.html b/src/main/webapp/global_timestamp_format.html
+new file mode 100644
+index 0000000..44c068b
+--- /dev/null
++++ b/src/main/webapp/global_timestamp_format.html
+@@ -0,0 +1,24 @@
++<div>
++    <div>
++        <p>
++            The timestamp format pattern defines how timestamps will be rendered. The 
++            <a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html">JDK <code>SimpleDateFormat</code></a> pattern is used.
++        </p>
++        <p>
++            If this field is left blank or the Timestamper plugin is not installed, the default internal Jenkins timestamp format is used. 
++        </p>
++        <p>
++            Note: Any changes to the time format will only affect future builds. The Log Parser plugin applies the timestamp format during the build process.
++        </p>
++        <p>
++            Please ensure that the format string is a valid <code>SimpleDateFormat</code> pattern. Invalid patterns will result in errors.
++        </p>
++        <p>
++            Examples of valid formats include:
++            <ul>
++                <li><code>HH:mm:ss</code> - Displays hours, minutes, and seconds.</li>
++                <li><code>yyyy-MM-dd HH:mm:ss</code> - Displays the date and time up to seconds.</li>
++            </ul>
++        </p>
++    </div>
++</div>
+diff --git a/src/test/java/hudson/plugins/logparser/LogParserPublisherTest.java b/src/test/java/hudson/plugins/logparser/LogParserPublisherTest.java
+index fd53543..d83a98a 100644
+--- a/src/test/java/hudson/plugins/logparser/LogParserPublisherTest.java
++++ b/src/test/java/hudson/plugins/logparser/LogParserPublisherTest.java
+@@ -13,6 +13,8 @@ import org.junit.jupiter.api.io.TempDir;
+ import org.mockito.ArgumentCaptor;
+ import org.mockito.Captor;
+ import org.mockito.Mock;
++import org.mockito.MockedStatic;
++import org.mockito.Mockito;
+ import org.mockito.junit.jupiter.MockitoExtension;
+ 
+ import java.io.File;
+@@ -36,20 +38,24 @@ class LogParserPublisherTest {
+ 
+     @Test
+     void shouldSetFailedToParseErrorOnNullParsingRulesPath(@TempDir File workspace) throws IOException, InterruptedException {
+-        LogParserPublisher publisher = new LogParserPublisher(false, null, null) {
+-            @Override
+-            public BuildStepDescriptor<Publisher> getDescriptor() {
+-                return descriptor;
+-            }
+-        };
++        try (MockedStatic<LogParserPublisher> mockedStatic = Mockito.mockStatic(LogParserPublisher.class)) {
++            mockedStatic.when(LogParserPublisher::isTimestamperPluginInstalled).thenReturn(true);
+ 
+-        publisher.perform(run, new FilePath(workspace), launcher, listener);
++            LogParserPublisher publisher = new LogParserPublisher(false, null, null) {
++    
++                @Override
++                public BuildStepDescriptor<Publisher> getDescriptor() {
++                    return descriptor;
++                }
++            };
+ 
+-        verify(run).setResult(Result.ABORTED);
+-        verify(run).addAction(actionCaptor.capture());
++            publisher.perform(run, new FilePath(workspace), launcher, listener);
+ 
+-        LogParserAction actual = actionCaptor.getValue();
+-        assertThat(actual.getResult().getFailedToParseError()).isEqualTo(LogParserPublisher.NULL_PARSING_RULES);
+-    }
++            verify(run).setResult(Result.ABORTED);
++            verify(run).addAction(actionCaptor.capture());
+ 
++            LogParserAction actual = actionCaptor.getValue();
++            assertThat(actual.getResult().getFailedToParseError()).isEqualTo(LogParserPublisher.NULL_PARSING_RULES);
++        }
++    }
+ }
+\ No newline at end of file
+diff --git a/src/test/java/org/jenkinsci/plugins/logparser/ConfigurationAsCodeTest.java b/src/test/java/org/jenkinsci/plugins/logparser/ConfigurationAsCodeTest.java
+index 1c5548a..9759ee4 100644
+--- a/src/test/java/org/jenkinsci/plugins/logparser/ConfigurationAsCodeTest.java
++++ b/src/test/java/org/jenkinsci/plugins/logparser/ConfigurationAsCodeTest.java
+@@ -7,9 +7,11 @@ import org.junit.Rule;
+ import org.junit.Test;
+ import org.jvnet.hudson.test.JenkinsRule;
+ import io.jenkins.plugins.casc.ConfigurationAsCode;
++import io.jenkins.plugins.casc.ConfiguratorException;
+ 
+ import static org.junit.Assert.assertEquals;
+ import static org.junit.Assert.assertTrue;
++import static org.junit.jupiter.api.Assertions.assertThrows;
+ 
+ import org.junit.Ignore;
+ 
+@@ -20,6 +22,23 @@ public class ConfigurationAsCodeTest {
+     @Rule
+     public JenkinsRule r = new JenkinsRule();
+ 
++    @Test
++    public void TimestampFormatTest() throws Exception {
++        final LogParserPublisher.DescriptorImpl descriptor = (LogParserPublisher.DescriptorImpl) Jenkins.get().getDescriptor(LogParserPublisher.class);
++        ConfigurationAsCode.get().configure(ConfigurationAsCodeTest.class.getResource("configuration-as-code-timestamp-format.yaml").toString());
++        assertEquals("HH:mm:ss.SSS", descriptor.getTimestampFormat());
++    }
++
++    @Test
++    public void TimestampFormatTestInvalid() throws Exception {
++        final LogParserPublisher.DescriptorImpl descriptor = (LogParserPublisher.DescriptorImpl) Jenkins.get().getDescriptor(LogParserPublisher.class);
++   
++        Exception exception = assertThrows(ConfiguratorException.class, () -> {
++            ConfigurationAsCode.get().configure(ConfigurationAsCodeTest.class.getResource("configuration-as-code-timestamp-format-invalid.yaml").toString());
++        });
++   }
++
++
+     @Test
+     public void LegacyFormattingTest() throws Exception {
+         final LogParserPublisher.DescriptorImpl descriptor = (LogParserPublisher.DescriptorImpl) Jenkins.get().getDescriptor(LogParserPublisher.class);
+diff --git a/src/test/resources/org/jenkinsci/plugins/logparser/configuration-as-code-timestamp-format-invalid.yaml b/src/test/resources/org/jenkinsci/plugins/logparser/configuration-as-code-timestamp-format-invalid.yaml
+new file mode 100644
+index 0000000..9c766a9
+--- /dev/null
++++ b/src/test/resources/org/jenkinsci/plugins/logparser/configuration-as-code-timestamp-format-invalid.yaml
+@@ -0,0 +1,3 @@
++unclassified:
++  logParser:
++    timestampFormat: "invalidformat"
+diff --git a/src/test/resources/org/jenkinsci/plugins/logparser/configuration-as-code-timestamp-format.yaml b/src/test/resources/org/jenkinsci/plugins/logparser/configuration-as-code-timestamp-format.yaml
+new file mode 100644
+index 0000000..cd3651a
+--- /dev/null
++++ b/src/test/resources/org/jenkinsci/plugins/logparser/configuration-as-code-timestamp-format.yaml
+@@ -0,0 +1,3 @@
++unclassified:
++  logParser:
++    timestampFormat: "HH:mm:ss.SSS"
+-- 
+2.45.2.windows.1
+

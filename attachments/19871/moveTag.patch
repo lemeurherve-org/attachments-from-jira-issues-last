@@ -1,0 +1,93 @@
+Index: src/main/java/hudson/plugins/cvs_tag/CvsTagPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/cvs_tag/CvsTagPublisher.java	(revision 36078)
++++ src/main/java/hudson/plugins/cvs_tag/CvsTagPublisher.java	(working copy)
+@@ -36,6 +36,11 @@
+ 	 */
+ 	private String tagName;
+ 
++	/**
++	 * Move the tag if it exists when true
++	 */
++	private boolean moveTag;
++
+ 	@Extension
+ 	public static final CvsTagDescriptorImpl DESCRIPTOR = new CvsTagDescriptorImpl();
+ 
+@@ -61,9 +66,26 @@
+ 		this.tagName = tagName;
+ 	}
+ 
++	/**
++	 * @return will move the tag if exists
++	 */
++	public boolean isMoveTag()
++	{
++		return moveTag;
++	}
++
++	/**
++	 * Set whether to move the tag if exists
++	 * @param moveTag whether to move
++	 */
++	public void setMoveTag(boolean moveTag)
++	{
++		this.moveTag = moveTag;
++	}
++
+ 	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException
+ 	{
+-		return CvsTagPlugin.perform(build, launcher, listener, tagName);
++		return CvsTagPlugin.perform(build, launcher, listener, tagName, moveTag);
+ 	}
+ 
+ 	@Override
+@@ -105,6 +127,7 @@
+ 		{
+ 			CvsTagPublisher cvsTagPublisher = new CvsTagPublisher();
+ 			cvsTagPublisher.setTagName(formData.getString("tagName"));
++			cvsTagPublisher.setMoveTag(formData.getBoolean("moveTag"));
+ 
+ 			return cvsTagPublisher;
+ 		}
+Index: src/main/java/hudson/plugins/cvs_tag/CvsTagPlugin.java
+===================================================================
+--- src/main/java/hudson/plugins/cvs_tag/CvsTagPlugin.java	(revision 36078)
++++ src/main/java/hudson/plugins/cvs_tag/CvsTagPlugin.java	(working copy)
+@@ -47,7 +47,7 @@
+ 	}
+ 
+ 
+-	public static boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener, String tagName) throws IOException, InterruptedException
++	public static boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener, String tagName, boolean moveTag) throws IOException, InterruptedException
+ 	{
+ 		PrintStream logger = listener.getLogger();
+ 
+@@ -80,6 +80,11 @@
+ 		ArgumentListBuilder cmd = new ArgumentListBuilder();
+         cmd.add(scm.getDescriptor().getCvsExeOrDefault(), "-d", scm.getCvsRoot(), "rtag");
+ 
++		if (moveTag)
++		{
++			cmd.add("-F");
++		}
++
+ 		if (scm.getBranch() != null)
+ 		{
+ 			// cvs -d cvsRoot rtag -r branchName tagName modules
+Index: src/main/resources/hudson/plugins/cvs_tag/CvsTagPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/cvs_tag/CvsTagPublisher/config.jelly	(revision 36078)
++++ src/main/resources/hudson/plugins/cvs_tag/CvsTagPublisher/config.jelly	(working copy)
+@@ -8,4 +8,11 @@
+     <f:textbox name="cvstag.tagName" value="${tagName}" 
+                checkUrl="'${rootURL}/publisher/CvsTagPublisher/tagNameCheck?value='+escape(this.value)" />
+   </f:entry>
++  <f:advanced>
++	<f:entry>
++	  <j:set var="moveTag" value="${instance.isMoveTag()}"/>
++	  <f:checkbox name="cvstag.moveTag" checked="${moveTag}"/>
++	  <label class="attach-previous">Move tag if it already exists</label>
++  	</f:entry>
++  </f:advanced>
+ </j:jelly>

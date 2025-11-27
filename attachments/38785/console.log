@@ -1,0 +1,120 @@
+Branch indexing
+Connecting to https://github.example.com/api/v3 using jenkins/****** (jenkins @ github.example.com readonly)
+Obtained Jenkinsfile from fa6e91cbfbec535d64ce9de9bdc86aa0d4e690ac
+[Pipeline] node
+Running on agent-1 in /home/ubuntu/jenkins-remote-fs/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA
+[Pipeline] {
+[Pipeline] checkout
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from 2 remote Git repositories
+ > git config remote.origin.url https://github.example.com/my-project/my-app.git # timeout=10
+Fetching upstream changes from https://github.example.com/my-project/my-app.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials jenkins @ github.example.com readonly
+ > git fetch --tags --progress https://github.example.com/my-project/my-app.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin1.url https://github.example.com/my-project/my-app.git # timeout=10
+Fetching upstream changes from https://github.example.com/my-project/my-app.git
+using GIT_ASKPASS to set credentials jenkins @ github.example.com readonly
+ > git fetch --tags --progress https://github.example.com/my-project/my-app.git +refs/pull/*/head:refs/remotes/origin/pr/*
+Checking out Revision fa6e91cbfbec535d64ce9de9bdc86aa0d4e690ac (master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f fa6e91cbfbec535d64ce9de9bdc86aa0d4e690ac
+ > git rev-list 5495c18181a0c78a0dfbcd803ecdd35e42361d01 # timeout=10
+
+Could not update commit status. Message: {"message":"Must authenticate to access this API.","documentation_url":"https://developer.github.com/enterprise/2.9/v3"}
+
+[Pipeline] stage
+[Pipeline] { (Build and Deploy)
+[Pipeline] withMaven
+[withMaven] Options: []
+[withMaven] Available options: 
+[withMaven] use JDK installation JDK8
+[withMaven] use Maven installation 'M3'
+[withMaven] use Maven settings provided by the Jenkins Managed Configuration File 'maven-settings-for-my-project-build-job' 
+[withMaven] use Maven settings.xml 'maven-settings-for-my-project-build-job' with Maven servers credentials provided by Jenkins (replaceAll: true): [mavenServerId: 'nexus.example.com', jenkinsCredentials: 'example-nexus-deployment-credentials', username: 'deployment', type: 'UsernamePasswordCredentialsImpl'], [mavenServerId: 'github.example.com', jenkinsCredentials: 'github-enterprise-api-token', username: 'dev1', type: 'UsernamePasswordCredentialsImpl']
+[Pipeline] // withMaven
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+
+Could not update commit status. Message: {"message":"Must authenticate to access this API.","documentation_url":"https://developer.github.com/enterprise/2.9/v3"}
+
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at hudson.remoting.Request.call(Request.java:147)
+	at hudson.remoting.Channel.call(Channel.java:829)
+	at hudson.FilePath.act(FilePath.java:985)
+	at hudson.FilePath.act(FilePath.java:974)
+	at hudson.FilePath.write(FilePath.java:1901)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution.settingsFromConfig(WithMavenStepExecution.java:738)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution.setupSettingFile(WithMavenStepExecution.java:568)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution.setupMaven(WithMavenStepExecution.java:271)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution.start(WithMavenStepExecution.java:172)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:184)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:126)
+	at org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:108)
+	at groovy.lang.GroovyObject$invokeMethod.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:48)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:113)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:151)
+	at org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:21)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:115)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:149)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:146)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:123)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:123)
+	at com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:16)
+Caused: java.lang.IllegalStateException: Exception injecting Maven settings.xml maven-settings-for-my-project-build-job during the build: blue-steel/my-project-team/my-app-app/build/master #40: null
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution.settingsFromConfig(WithMavenStepExecution.java:741)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution.setupSettingFile(WithMavenStepExecution.java:568)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution.setupMaven(WithMavenStepExecution.java:271)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution.start(WithMavenStepExecution.java:172)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:184)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:126)
+	at org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:108)
+	at groovy.lang.GroovyObject$invokeMethod.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:48)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:113)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:151)
+	at org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:21)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:115)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:149)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:146)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:123)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:123)
+	at com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:16)
+	at WorkflowScript.run(WorkflowScript:4)
+	at ___cps.transform___(Native Method)
+	at com.cloudbees.groovy.cps.impl.ContinuationGroup.methodCall(ContinuationGroup.java:57)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:109)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:82)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at com.cloudbees.groovy.cps.impl.ClosureBlock.eval(ClosureBlock.java:46)
+	at com.cloudbees.groovy.cps.Next.step(Next.java:74)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:154)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:18)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:33)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:108)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:165)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:330)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$100(CpsThreadGroup.java:82)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:242)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:230)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:64)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:112)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:748)
+Finished: FAILURE

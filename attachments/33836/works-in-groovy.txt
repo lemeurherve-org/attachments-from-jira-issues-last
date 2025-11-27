@@ -1,0 +1,14 @@
+karl@karlmac tmp]$ cat test.groovy
+
+def defaultString() { "default string" }
+def test(String string = defaultString()) {
+  println("passed: ${string}")
+}
+
+test()
+test("overriding")
+
+karl@karlmac tmp]$ groovy test.groovy
+passed: default string
+passed: overriding
+

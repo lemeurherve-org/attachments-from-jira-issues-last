@@ -1,0 +1,36 @@
+Index: src/main/java/hudson/security/ProjectMatrixAuthorizationStrategy.java
+===================================================================
+--- src/main/java/hudson/security/ProjectMatrixAuthorizationStrategy.java	(revision 13369)
++++ src/main/java/hudson/security/ProjectMatrixAuthorizationStrategy.java	(working copy)
+@@ -4,10 +4,11 @@
+ import hudson.model.Descriptor;
+ import hudson.model.Jobs;
+ import hudson.util.RobustReflectionConverter;
++import org.acegisecurity.Authentication;
++import com.thoughtworks.xstream.converters.UnmarshallingContext;
++import com.thoughtworks.xstream.core.JVM;
+ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+-import com.thoughtworks.xstream.converters.UnmarshallingContext;
+ import com.thoughtworks.xstream.mapper.Mapper;
+-import com.thoughtworks.xstream.core.JVM;
+ 
+ /**
+  * {@link GlobalMatrixAuthorizationStrategy} plus per-project ACL.
+@@ -22,7 +23,16 @@
+     public ACL getACL(AbstractProject<?,?> project) {
+         AuthorizationMatrixProperty amp = project.getProperty(AuthorizationMatrixProperty.class);
+         if (amp != null && amp.isUseProjectSecurity()) {
+-            return amp.getACL();
++        	final ACL projectAcl = amp.getACL();
++        	
++        	//The effective ACL is the union of the project and root ACLs.  Optimistic permissions apply
++        	//meaning if either allows access, then grant it.
++            return new ACL() {
++                public boolean hasPermission(Authentication a, Permission permission) {
++                    return projectAcl.hasPermission(a, permission) || getRootACL().hasPermission(a, permission);
++                }
++            };
++            
+         } else {
+             return getRootACL();
+         }

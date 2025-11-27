@@ -1,0 +1,35 @@
+Perforce Polling Log
+
+Started on Jun 26, 2012 10:49:19 AM
+Looking for changes...
+Using node: Jenkins
+Using master perforce client: build.RDVMBUILD51.test
+[.jenkins] $ p4 workspace -o build.RDVMBUILD51.test
+Read ClientSpec from: //moduledev/EGDev/products/Main/products/fl_fastserverclt_nt12.1_ALPHA.cws
+[.jenkins] $ p4 print //moduledev/EGDev/products/Main/products/fl_fastserverclt_nt12.1_ALPHA.cws
+Warning: Client Spec line invalid, ignoring. (//moduledev/EGDev/products/Main/products/fl_fastserverclt_nt12.1_ALPHA.cws#10 - edit change 326404 (text))
+[.jenkins] $ p4 counter change
+[.jenkins] $ p4 -s changes -s submitted //build.RDVMBUILD51.test/...@326873,@327027
+Latest submitted change selected by workspace is 327018
+[.jenkins] $ p4 describe -s 327018
+[.jenkins] $ p4 -G where //...
+ERROR: Failed to record SCM polling for hudson.model.FreeStyleProject@76948f[test_view_file_perforce_polling]
+java.lang.NullPointerException
+	at hudson.plugins.perforce.PerforceSCM.parseProjectPath(PerforceSCM.java:2102)
+	at hudson.plugins.perforce.PerforceSCM.parseProjectPath(PerforceSCM.java:2097)
+	at hudson.plugins.perforce.PerforceSCM.isFileInView(PerforceSCM.java:672)
+	at hudson.plugins.perforce.PerforceSCM.isChangelistExcluded(PerforceSCM.java:1288)
+	at hudson.plugins.perforce.PerforceSCM.getCurrentDepotRevisionState(PerforceSCM.java:1238)
+	at hudson.plugins.perforce.PerforceSCM.compareRemoteRevisionWith(PerforceSCM.java:1118)
+	at hudson.scm.SCM._compareRemoteRevisionWith(SCM.java:356)
+	at hudson.scm.SCM.poll(SCM.java:373)
+	at hudson.model.AbstractProject.poll(AbstractProject.java:1376)
+	at hudson.triggers.SCMTrigger$Runner.runPolling(SCMTrigger.java:420)
+	at hudson.triggers.SCMTrigger$Runner.run(SCMTrigger.java:449)
+	at hudson.util.SequentialExecutionQueue$QueueEntry.run(SequentialExecutionQueue.java:118)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)

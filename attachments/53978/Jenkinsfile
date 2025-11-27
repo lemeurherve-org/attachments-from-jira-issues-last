@@ -1,0 +1,85 @@
+#!/usr/bin/env groovy
+
+//library("jenkins_shared_library@1.0.0")
+
+//@groovy.transform.Field
+String resourcePrefix = new Date().getTime().toString()
+
+//@groovy.transform.Field
+Map dockerParameters = [
+    registry: "docker.example.com",
+    registryType: "internal",
+    images: [
+        image1: [image: "image1", dockerfile: "Dockerfile1"],
+        image2: [image: "image2", dockerfile: "Dockerfile2"]
+    ]
+]
+
+
+pipeline {
+  agent any
+  options { skipDefaultCheckout true }
+  parameters {
+    booleanParam defaultValue: true, description: 'Build & Push image1', name: 'image1'
+    booleanParam defaultValue: true, description: 'Build & Push image2', name: 'image2'
+  }
+
+  stages {
+    stage("Prepare") {
+      options { skipDefaultCheckout true }
+      failFast true
+      parallel {
+        stage('Test1') {
+          steps {
+            // Variable available in simple stages and parallel blocks
+            echo "resourcePrefix: ${resourcePrefix}"
+            echo "dockerParameters: ${dockerParameters}"
+          }
+        }
+        stage('Test2') {
+          steps {
+            echo "resourcePrefix: ${resourcePrefix}"
+            echo "dockerParameters: ${dockerParameters}"
+          }
+        }
+      }
+    }
+
+
+    stage("Docker") {
+      options { skipDefaultCheckout true }
+      matrix {
+        axes {
+          axis {
+            name 'COMPONENT'
+            // Note: these values are the same as described in dockerParameters and params
+            values 'image1', 'image2'
+          }
+        }
+        stages {
+          stage("Login/Build/Push") {
+            when {
+              beforeAgent true
+              expression { params[COMPONENT] == true }
+            }
+            // agent { kubernetes(k8sAgent(name: 'dind')) }
+            steps {
+              // Failing on resourcePrefix & dockerParameters, as it doesn't have Field annotation
+              // Question is: why variables are not available inside matrix?
+
+              echo "resourcePrefix: ${resourcePrefix}"
+              echo "dockerParameters: ${dockerParameters}"
+
+              // Here is one step as example:
+              //dockerBuild(
+              //    image: dockerParameters.images[COMPONENT].image,
+              //    dockerfile: dockerParameters.images[COMPONENT].dockerfile
+              //)
+            }
+          }
+        }
+      }
+    }
+
+  }
+}

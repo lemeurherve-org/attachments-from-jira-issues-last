@@ -1,0 +1,119 @@
+// preparation
+parallel(
+    // local SDR
+    { build("rsync_SDR_stormcs181");        },
+    { build("rsync_SDR_stormcs240");        },
+    { build("rsync_SDR_stormcs241");        },
+    { build("rsync_SDR_de02winterm20");     },
+
+    // local binary modules
+    { build("rsync_binmod_stormcs181");     },
+    { build("rsync_binmod_stormcs240");     },
+    {
+        build("rsync_binmod_stormcs241");
+        build("rsync_binmod_de02winterm20");
+    },
+
+    // update team branch
+    { build("downmerge_f2011.06");          },
+    { build("downmerge_g2012.06");          },
+    { build("downmerge_main");              },
+
+    // clean up binary modules from older builds
+    { build("removebinmod");                },
+
+    // sanity checks on nightly build output
+    { build("checkbinmod");                 }
+);
+
+// CDE builds / unit tests
+parallel(
+    // f2011.06 linux
+    { build("debuggers_clean_f2011.06_sx1_linux");   },
+    { build("warpcores_clean_f2011.06_sx1_linux");   },
+    {
+        build("InnoRuntime_clean_f2011.06_sx1_linux");
+        parallel(
+            {
+                build("vs_clean_f2011.06_sx1_linux");
+                build("chameleon_clean_f2011.06_sx1_linux");
+            },
+            {
+                build("vs_vast_clean_f2011.06_sx1_linux");
+                build("chameleon_vast_clean_f2011.06_sx1_linux");
+            }
+        );
+    },
+
+    // f2011.06 windows
+    { build("debuggers_clean_f2011.06_sx1_windows"); },
+    { build("warpcores_clean_f2011.06_sx1_windows"); },
+    {
+        build("InnoRuntime_clean_f2011.06_sx1_windows");
+        parallel(
+            {
+                build("vs_clean_f2011.06_sx1_windows");
+                build("chameleon_clean_f2011.06_sx1_windows");
+            },
+            {
+                build("vs_vast_clean_f2011.06_sx1_windows");
+                build("chameleon_vast_clean_f2011.06_sx1_windows");
+            }
+        );
+    },
+
+    // main linux
+    { build("debuggers_clean_main_linux");           },
+    { build("fastmodels_clean_main_linux");          },
+    { build("warpcores_clean_main_linux");           },
+    { build("OSCISupport_clean_main_linux");         },
+    {
+        parallel(
+            { build("InnoRuntime_clean_main_linux"); },
+            { build("vs_clean_main_linux");          }
+        );
+        build("chameleon_clean_main_linux");
+    },
+
+    // main windows
+    { build("debuggers_clean_main_windows");         },
+    { build("fastmodels_clean_main_windows");        },
+    { build("warpcores_clean_main_windows");         },
+    { build("OSCISupport_clean_main_windows");       },
+    {
+        parallel(
+            { build("InnoRuntime_clean_main_windows"); },
+            { build("vs_clean_main_windows");          }
+        );
+        build("chameleon_clean_main_windows");
+    },
+
+    // g2012.06 linux
+    { build("debuggers_clean_g2012.06_linux");           },
+    { build("fastmodels_clean_g2012.06_linux");          },
+    { build("warpcores_clean_g2012.06_linux");           },
+    { build("OSCISupport_clean_g2012.06_linux");         },
+    {
+        parallel(
+            { build("InnoRuntime_clean_g2012.06_linux"); },
+            { build("vs_clean_g2012.06_linux");          }
+        );
+        build("chameleon_clean_g2012.06_linux");
+    },
+
+    // g2012.06 windows
+    { build("debuggers_clean_g2012.06_windows");         },
+    { build("fastmodels_clean_g2012.06_windows");        },
+    { build("warpcores_clean_g2012.06_windows");         },
+    { build("OSCISupport_clean_g2012.06_windows");       },
+    {
+        parallel(
+            { build("InnoRuntime_clean_g2012.06_windows"); },
+            { build("vs_clean_g2012.06_windows");          }
+        );
+        build("chameleon_clean_g2012.06_windows");
+    }
+);
+
+// save and datestamp today's build
+build("archivebinmod");

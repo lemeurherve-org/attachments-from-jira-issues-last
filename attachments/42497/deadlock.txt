@@ -1,0 +1,94 @@
+Found one Java-level deadlock:
+=============================
+"Executor #-1 for master : executing BranchIndexing[hackathon-2018/universal-deployment-tracker]":
+  waiting to lock monitor 0x00007f8a887e7e58 (object 0x00000000951b5530, a org.jenkinsci.plugins.workflow.job.WorkflowRun),
+  which is held by "WorkflowRun.copyLogs [#5] (XXX #19)"
+"WorkflowRun.copyLogs [#5] (XXX #19)":
+  waiting to lock monitor 0x00007f8a90c4ef48 (object 0x00000000951b5420, a org.jenkinsci.plugins.workflow.cps.CpsFlowExecution),
+  which is held by "Running CpsFlowExecution[Owner[XXX/19:XXX #19]]"
+"Running CpsFlowExecution[Owner[XXX/19:XXX #19]]":
+  waiting to lock monitor 0x00007f8a887e7e58 (object 0x00000000951b5530, a org.jenkinsci.plugins.workflow.job.WorkflowRun),
+  which is held by "WorkflowRun.copyLogs [#5] (XXX #19)"
+
+Java stack information for the threads listed above:
+===================================================
+"Executor #-1 for master : executing BranchIndexing[hackathon-2018/universal-deployment-tracker]":
+        at org.jenkinsci.plugins.workflow.job.WorkflowRun.getExecution(WorkflowRun.java:844)
+        - waiting to lock <0x00000000951b5530> (a org.jenkinsci.plugins.workflow.job.WorkflowRun)
+        at org.jenkinsci.plugins.workflow.job.WorkflowRun$Owner.get(WorkflowRun.java:1100)
+        at org.jenkinsci.plugins.workflow.cps.CpsStepContext.getExecution(CpsStepContext.java:213)
+        at org.jenkinsci.plugins.workflow.cps.CpsStepContext.getExecution(CpsStepContext.java:95)
+        at org.jenkinsci.plugins.workflow.support.DefaultStepContext.get(DefaultStepContext.java:89)
+        at org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask.run(ExecutorStepExecution.java:409)
+        at org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask.getOwnerTask(ExecutorStepExecution.java:346)
+        at hudson.model.queue.Tasks.getItemOf(Tasks.java:72)
+        at hudson.model.AbstractItem.delete(AbstractItem.java:606)
+        at hudson.model.Job.delete(Job.java:681)
+        at com.cloudbees.hudson.plugins.folder.computed.ComputedFolder.updateChildren(ComputedFolder.java:289)
+        at com.cloudbees.hudson.plugins.folder.computed.FolderComputation.run(FolderComputation.java:165)
+        at jenkins.branch.MultiBranchProject$BranchIndexing.run(MultiBranchProject.java:1024)
+        at hudson.model.ResourceController.execute(ResourceController.java:97)
+        at hudson.model.Executor.run(Executor.java:429)
+"WorkflowRun.copyLogs [#5] (XXX #19)":
+        at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution$ConverterImpl.marshal(CpsFlowExecution.java:1602)
+        - waiting to lock <0x00000000951b5420> (a org.jenkinsci.plugins.workflow.cps.CpsFlowExecution)
+        at hudson.util.XStream2$AssociatedConverterImpl.marshal(XStream2.java:461)
+        at com.thoughtworks.xstream.core.AbstractReferenceMarshaller.convert(AbstractReferenceMarshaller.java:69)
+        at com.thoughtworks.xstream.core.TreeMarshaller.convertAnother(TreeMarshaller.java:58)
+        at com.thoughtworks.xstream.core.AbstractReferenceMarshaller$1.convertAnother(AbstractReferenceMarshaller.java:84)
+        at hudson.util.RobustReflectionConverter.marshallField(RobustReflectionConverter.java:265)
+        at hudson.util.RobustReflectionConverter$2.writeField(RobustReflectionConverter.java:252)
+        at hudson.util.RobustReflectionConverter$2.visit(RobustReflectionConverter.java:224)
+        at com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider.visitSerializableFields(PureJavaReflectionProvider.java:138)
+        at hudson.util.RobustReflectionConverter.doMarshal(RobustReflectionConverter.java:209)
+        at hudson.util.RobustReflectionConverter.marshal(RobustReflectionConverter.java:150)
+        at com.thoughtworks.xstream.core.AbstractReferenceMarshaller.convert(AbstractReferenceMarshaller.java:69)
+        at com.thoughtworks.xstream.core.TreeMarshaller.convertAnother(TreeMarshaller.java:58)
+        at com.thoughtworks.xstream.core.TreeMarshaller.convertAnother(TreeMarshaller.java:43)
+        at com.thoughtworks.xstream.core.TreeMarshaller.start(TreeMarshaller.java:82)
+        at com.thoughtworks.xstream.core.AbstractTreeMarshallingStrategy.marshal(AbstractTreeMarshallingStrategy.java:37)
+        at com.thoughtworks.xstream.XStream.marshal(XStream.java:1026)
+        at com.thoughtworks.xstream.XStream.marshal(XStream.java:1015)
+        at com.thoughtworks.xstream.XStream.toXML(XStream.java:988)
+        at hudson.XmlFile.write(XmlFile.java:193)
+        at org.jenkinsci.plugins.workflow.support.PipelineIOUtils.writeByXStream(PipelineIOUtils.java:30)
+        at org.jenkinsci.plugins.workflow.job.WorkflowRun.save(WorkflowRun.java:1256)
+        - locked <0x00000000951b5530> (a org.jenkinsci.plugins.workflow.job.WorkflowRun)
+        at org.jenkinsci.plugins.workflow.job.WorkflowRun.saveWithoutFailing(WorkflowRun.java:1236)
+        at org.jenkinsci.plugins.workflow.job.WorkflowRun.copyLogs(WorkflowRun.java:612)
+        at org.jenkinsci.plugins.workflow.job.WorkflowRun.access$500(WorkflowRun.java:144)
+        at org.jenkinsci.plugins.workflow.job.WorkflowRun$3.run(WorkflowRun.java:410)
+        - locked <0x00000000951bff28> (a java.lang.Object)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+        at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+        at java.lang.Thread.run(Thread.java:748)
+"Running CpsFlowExecution[Owner[XXX/19:XXX #19]]":
+        at org.jenkinsci.plugins.workflow.job.WorkflowRun.save(WorkflowRun.java:1245)
+        - waiting to lock <0x00000000951b5530> (a org.jenkinsci.plugins.workflow.job.WorkflowRun)
+        at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.saveOwner(CpsFlowExecution.java:1925)
+        at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.saveExecutionIfDurable(CpsFlowExecution.java:1906)
+        at org.jenkinsci.plugins.workflow.cps.CpsFlowExecution.addHead(CpsFlowExecution.java:1077)
+        - locked <0x00000000951b5420> (a org.jenkinsci.plugins.workflow.cps.CpsFlowExecution)
+        at org.jenkinsci.plugins.workflow.cps.FlowHead.fork(FlowHead.java:94)
+        at org.jenkinsci.plugins.workflow.cps.DSL$ThreadTaskImpl.invokeBody(DSL.java:585)
+        at org.jenkinsci.plugins.workflow.cps.DSL$ThreadTaskImpl.eval(DSL.java:559)
+        at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:184)
+        at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:332)
+        at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$200(CpsThreadGroup.java:83)
+        at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:244)
+        at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:232)
+        at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:64)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+        at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:131)
+        at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+        at java.lang.Thread.run(Thread.java:748)
+
+Found 1 deadlock.

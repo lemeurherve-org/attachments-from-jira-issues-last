@@ -1,0 +1,23 @@
+Index: SubversionSCM.java
+===================================================================
+--- SubversionSCM.java	(revision 38917)
++++ SubversionSCM.java	(working copy)
+@@ -2088,7 +2088,17 @@
+ 
+         @DataBoundConstructor
+         public ModuleLocation(String remote, String local) {
+-            this.remote = Util.removeTrailingSlash(Util.fixNull(remote).trim());
++            String tmpRemote = Util.removeTrailingSlash(Util.fixNull(remote).trim());
++
++            // Look for an @ char in the case of http://svnserver/repos@HEAD or
++            // http://svnserver@rev and remove @rev/@HEAD as only the first part of the URL is used in
++            // the map for pulling out the revisions.
++            int atPos = tmpRemote.lastIndexOf('@');
++            if(atPos!=-1)
++            {
++                tmpRemote = tmpRemote.substring(0, atPos);
++            }
++            this.remote = tmpRemote;
+             this.local = fixEmptyAndTrim(local);
+         }
+ 

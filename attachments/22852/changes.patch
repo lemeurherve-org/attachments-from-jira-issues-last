@@ -1,0 +1,40 @@
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 40769)
++++ pom.xml	(working copy)
+@@ -1,9 +1,9 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+-    <groupId>org.jvnet.hudson.plugins</groupId>
++    <groupId>org.jenkins-ci.plugins</groupId>
+     <artifactId>plugin</artifactId>
+-    <version>1.318</version>
++    <version>1.450</version>
+     <relativePath>../pom.xml</relativePath>
+   </parent>
+   
+Index: src/main/java/hudson/plugins/powershell/PowerShell.java
+===================================================================
+--- src/main/java/hudson/plugins/powershell/PowerShell.java	(revision 40769)
++++ src/main/java/hudson/plugins/powershell/PowerShell.java	(working copy)
+@@ -10,7 +10,7 @@
+ 
+ /**
+  * Invokes Windows power shell from Hudson.
+- * 
++ *
+  * @author Kohsuke Kawaguchi
+  */
+ public class PowerShell extends CommandInterpreter {
+@@ -23,8 +23,8 @@
+         return ".ps1";
+     }
+ 
+-    protected String[] buildCommandLine(FilePath script) {
+-        return new String[] { "powershell.exe","& \'"+script.getRemote()+"\'"};
++    public String[] buildCommandLine(FilePath script) {
++        return new String[] { "powershell.exe","-ExecutionPolicy", "ByPass", "-Command", "try { . \'"+script.getRemote()+"\' } catch { echo $error; exit 1 }"};
+     }
+ 
+     protected String getContents() {

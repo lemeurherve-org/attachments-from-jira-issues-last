@@ -1,0 +1,41 @@
+Index: plugins/jmeter/src/main/java/hudson/plugins/jmeter/JMeterProjectAction.java
+===================================================================
+--- plugins/jmeter/src/main/java/hudson/plugins/jmeter/JMeterProjectAction.java	(revision 22488)
++++ plugins/jmeter/src/main/java/hudson/plugins/jmeter/JMeterProjectAction.java	(working copy)
+@@ -175,10 +175,12 @@
+ 						currentBuild);
+ 				JMeterBuildAction jmeterBuildAction = currentBuild
+ 						.getAction(JMeterBuildAction.class);
+-				JMeterReport jmeterReport = jmeterBuildAction.getJmeterReport();
+-				dataSetBuilderErrors.add(((double) jmeterReport.countErrors())
+-						/ jmeterReport.size() * 100, "errors", label);
+-
++				// is null, if older builds not configured with jmeter
++				if (jmeterBuildAction != null) {
++					JMeterReport jmeterReport = jmeterBuildAction.getJmeterReport();
++					dataSetBuilderErrors.add(((double) jmeterReport.countErrors())
++							/ jmeterReport.size() * 100, "errors", label);
++				}
+ 			}
+ 		}
+ 
+@@ -209,11 +211,14 @@
+ 						currentBuild);
+ 				JMeterBuildAction jmeterBuildAction = currentBuild
+ 						.getAction(JMeterBuildAction.class);
+-				JMeterReport jmeterReport = jmeterBuildAction.getJmeterReport();
+-				dataSetBuilderAverage.add(jmeterReport.getMax(), "max", label);
+-				dataSetBuilderAverage.add(jmeterReport.getAverage(), "average",
+-						label);
+-				dataSetBuilderAverage.add(jmeterReport.getMin(), "min", label);
++					// is null, if older builds not configured with jmeter
++					if (jmeterBuildAction != null) {
++					JMeterReport jmeterReport = jmeterBuildAction.getJmeterReport();
++					dataSetBuilderAverage.add(jmeterReport.getMax(), "max", label);
++					dataSetBuilderAverage.add(jmeterReport.getAverage(), "average",
++							label);
++					dataSetBuilderAverage.add(jmeterReport.getMin(), "min", label);
++				}
+ 
+ 			}
+ 		}

@@ -1,0 +1,113 @@
+bash-4.4$ dbx - core
+Corefile specified executable: "/x1/zulu8.48.0.53-ca-jdk8.0.265-solaris/bin/java"
+For information about new features see `help changes'
+To remove this message, put `dbxenv suppress_startup_message 8.2' in your .dbxrc
+Reading java
+core file header read successfully
+Reading ld.so.1
+Reading libjli.so
+Reading libthread.so.1
+Reading libdl.so.1
+Reading libc.so.1
+Reading libjvm.so
+Reading libsocket.so.1
+Reading libsched.so.1
+Reading libm.so.1
+Reading libCrun.so.1
+Reading libdoor.so.1
+Reading libdemangle.so.1
+Reading libkstat.so.1
+Reading librt.so.1
+Reading libm.so.2
+Reading libnsl.so.1
+Reading libucrypto.so.1
+Reading libcryptoutil.so.1
+Reading libelf.so.1
+Reading libz.so.1
+Reading libmp.so.2
+Reading libverify.so
+Reading libjava.so
+Reading libscf.so.1
+Reading libuutil.so.1
+Reading libgen.so.1
+Reading libnvpair.so.1
+Reading libsmbios.so.1
+Reading libzip.so
+Reading en_US.UTF-8.so.3
+Reading methods_unicode.so.3
+Reading libnio.so
+Reading libsendfile.so.1
+Reading libnet.so
+Reading libj2pkcs11.so
+Reading libpkcs11.so.1
+Reading pkcs11_softtoken.so.1
+Reading libsunec.so
+Reading libgnome-keyring.so.0.1.1
+Reading libglib-2.0.so.0.4600.0
+Reading libgcrypt.so.11.8.2
+Reading libpthread.so.1
+t@220 (l@220) terminated by signal BUS (object specific hardware error)
+0xffff80ffbf5ba192: elf_dladdr+0x00e2:  movl     (%rbx,%r15,4),%edx
+(dbx) where
+current thread: t@220
+=>[1] elf_dladdr(), at 0xffff80ffbf5ba192
+  [2] dladdr_core(), at 0xffff80ffbf5c6de3
+  [3] dladdr(), at 0xffff80ffbf5c6e60
+  [4] os::address_is_in_vm(0xffff80ffbd63f8c0), at 0xffff80ffbeb89564
+  [5] frame::print_on_error(), at 0xffff80ffbe45db34
+  [6] VMError::report(), at 0xffff80ffbee5372f
+  [7] VMError::report_and_die(), at 0xffff80ffbee54c28
+  [8] JVM_handle_solaris_signal(), at 0xffff80ffbeb992b8
+  [9] signalHandler(), at 0xffff80ffbeb91747
+  [10] __sighndlr(), at 0xffff80ffbf389a86
+  [11] call_user_handler(), at 0xffff80ffbf37c986
+  [12] sigacthandler(), at 0xffff80ffbf37ce2f
+  ---- called from signal handler with signal 10 (SIGBUS) ------
+  [13] 0xffff80ffbd63f8c0(0x18ae250, 0xffff80ff9f9de368, 0xffff80ff9f9de3a0, 0xce3f30, 0xa, 0x0), at 0xffff80ffbd63f8c0
+  [14] 0xffff80ffad218527(), at 0xffff80ffad218527
+  [15] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [16] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [17] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [18] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [19] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [20] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [21] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [22] 0xffff80ffad207f54(), at 0xffff80ffad207f54
+  [23] 0xffff80ffad2004e7(), at 0xffff80ffad2004e7
+  [24] JavaCalls::call_helper(), at 0xffff80ffbe63a9f3
+  [25] JavaCalls::call(), at 0xffff80ffbe63a189
+  [26] Reflection::invoke(), at 0xffff80ffbec486f1
+  [27] Reflection::invoke_method(), at 0xffff80ffbec494ee
+  [28] JVM_InvokeMethod(), at 0xffff80ffbe81a06c
+  [29] Java_sun_reflect_NativeMethodAccessorImpl_invoke0(), at 0xffff80ffbd9b3e6e
+  [30] 0xffff80ffad218527(), at 0xffff80ffad218527
+  [31] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [32] 0xffff80ffad701284(), at 0xffff80ffad701284
+  [33] 0xffff80ffad207f54(), at 0xffff80ffad207f54
+  [34] 0xffff80ffad208142(), at 0xffff80ffad208142
+  [35] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [36] 0xffff80ffad2004e7(), at 0xffff80ffad2004e7
+  [37] JavaCalls::call_helper(), at 0xffff80ffbe63a9f3
+  [38] JavaCalls::call(), at 0xffff80ffbe63a189
+  [39] InstanceKlass::call_class_initializer_impl(), at 0xffff80ffbe57ee88
+  [40] InstanceKlass::initialize(), at 0xffff80ffbe57adb4
+  [41] LinkResolver::resolve_invokestatic(), at 0xffff80ffbe99b56d
+  [42] LinkResolver::resolve_invoke(), at 0xffff80ffbe99ab9c
+  [43] InterpreterRuntime::resolve_invoke(), at 0xffff80ffbe6281bc
+  [44] 0xffff80ffad224bfa(), at 0xffff80ffad224bfa
+  [45] 0xffff80ffad2078d0(), at 0xffff80ffad2078d0
+  [46] 0xffff80ffad2078d0(), at 0xffff80ffad2078d0
+  [47] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [48] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [49] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [50] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [51] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [52] 0xffff80ffad2080fd(), at 0xffff80ffad2080fd
+  [53] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [54] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [55] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [56] 0xffff80ffad207f54(), at 0xffff80ffad207f54
+  [57] 0xffff80ffad207f54(), at 0xffff80ffad207f54
+  [58] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+  [59] 0xffff80ffad207e80(), at 0xffff80ffad207e80
+(dbx)

@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition>
+          <name></name>
+          <description>Sync EDA trunk on whichever slave you wish...</description>
+          <allowedSlaves>
+            <string>ALL (no restriction)</string>
+          </allowedSlaves>
+          <defaultValue>vmbam01.eur.ad.sag</defaultValue>
+          <triggerIfResult>multiSelectionDisallowed</triggerIfResult>
+          <allowMultiNodeSelection>false</allowMultiNodeSelection>
+          <triggerConcurrentBuilds>false</triggerConcurrentBuilds>
+        </org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svndae.hq.sag/svn/sag/eda/trunk</remote>
+        <local>trunk</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://svnva.ame.ad.sag:1818/svn/sag/build/upload-gradle/branches/1.0-rc-3/src/dist/resources</remote>
+        <local>resources</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://svndae.hq.sag:1818/svn/sag/test-automation/Common/HUDSON/reusable-ant-targets</remote>
+        <local>CISTools</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <useUpdate>true</useUpdate>
+    <doRevert>false</doRevert>
+    <excludedRegions></excludedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Ant>
+      <targets>copy.gradle.configuration.files</targets>
+      <antName>(Default)</antName>
+      <buildFile>trunk/test-automation/Tools/EDATools/install.xml</buildFile>
+      <properties>gradle.properties.file=${WORKSPACE}/trunk/test-automation/Tools/EDATools/gradle/gradle.properties
+init.gradle.file=${WORKSPACE}/resources/init.gradle
+test.configs.home=${WORKSPACE}/trunk/test-automation/TestConfigs
+cis.tools.home=${WORKSPACE}/CISTools
+qft.tests.home=${WORKSPACE}/trunk/test-automation/Tests/QFT
+eda.tools.home=${WORKSPACE}/trunk/test-automation/Tools/EDATools</properties>
+    </hudson.tasks.Ant>
+    <hudson.plugins.gradle.Gradle>
+      <description></description>
+      <switches></switches>
+      <tasks>clean
+build
+-x
+test
+-x
+check</tasks>
+      <rootBuildScriptDir>${workspace}/trunk</rootBuildScriptDir>
+      <buildFile></buildFile>
+      <gradleName>gradle1.0-rc-3</gradleName>
+      <useWrapper>true</useWrapper>
+    </hudson.plugins.gradle.Gradle>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

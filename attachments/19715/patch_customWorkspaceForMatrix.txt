@@ -1,0 +1,675 @@
+Index: src/main/java/hudson/matrix/MatrixBuild.java
+===================================================================
+--- src/main/java/hudson/matrix/MatrixBuild.java	(revision 34310)
++++ src/main/java/hudson/matrix/MatrixBuild.java	(working copy)
+@@ -31,10 +31,13 @@
+ import hudson.model.Fingerprint;
+ import hudson.model.Hudson;
+ import hudson.model.JobProperty;
++import hudson.model.Node;
+ import hudson.model.ParametersAction;
+ import hudson.model.Queue;
+ import hudson.model.Result;
+ import hudson.model.Cause.UpstreamCause;
++import hudson.slaves.WorkspaceList;
++import hudson.slaves.WorkspaceList.Lease;
+ import hudson.tasks.Publisher;
+ 
+ import java.io.File;
+@@ -320,6 +323,17 @@
+             for (MatrixAggregator a : aggregators)
+                 a.endBuild();
+         }
++        
++        @Override
++        protected Lease decideWorkspace(Node n, WorkspaceList wsl) throws IOException, InterruptedException {
++            String customWorkspace = getProject().getCustomWorkspace();
++            if (customWorkspace != null) {
++                // we allow custom workspaces to be concurrently used between jobs.
++                return Lease.createDummyLease(n.getRootPath().child(getEnvironment(listener).expand(customWorkspace)));
++            }
++            return super.decideWorkspace(n,wsl);
++        }
++      
+     }
+ 
+     /**
+Index: src/main/java/hudson/matrix/MatrixProject.java
+===================================================================
+--- src/main/java/hudson/matrix/MatrixProject.java	(revision 34310)
++++ src/main/java/hudson/matrix/MatrixProject.java	(working copy)
+@@ -141,6 +141,11 @@
+      */
+     private Result touchStoneResultCondition;
+ 
++    /**
++     * See {@link #setCustomWorkspace(String)}.
++     */
++    private String customWorkspace;
++    
+     public MatrixProject(String name) {
+         super(Hudson.getInstance(), name);
+     }
+@@ -218,6 +223,28 @@
+         this.touchStoneResultCondition = touchStoneResultCondition;
+     }
+ 
++    public String getCustomWorkspace() {
++      return customWorkspace;
++    }
++    
++    /**
++     * User-specified workspace directory, or null if it's up to Hudson.
++     *
++     * <p>
++     * Normally a matrix project uses the workspace location assigned by its parent container,
++     * but sometimes people have builds that have hard-coded paths.
++     *
++     * <p>
++     * This is not {@link File} because it may have to hold a path representation on another OS.
++     *
++     * <p>
++     * If this path is relative, it's resolved against {@link Node#getRootPath()} on the node where this workspace
++     * is prepared.
++     */
++    public void setCustomWorkspace(String customWorkspace) throws IOException {
++        this.customWorkspace= customWorkspace;
++    }
++    
+     @Override
+     protected void updateTransientActions() {
+         synchronized(transientActions) {
+@@ -558,6 +585,12 @@
+             this.touchStoneCombinationFilter = null;
+         }
+ 
++        if(req.hasParameter("customWorkspace")) {
++            customWorkspace = req.getParameter("customWorkspace.directory");
++        } else {
++            customWorkspace = null;        
++        }
++        
+         // parse system axes
+         DescribableList<Axis,AxisDescriptor> newAxes = new DescribableList<Axis,AxisDescriptor>(this);
+         newAxes.rebuildHetero(req, json, Axis.all(),"axis");
+Index: src/main/java/hudson/matrix/MatrixRun.java
+===================================================================
+--- src/main/java/hudson/matrix/MatrixRun.java	(revision 34310)
++++ src/main/java/hudson/matrix/MatrixRun.java	(working copy)
+@@ -140,12 +140,27 @@
+     protected class RunnerImpl extends Build<MatrixConfiguration,MatrixRun>.RunnerImpl {
+         @Override
+         protected Lease decideWorkspace(Node n, WorkspaceList wsl) throws InterruptedException, IOException {
+-            Node node = getBuiltOn();
+-            FilePath ws = node.getWorkspaceFor(getParent().getParent());
+-            if(useShortWorkspaceName)
+-                return wsl.allocate(ws.child(getParent().getDigestName()));
+-            else
+-                return wsl.allocate(ws.child(getParent().getCombination().toString('/','/')));
++            // Map current combination to a directory subtree, e.g. 'axis1=a,axis2=b' to 'axis1/a/axis2/b'.
++            String subtree;
++            if(useShortWorkspaceName) {
++                subtree = getParent().getDigestName(); 
++            } else {
++                subtree = getParent().getCombination().toString('/','/');
++            }
++            
++            String customWorkspace = getParent().getParent().getCustomWorkspace();
++            if (customWorkspace != null) {
++                // Use custom workspace as defined in the matrix project settings.
++                FilePath ws = n.getRootPath().child(getEnvironment(listener).expand(customWorkspace));
++                // We allow custom workspaces to be used concurrently between jobs.
++                return Lease.createDummyLease(ws.child(subtree));
++            } else {   
++                // Use default workspace as assigned by Hudson.
++                Node node = getBuiltOn();
++                FilePath ws = node.getWorkspaceFor(getParent().getParent());
++                // Allocate unique workspace (not to be shared between jobs and runs).
++                return wsl.allocate(ws.child(subtree));
++            }
+         }
+     }
+ }
+Index: src/main/resources/hudson/matrix/MatrixProject/configure-entries.jelly
+===================================================================
+--- src/main/resources/hudson/matrix/MatrixProject/configure-entries.jelly	(revision 34294)
++++ src/main/resources/hudson/matrix/MatrixProject/configure-entries.jelly	(working copy)
+@@ -27,15 +27,20 @@
+ -->
+ <?jelly escape-by-default='true'?>
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
++
+   <p:config-disableBuild/>
++
+   <f:section title="${%Advanced Project Options}">
+     <f:advanced>
+       <p:config-quietPeriod />
+       <p:config-retryCount />
+       <p:config-blockWhenUpstreamBuilding />
++      <p:config-customWorkspace />
+     </f:advanced>
+   </f:section>
++
+   <p:config-scm/>
++
+   <p:config-trigger>
+     <p:config-upstream-pseudo-trigger />
+   </p:config-trigger>
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced.jelly
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced.jelly	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced.jelly	(working copy)
+@@ -26,10 +26,5 @@
+   Additional entries in the advanced section.
+ -->
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project">
+-  <f:optionalBlock name="customWorkspace" title="${%Use custom workspace}" checked="${it.customWorkspace!=null}"
+-      help="/help/project-config/custom-workspace.html">
+-    <f:entry title="${%Directory}">
+-      <f:textbox name="customWorkspace.directory" value="${it.customWorkspace}" />
+-    </f:entry>
+-  </f:optionalBlock>
++  <p:config-customWorkspace />
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced_de.properties
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced_de.properties	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced_de.properties	(working copy)
+@@ -1,24 +0,0 @@
+-# The MIT License
+-# 
+-# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Simon Wiest
+-# 
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-# 
+-# The above copyright notice and this permission notice shall be included in
+-# all copies or substantial portions of the Software.
+-# 
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-# THE SOFTWARE.
+-
+-Use\ custom\ workspace=Verzeichnis des Arbeitsbereichs anpassen
+-Directory=Verzeichnis
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced_es.properties
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced_es.properties	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced_es.properties	(working copy)
+@@ -1,24 +0,0 @@
+-# The MIT License
+-#
+-# Copyright (c) 2004-2010, Sun Microsystems, Inc.
+-#
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-#
+-# The above copyright notice and this permission notice shall be included in
+-# all copies or substantial portions of the Software.
+-#
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-# THE SOFTWARE.
+-
+-Use\ custom\ workspace=Utilizar un directorio de trabajo personalizado
+-Directory=Directorio
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced_fr.properties
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced_fr.properties	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced_fr.properties	(working copy)
+@@ -1,24 +0,0 @@
+-# The MIT License
+-# 
+-# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Eric Lefevre-Ardant
+-# 
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-# 
+-# The above copyright notice and this permission notice shall be included in
+-# all copies or substantial portions of the Software.
+-# 
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-# THE SOFTWARE.
+-
+-Use\ custom\ workspace=Utiliser un répertoire de travail spécifique
+-Directory=Répertoire
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced_ja.properties
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced_ja.properties	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced_ja.properties	(working copy)
+@@ -1,24 +0,0 @@
+-# The MIT License
+-# 
+-# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Seiji Sogabe
+-# 
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-# 
+-# The above copyright notice and this permission notice shall be included in
+-# all copies or substantial portions of the Software.
+-# 
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-# THE SOFTWARE.
+-
+-Use\ custom\ workspace=\u30ab\u30b9\u30bf\u30e0\u30ef\u30fc\u30af\u30b9\u30da\u30fc\u30b9\u306e\u4f7f\u7528
+-Directory=\u30c7\u30a3\u30ec\u30af\u30c8\u30ea
+\ No newline at end of file
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced_pt_BR.properties
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced_pt_BR.properties	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced_pt_BR.properties	(working copy)
+@@ -1,24 +0,0 @@
+-# The MIT License
+-# 
+-# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Reginaldo L. Russinholi
+-# 
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-# 
+-# The above copyright notice and this permission notice shall be included in
+-# all copies or substantial portions of the Software.
+-# 
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-# THE SOFTWARE.
+-
+-Use\ custom\ workspace=Usar workspace customizado
+-Directory=Diret\u00F3rio
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced_ru.properties
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced_ru.properties	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced_ru.properties	(working copy)
+@@ -1,24 +0,0 @@
+-# The MIT License
+-# 
+-# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Mike Salnikov
+-# 
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-# 
+-# The above copyright notice and this permission notice shall be included in
+-# all copies or substantial portions of the Software.
+-# 
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-# THE SOFTWARE.
+-
+-Use\ custom\ workspace=\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0434\u0440\u0443\u0433\u0443\u044e \u0434\u0438\u0440\u0435\u043a\u0442\u043e\u0440\u0438\u044e
+-Directory=\u0414\u0438\u0440\u0435\u043a\u0442\u043e\u0440\u0438\u044f
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced_tr.properties
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced_tr.properties	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced_tr.properties	(working copy)
+@@ -1,24 +0,0 @@
+-# The MIT License
+-# 
+-# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Oguz Dag
+-# 
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-# 
+-# The above copyright notice and this permission notice shall be included in
+-# all copies or substantial portions of the Software.
+-# 
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-# THE SOFTWARE.
+-
+-Use\ custom\ workspace=\u00d6zel \u00e7al\u0131\u015fma alan\u0131n\u0131 kullan
+-Directory=Dizin
+Index: src/main/resources/hudson/model/FreeStyleProject/configure-advanced_zh_TW.properties
+===================================================================
+--- src/main/resources/hudson/model/FreeStyleProject/configure-advanced_zh_TW.properties	(revision 34294)
++++ src/main/resources/hudson/model/FreeStyleProject/configure-advanced_zh_TW.properties	(working copy)
+@@ -1,23 +0,0 @@
+-# The MIT License
+-#
+-# Copyright (c) 2004-2010, Sun Microsystems, Inc.
+-#
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-#
+-# The above copyright notice and this permission notice shall be included in
+-# all copies or substantial portions of the Software.
+-#
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-# THE SOFTWARE.
+-
+-Directory=\u76EE\u9304
+Index: src/main/resources/lib/hudson/project/config-customWorkspace.jelly
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace.jelly	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace.jelly	(revision 0)
+@@ -0,0 +1,32 @@
++<!--
++The MIT License
++
++Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, id:cactusman
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in
++all copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++THE SOFTWARE.
++-->
++
++<!-- custom workspace -->
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
++<f:optionalBlock name="customWorkspace" title="${%Use custom workspace}" checked="${it.customWorkspace!=null}" help="/help/project-config/custom-workspace.html">
++    <f:entry title="${%Directory}">
++      <f:textbox name="customWorkspace.directory" value="${it.customWorkspace}" />
++    </f:entry>
++  </f:optionalBlock>
++</j:jelly>
+Index: src/main/resources/lib/hudson/project/config-customWorkspace_de.properties
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace_de.properties	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace_de.properties	(revision 0)
+@@ -0,0 +1,24 @@
++# The MIT License
++# 
++# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Simon Wiest
++# 
++# Permission is hereby granted, free of charge, to any person obtaining a copy
++# of this software and associated documentation files (the "Software"), to deal
++# in the Software without restriction, including without limitation the rights
++# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++# copies of the Software, and to permit persons to whom the Software is
++# furnished to do so, subject to the following conditions:
++# 
++# The above copyright notice and this permission notice shall be included in
++# all copies or substantial portions of the Software.
++# 
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++# THE SOFTWARE.
++
++Use\ custom\ workspace=Verzeichnis des Arbeitsbereichs anpassen
++Directory=Verzeichnis
+Index: src/main/resources/lib/hudson/project/config-customWorkspace_es.properties
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace_es.properties	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace_es.properties	(revision 0)
+@@ -0,0 +1,24 @@
++# The MIT License
++#
++# Copyright (c) 2004-2010, Sun Microsystems, Inc.
++#
++# Permission is hereby granted, free of charge, to any person obtaining a copy
++# of this software and associated documentation files (the "Software"), to deal
++# in the Software without restriction, including without limitation the rights
++# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++# copies of the Software, and to permit persons to whom the Software is
++# furnished to do so, subject to the following conditions:
++#
++# The above copyright notice and this permission notice shall be included in
++# all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++# THE SOFTWARE.
++
++Use\ custom\ workspace=Utilizar un directorio de trabajo personalizado
++Directory=Directorio
+Index: src/main/resources/lib/hudson/project/config-customWorkspace_fr.properties
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace_fr.properties	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace_fr.properties	(revision 0)
+@@ -0,0 +1,24 @@
++# The MIT License
++# 
++# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Eric Lefevre-Ardant
++# 
++# Permission is hereby granted, free of charge, to any person obtaining a copy
++# of this software and associated documentation files (the "Software"), to deal
++# in the Software without restriction, including without limitation the rights
++# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++# copies of the Software, and to permit persons to whom the Software is
++# furnished to do so, subject to the following conditions:
++# 
++# The above copyright notice and this permission notice shall be included in
++# all copies or substantial portions of the Software.
++# 
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++# THE SOFTWARE.
++
++Use\ custom\ workspace=Utiliser un répertoire de travail spécifique
++Directory=Répertoire
+Index: src/main/resources/lib/hudson/project/config-customWorkspace_ja.properties
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace_ja.properties	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace_ja.properties	(revision 0)
+@@ -0,0 +1,24 @@
++# The MIT License
++# 
++# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Seiji Sogabe
++# 
++# Permission is hereby granted, free of charge, to any person obtaining a copy
++# of this software and associated documentation files (the "Software"), to deal
++# in the Software without restriction, including without limitation the rights
++# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++# copies of the Software, and to permit persons to whom the Software is
++# furnished to do so, subject to the following conditions:
++# 
++# The above copyright notice and this permission notice shall be included in
++# all copies or substantial portions of the Software.
++# 
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++# THE SOFTWARE.
++
++Use\ custom\ workspace=\u30ab\u30b9\u30bf\u30e0\u30ef\u30fc\u30af\u30b9\u30da\u30fc\u30b9\u306e\u4f7f\u7528
++Directory=\u30c7\u30a3\u30ec\u30af\u30c8\u30ea
+\ No newline at end of file
+Index: src/main/resources/lib/hudson/project/config-customWorkspace_pt_BR.properties
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace_pt_BR.properties	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace_pt_BR.properties	(revision 0)
+@@ -0,0 +1,24 @@
++# The MIT License
++# 
++# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Reginaldo L. Russinholi
++# 
++# Permission is hereby granted, free of charge, to any person obtaining a copy
++# of this software and associated documentation files (the "Software"), to deal
++# in the Software without restriction, including without limitation the rights
++# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++# copies of the Software, and to permit persons to whom the Software is
++# furnished to do so, subject to the following conditions:
++# 
++# The above copyright notice and this permission notice shall be included in
++# all copies or substantial portions of the Software.
++# 
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++# THE SOFTWARE.
++
++Use\ custom\ workspace=Usar workspace customizado
++Directory=Diret\u00F3rio
+Index: src/main/resources/lib/hudson/project/config-customWorkspace_ru.properties
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace_ru.properties	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace_ru.properties	(revision 0)
+@@ -0,0 +1,24 @@
++# The MIT License
++# 
++# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Mike Salnikov
++# 
++# Permission is hereby granted, free of charge, to any person obtaining a copy
++# of this software and associated documentation files (the "Software"), to deal
++# in the Software without restriction, including without limitation the rights
++# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++# copies of the Software, and to permit persons to whom the Software is
++# furnished to do so, subject to the following conditions:
++# 
++# The above copyright notice and this permission notice shall be included in
++# all copies or substantial portions of the Software.
++# 
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++# THE SOFTWARE.
++
++Use\ custom\ workspace=\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0434\u0440\u0443\u0433\u0443\u044e \u0434\u0438\u0440\u0435\u043a\u0442\u043e\u0440\u0438\u044e
++Directory=\u0414\u0438\u0440\u0435\u043a\u0442\u043e\u0440\u0438\u044f
+Index: src/main/resources/lib/hudson/project/config-customWorkspace_tr.properties
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace_tr.properties	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace_tr.properties	(revision 0)
+@@ -0,0 +1,24 @@
++# The MIT License
++# 
++# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Oguz Dag
++# 
++# Permission is hereby granted, free of charge, to any person obtaining a copy
++# of this software and associated documentation files (the "Software"), to deal
++# in the Software without restriction, including without limitation the rights
++# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++# copies of the Software, and to permit persons to whom the Software is
++# furnished to do so, subject to the following conditions:
++# 
++# The above copyright notice and this permission notice shall be included in
++# all copies or substantial portions of the Software.
++# 
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++# THE SOFTWARE.
++
++Use\ custom\ workspace=\u00d6zel \u00e7al\u0131\u015fma alan\u0131n\u0131 kullan
++Directory=Dizin
+Index: src/main/resources/lib/hudson/project/config-customWorkspace_zh_TW.properties
+===================================================================
+--- src/main/resources/lib/hudson/project/config-customWorkspace_zh_TW.properties	(revision 0)
++++ src/main/resources/lib/hudson/project/config-customWorkspace_zh_TW.properties	(revision 0)
+@@ -0,0 +1,23 @@
++# The MIT License
++#
++# Copyright (c) 2004-2010, Sun Microsystems, Inc.
++#
++# Permission is hereby granted, free of charge, to any person obtaining a copy
++# of this software and associated documentation files (the "Software"), to deal
++# in the Software without restriction, including without limitation the rights
++# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++# copies of the Software, and to permit persons to whom the Software is
++# furnished to do so, subject to the following conditions:
++#
++# The above copyright notice and this permission notice shall be included in
++# all copies or substantial portions of the Software.
++#
++# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++# THE SOFTWARE.
++
++Directory=\u76EE\u9304

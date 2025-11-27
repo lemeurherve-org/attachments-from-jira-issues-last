@@ -1,0 +1,23 @@
+pipeline {
+    options {
+        buildDiscarder logRotator(numToKeepStr: '5')
+    }
+
+    agent any
+
+    stages {
+        stage('Conjur') {
+            steps {
+                script {
+                    // If you enable this dummy block, it starts working even though you disable it again, until you restart Jenkins instance
+                    // withCredentials([conjurSecretUsername(credentialsId: 'cfgSrvCreds4App', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                    //     echo "Retrieved secret username credentials: USERNAME = $USERNAME, PASSWORD = $PASSWORD"
+                    // }
+
+                    // 'cfgSrvCreds4App' is a Jenkins Credentials type Conjur Secret Username
+                    httpRequest(authentication: 'cfgSrvCreds4App', contentType: 'TEXT_PLAIN', httpMode: 'GET', url: 'https://testconfigserver/config-server')
+                }
+            }
+        }
+    }
+}

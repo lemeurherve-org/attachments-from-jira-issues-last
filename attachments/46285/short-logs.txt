@@ -1,0 +1,140 @@
+Mar 05, 2019 9:27:21 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Building connection to Kubernetes kubernetes URL null namespace null
+Mar 05, 2019 9:27:21 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Connected to Kubernetes kubernetes URL https://172.20.0.1:443/
+Mar 05, 2019 9:27:23 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Building connection to Kubernetes kubernetes URL null namespace null
+Mar 05, 2019 9:27:23 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Connected to Kubernetes kubernetes URL https://172.20.0.1:443/
+Mar 05, 2019 9:27:25 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Building connection to Kubernetes kubernetes URL null namespace null
+Mar 05, 2019 9:27:25 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Connected to Kubernetes kubernetes URL https://172.20.0.1:443/
+Mar 05, 2019 9:27:37 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils parseFromYaml
+Parsed pod template from yaml: Pod(..., containers=[Container(args=[], command=[/usr/local/bin/jenkins-slave], ... , image=1234567890.dkr.ecr.us-east-1.amazonaws.com/jenkins-slave:1.0.0, ...)
+Mar 05, 2019 9:27:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+In provisioning : []
+Mar 05, 2019 9:27:37 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+Excess workload after pending Kubernetes agents: 1
+Mar 05, 2019 9:27:37 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+Template for label mypod-4cc70bb9-28e9-4184-af91-abc0384608b2: Kubernetes Pod Template
+Mar 05, 2019 9:27:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Building connection to Kubernetes kubernetes URL null namespace null
+Mar 05, 2019 9:27:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Connected to Kubernetes kubernetes URL https://172.20.0.1:443/
+Mar 05, 2019 9:27:37 PM FINEST org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+Planned Kubernetes agents for template "Kubernetes Pod Template": 1
+Mar 05, 2019 9:27:37 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils combine
+Combining pod templates, parent: PodTemplate{..., containers=[ContainerTemplate{name='jnlp', image='jenkins/jnlp-slave:alpine', ...}
+Mar 05, 2019 9:27:37 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils combine
+Combining pod templates, template: PodTemplate{, name='mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj', label='mypod-4cc70bb9-28e9-4184-af91-abc0384608b2', yaml=
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    some-label: some-label-value
+spec:
+  containers:
+  - name: jnlp
+    image: 1234567890.dkr.ecr.us-east-1.amazonaws.com/jenkins-slave:1.0.0
+    command:
+    - /usr/local/bin/jenkins-slave
+    tty: true
+    securityContext:
+      runAsUser: 10000
+      allowPrivilegeEscalation: false
+}
+Mar 05, 2019 9:27:37 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils combine
+Pod templates combined: PodTemplate{inheritFrom='', name='mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj', namespace='', label='mypod-4cc70bb9-28e9-4184-af91-abc0384608b2', nodeSelector='', nodeUsageMode=NORMAL, workspaceVolume=EmptyDirWorkspaceVolume [memory=false], volumes=[org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume@149e53f5], containers=[ContainerTemplate{name='jnlp', image='jenkins/jnlp-slave:alpine', workingDir='/home/jenkins', command='/bin/sh', args='/var/jenkins_config/jenkins-agent', ttyEnabled=true, resourceRequestCpu='', resourceRequestMemory='', resourceLimitCpu='', resourceLimitMemory='', livenessProbe=org.csanchez.jenkins.plugins.kubernetes.ContainerLivenessProbe@171e5b0d}], yaml=
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    some-label: some-label-value
+spec:
+  containers:
+  - name: jnlp
+    image: 1234567890.dkr.ecr.us-east-1.amazonaws.com/jenkins-slave:1.0.0
+    command:
+    - /usr/local/bin/jenkins-slave
+    tty: true
+    securityContext:
+      runAsUser: 10000
+      allowPrivilegeEscalation: false
+}
+Mar 05, 2019 9:27:37 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils unwrap
+Combined parent + template is PodTemplate{inheritFrom='', name='mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj', namespace='', label='mypod-4cc70bb9-28e9-4184-af91-abc0384608b2', nodeSelector='', nodeUsageMode=NORMAL, workspaceVolume=EmptyDirWorkspaceVolume [memory=false], volumes=[org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume@149e53f5], containers=[ContainerTemplate{name='jnlp', image='jenkins/jnlp-slave:alpine', workingDir='/home/jenkins', command='/bin/sh', args='/var/jenkins_config/jenkins-agent', ttyEnabled=true, resourceRequestCpu='', resourceRequestMemory='', resourceLimitCpu='', resourceLimitMemory='', livenessProbe=org.csanchez.jenkins.plugins.kubernetes.ContainerLivenessProbe@171e5b0d}], yaml=
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    some-label: some-label-value
+spec:
+  containers:
+  - name: jnlp
+    image: 1234567890.dkr.ecr.us-east-1.amazonaws.com/jenkins-slave:1.0.0
+    command:
+    - /usr/local/bin/jenkins-slave
+    tty: true
+    securityContext:
+      runAsUser: 10000
+      allowPrivilegeEscalation: false
+}
+Mar 05, 2019 9:27:38 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Building connection to Kubernetes kubernetes URL null namespace null
+Mar 05, 2019 9:27:38 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Connected to Kubernetes kubernetes URL https://172.20.0.1:443/
+Mar 05, 2019 9:27:38 PM FINE org.csanchez.jenkins.plugins.kubernetes.PodTemplateBuilder build
+Adding workspace volume from template: EmptyDirWorkspaceVolume [memory=false]
+Mar 05, 2019 9:27:38 PM FINEST org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils parseFromYaml
+Parsed pod template from yaml: Pod(..., containers=[Container(args=[], command=[/usr/local/bin/jenkins-slave], env=[], envFrom=[], image=1234567890.dkr.ecr.us-east-1.amazonaws.com/jenkins-slave:1.0.0, ...)
+Mar 05, 2019 9:27:38 PM FINE org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils combine
+Combining pods, parent: Pod(..., containers=[Container(args=[], command=[/usr/local/bin/jenkins-slave], env=[], envFrom=[], image=1234567890.dkr.ecr.us-east-1.amazonaws.com/jenkins-slave:1.0.0, ...)
+Mar 05, 2019 9:27:38 PM FINE org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils combine
+Combining pods, template: Pod(..., image=jenkins/jnlp-slave:alpine, ...)
+Mar 05, 2019 9:27:38 PM FINE org.csanchez.jenkins.plugins.kubernetes.PodTemplateUtils combine
+Pods combined: Pod(..., image=jenkins/jnlp-slave:alpine, ...)
+Mar 05, 2019 9:27:38 PM FINE org.csanchez.jenkins.plugins.kubernetes.PodTemplateBuilder build
+Pod built: Pod(..., image=jenkins/jnlp-slave:alpine, ...)
+Mar 05, 2019 9:27:38 PM INFO okhttp3.internal.platform.Platform log
+ALPN callback dropped: HTTP/2 is disabled. Is alpn-boot on the boot class path?
+Mar 05, 2019 9:27:45 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesComputer taskAccepted
+ Computer KubernetesComputer name: mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1 slave: KubernetesSlave name: mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1 taskAccepted
+Mar 05, 2019 9:27:47 PM FINE org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerStepExecution start
+Starting container step.
+Mar 05, 2019 9:27:47 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Building connection to Kubernetes kubernetes URL null namespace null
+Mar 05, 2019 9:27:47 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Connected to Kubernetes kubernetes URL https://172.20.0.1:443/
+Mar 05, 2019 9:27:47 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1 launch
+Launch proc with environment: [AGENT_WORKDIR=/home/jenkins/agent, BUILD_DISPLAY_NAME=#11, BUILD_ID=11, BUILD_NUMBER=11, BUILD_TAG=jenkins-XXX-builds-test-slave-inline-11, BUILD_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/11/, CJOC_PORT=tcp://172.20.60.157:80, CJOC_PORT_50000_TCP=tcp://172.20.60.157:50000, CJOC_PORT_50000_TCP_ADDR=172.20.60.157, CJOC_PORT_50000_TCP_PORT=50000, CJOC_PORT_50000_TCP_PROTO=tcp, CJOC_PORT_80_TCP=tcp://172.20.60.157:80, CJOC_PORT_80_TCP_ADDR=172.20.60.157, CJOC_PORT_80_TCP_PORT=80, CJOC_PORT_80_TCP_PROTO=tcp, CJOC_SERVICE_HOST=172.20.60.157, CJOC_SERVICE_PORT=80, CJOC_SERVICE_PORT_HTTP=80, CJOC_SERVICE_PORT_JNLP=50000, CLASSPATH=, EXECUTOR_NUMBER=0, HOME=/home/jenkins, HOSTNAME=mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1, HUDSON_HOME=/var/jenkins_home, HUDSON_SERVER_COOKIE=5d867f4efe3e9676, HUDSON_URL=https://cloudbees.awesome-host.com/xxx/, JAVA_ALPINE_VERSION=8.181.13-r0, JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk, JAVA_VERSION=8u181, JENKINS_AGENT_NAME=mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1, JENKINS_HOME=/var/jenkins_home, JENKINS_NAME=mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1, JENKINS_NODE_COOKIE=799a267a-c602-440f-a281-5e20274b1429, JENKINS_SECRET=47a315e0c645de150bdc6fdc0cdf9a67f5380b97b875ec3c637b0559ef7e45d6, JENKINS_SERVER_COOKIE=please-do-not-kill-me, JENKINS_URL=https://cloudbees.awesome-host.com/xxx/, JOB_BASE_NAME=test-slave-inline, JOB_DISPLAY_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/display/redirect, JOB_NAME=XXX/builds/test-slave-inline, JOB_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/, KUBERNETES_PORT=tcp://172.20.0.1:443, KUBERNETES_PORT_443_TCP=tcp://172.20.0.1:443, KUBERNETES_PORT_443_TCP_ADDR=172.20.0.1, KUBERNETES_PORT_443_TCP_PORT=443, KUBERNETES_PORT_443_TCP_PROTO=tcp, KUBERNETES_SERVICE_HOST=172.20.0.1, KUBERNETES_SERVICE_PORT=443, KUBERNETES_SERVICE_PORT_HTTPS=443, LANG=C.UTF-8, LD_LIBRARY_PATH=/usr/lib/jvm/java-1.8-openjdk/jre/lib/amd64/server:/usr/lib/jvm/java-1.8-openjdk/jre/lib/amd64:/usr/lib/jvm/java-1.8-openjdk/jre/../lib/amd64, NODE_LABELS=mypod-4cc70bb9-28e9-4184-af91-abc0384608b2 mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1, NODE_NAME=mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1, PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin, PWD=/home/jenkins, RUN_CHANGES_DISPLAY_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/11/display/redirect?page=changes, RUN_DISPLAY_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/11/display/redirect, SHLVL=1, TEAMS_XXX_CORE_PORT=tcp://172.20.212.10:80, TEAMS_XXX_CORE_PORT_50001_TCP=tcp://172.20.212.10:50001, TEAMS_XXX_CORE_PORT_50001_TCP_ADDR=172.20.212.10, TEAMS_XXX_CORE_PORT_50001_TCP_PORT=50001, TEAMS_XXX_CORE_PORT_50001_TCP_PROTO=tcp, TEAMS_XXX_CORE_PORT_80_TCP=tcp://172.20.212.10:80, TEAMS_XXX_CORE_PORT_80_TCP_ADDR=172.20.212.10, TEAMS_XXX_CORE_PORT_80_TCP_PORT=80, TEAMS_XXX_CORE_PORT_80_TCP_PROTO=tcp, TEAMS_XXX_CORE_SERVICE_HOST=172.20.212.10, TEAMS_XXX_CORE_SERVICE_PORT=80, TEAMS_XXX_CORE_SERVICE_PORT_AGENT=50001, TEAMS_XXX_CORE_SERVICE_PORT_HTTP=80, TERM=xterm, WORKSPACE=/home/jenkins/workspace/XXX/builds/test-slave-inline, ciHelm_slave_label=alpine_small, default_slave_label=alpine_small, library.tmna-job-library.version=release/2.0]
+Mar 05, 2019 9:27:47 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1 waitUntilContainerIsReady
+Waiting until container is ready: cje/mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1
+Mar 05, 2019 9:27:47 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1 doLaunch
+Executing shell script inside container [jnlp] of pod [mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1]
+Mar 05, 2019 9:27:48 PM INFO okhttp3.internal.platform.Platform log
+ALPN callback dropped: HTTP/2 is disabled. Is alpn-boot on the boot class path?
+Mar 05, 2019 9:27:48 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1$1 onOpen
+onOpen : java.util.concurrent.CountDownLatch@59cc34c8[Count = 0]
+Mar 05, 2019 9:27:48 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1 doLaunch
+Launching with env vars: {BUILD_DISPLAY_NAME=#11, BUILD_ID=11, BUILD_NUMBER=11, BUILD_TAG=jenkins-XXX-builds-test-slave-inline-11, BUILD_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/11/, ciHelm_slave_label=alpine_small, CLASSPATH=, default_slave_label=alpine_small, EXECUTOR_NUMBER=0, HUDSON_HOME=/var/jenkins_home, HUDSON_SERVER_COOKIE=5d867f4efe3e9676, HUDSON_URL=https://cloudbees.awesome-host.com/xxx/, JENKINS_HOME=/var/jenkins_home, JENKINS_NODE_COOKIE=799a267a-c602-440f-a281-5e20274b1429, JENKINS_SERVER_COOKIE=please-do-not-kill-me, JENKINS_URL=https://cloudbees.awesome-host.com/xxx/, JOB_BASE_NAME=test-slave-inline, JOB_DISPLAY_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/display/redirect, JOB_NAME=XXX/builds/test-slave-inline, JOB_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/, library.tmna-job-library.version=release/2.0, NODE_LABELS=mypod-4cc70bb9-28e9-4184-af91-abc0384608b2 mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1, NODE_NAME=mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1, RUN_CHANGES_DISPLAY_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/11/display/redirect?page=changes, RUN_DISPLAY_URL=https://cloudbees.awesome-host.com/xxx/job/XXX/job/builds/job/test-slave-inline/11/display/redirect, WORKSPACE=/home/jenkins/workspace/XXX/builds/test-slave-inline}
+Mar 05, 2019 9:27:50 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator doExec
+Executing command: "nohup" "sh" "-c" "pid=\$\$; { while [ \( -d /proc/\$pid -o \! -d /proc/\$\$ \) -a -d '/home/jenkins/workspace/XXX/builds/test-slave-inline@tmp/durable-5d53fd08' -a \! -f '/home/jenkins/workspace/XXX/builds/test-slave-inline@tmp/durable-5d53fd08/jenkins-result.txt' ]; do touch '/home/jenkins/workspace/XXX/builds/test-slave-inline@tmp/durable-5d53fd08/jenkins-log.txt'; sleep 3; done } & jsc=durable-15f1b3567fadb5422673a1dcafb04340; JENKINS_SERVER_COOKIE=\$jsc '/bin/sh' -xe  '/home/jenkins/workspace/XXX/builds/test-slave-inline@tmp/durable-5d53fd08/script.sh' > '/home/jenkins/workspace/XXX/builds/test-slave-inline@tmp/durable-5d53fd08/jenkins-log.txt' 2>&1; echo \$? > '/home/jenkins/workspace/XXX/builds/test-slave-inline@tmp/durable-5d53fd08/jenkins-result.txt.tmp'; mv '/home/jenkins/workspace/XXX/builds/test-slave-inline@tmp/durable-5d53fd08/jenkins-result.txt.tmp' '/home/jenkins/workspace/XXX/builds/test-slave-inline@tmp/durable-5d53fd08/jenkins-result.txt'; wait" 
+exit
+
+Mar 05, 2019 9:27:50 PM INFO org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1 doLaunch
+Created process inside pod: [mypod-4cc70bb9-28e9-4184-af91-abc0384608b2-z52lj-bbmj1], container: [jnlp] with pid:[-1]
+Mar 05, 2019 9:27:53 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Building connection to Kubernetes kubernetes URL null namespace null
+Mar 05, 2019 9:27:53 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Connected to Kubernetes kubernetes URL https://172.20.0.1:443/
+Mar 05, 2019 9:27:53 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1$1 onClose
+onClose : java.util.concurrent.CountDownLatch@59cc34c8[Count = 0]
+Mar 05, 2019 9:27:55 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Building connection to Kubernetes kubernetes URL null namespace null
+Mar 05, 2019 9:27:55 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud connect
+Connected to Kubernetes kubernetes URL https://172.20.0.1:443/
+Mar 05, 2019 9:28:00 PM FINE hudson.model.AsyncPeriodicWork$1 run
+Started Purge expired KubernetesClients
+Mar 05, 2019 9:28:00 PM FINE hudson.model.AsyncPeriodicWork$1 run
+Finished Purge expired KubernetesClients. 6 ms

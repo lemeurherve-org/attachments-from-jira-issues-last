@@ -1,0 +1,224 @@
+Branch indexing
+[Pipeline] node
+Running on agent-1 in /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA
+[Pipeline] {
+Connecting to https://github.example.com/api/v3 using jenkins/****** (jenkins @ github.example.com readonly)
+[Pipeline] checkout
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from 2 remote Git repositories
+ > git config remote.origin.url https://github.example.com/acme-widgets-inc-supply-chain/supply-chain-portal.git # timeout=10
+Fetching upstream changes from https://github.example.com/acme-widgets-inc-supply-chain/supply-chain-portal.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials jenkins @ github.example.com readonly
+ > git fetch --tags --progress https://github.example.com/acme-widgets-inc-supply-chain/supply-chain-portal.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin1.url https://github.example.com/acme-widgets-inc-supply-chain/supply-chain-portal.git # timeout=10
+Fetching upstream changes from https://github.example.com/acme-widgets-inc-supply-chain/supply-chain-portal.git
+using GIT_ASKPASS to set credentials jenkins @ github.example.com readonly
+ > git fetch --tags --progress https://github.example.com/acme-widgets-inc-supply-chain/supply-chain-portal.git +refs/pull/*/head:refs/remotes/origin/pr/*
+Checking out Revision fdd13de7b230be379c6b8d75d05e270968efcabe (master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f fdd13de7b230be379c6b8d75d05e270968efcabe
+ > git rev-list d01fdbf18118f4472e783ad7cdb3ea61ffef54ce # timeout=10
+
+Could not update commit status. Message: {"message":"Must authenticate to access this API.","documentation_url":"https://developer.github.com/enterprise/2.9/v3"}
+
+[Pipeline] stage
+[Pipeline] { (Build and Deploy)
+[Pipeline] withMaven
+[withMaven] use JDK installation JDK8
+[withMaven] use Maven installation 'M3'
+[withMaven] use Maven settings provided by the Jenkins Managed Configuration File 'maven-settings-for-supply-chain-build-job' 
+[withMaven] use Maven settings.xml 'maven-settings-for-supply-chain-build-job' with Maven servers credentials provided by Jenkins (replaceAll: true): [mavenServerId: 'nexus.example.com', jenkinsCredentials: 'example-nexus-deployment-credentials', username: 'deployment', type: 'UsernamePasswordCredentialsImpl'], [mavenServerId: 'github.example.com', jenkinsCredentials: 'github-enterprise-api-token', username: 'dev1', type: 'UsernamePasswordCredentialsImpl']
+[withMaven] use Maven global settings provided by the Jenkins global configuration 'global-maven-settings' 
+[withMaven] use Maven global settings.xml 'global-maven-settings' with Maven servers credentials provided by Jenkins (replaceAll: false): [mavenServerId: 'global-credentials-bitbucket', jenkinsCredentials: 'bitbucket-credentials', username: 'cleclerc', type: 'UsernamePasswordCredentialsImpl']
+[Pipeline] {
+[Pipeline] sh
+[ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA] Running shell script
++ mvn clean deploy
+----- withMaven Wrapper script -----
+Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA@tmp/withMavenfae5d844/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA@tmp/withMavenfae5d844" 
+Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-10T16:41:47+00:00)
+Maven home: /home/ubuntu/jenkins/tools/hudson.tasks.Maven_MavenInstallation/M3
+Java version: 1.8.0_102, vendor: Oracle Corporation
+Java home: /home/ubuntu/jenkins/tools/hudson.model.JDK/JDK8/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "3.13.0-117-generic", arch: "amd64", family: "unix"
+[jenkins-maven-event-spy] INFO generate /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA@tmp/withMavenfae5d844/maven-spy-20170502-180825-41.log ...
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building supplychain-portal 0.0.16-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.6.1:clean (default-clean) @ supplychain-portal ---
+[INFO] Deleting /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ supplychain-portal ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ supplychain-portal ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ supplychain-portal ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ supplychain-portal ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.18.1:test (default-test) @ supplychain-portal ---
+[INFO] Surefire report directory: /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA@tmp/withMavenfae5d844/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA@tmp/withMavenfae5d844" 
+18:08:31.371 [main] DEBUG org.springframework.test.context.junit4.SpringJUnit4ClassRunner - SpringJUnit4ClassRunner constructor called with [class com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:31.397 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
+18:08:31.429 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
+18:08:31.491 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests] from class [org.springframework.boot.test.context.SpringBootTestContextBootstrapper]
+18:08:31.525 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests], using SpringBootContextLoader
+18:08:31.537 [main] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: class path resource [com/acmewidgets/supplychain/SupplychainPortalApplicationTests-context.xml] does not exist
+18:08:31.537 [main] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: class path resource [com/acmewidgets/supplychain/SupplychainPortalApplicationTestsContext.groovy] does not exist
+18:08:31.537 [main] INFO org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+18:08:31.543 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: SupplychainPortalApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+18:08:31.660 [main] DEBUG org.springframework.test.context.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:31.685 [main] DEBUG org.springframework.core.env.StandardEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+18:08:31.698 [main] DEBUG org.springframework.core.env.StandardEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+18:08:31.698 [main] DEBUG org.springframework.core.env.StandardEnvironment - Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+18:08:31.725 [main] DEBUG org.springframework.core.io.support.PathMatchingResourcePatternResolver - Resolved classpath location [com/acmewidgets/supplychain/] to resources [URL [file:/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/test-classes/com/acmewidgets/supplychain/], URL [file:/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/classes/com/acmewidgets/supplychain/]]
+18:08:31.737 [main] DEBUG org.springframework.core.io.support.PathMatchingResourcePatternResolver - Looking for matching resources in directory tree [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/test-classes/com/acmewidgets/supplychain]
+18:08:31.739 [main] DEBUG org.springframework.core.io.support.PathMatchingResourcePatternResolver - Searching directory [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/test-classes/com/acmewidgets/supplychain] for files matching pattern [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/test-classes/com/acmewidgets/supplychain/*.class]
+18:08:31.744 [main] DEBUG org.springframework.core.io.support.PathMatchingResourcePatternResolver - Looking for matching resources in directory tree [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/classes/com/acmewidgets/supplychain]
+18:08:31.751 [main] DEBUG org.springframework.core.io.support.PathMatchingResourcePatternResolver - Searching directory [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/classes/com/acmewidgets/supplychain] for files matching pattern [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/classes/com/acmewidgets/supplychain/*.class]
+18:08:31.753 [main] DEBUG org.springframework.core.io.support.PathMatchingResourcePatternResolver - Resolved location pattern [classpath*:com/acmewidgets/supplychain/*.class] to resources [file [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/test-classes/com/acmewidgets/supplychain/SupplychainPortalApplicationTests.class], file [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/classes/com/acmewidgets/supplychain/SupplychainPortalApplication.class]]
+18:08:31.892 [main] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/classes/com/acmewidgets/supplychain/SupplychainPortalApplication.class]
+18:08:31.897 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.acmewidgets.supplychain.SupplychainPortalApplication for test class com.acmewidgets.supplychain.SupplychainPortalApplicationTests
+18:08:31.913 [main] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - @TestExecutionListeners is not present for class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: using defaults.
+18:08:31.923 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+18:08:31.959 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Could not instantiate TestExecutionListener [org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttribute]
+18:08:31.973 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Could not instantiate TestExecutionListener [org.springframework.test.context.transaction.TransactionalTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/TransactionDefinition]
+18:08:31.974 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@fe18270, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@6fb0d3ed, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@6dde5c8c, org.springframework.test.context.support.DirtiesContextTestExecutionListener@5123a213, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@52525845, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@3b94d659, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@24b1d79b, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@68ceda24, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@281e3708, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@35a50a4c]
+18:08:31.980 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:31.987 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframework.test.annotation.SystemProfileValueSource] for class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+Running com.acmewidgets.supplychain.SupplychainPortalApplicationTests
+18:08:31.994 [main] DEBUG org.springframework.test.context.junit4.SpringJUnit4ClassRunner - SpringJUnit4ClassRunner constructor called with [class com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:31.995 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
+18:08:31.995 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
+18:08:31.998 [main] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests] from class [org.springframework.boot.test.context.SpringBootTestContextBootstrapper]
+18:08:31.999 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests], using SpringBootContextLoader
+18:08:31.999 [main] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: class path resource [com/acmewidgets/supplychain/SupplychainPortalApplicationTests-context.xml] does not exist
+18:08:32.000 [main] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: class path resource [com/acmewidgets/supplychain/SupplychainPortalApplicationTestsContext.groovy] does not exist
+18:08:32.001 [main] INFO org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+18:08:32.003 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: SupplychainPortalApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+18:08:32.031 [main] DEBUG org.springframework.test.context.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:32.031 [main] DEBUG org.springframework.core.env.StandardEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+18:08:32.032 [main] DEBUG org.springframework.core.env.StandardEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+18:08:32.032 [main] DEBUG org.springframework.core.env.StandardEnvironment - Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+18:08:32.032 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.acmewidgets.supplychain.SupplychainPortalApplication for test class com.acmewidgets.supplychain.SupplychainPortalApplicationTests
+18:08:32.038 [main] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - @TestExecutionListeners is not present for class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]: using defaults.
+18:08:32.049 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+18:08:32.063 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Could not instantiate TestExecutionListener [org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttribute]
+18:08:32.064 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Could not instantiate TestExecutionListener [org.springframework.test.context.transaction.TransactionalTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/TransactionDefinition]
+18:08:32.064 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@1188e820, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@2f490758, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@101df177, org.springframework.test.context.support.DirtiesContextTestExecutionListener@166fa74d, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@40f08448, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@276438c9, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@588df31b, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@33b37288, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@77a57272, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@7181ae3f]
+18:08:32.065 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:32.065 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframework.test.annotation.SystemProfileValueSource] for class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:32.066 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:32.066 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframework.test.annotation.SystemProfileValueSource] for class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:32.073 [main] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: context [DefaultTestContext@69a10787 testClass = SupplychainPortalApplicationTests, testInstance = [null], testMethod = [null], testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@2d127a61 testClass = SupplychainPortalApplicationTests, locations = '{}', classes = '{class com.acmewidgets.supplychain.SupplychainPortalApplication}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@56ef9176, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@ff5b51f, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3632be31], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]], class annotated with @DirtiesContext [false] with mode [null].
+18:08:32.084 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:32.084 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframework.test.annotation.SystemProfileValueSource] for class [com.acmewidgets.supplychain.SupplychainPortalApplicationTests]
+18:08:32.224 [main] DEBUG org.springframework.core.env.StandardEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+18:08:32.225 [main] DEBUG org.springframework.core.env.StandardEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+18:08:32.225 [main] DEBUG org.springframework.core.env.StandardEnvironment - Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+18:08:32.226 [main] DEBUG org.springframework.test.context.support.TestPropertySourceUtils - Adding inlined properties to environment: {spring.jmx.enabled=false, org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true, server.port=-1}
+18:08:32.227 [main] DEBUG org.springframework.core.env.StandardEnvironment - Adding [Inlined Test Properties] PropertySource with highest search precedence
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.4.3.RELEASE)
+
+2017-05-02 18:08:33.077  INFO 11445 --- [           main] c.a.s.SupplychainPortalApplicationTests  : Starting SupplychainPortalApplicationTests on ip-10-0-0-172 with PID 11445 (started by ubuntu in /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA)
+2017-05-02 18:08:33.081  INFO 11445 --- [           main] c.a.s.SupplychainPortalApplicationTests  : No active profile set, falling back to default profiles: default
+2017-05-02 18:08:33.192  INFO 11445 --- [           main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@3b0fe47a: startup date [Tue May 02 18:08:33 UTC 2017]; root of context hierarchy
+2017-05-02 18:08:36.836  INFO 11445 --- [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@3b0fe47a: startup date [Tue May 02 18:08:33 UTC 2017]; root of context hierarchy
+2017-05-02 18:08:36.956  INFO 11445 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-05-02 18:08:36.958  INFO 11445 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-05-02 18:08:37.029  INFO 11445 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-02 18:08:37.029  INFO 11445 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-02 18:08:37.104  INFO 11445 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-02 18:08:37.436  INFO 11445 --- [           main] c.a.s.SupplychainPortalApplicationTests  : Started SupplychainPortalApplicationTests in 5.183 seconds (JVM running for 6.937)
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.497 sec - in com.acmewidgets.supplychain.SupplychainPortalApplicationTests
+2017-05-02 18:08:37.499  INFO 11445 --- [       Thread-1] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@3b0fe47a: startup date [Tue May 02 18:08:33 UTC 2017]; root of context hierarchy
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-war-plugin:2.6:war (default-war) @ supplychain-portal ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [supplychain-portal] in [/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/supplychain-portal-0.0.16-SNAPSHOT]
+[INFO] Processing war project
+[INFO] Webapp assembled in [160 msecs]
+[INFO] Building war: /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/supplychain-portal-0.0.16-SNAPSHOT.war
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:1.4.3.RELEASE:repackage (default) @ supplychain-portal ---
+[INFO] 
+[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ supplychain-portal ---
+[INFO] Installing /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/target/supplychain-portal-0.0.16-SNAPSHOT.war to /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/.m2-repository/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/supplychain-portal-0.0.16-SNAPSHOT.war
+[INFO] Installing /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/pom.xml to /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA/.m2-repository/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/supplychain-portal-0.0.16-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ supplychain-portal ---
+[INFO] Downloading: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/maven-metadata.xml
+[INFO] Uploading: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/supplychain-portal-0.0.16-20170502.180841-1.war
+[INFO] Uploaded: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/supplychain-portal-0.0.16-20170502.180841-1.war (13870 KB at 11915.6 KB/sec)
+[INFO] Uploading: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/supplychain-portal-0.0.16-20170502.180841-1.pom
+[INFO] Uploaded: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/supplychain-portal-0.0.16-20170502.180841-1.pom (3 KB at 11.2 KB/sec)
+[INFO] Downloading: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/maven-metadata.xml
+[INFO] Downloaded: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/maven-metadata.xml (306 B at 4.0 KB/sec)
+[INFO] Uploading: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/maven-metadata.xml
+[INFO] Uploaded: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/maven-metadata.xml (798 B at 8.6 KB/sec)
+[INFO] Uploading: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/maven-metadata.xml
+[INFO] Uploaded: https://nexus.example.com/repository/maven-snapshots/com/acmewidgets/supplychain/supplychain-portal/maven-metadata.xml (347 B at 3.8 KB/sec)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 18.193 s
+[INFO] Finished at: 2017-05-02T18:08:43+00:00
+[INFO] Final Memory: 30M/73M
+[INFO] ------------------------------------------------------------------------
+[jenkins-maven-event-spy] INFO generated /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA@tmp/withMavenfae5d844/maven-spy-20170502-180825-41.log
+[Pipeline] step
+Archiving artifacts
+Compressed 13.54 MB of artifacts by 94.8% relative to #30
+[Pipeline] }
+[withMaven]  Evaluate Maven Spy logs: /home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA@tmp/withMavenfae5d844/maven-spy-20170502-180825-41.log
+[withMaven] Archive artifact pom.xml under com/acmewidgets/supplychain/supplychain-portal/0.0.16-SNAPSHOT/supplychain-portal-0.0.16-SNAPSHOT.pom
+[withMaven] Archive artifact target/supplychain-portal-0.0.16-SNAPSHOT.war under com/acmewidgets/supplychain/supplychain-portal/0.0.16-20170502.180841-1/supplychain-portal-0.0.16-20170502.180841-1.war
+Compressed 13.55 MB of artifacts by 94.8% relative to #30
+[withMaven] Archive test results for Maven artifact MavenArtifact{com.acmewidgets.supplychain:supplychain-portal::0.0.16-SNAPSHOT} generated by PluginInvocation{org.apache.maven.plugins:maven-surefire-plugin:2.18.1@test  default-test}: target/surefire-reports/*.xml
+Recording test results
+[withMaven] Scan Tasks for Maven artifact MavenArtifact{com.acmewidgets.supplychain:supplychain-portal::0.0.16-SNAPSHOT} in source directory src/main/java
+[TASKS] Scanning folder '/home/ubuntu/jenkins/workspace/ain-portal-app_build_master-7TLGENYN64XT2HCKL3QJCCHW3YTS6YMBXZK3SERUKELG7XQJFJWA' for files matching the pattern 'src/main/java/**/*' - excludes: null
+[TASKS] Found 1 files to scan for tasks
+[TASKS] Found 0 open tasks.
+[TASKS] Computing warning deltas based on reference build #30
+[Pipeline] // withMaven
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+
+Could not update commit status. Message: {"message":"Must authenticate to access this API.","documentation_url":"https://developer.github.com/enterprise/2.9/v3"}
+
+Finished: SUCCESS

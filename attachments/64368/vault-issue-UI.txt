@@ -1,0 +1,29 @@
+[Tue May 13 11:02:30 EDT 2025] Starting branch indexing...
+ERROR: [Tue May 13 11:02:30 EDT 2025] Could not update folder level actions from source e72dae70-1d56-4b31-96b6-4c65183418ca
+[Tue May 13 11:02:30 EDT 2025] Finished branch indexing. Indexing took 12 ms
+FATAL: Failed to recompute children of adp » Branch source - Bitbucket
+com.cloudbees.jenkins.plugins.bitbucket.api.BitbucketRequestException: HTTP request error.
+Status: 
+Response: {"errors":[{"context":null,"message":"You are not permitted to access this resource","exceptionName":"com.atlassian.bitbucket.AuthorisationException"}]}
+x-arequestid: *1SBZQCVx602x89559193x8
+cache-control: no-cache, no-transform
+vary: x-ausername,x-auserid,cookie,accept-encoding
+x-content-type-options: nosniff
+www-authenticate: OAuth realm="https%3A%2F%2Fbitbucket.fis.dev"
+content-type: application/json;charset=UTF-8
+transfer-encoding: chunked
+date: Tue, 13 May 2025 15:02:30 GMT
+	at PluginClassLoader for cloudbees-bitbucket-branch-source//com.cloudbees.jenkins.plugins.bitbucket.impl.client.AbstractBitbucketApi.buildResponseException(AbstractBitbucketApi.java:94)
+	at PluginClassLoader for cloudbees-bitbucket-branch-source//com.cloudbees.jenkins.plugins.bitbucket.impl.client.AbstractBitbucketApi.doRequest(AbstractBitbucketApi.java:260)
+	at PluginClassLoader for cloudbees-bitbucket-branch-source//com.cloudbees.jenkins.plugins.bitbucket.impl.client.AbstractBitbucketApi.getRequest(AbstractBitbucketApi.java:301)
+	at PluginClassLoader for cloudbees-bitbucket-branch-source//com.cloudbees.jenkins.plugins.bitbucket.server.client.BitbucketServerAPIClient.getRepository(BitbucketServerAPIClient.java:403)
+	at PluginClassLoader for cloudbees-bitbucket-branch-source//com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource.gatherPrimaryCloneLinks(BitbucketSCMSource.java:337)
+	at PluginClassLoader for cloudbees-bitbucket-branch-source//com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource.retrieveActions(BitbucketSCMSource.java:820)
+	at PluginClassLoader for scm-api//jenkins.scm.api.SCMSource.fetchActions(SCMSource.java:847)
+	at PluginClassLoader for branch-api//jenkins.branch.MultiBranchProject.computeChildren(MultiBranchProject.java:618)
+	at PluginClassLoader for cloudbees-folder//com.cloudbees.hudson.plugins.folder.computed.ComputedFolder.updateChildren(ComputedFolder.java:272)
+	at PluginClassLoader for cloudbees-folder//com.cloudbees.hudson.plugins.folder.computed.FolderComputation.run(FolderComputation.java:171)
+	at PluginClassLoader for branch-api//jenkins.branch.MultiBranchProject$BranchIndexing.run(MultiBranchProject.java:1064)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:446)
+Finished: FAILURE

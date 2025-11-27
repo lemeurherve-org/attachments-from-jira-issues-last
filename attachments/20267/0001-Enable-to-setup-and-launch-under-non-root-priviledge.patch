@@ -1,0 +1,119 @@
+From 01614be9a0b8c7f0e0a629ff9398d249666ffd9e Mon Sep 17 00:00:00 2001
+From: Masaki Muranaka <monaka@monami-software.com>
+Date: Sun, 27 Feb 2011 16:24:31 +0900
+Subject: [PATCH] Enable to setup and launch under non-root priviledge. (uses with sudo command).
+
+---
+ .../hudson/plugins/ec2/ssh/EC2UnixLauncher.java    |   46 ++++++++-----------
+ 1 files changed, 19 insertions(+), 27 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/ec2/ssh/EC2UnixLauncher.java b/src/main/java/hudson/plugins/ec2/ssh/EC2UnixLauncher.java
+index 90929ce..2628cd5 100644
+--- a/src/main/java/hudson/plugins/ec2/ssh/EC2UnixLauncher.java
++++ b/src/main/java/hudson/plugins/ec2/ssh/EC2UnixLauncher.java
+@@ -33,6 +33,13 @@ public class EC2UnixLauncher extends EC2ComputerLauncher {
+     private final int SAMEUSER=0;
+     private final int RECONNECT=-2;
+ 
++    protected String buildUpCommand(EC2Computer computer, String command) {
++    	if (!computer.getRemoteAdmin().equals("root")) {
++    		command = computer.getRootCommandPrefix() + " " + command;
++    	}
++    	return command;
++    }
++    
+     protected void launch(EC2Computer computer, PrintStream logger, Instance inst) throws IOException, EC2Exception, InterruptedException, S3ServiceException {
+         logger.println("Connecting to "+inst.getDnsName() + " on port " + computer.getSshPort());
+         final Connection bootstrapConn;
+@@ -51,7 +58,7 @@ public class EC2UnixLauncher extends EC2ComputerLauncher {
+                 // connect fresh as ROOT
+                 cleanupConn = connectToSsh(inst, computer.getSshPort(), logger);
+                 KeyPairInfo key = EC2Cloud.get().getKeyPair();
+-                if (!cleanupConn.authenticateWithPublicKey("root", key.getKeyMaterial().toCharArray(), "")) {
++                if (!cleanupConn.authenticateWithPublicKey(computer.getRemoteAdmin(), key.getKeyMaterial().toCharArray(), "")) {
+                     logger.println("Authentication failed");
+                     return; // failed to connect as root.
+                 }
+@@ -66,7 +73,7 @@ public class EC2UnixLauncher extends EC2ComputerLauncher {
+                 scp.put(initScript.getBytes("UTF-8"),"init.sh","/tmp","0700");
+                 Session sess = conn.openSession();
+                 sess.requestDumbPTY(); // so that the remote side bundles stdout and stderr
+-                sess.execCommand(computer.getRootCommandPrefix() + "/tmp/init.sh");
++                sess.execCommand(buildUpCommand(computer, "/tmp/init.sh"));
+ 
+                 sess.getStdin().close();    // nothing to write here
+                 sess.getStderr().close();   // we are not supposed to get anything from stderr
+@@ -78,9 +85,10 @@ public class EC2UnixLauncher extends EC2ComputerLauncher {
+                     return;
+                 }
+ 
+-                // leave the completion marker
+-                scp.put(new byte[0],".hudson-run-init","/","0600");
+-
++                // Needs a tty to run sudo.
++                sess = conn.openSession();
++                sess.requestDumbPTY(); // so that the remote side bundles stdout and stderr
++                sess.execCommand(buildUpCommand(computer, "touch ~/.hudson-run-init"));
+             }
+ 
+             // TODO: parse the version number. maven-enforcer-plugin might help
+@@ -92,17 +100,17 @@ public class EC2UnixLauncher extends EC2ComputerLauncher {
+                 String path = "/hudson-ci/jdk/linux-i586/" + jdk + ".tgz";
+ 
+                 URL url = EC2Cloud.get().buildPresignedURL(path);
+-                if(conn.exec("wget -nv -O /usr/" + jdk + ".tgz '" + url + "'", logger) !=0) {
++                if(conn.exec("wget -nv -O /tmp/" + jdk + ".tgz '" + url + "'", logger) !=0) {
+                     logger.println("Failed to download Java");
+                     return;
+                 }
+ 
+-                if(conn.exec("tar xz -C /usr -f /usr/" + jdk + ".tgz", logger) !=0) {
++                if(conn.exec(buildUpCommand(computer, "tar xz -C /usr -f /tmp/" + jdk + ".tgz"), logger) !=0) {
+                     logger.println("Failed to install Java");
+                     return;
+                 }
+ 
+-                if(conn.exec("ln -s /usr/" + jdk + "/bin/java /bin/java", logger) !=0) {
++                if(conn.exec(buildUpCommand(computer, "ln -s /usr/" + jdk + "/bin/java /bin/java"), logger) !=0) {
+                     logger.println("Failed to symlink Java");
+                     return;
+                 }
+@@ -117,7 +125,7 @@ public class EC2UnixLauncher extends EC2ComputerLauncher {
+ 
+             logger.println("Launching slave agent");
+             final Session sess = conn.openSession();
+-            sess.execCommand("java " + computer.getNode().jvmopts + " -jar /tmp/slave.jar");
++            sess.execCommand(buildUpCommand(computer, "java " + computer.getNode().jvmopts + " -jar /tmp/slave.jar"));
+             computer.setChannel(sess.getStdout(),sess.getStdin(),logger,new Listener() {
+                 public void onClosed(Channel channel, IOException cause) {
+                     sess.close();
+@@ -150,24 +158,8 @@ public class EC2UnixLauncher extends EC2ComputerLauncher {
+                 logger.println("Authentication failed");
+                 return FAILED;
+             }
+-            if (!computer.getRemoteAdmin().equals("root")) {
+-                // Get root working, so we can scp in etc.
+-                Session sess = bootstrapConn.openSession();
+-                sess.requestDumbPTY(); // so that the remote side bundles stdout and stderr
+-                sess.execCommand(computer.getRootCommandPrefix() + "cp ~/.ssh/authorized_keys /root/.ssh/");
+-                sess.getStdin().close(); // nothing to write here
+-                sess.getStderr().close(); // we are not supposed to get anything from stderr
+-                IOUtils.copy(sess.getStdout(), logger);
+-                int exitStatus = waitCompletion(sess);
+-                if (exitStatus != 0) {
+-                    logger.println("init script failed: exit code=" + exitStatus);
+-                    return FAILED;
+-                }
+-                return RECONNECT;
+-            } else {
+-                closeBootstrap = false;
+-                return SAMEUSER;
+-            }
++            closeBootstrap = false;
++            return SAMEUSER;
+         } finally {
+             if (closeBootstrap)
+                 bootstrapConn.close();
+-- 
+1.7.3.2
+

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.plugins.validating__string__parameter.ValidatingStringParameterDefinition plugin="validating-string-parameter@2.3">
+          <name>validStr</name>
+          <description>Enter the product version</description>
+          <defaultValue>1.2</defaultValue>
+          <regex>.*</regex>
+          <failedValidationMessage></failedValidationMessage>
+        </hudson.plugins.validating__string__parameter.ValidatingStringParameterDefinition>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.1">
+          <name>choiceParam1</name>
+          <description>Select action</description>
+          <randomName>choice-parameter-3448821162312</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>def result = []; // Return an empty list by default
+
+if ( validStr != null ) {
+  def v = validStr.trim().split( /\./ );
+
+  if ( v.size() &gt; 0 ) {
+      result = [&quot;A&quot;];
+  }
+  if ( v.size() &gt; 1 ) {
+    result.add( &quot;B&quot; );
+  }
+
+  result[0] += &quot;:selected&quot;; //Select the first choice by default
+}
+
+println( &quot;1: ${result}&quot; )
+return result;</script>
+            <fallbackScript>println( &quot; ---&gt; choiceParam1: Err&quot; );</fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>validStr</referencedParameters>
+          <choiceType>PT_RADIO</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.1">
+          <name>choiceParam2</name>
+          <description>Displays the value of &quot;choiceParam1&quot; parameter</description>
+          <randomName>choice-parameter-3448823490500</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>println( &quot;choiceParam1 = ${choiceParam1}&quot; );
+return [ choiceParam1 ];</script>
+            <fallbackScript>println( &quot; ---&gt; choiceParam2: Err&quot; );
+return [&quot;Err&quot;];</fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>choiceParam1</referencedParameters>
+          <choiceType>PT_RADIO</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders/>
+  <publishers/>
+  <buildWrappers/>
+</project>

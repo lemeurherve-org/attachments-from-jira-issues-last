@@ -1,0 +1,333 @@
+Index: src/main/java/hudson/plugins/active_directory/ActiveDirectoryAuthenticationProvider.java
+===================================================================
+--- src/main/java/hudson/plugins/active_directory/ActiveDirectoryAuthenticationProvider.java	(revision 32404)
++++ src/main/java/hudson/plugins/active_directory/ActiveDirectoryAuthenticationProvider.java	(working copy)
+@@ -1,5 +1,26 @@
+ package hudson.plugins.active_directory;
+ 
++import hudson.security.GroupDetails;
++import hudson.security.SecurityRealm;
++import hudson.tasks.MailAddressResolver;
++
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.List;
++import java.util.logging.Logger;
++
++import org.acegisecurity.AuthenticationException;
++import org.acegisecurity.BadCredentialsException;
++import org.acegisecurity.GrantedAuthority;
++import org.acegisecurity.GrantedAuthorityImpl;
++import org.acegisecurity.providers.AuthenticationProvider;
++import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
++import org.acegisecurity.providers.dao.AbstractUserDetailsAuthenticationProvider;
++import org.acegisecurity.userdetails.UserDetails;
++import org.acegisecurity.userdetails.UserDetailsService;
++import org.acegisecurity.userdetails.UsernameNotFoundException;
++import org.springframework.dao.DataAccessException;
++
+ import com4j.COM4J;
+ import com4j.Com4jObject;
+ import com4j.ComException;
+@@ -12,25 +33,7 @@
+ import com4j.typelibs.ado20._Command;
+ import com4j.typelibs.ado20._Connection;
+ import com4j.typelibs.ado20._Recordset;
+-import org.acegisecurity.AuthenticationException;
+-import org.acegisecurity.BadCredentialsException;
+-import org.acegisecurity.GrantedAuthority;
+-import org.acegisecurity.GrantedAuthorityImpl;
+-import org.acegisecurity.providers.AuthenticationProvider;
+-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+-import org.acegisecurity.providers.dao.AbstractUserDetailsAuthenticationProvider;
+-import org.acegisecurity.userdetails.UserDetails;
+-import org.acegisecurity.userdetails.UserDetailsService;
+-import org.acegisecurity.userdetails.UsernameNotFoundException;
+-import org.springframework.dao.DataAccessException;
+ 
+-import hudson.security.GroupDetails;
+-import hudson.security.SecurityRealm;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-import java.util.logging.Logger;
+-
+ /**
+  * {@link AuthenticationProvider} with Active Directory, plus {@link UserDetailsService}
+  *
+@@ -100,15 +103,31 @@
+             groups.add(new GrantedAuthorityImpl(grp.name().substring(3)));
+         }
+         groups.add(SecurityRealm.AUTHENTICATED_AUTHORITY);
+-        
++
+         return new ActiveDirectoryUserDetail(
+             username, password,
+             !usr.accountDisabled(),
+             true, true, true,
+-            groups.toArray(new GrantedAuthority[groups.size()])
++            groups.toArray(new GrantedAuthority[groups.size()]),
++            getUserAttributes(usr)
+         );
+     }
++    
++    /**
++	 * @param user looked up from Active Directory
++	 * @return basic list of user attributes to construct {@link ActiveDirectoryUserDetail} object
++	 */
++	private HashMap<UserAttribute, Object> getUserAttributes(IADsUser usr) {
++		HashMap<UserAttribute, Object> usrAttributes = new HashMap<UserAttribute, Object>();
++		usrAttributes.put(UserAttribute.EMAIL, usr.emailAddress());
++	    usrAttributes.put(UserAttribute.FIRSTNAME, usr.firstName());
++	    usrAttributes.put(UserAttribute.LASTNAME, usr.lastName());
++	    usrAttributes.put(UserAttribute.PHONE, usr.telephoneNumber());
++	    LOGGER.fine(usrAttributes.toString());
++		return usrAttributes;
++	}
+ 
++
+ 	protected String getDnOfUserOrGroup(String userOrGroupname) {
+ 		_Command cmd = ClassFactory.createCommand();
+         cmd.activeConnection(con);
+Index: src/main/java/hudson/plugins/active_directory/ActiveDirectoryMailAddressResolverImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/active_directory/ActiveDirectoryMailAddressResolverImpl.java	(revision 0)
++++ src/main/java/hudson/plugins/active_directory/ActiveDirectoryMailAddressResolverImpl.java	(revision 0)
+@@ -0,0 +1,55 @@
++package hudson.plugins.active_directory;
++
++import static hudson.plugins.active_directory.UserAttribute.EMAIL;
++import hudson.Extension;
++import hudson.model.Hudson;
++import hudson.model.User;
++import hudson.security.SecurityRealm;
++import hudson.tasks.MailAddressResolver;
++
++import java.util.logging.Level;
++import java.util.logging.Logger;
++
++import org.acegisecurity.AcegiSecurityException;
++import org.acegisecurity.userdetails.UsernameNotFoundException;
++import org.springframework.dao.DataAccessException;
++
++/**
++ * @author Animesh Banerjee
++ * 
++ *         If the security realm is Active Directory, try to pick up e-mail
++ *         address from it.
++ */
++@Extension
++public class ActiveDirectoryMailAddressResolverImpl extends
++		MailAddressResolver {
++	public String findMailAddressFor(User u) {
++		SecurityRealm realm = Hudson.getInstance().getSecurityRealm();
++		if(!(realm instanceof ActiveDirectorySecurityRealm)){
++			return null;
++		}   
++		try {
++			ActiveDirectoryUserDetail details = (ActiveDirectoryUserDetail) realm
++					.getSecurityComponents().userDetails.loadUserByUsername(u
++					.getId());
++			LOGGER.log(Level.FINE, "Email address = '"
++						+ details.getAttribute(EMAIL) + "'");
++				return details.getAttribute(UserAttribute.EMAIL).toString();
++		} catch (UsernameNotFoundException e) {
++			LOGGER.log(Level.FINE,
++					"Failed to look Active Directory for e-mail address", e);
++			return null;
++		} catch (DataAccessException e) {
++			LOGGER.log(Level.FINE,
++					"Failed to look Active Directory for e-mail address", e);
++			return null;
++		} catch (AcegiSecurityException e) {
++			LOGGER.log(Level.FINE,
++					"Failed to look up Active Directory for e-mail address", e);
++			return null;
++		}
++	}
++
++	private static final Logger LOGGER = Logger
++			.getLogger(ActiveDirectoryMailAddressResolverImpl.class.getName());
++}
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java
+===================================================================
+--- src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java	(revision 32404)
++++ src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java	(working copy)
+@@ -1,8 +1,32 @@
+ package hudson.plugins.active_directory;
+ 
++import static hudson.plugins.active_directory.UserAttribute.EMAIL;
++import static hudson.plugins.active_directory.UserAttribute.FIRSTNAME;
++import static hudson.plugins.active_directory.UserAttribute.LASTNAME;
++import static hudson.plugins.active_directory.UserAttribute.PHONE;
++import static javax.naming.directory.SearchControls.SUBTREE_SCOPE;
+ import hudson.security.GroupDetails;
+ import hudson.security.SecurityRealm;
+ import hudson.security.UserMayOrMayNotExistException;
++import hudson.tasks.MailAddressResolver;
++import hudson.util.Secret;
++
++import java.util.HashMap;
++import java.util.HashSet;
++import java.util.LinkedList;
++import java.util.List;
++import java.util.Set;
++import java.util.logging.Level;
++import java.util.logging.Logger;
++
++import javax.naming.NamingEnumeration;
++import javax.naming.NamingException;
++import javax.naming.directory.Attribute;
++import javax.naming.directory.Attributes;
++import javax.naming.directory.DirContext;
++import javax.naming.directory.SearchControls;
++import javax.naming.directory.SearchResult;
++
+ import org.acegisecurity.AuthenticationException;
+ import org.acegisecurity.AuthenticationServiceException;
+ import org.acegisecurity.BadCredentialsException;
+@@ -16,22 +40,6 @@
+ import org.acegisecurity.userdetails.UsernameNotFoundException;
+ import org.springframework.dao.DataAccessException;
+ 
+-import javax.naming.NamingEnumeration;
+-import javax.naming.NamingException;
+-import javax.naming.directory.Attribute;
+-import javax.naming.directory.Attributes;
+-import javax.naming.directory.DirContext;
+-import javax.naming.directory.SearchControls;
+-import javax.naming.directory.SearchResult;
+-import java.util.HashSet;
+-import java.util.LinkedList;
+-import java.util.List;
+-import java.util.Set;
+-import java.util.logging.Level;
+-import java.util.logging.Logger;
+-
+-import static javax.naming.directory.SearchControls.SUBTREE_SCOPE;
+-
+ /**
+  * {@link AuthenticationProvider} with Active Directory, through LDAP.
+  *
+@@ -50,7 +58,7 @@
+         this.domainNames = realm.domain.split(",");
+         this.site = realm.site;
+         this.bindName = realm.bindName;
+-        this.bindPassword = realm.bindPassword==null ? null : realm.bindPassword.toString();
++        this.bindPassword = Secret.toString(realm.bindPassword);
+         this.descriptor = realm.getDescriptor();
+     }
+ 
+@@ -171,7 +179,8 @@
+             return new ActiveDirectoryUserDetail(
+                 id, password,
+                 true, true, true, true,
+-                groups.toArray(new GrantedAuthority[groups.size()])
++                groups.toArray(new GrantedAuthority[groups.size()]),
++                getUserAttributes(result)
+             );
+         } catch (NamingException e) {
+             LOGGER.log(Level.WARNING,"Failed to retrieve user information for "+username,e);
+@@ -179,6 +188,20 @@
+         }
+     }
+ 
++	/**
++	 * @param result containing user attributes looked up via LDAP query from Active Directory
++	 * @return basic list of user attributes to construct {@link ActiveDirectoryUserDetail} object
++	 */
++	private HashMap<UserAttribute, Object> getUserAttributes(SearchResult result) {
++		HashMap<UserAttribute, Object> usrAttributes = new HashMap<UserAttribute, Object>();
++		usrAttributes.put(EMAIL, result.getAttributes().get(EMAIL.toString()));
++		usrAttributes.put(FIRSTNAME, result.getAttributes().get(FIRSTNAME.toString()));
++		usrAttributes.put(LASTNAME, result.getAttributes().get(LASTNAME.toString()));
++		usrAttributes.put(PHONE, result.getAttributes().get(PHONE.toString()));
++		LOGGER.fine(usrAttributes.toString());
++		return usrAttributes;
++	}
++
+     /**
+      * Returns the full user principal name of the form "joe@europe.contoso.com".
+      * 
+Index: src/main/java/hudson/plugins/active_directory/ActiveDirectoryUserDetail.java
+===================================================================
+--- src/main/java/hudson/plugins/active_directory/ActiveDirectoryUserDetail.java	(revision 32404)
++++ src/main/java/hudson/plugins/active_directory/ActiveDirectoryUserDetail.java	(working copy)
+@@ -1,5 +1,7 @@
+ package hudson.plugins.active_directory;
+ 
++import java.util.HashMap;
++
+ import org.acegisecurity.GrantedAuthority;
+ import org.acegisecurity.userdetails.User;
+ 
+@@ -7,9 +9,28 @@
+  * @author Kohsuke Kawaguchi
+  */
+ public class ActiveDirectoryUserDetail extends User {
+-    public ActiveDirectoryUserDetail(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, GrantedAuthority[] authorities) throws IllegalArgumentException {
+-        // Acegi doesn't like null password, but during remember-me processing we don't know the password.
+-        // so we need to set some dummy. See #1229
+-        super(username, password!=null?password:"PASSWORD", enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+-    }
+-}
++	private static final long serialVersionUID = 1L;
++
++	private HashMap<UserAttribute, Object> attributes = new HashMap<UserAttribute, Object>();
++
++	public ActiveDirectoryUserDetail(String username, String password,
++			boolean enabled, boolean accountNonExpired,
++			boolean credentialsNonExpired, boolean accountNonLocked,
++			GrantedAuthority[] authorities,
++			HashMap<UserAttribute, Object> userAttrs)
++			throws IllegalArgumentException {
++		// Acegi doesn't like null password, but during remember-me processing
++		// we don't know the password so we need to set some dummy. See #1229
++		super(username, password != null ? password : "PASSWORD", enabled,
++				accountNonExpired, credentialsNonExpired, accountNonLocked,
++				authorities);
++
++		if (userAttrs != null) {
++			attributes.putAll(userAttrs);
++		}
++	}
++
++	public Object getAttribute(UserAttribute attr) {
++		return attributes.get(attr);
++	}
++}
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/active_directory/UserAttribute.java
+===================================================================
+--- src/main/java/hudson/plugins/active_directory/UserAttribute.java	(revision 0)
++++ src/main/java/hudson/plugins/active_directory/UserAttribute.java	(revision 0)
+@@ -0,0 +1,27 @@
++package hudson.plugins.active_directory;
++/**
++ * Active directory attributes
++ * 
++ * @author Animesh Banerjee
++ * 
++ */
++public enum UserAttribute {
++	FIRSTNAME("givenName"), LASTNAME("sn"), EMAIL("mail"), PHONE(
++			"telephoneNumber");
++	private UserAttribute(String name) {
++		this.name = name;
++	}
++
++	private final String name;
++
++	/**
++	 * Returns the standard LDAP attribute name corresponding to the Active Directory attribute
++	 * 
++	 * e.g. returns <code>sn</code> for <code>LASTNAME</code>
++	 * @see java.lang.Enum#toString()
++	 */
++	@Override
++	public String toString() {
++		return name;
++	}
++}
+\ No newline at end of file

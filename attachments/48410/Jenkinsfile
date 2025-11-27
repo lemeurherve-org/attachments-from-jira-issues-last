@@ -1,0 +1,15 @@
+node {
+
+	stage('checkout') {
+		checkout scm
+	}
+	
+    stage('build') {
+		withMaven(maven: 'maven3') {
+			sh "mvn package"
+		}
+
+		sh "${tool 'git28'} push origin HEAD:${RELEASE}_integration"
+    }
+
+}

@@ -1,0 +1,93 @@
+From 2560168560a4aa026f09bf46e318bb95649eb8d9 Tue, 17 Jan 2012 14:16:29 +0100
+From: Eric Le Lay
+Date: Tue, 17 Jan 2012 14:12:20 +0100
+Subject: [PATCH] fix ClearCase dynamic view creation
+
+diff --git a/pom.xml b/pom.xml
+index e2e7f82..9af9b62 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1,11 +1,10 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ 	<modelVersion>4.0.0</modelVersion>
+-	<parent>
+-		<groupId>org.jvnet.hudson.plugins</groupId>
+-		<artifactId>plugin</artifactId>
+-		<version>1.392</version>
+-		<relativePath />
+-	</parent>
++	  <parent>
++	    <groupId>org.jenkins-ci.plugins</groupId>
++	    <artifactId>plugin</artifactId>
++	    <version>1.447</version><!-- which version of Jenkins is this plugin built against? -->
++	  </parent>
+ 
+ 	<artifactId>clearcase</artifactId>
+ 	<packaging>hpi</packaging>
+@@ -59,8 +58,8 @@
+ 		<developerConnection>scm:git:git@github.com:jenkinsci/clearcase-plugin.git</developerConnection>
+ 		<url>https://github.com/jenkinsci/clearcase-plugin</url>
+ 	</scm>
+-	<build>
+-		<plugins>
++	 <build>
++	<!--	<plugins>
+ 			<plugin>
+ 				<groupId>org.jvnet.hudson.tools</groupId>
+ 				<artifactId>maven-hpi-plugin</artifactId>
+@@ -107,7 +106,7 @@
+ 					<version>1.0-beta-1</version>
+ 				</plugin>
+ 			</plugins>
+-		</pluginManagement>
++		</pluginManagement> -->
+ 	</build>
+ 	<profiles>
+ 		<profile>
+@@ -140,4 +139,19 @@
+ 			<url>file:.</url>
+ 		</snapshotRepository>
+ 	</distributionManagement>
++	
++	  <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
++  <repositories>
++    <repository>
++      <id>m.g.o-public</id>
++      <url>http://maven.glassfish.org/content/groups/public/</url>
++    </repository>
++  </repositories>
++
++  <pluginRepositories>
++    <pluginRepository>
++      <id>m.g.o-public</id>
++      <url>http://maven.glassfish.org/content/groups/public/</url>
++    </pluginRepository>
++  </pluginRepositories>
+ </project>
+diff --git a/src/main/java/hudson/plugins/clearcase/ClearToolExec.java b/src/main/java/hudson/plugins/clearcase/ClearToolExec.java
+index 603fa2d..204f780 100644
+--- a/src/main/java/hudson/plugins/clearcase/ClearToolExec.java
++++ b/src/main/java/hudson/plugins/clearcase/ClearToolExec.java
+@@ -636,6 +636,10 @@
+             cmd.add(parameters.getViewPath());
+             break;
+         case Dynamic:
++        	// ELL: ajout du -auto
++            if (!isMetadataLocationDefinedInAdditionalParameters) {
++                cmd.add(parameters.getViewStorage().getCommandArguments());
++            }
+ 
+             break;
+         default:
+diff --git a/src/main/java/hudson/plugins/clearcase/action/UcmDynamicCheckoutAction.java b/src/main/java/hudson/plugins/clearcase/action/UcmDynamicCheckoutAction.java
+index 0c0bb44..bf1c7b2 100644
+--- a/src/main/java/hudson/plugins/clearcase/action/UcmDynamicCheckoutAction.java
++++ b/src/main/java/hudson/plugins/clearcase/action/UcmDynamicCheckoutAction.java
+@@ -182,6 +182,7 @@
+     private void prepareView(String viewTag, String stream) throws IOException, InterruptedException {
+         MkViewParameters params = new MkViewParameters();
+         params.setViewTag(viewTag);
++        params.setType(ViewType.Dynamic);
+         params.setStreamSelector(stream);
+         params.setViewStorage(viewStorage);
+         if (cleartool.doesViewExist(viewTag)) {

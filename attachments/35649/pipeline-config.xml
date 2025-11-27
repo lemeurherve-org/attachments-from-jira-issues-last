@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.9">
+  <actions/>
+  <description>See &lt;a href=&quot;https://confluence.cgm.ag/display/examiner/Build+pipeline&quot;&gt;build pipeline&lt;/a&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>GLOBAL</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <hudson.triggers.TimerTrigger>
+          <spec>H 22 * * 0-5</spec>
+        </hudson.triggers.TimerTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.23">
+    <script>node {
+    stage(&apos;Nightly build&apos;) {
+        build &apos;ihe_master_cd_110_build_checkout&apos;
+        build &apos;ihe_master_cd_120_build_clean&apos;
+        build &apos;ihe_master_cd_130_build_compile&apos;
+        build &apos;ihe_master_cd_140_build_databases&apos;
+    }
+
+    stage(&apos;Nightly test&apos;) {
+        parallel unitTest: {
+            build job: &apos;ihe_master_cd_210_test_unit&apos;, propagate: false
+        }, flexTest: {
+            build job: &apos;ihe_master_cd_211_test_flex&apos;, propagate: false
+        }, integrationTest: {
+            build job: &apos;ihe_master_cd_220_test_integration&apos;, propagate: false
+        }
+        
+        parallel stdTest: {
+            build job: &apos;ihe_master_cd_230_test_integration_standard&apos;, propagate: false
+        }, std2017Test: {
+            build job: &apos;ihe_master_cd_231_test_integration_standard_v2017&apos;, propagate: false
+        }, serTest: {
+            build job: &apos;ihe_master_cd_250_test_integration_ser&apos;, propagate: false
+        }, senseTest: {
+            build job: &apos;ihe_master_cd_260_test_integration_sense&apos;, propagate: false
+        }, samlTest: {
+            build job: &apos;ihe_master_cd_270_test_integration_saml&apos;, propagate: false
+        }, elgaTest: {
+            build job: &apos;ihe_master_cd_280_test_integration_elga&apos;, propagate: false
+        }, marvelTest: {
+            build job: &apos;ihe_master_cd_281_test_integration_marvel&apos;, propagate: false
+        }
+        
+        parallel tiani24Test: {
+            build job: &apos;ihe_master_cd_240_test_integration_tiani24&apos;, propagate: false
+        }, tiani30Test: {
+            build job: &apos;ihe_master_cd_241_test_integration_tiani30&apos;, propagate: false
+        }, tiani32Test: {
+            build job: &apos;ihe_master_cd_242_test_integration_tiani32&apos;, propagate: false
+        }, warTest: {
+            build job: &apos;ihe_master_cd_290_test_integration_war&apos;, propagate: false
+        }
+    }
+
+    stage(&apos;Nightly publish&apos;) {
+        build job: &apos;ihe_master_cd_300_publish&apos;, propagate: false
+    }
+
+    stage(&apos;Nightly analyse&apos;) {
+        parallel sonar: {
+            build job: &apos;ihe_master_cd_410_analyze_sonar&apos;, propagate: false
+        }, pom: {
+            build job: &apos;ihe_master_cd_420_analyze_poms&apos;, propagate: false
+        }
+        
+        build job: &apos;ihe_master_cd_430_analyze_jmeter&apos;, propagate: false
+    }
+
+    stage(&apos;Nightly publish site&apos;) {
+        build job: &apos;ihe_master_cd_500_publish_site&apos;, propagate: false
+    }
+    
+    ws(&apos;ihe_master_cd&apos;) {
+        junit allowEmptyResults: true, testResults: &apos;**/target/jasmine/TEST-*.xml,**/target/surefire-reports-unit/**/junitreports/TEST-*.xml,**/target/surefire-reports-it/**/junitreports/TEST-*.xml,**/target/surefire-reports-war/**/junitreports/TEST-*.xml,**/target/soapui/TEST-*.xml&apos;
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+</flow-definition>

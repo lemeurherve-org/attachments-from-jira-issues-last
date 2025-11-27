@@ -1,0 +1,86 @@
+Started by an SCM change
+[EnvInject] - Loading node environment variables.
+[EnvInject] - Preparing an environment for the build.
+[EnvInject] - Keeping Jenkins system variables.
+[EnvInject] - Keeping Jenkins build variables.
+[EnvInject] - Injecting contributions.
+Building remotely on 4ced2827ab6a@docker01 (jenkins-slave) in workspace /home/jenkins/workspace/openhab-sync-repos
+Cloning the remote Git repository
+Cloning repository ssh://git@github.com:22/openhab/openhab.git
+ > git init /home/jenkins/workspace/openhab-sync-repos # timeout=10
+Fetching upstream changes from ssh://git@github.com:22/openhab/openhab.git
+ > git --version # timeout=10
+using GIT_SSH to set credentials Jenkins Key (used to access git.dihei.ch and github/spali)
+ > git fetch --tags --progress ssh://git@github.com:22/openhab/openhab.git +refs/heads/*:refs/remotes/origin/* # timeout=30
+ > git config remote.origin.url ssh://git@github.com:22/openhab/openhab.git # timeout=10
+ > git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url ssh://git@github.com:22/openhab/openhab.git # timeout=10
+Fetching upstream changes from ssh://git@github.com:22/openhab/openhab.git
+using GIT_SSH to set credentials Jenkins Key (used to access git.dihei.ch and github/spali)
+ > git fetch --tags --progress ssh://git@github.com:22/openhab/openhab.git +refs/heads/*:refs/remotes/origin/* # timeout=30
+ > git config remote.target.url ssh://git@git.dihei.ch:10022/spali/openhab # timeout=10
+Fetching upstream changes from ssh://git@git.dihei.ch:10022/spali/openhab
+using GIT_SSH to set credentials Jenkins Key (used to access git.dihei.ch and github/spali)
+ > git fetch --tags --progress ssh://git@git.dihei.ch:10022/spali/openhab +refs/heads/*:refs/remotes/target/* # timeout=30
+ > git config remote.target2.url ssh://git@github.com:22/spali/openhab.git # timeout=10
+Fetching upstream changes from ssh://git@github.com:22/spali/openhab.git
+using GIT_SSH to set credentials Jenkins Key (used to access git.dihei.ch and github/spali)
+ > git fetch --tags --progress ssh://git@github.com:22/spali/openhab.git +refs/heads/*:refs/remotes/target2/* # timeout=30
+Seen branch in repository origin/1.5.1
+Seen branch in repository origin/master
+Seen branch in repository target/1.5.1
+Seen branch in repository target/DateTimeTypeTest
+Seen branch in repository target/master
+Seen branch in repository target2/1.5.1
+Seen branch in repository target2/DateTimeTypeTest
+Seen branch in repository target2/master
+Seen 8 remote branches
+Checking out Revision a00d54b5c6a1625ccf791aa0ad4b995dae1dbfb7 (origin/master, target2/master, target/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f a00d54b5c6a1625ccf791aa0ad4b995dae1dbfb7
+ > git rev-list a00d54b5c6a1625ccf791aa0ad4b995dae1dbfb7 # timeout=10
+ > git rev-list a00d54b5c6a1625ccf791aa0ad4b995dae1dbfb7 # timeout=10
+ > git rev-list a00d54b5c6a1625ccf791aa0ad4b995dae1dbfb7 # timeout=10
+[EnvInject] - Executing scripts and injecting environment variables after the SCM step.
+[EnvInject] - Executing and processing the following script content: 
+echo GIT_BRANCH_NAME=$(echo ${GIT_BRANCH#*/}) >>environments.properties
+
+[openhab-sync-repos] $ /bin/sh -xe /tmp/hudson734389332585677444.sh
++ echo master
++ echo GIT_BRANCH_NAME=master
+[EnvInject] - Script executed successfully.
+[EnvInject] - Injecting environment variables from a build step.
+[EnvInject] - Injecting as environment variables the properties file path 'environments.properties'
+[EnvInject] - Variables injected successfully.
+Pushing HEAD to branch master at repo target
+ > git push ${TargetUrl} HEAD:master
+ERROR: Failed to push branch master to target
+hudson.plugins.git.GitException: Command "git push ${TargetUrl} HEAD:master" returned status code 128:
+stdout: 
+stderr: Permission denied, please try again.
+Permission denied, please try again.
+Permission denied (publickey,password).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1437)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:1225)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.access$300(CliGitAPIImpl.java:87)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$7.execute(CliGitAPIImpl.java:1492)
+	at org.jenkinsci.plugins.gitclient.RemoteGitImpl$CommandInvocationHandler$1.call(RemoteGitImpl.java:153)
+	at org.jenkinsci.plugins.gitclient.RemoteGitImpl$CommandInvocationHandler$1.call(RemoteGitImpl.java:146)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:328)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+Build step 'Git Publisher' marked build as failure
+[BFA] Scanning build for known causes...
+
+[BFA] Done. 0s
+Finished: FAILURE

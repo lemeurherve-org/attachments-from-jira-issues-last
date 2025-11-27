@@ -1,0 +1,40 @@
+### Eclipse Workspace Patch 1.0
+#P hudson-trunk
+Index: hudson/main/maven-plugin/src/main/java/hudson/maven/MavenModule.java
+===================================================================
+--- hudson/main/maven-plugin/src/main/java/hudson/maven/MavenModule.java	(revision 28946)
++++ hudson/main/maven-plugin/src/main/java/hudson/maven/MavenModule.java	(working copy)
+@@ -84,6 +84,15 @@
+      */
+     private String version;
+ 
++    /**
++     * Packaging type of this module as of fhe last build, taken from {@link MavenProject#getPackaging()}.
++     *
++     * This field can be null if Hudson loaded old data
++     * that didn't record this information, so that situation
++     * needs to be handled gracefully.
++     */
++    private String packaging;
++
+     private transient ModuleName moduleName;
+ 
+     private String relativePath;
+@@ -244,6 +253,17 @@
+     }
+ 
+     /**
++     * Gets the packaging type in MAven POM as of the last build.
++     * 
++     *  @return
++     *  	 This method can return null, if null the default
++     *       packaging type of JAR is assumed.
++     */
++    public String getPackaging() {
++    	return packaging;
++    }
++
++    /**
+      * Gets the list of goals to execute for this module.
+      */
+     public String getGoals() {

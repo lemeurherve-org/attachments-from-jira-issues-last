@@ -1,0 +1,19 @@
+  stages {
+    stage('Source Control') {
+      when {
+        expression { return (currentBuild.result != 'ABORTED') }
+        beforeAgent true
+      }
+      agent { label "${BUILD_ARCH} && ${BUILD_OS}" }
+      steps {
+        cleanWs deleteDirs: true, disableDeferredWipeout: true
+        checkout_scm()
+        stash 'source'
+        script {
+          env.COMMITTER_EMAIL = get_scm_variable('committer_email')
+          echo "Committer email: ${COMMITTER_EMAIL}"
+          env.MERGED_BRANCH = get_merged_branch()
+          set_branch_and_trigger_variables()
+        }
+      }
+    }

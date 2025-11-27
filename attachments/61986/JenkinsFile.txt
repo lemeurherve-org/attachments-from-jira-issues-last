@@ -1,0 +1,46 @@
+pipeline {
+    parameters {
+        string(name: 'BUILD_DICT', description: 'Build dictionary in JSON format')
+    }
+    agent none
+    stages {
+        stage('prepare') {
+            steps {
+                script {
+                    env.build_dict_str = params.BUILD_DICT
+                    def build_dict = readJSON text: env.build_dict_str
+                    echo "build_dict: ${build_dict}"
+                    echo "build_products: ${build_dict.build_products}"
+                }
+            }
+        }
+        stage('parallel_stages') {
+            steps {
+                script {
+                    def build_dict = readJSON text: env.build_dict_str
+                    def build_products = build_dict.build_products
+                    parallel build_products.collectEntries { product ->
+                        ["build: ${product}" : {
+                            node("${build_dict.milestone} && ${product}") {
+                                dir("${product}/SCM") {
+                                    stage("setup_scm") {
+                                        echo "Setting up SCM for ${product}"
+                                    }
+                                    stage("pull_dp_code") {
+                                        echo "Pulling DP code for ${product}"
+                                        sh "echo Pull DP code for ${product}"
+                                    }
+                                }
+                            }
+                        }]
+                    }
+                }
+            }
+        }
+        stage('post_parallel') {
+            steps {
+                echo "complete"
+            }
+        }
+    }
+}

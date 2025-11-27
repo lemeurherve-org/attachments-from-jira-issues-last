@@ -1,0 +1,17 @@
+diff --git a/client/src/main/java/hudson/plugins/swarm/Client.java b/client/src/main/java/hudson/plugins/swarm/Client.java
+index c01f69c..6f24e8b 100644
+--- a/client/src/main/java/hudson/plugins/swarm/Client.java
++++ b/client/src/main/java/hudson/plugins/swarm/Client.java
+@@ -284,8 +284,10 @@ public class Client {
+ 
+             args.add("-url");
+             args.add(target.url);
+-            args.add("-credentials");
+-            args.add(username + ":" + password);
++            if (username != null && password != null) {
++                args.add("-credentials");
++                args.add(username + ":" + password);
++            }
+             args.add("-headless");
+             args.add("-noreconnect");
+ 

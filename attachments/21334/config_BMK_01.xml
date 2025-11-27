@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>60</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.CVSSCM">
+    <cvsroot>bmckeever@10.0.0.6:/usr/local/cvsroot</cvsroot>
+    <module>sitemanager</module>
+    <cvsRsh>ssh</cvsRsh>
+    <canUseUpdate>true</canUseUpdate>
+    <useHeadIfNotFound>false</useHeadIfNotFound>
+    <flatten>true</flatten>
+    <isTag>false</isTag>
+    <excludedRegions></excludedRegions>
+  </scm>
+  <quietPeriod>30</quietPeriod>
+  <assignedNode>linux&amp;&amp;findbugs</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Ant>
+      <targets>findbugs</targets>
+      <antOpts>-Xmx1024M</antOpts>
+    </hudson.tasks.Ant>
+  </builders>
+  <publishers>
+    <hudson.plugins.findbugs.FindBugsPublisher>
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <thresholdLimit>low</thresholdLimit>
+      <pluginName>[FINDBUGS] </pluginName>
+      <defaultEncoding>UTF-8</defaultEncoding>
+      <canRunOnFailed>false</canRunOnFailed>
+      <useDeltaValues>false</useDeltaValues>
+      <thresholds>
+        <unstableTotalAll></unstableTotalAll>
+        <unstableTotalHigh></unstableTotalHigh>
+        <unstableTotalNormal></unstableTotalNormal>
+        <unstableTotalLow></unstableTotalLow>
+        <failedTotalAll></failedTotalAll>
+        <failedTotalHigh></failedTotalHigh>
+        <failedTotalNormal></failedTotalNormal>
+        <failedTotalLow></failedTotalLow>
+      </thresholds>
+      <shouldDetectModules>false</shouldDetectModules>
+      <dontComputeNew>true</dontComputeNew>
+      <pattern>**/sm_findbug_results.fba</pattern>
+      <isRankActivated>false</isRankActivated>
+    </hudson.plugins.findbugs.FindBugsPublisher>
+    <org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
+      <groovyScript>[&quot;/home/jenkins/scripts/vm-suspend.sh&quot;, &quot;[ha-datacenter/datastore1] build-system-pool/bs-slave-01/bs-slave-01.vmx&quot;].execute().text</groovyScript>
+      <behavior>0</behavior>
+    </org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
+  </publishers>
+  <buildWrappers/>
+</project>

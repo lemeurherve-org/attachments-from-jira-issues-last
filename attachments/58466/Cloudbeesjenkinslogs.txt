@@ -1,0 +1,312 @@
+[centos@ip-10-68-197-214 ~]$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED             STATUS             PORTS                                            NAMES
+271c9f5163ba   ansible/jenkins   "/sbin/tini -- /usr/…"   About an hour ago   Up About an hour   0.0.0.0:50000->50000/tcp, 0.0.0.0:80->8080/tcp   jenkins
+[centos@ip-10-68-197-214 ~]$ docker logs 271c9f5163ba
+Running from: /usr/share/jenkins/jenkins.war
+webroot: EnvVars.masterEnvVars.get("JENKINS_HOME")
+2022-07-08 15:15:04.924+0000 [id=1]     INFO    org.eclipse.jetty.util.log.Log#initialized: Logging initialized @805ms to org.eclipse.jetty.util.log.JavaUtilLog
+2022-07-08 15:15:05.042+0000 [id=1]     INFO    winstone.Logger#logInternal: Beginning extraction from war file
+2022-07-08 15:15:05.090+0000 [id=1]     WARNING o.e.j.s.handler.ContextHandler#setContextPath: Empty contextPath
+2022-07-08 15:15:05.203+0000 [id=1]     INFO    org.eclipse.jetty.server.Server#doStart: jetty-9.4.43.v20210629; built: 2021-06-30T11:07:22.254Z; git: 526006ecfa3af7f1a27ef3a288e2bef7ea9dd7e8; jvm 11.0.14.1+1
+2022-07-08 15:15:10.245+0000 [id=1]     INFO    o.e.j.w.StandardDescriptorProcessor#visitServlet: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
+2022-07-08 15:15:10.656+0000 [id=1]     INFO    o.e.j.s.s.DefaultSessionIdManager#doStart: DefaultSessionIdManager workerName=node0
+2022-07-08 15:15:10.656+0000 [id=1]     INFO    o.e.j.s.s.DefaultSessionIdManager#doStart: No SessionScavenger set, using defaults
+2022-07-08 15:15:10.658+0000 [id=1]     INFO    o.e.j.server.session.HouseKeeper#startScavenging: node0 Scavenging every 600000ms
+2022-07-08 15:15:12.627+0000 [id=1]     INFO    hudson.WebAppMain#contextInitialized: Jenkins home directory: /var/jenkins_home found at: EnvVars.masterEnvVars.get("JENKINS_HOME")
+2022-07-08 15:15:13.357+0000 [id=1]     INFO    o.e.j.s.handler.ContextHandler#doStart: Started w.@3ecedf21{Jenkins v2.332.2,/,file:///var/jenkins_home/war/,AVAILABLE}{/var/jenkins_home/war}
+2022-07-08 15:15:13.397+0000 [id=1]     INFO    o.e.j.server.AbstractConnector#doStart: Started ServerConnector@408d971b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+2022-07-08 15:15:13.398+0000 [id=1]     INFO    org.eclipse.jetty.server.Server#doStart: Started @9281ms
+2022-07-08 15:15:13.414+0000 [id=23]    INFO    winstone.Logger#logInternal: Winstone Servlet Engine running: controlPort=disabled
+2022-07-08 15:15:14.387+0000 [id=29]    INFO    jenkins.InitReactorRunner$1#onAttained: Started initialization
+2022-07-08 15:15:14.753+0000 [id=28]    INFO    hudson.PluginManager#considerDetachedPlugin: Loading a detached plugin as a dependency: /var/jenkins_home/plugins/jdk-tool.jpi
+2022-07-08 15:15:24.717+0000 [id=32]    WARNING hudson.ClassicPluginStrategy#createClassJarFromWebInfClasses: Created /var/jenkins_home/plugins/built-on-column/WEB-INF/lib/classes.jar; update plugin to a version created with a newer harness
+2022-07-08 15:15:24.762+0000 [id=32]    INFO    hudson.PluginManager#considerDetachedPlugin: Loading a detached plugin as a dependency: /var/jenkins_home/plugins/matrix-auth.jpi
+2022-07-08 15:15:24.828+0000 [id=32]    INFO    hudson.PluginManager#considerDetachedPlugin: Loading a detached plugin as a dependency: /var/jenkins_home/plugins/windows-slaves.jpi
+2022-07-08 15:15:32.900+0000 [id=31]    INFO    jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+2022-07-08 15:15:46.568+0000 [id=28]    INFO    jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+2022-07-08 15:15:47.273+0000 [id=32]    INFO    jenkins.InitReactorRunner$1#onAttained: Started all plugins
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass (file:/var/jenkins_home/war/WEB-INF/lib/groovy-all-2.4.21.jar) to method java.lang.Object.finalize()
+WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.reflection.CachedClass
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-07-08 15:15:50.676+0000 [id=29]    INFO    jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+2022-07-08 15:15:51.101+0000 [id=31]    INFO    jenkins.InitReactorRunner$1#onAttained: System config loaded
+2022-07-08 15:16:06.426+0000 [id=32]    INFO    c.c.h.p.folder.AbstractFolder$3#call: Loading job WebComponents - Internal Release to Artifactory - Publish to npm-upc-snapshots-local/v0.0.36 (65300.0%)
+2022-07-08 15:16:06.438+0000 [id=31]    INFO    c.c.h.p.folder.AbstractFolder$3#call: Loading job test-data - Public Release/v1.4.0 (65400.0%)
+2022-07-08 15:16:19.019+0000 [id=28]    INFO    jenkins.InitReactorRunner$1#onAttained: System config adapted
+2022-07-08 15:16:19.992+0000 [id=29]    INFO    jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+2022-07-08 15:16:20.054+0000 [id=29]    WARNING o.j.r.u.AnonymousClassWarnings#warn: Attempt to (de-)serialize anonymous class hudson.plugins.ec2.EC2Cloud$1 in file:/var/jenkins_home/plugins/ec2/WEB-INF/lib/ec2.jar; see: https://jenkins.io/redirect/serialization-of-anonymous-classes/
+2022-07-08 15:16:20.061+0000 [id=31]    INFO    jenkins.InitReactorRunner$1#onAttained: Configuration for all jobs updated
+2022-07-08 15:16:20.088+0000 [id=53]    INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started Download metadata
+2022-07-08 15:16:20.105+0000 [id=53]    INFO    hudson.util.Retrier#start: Attempt #1 to do the action check updates server
+2022-07-08 15:16:21.271+0000 [id=28]    INFO    jenkins.InitReactorRunner$1#onAttained: Completed initialization
+2022-07-08 15:16:21.285+0000 [id=22]    WARNING j.branch.WorkspaceLocatorImpl#getWorkspaceRoot: JENKINS-2111 path sanitization ineffective when using legacy Workspace Root Directory ‘${ITEM_ROOTDIR}/workspace’; switch to ‘${JENKINS_HOME}/workspace/${ITEM_FULL_NAME}’ as in JENKINS-8446 / JENKINS-21942
+2022-07-08 15:16:21.309+0000 [id=22]    INFO    hudson.lifecycle.Lifecycle#onReady: Jenkins is fully up and running
+2022-07-08 15:16:36.111+0000 [id=53]    INFO    h.m.DownloadService$Downloadable#load: Obtained the updated data file for hudson.tasks.Maven.MavenInstaller
+2022-07-08 15:16:36.427+0000 [id=53]    INFO    h.m.DownloadService$Downloadable#load: Obtained the updated data file for hudson.plugins.sonar.MsBuildSonarQubeRunnerInstaller
+2022-07-08 15:16:36.728+0000 [id=53]    INFO    h.m.DownloadService$Downloadable#load: Obtained the updated data file for hudson.plugins.sonar.SonarRunnerInstaller
+2022-07-08 15:16:37.565+0000 [id=53]    INFO    h.m.DownloadService$Downloadable#load: Obtained the updated data file for hudson.tools.JDKInstaller
+2022-07-08 15:16:37.566+0000 [id=53]    INFO    hudson.util.Retrier#start: Performed the action check updates server successfully at the attempt #1
+2022-07-08 15:16:37.570+0000 [id=53]    INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished Download metadata. 17,479 ms
+2022-07-08 15:19:34.722+0000 [id=76]    INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 15:19:34.723+0000 [id=76]    INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 0 ms
+2022-07-08 15:29:34.722+0000 [id=92]    INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 15:29:34.722+0000 [id=92]    INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 0 ms
+2022-07-08 15:30:09.787+0000 [id=93]    WARNING hudson.security.csrf.CrumbFilter#doFilter: Found invalid crumb c7da9d7f6141cc69cdc3662470b1a45f3e18c5e93c7acb3d482c85af3aa2b67f. If you are calling this URL with a script, please use the API Token instead. More information: https://www.jenkins.io/redirect/crumb-cannot-be-used-for-script
+2022-07-08 15:30:09.788+0000 [id=93]    WARNING hudson.security.csrf.CrumbFilter#doFilter: No valid crumb was included in request for /computer/EC2%20%28Builder%29%20-%20UPC%20Jenkins%20Builder%20%28i-01d39ed9a4634ab55%29/ajaxExecutors by rahulkambojr. Returning 403.
+2022-07-08 15:30:11.531+0000 [id=16]    WARNING hudson.security.csrf.CrumbFilter#doFilter: Found invalid crumb c7da9d7f6141cc69cdc3662470b1a45f3e18c5e93c7acb3d482c85af3aa2b67f. If you are calling this URL with a script, please use the API Token instead. More information: https://www.jenkins.io/redirect/crumb-cannot-be-used-for-script
+2022-07-08 15:30:11.531+0000 [id=16]    WARNING hudson.security.csrf.CrumbFilter#doFilter: No valid crumb was included in request for /ajaxBuildQueue by rahulkambojr. Returning 403.
+2022-07-08 15:30:11.540+0000 [id=93]    WARNING hudson.security.csrf.CrumbFilter#doFilter: Found invalid crumb c7da9d7f6141cc69cdc3662470b1a45f3e18c5e93c7acb3d482c85af3aa2b67f. If you are calling this URL with a script, please use the API Token instead. More information: https://www.jenkins.io/redirect/crumb-cannot-be-used-for-script
+2022-07-08 15:30:11.540+0000 [id=93]    WARNING hudson.security.csrf.CrumbFilter#doFilter: No valid crumb was included in request for /ajaxExecutors by rahulkambojr. Returning 403.
+2022-07-08 15:30:12.336+0000 [id=93]    WARNING hudson.security.csrf.CrumbFilter#doFilter: Found invalid crumb c7da9d7f6141cc69cdc3662470b1a45f3e18c5e93c7acb3d482c85af3aa2b67f. If you are calling this URL with a script, please use the API Token instead. More information: https://www.jenkins.io/redirect/crumb-cannot-be-used-for-script
+2022-07-08 15:30:12.336+0000 [id=93]    WARNING hudson.security.csrf.CrumbFilter#doFilter: No valid crumb was included in request for /ajaxBuildQueue by rahulkambojr. Returning 403.
+2022-07-08 15:30:12.339+0000 [id=16]    WARNING hudson.security.csrf.CrumbFilter#doFilter: Found invalid crumb c7da9d7f6141cc69cdc3662470b1a45f3e18c5e93c7acb3d482c85af3aa2b67f. If you are calling this URL with a script, please use the API Token instead. More information: https://www.jenkins.io/redirect/crumb-cannot-be-used-for-script
+2022-07-08 15:30:12.339+0000 [id=16]    WARNING hudson.security.csrf.CrumbFilter#doFilter: No valid crumb was included in request for /ajaxExecutors by rahulkambojr. Returning 403.
+2022-07-08 15:31:57.995+0000 [id=99]    INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started Periodic background build discarder
+2022-07-08 15:31:58.209+0000 [id=99]    INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished Periodic background build discarder. 213 ms
+2022-07-08 15:34:30.075+0000 [id=43]    INFO    hudson.plugins.ec2.EC2Cloud#provision: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Attempting to provision agent needed by excess workload of 1 units
+2022-07-08 15:34:32.416+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#getImage: Getting image for request {ExecutableUsers: [],Filters: [],ImageIds: [ami-0d62bfc95a79935d6],Owners: [],}
+2022-07-08 15:34:32.491+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Considering launching
+2022-07-08 15:34:32.493+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#setupRootDevice: AMI had /dev/sda1
+2022-07-08 15:34:32.494+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#setupRootDevice: {DeleteOnTermination: true,Iops: 3000,SnapshotId: snap-094808f6a6a17259f,VolumeSize: 10,VolumeType: gp3,Throughput: 125,Encrypted: false}
+2022-07-08 15:34:32.494+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. EBS default encryption value set to: Based on AMI (null)
+2022-07-08 15:34:32.495+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Setting Instance Initiated Shutdown Behavior : ShutdownBehavior.Terminate
+2022-07-08 15:34:32.898+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Looking for existing instances with describe-instance: {Filters: [{Name: image-id,Values: [ami-0d62bfc95a79935d6]}, {Name: instance-type,Values: [t3.large]}, {Name: key-name,Values: [upc-jenkins]}, {Name: availability-zone,Values: [eu-west-1a]}, {Name: subnet-id,Values: [subnet-0618829c82bc8a86f]}, {Name: instance.group-id,Values: [sg-0aef74dd9a247a844]}, {Name: tag:Name,Values: [upc.Test.jenkins.slave]}, {Name: tag:jenkins_slave_type,Values: [demand_UPC Jenkins Builder]}, {Name: tag:jenkins_server_url,Values: [https://jenkins.dev.privacy.elsevier.com/]}],InstanceIds: [],}
+2022-07-08 15:34:34.140+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Return instance: {AmiLaunchIndex: 0,ImageId: ami-0d62bfc95a79935d6,InstanceId: i-0f758c8deb24e7047,InstanceType: t3.large,KeyName: upc-jenkins,LaunchTime: Fri Jul 08 15:34:33 UTC 2022,Monitoring: {State: disabled},Placement: {AvailabilityZone: eu-west-1a,GroupName: ,Tenancy: dedicated,},PrivateDnsName: ip-10-68-196-140.eu-west-1.compute.internal,PrivateIpAddress: 10.68.196.140,ProductCodes: [],PublicDnsName: ,State: {Code: 0,Name: pending},StateTransitionReason: ,SubnetId: subnet-0618829c82bc8a86f,VpcId: vpc-03fa76a89a01c8f81,Architecture: x86_64,BlockDeviceMappings: [],ClientToken: d63617a7-7870-4908-ab65-47e05b04db75,EbsOptimized: false,EnaSupport: true,Hypervisor: xen,IamInstanceProfile: {Arn: arn:aws:iam::435543970398:instance-profile/builder_agent_profile,Id: AIPAWK2DRSJPPD26XXH3Z},ElasticGpuAssociations: [],ElasticInferenceAcceleratorAssociations: [],NetworkInterfaces: [{Attachment: {AttachTime: Fri Jul 08 15:34:33 UTC 2022,AttachmentId: eni-attach-0816712d43a4ca6aa,DeleteOnTermination: true,DeviceIndex: 0,Status: attaching,NetworkCardIndex: 0},Description: ,Groups: [{GroupName: upc.Test.jenkins.ec2-sg,GroupId: sg-0aef74dd9a247a844}],Ipv6Addresses: [],MacAddress: 06:80:de:28:4d:fd,NetworkInterfaceId: eni-031ef8ec666a2d3c0,OwnerId: 435543970398,PrivateDnsName: ip-10-68-196-140.eu-west-1.compute.internal,PrivateIpAddress: 10.68.196.140,PrivateIpAddresses: [{Primary: true,PrivateDnsName: ip-10-68-196-140.eu-west-1.compute.internal,PrivateIpAddress: 10.68.196.140}],SourceDestCheck: true,Status: in-use,SubnetId: subnet-0618829c82bc8a86f,VpcId: vpc-03fa76a89a01c8f81,InterfaceType: interface,Ipv4Prefixes: [],Ipv6Prefixes: []}],RootDeviceName: /dev/sda1,RootDeviceType: ebs,SecurityGroups: [{GroupName: upc.Test.jenkins.ec2-sg,GroupId: sg-0aef74dd9a247a844}],SourceDestCheck: true,StateReason: {Code: pending,Message: pending},Tags: [{Key: jenkins_server_url,Value: https://jenkins.dev.privacy.elsevier.com/}, {Key: jenkins_slave_type,Value: demand_UPC Jenkins Builder}, {Key: Name,Value: upc.Test.jenkins.slave}],VirtualizationType: hvm,CpuOptions: {CoreCount: 1,ThreadsPerCore: 2},CapacityReservationSpecification: {CapacityReservationPreference: open,},Licenses: [],MetadataOptions: {State: pending,HttpTokens: optional,HttpPutResponseHopLimit: 1,HttpEndpoint: enabled,HttpProtocolIpv6: disabled,InstanceMetadataTags: disabled},EnclaveOptions: {Enabled: false},PrivateDnsNameOptions: {HostnameType: ip-name,EnableResourceNameDnsARecord: false,EnableResourceNameDnsAAAARecord: false},MaintenanceOptions: {AutoRecovery: default}}
+2022-07-08 15:34:34.142+0000 [id=43]    INFO    hudson.plugins.ec2.EC2Cloud#provision: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Attempting provision finished, excess workload: 0
+2022-07-08 15:34:34.142+0000 [id=43]    INFO    hudson.plugins.ec2.EC2Cloud#provision: We have now 1 computers, waiting for 1 more
+2022-07-08 15:34:34.142+0000 [id=43]    INFO    h.s.NodeProvisioner$StandardStrategyImpl#apply: Started provisioning EC2 (Builder) - UPC Jenkins Builder from ec2-Builder with 1 executors. Remaining excess workload: 0
+2022-07-08 15:34:39.349+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud$2#call: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'} Node EC2 (Builder) - UPC Jenkins Builder (i-0f758c8deb24e7047) moved to RUNNING state in 6 seconds and is ready to be connected by Jenkins
+2022-07-08 15:34:40.079+0000 [id=36]    INFO    h.p.ec2.EC2RetentionStrategy#start: Start requested for EC2 (Builder) - UPC Jenkins Builder (i-0f758c8deb24e7047)
+2022-07-08 15:34:40.081+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Launching instance: i-0f758c8deb24e7047
+2022-07-08 15:34:40.094+0000 [id=36]    INFO    hudson.slaves.NodeProvisioner#update: EC2 (Builder) - UPC Jenkins Builder provisioning successfully completed. We have now 2 computer(s)
+2022-07-08 15:34:40.098+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: bootstrap()
+2022-07-08 15:34:40.098+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Getting keypair...
+2022-07-08 15:34:40.150+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Using private key upc-jenkins (SHA-1 fingerprint f9:a6:41:6a:17:5d:07:11:1b:bf:f6:cd:2d:3e:ea:ab:e2:3e:56:62)
+2022-07-08 15:34:40.151+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Authenticating as centos
+2022-07-08 15:34:40.230+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connecting to 10.68.196.140 on port 22, with timeout 10000.
+2022-07-08 15:34:50.262+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Failed to connect via ssh: The kexTimeout (10000 ms) expired.
+2022-07-08 15:34:50.263+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Waiting for SSH to come up. Sleeping 5.
+2022-07-08 15:34:55.311+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connecting to 10.68.196.140 on port 22, with timeout 10000.
+2022-07-08 15:34:58.317+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Failed to connect via ssh: There was a problem while connecting to 10.68.196.140:22
+2022-07-08 15:34:58.317+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Waiting for SSH to come up. Sleeping 5.
+2022-07-08 15:35:03.374+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connecting to 10.68.196.140 on port 22, with timeout 10000.
+2022-07-08 15:35:03.496+0000 [id=155]   INFO    hudson.plugins.ec2.EC2Cloud#log: The SSH key ssh-ed25519 0a:d9:83:94:a3:7f:96:ae:af:44:b9:2c:a2:78:ef:32 has been automatically trusted for connections to EC2 (Builder) - UPC Jenkins Builder (i-0f758c8deb24e7047)
+2022-07-08 15:35:03.553+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connected via SSH.
+2022-07-08 15:35:03.742+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: connect fresh as root
+2022-07-08 15:35:03.799+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connecting to 10.68.196.140 on port 22, with timeout 10000.
+2022-07-08 15:35:03.834+0000 [id=157]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connection allowed after the host key has been verified
+2022-07-08 15:35:03.847+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connected via SSH.
+2022-07-08 15:35:03.988+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Creating tmp directory (/tmp) if it does not exist
+2022-07-08 15:35:04.167+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Executing init script
+2022-07-08 15:36:24.434+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Creating ~/.hudson-run-init
+2022-07-08 15:36:24.511+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Verifying: java -fullversion
+2022-07-08 15:36:24.569+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Installing: sudo yum install -y java-1.8.0-openjdk.x86_64
+2022-07-08 15:36:47.466+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Verifying: which scp
+2022-07-08 15:36:47.494+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Copying remoting.jar to: /tmp
+2022-07-08 15:36:47.691+0000 [id=144]   INFO    hudson.plugins.ec2.EC2Cloud#log: Launching remoting agent (via Trilead SSH2 Connection):  java  -jar /tmp/remoting.jar -workDir /tmp
+2022-07-08 15:37:07.939+0000 [id=247]   WARNING c.c.j.GitHubRepositoryName$1#applyNullSafe: Failed to obtain repository com.cloudbees.jenkins.GitHubRepositoryName$1@70b7390e
+org.kohsuke.github.HttpException: {"message":"Resource protected by organization SAML enforcement. You must grant your Personal Access token access to an organization within this business.","documentation_url":"https://docs.github.com/articles/authenticating-to-a-github-organization-with-saml-single-sign-on/"}
+        at org.kohsuke.github.GitHubConnectorResponseErrorHandler$1.onError(GitHubConnectorResponseErrorHandler.java:56)
+        at org.kohsuke.github.GitHubClient.detectKnownErrors(GitHubClient.java:424)
+        at org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:386)
+        at org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:355)
+        at org.kohsuke.github.Requester.fetch(Requester.java:76)
+        at org.kohsuke.github.GHRepository.read(GHRepository.java:131)
+        at org.kohsuke.github.GitHub.getRepository(GitHub.java:673)
+        at com.cloudbees.jenkins.GitHubRepositoryName$1.applyNullSafe(GitHubRepositoryName.java:227)
+        at com.cloudbees.jenkins.GitHubRepositoryName$1.applyNullSafe(GitHubRepositoryName.java:223)
+        at org.jenkinsci.plugins.github.util.misc.NullSafeFunction.apply(NullSafeFunction.java:18)
+        at com.google.common.collect.Iterators$6.transform(Iterators.java:826)
+        at com.google.common.collect.TransformedIterator.next(TransformedIterator.java:52)
+        at com.google.common.collect.Iterators$5.computeNext(Iterators.java:669)
+        at com.google.common.collect.AbstractIterator.tryToComputeNext(AbstractIterator.java:146)
+        at com.google.common.collect.AbstractIterator.hasNext(AbstractIterator.java:141)
+        at com.google.common.collect.Iterators$ConcatenatedIterator.hasNext(Iterators.java:1395)
+        at com.google.common.collect.Iterators.addAll(Iterators.java:366)
+        at com.google.common.collect.Lists.newArrayList(Lists.java:147)
+        at com.google.common.collect.Lists.newArrayList(Lists.java:133)
+        at org.jenkinsci.plugins.github.util.FluentIterableWrapper.toList(FluentIterableWrapper.java:148)
+        at org.jenkinsci.plugins.github.status.sources.ManuallyEnteredRepositorySource.repos(ManuallyEnteredRepositorySource.java:51)
+        at org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter.perform(GitHubCommitStatusSetter.java:136)
+        at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+        at org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:101)
+        at org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:71)
+        at org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:47)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+2022-07-08 15:39:34.721+0000 [id=351]   INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 15:39:34.827+0000 [id=351]   INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 105 ms
+2022-07-08 15:42:52.042+0000 [id=421]   INFO    o.j.p.workflow.job.WorkflowRun#finish: Web Application Deployment/UPC-1254 #8 completed: ABORTED
+2022-07-08 15:42:52.292+0000 [id=421]   WARNING j.p.slack.StandardSlackService#postToSlack: Slack post may have failed. Response: null
+2022-07-08 15:42:52.292+0000 [id=421]   WARNING j.p.slack.StandardSlackService#postToSlack: Response Code: 400
+2022-07-08 15:44:56.332+0000 [id=34]    INFO    h.p.ec2.EC2RetentionStrategy#internalCheck: External Stop of EC2 (Builder) - UPC Jenkins Builder (i-0f758c8deb24e7047) detected - disconnecting. instance statusTERMINATED
+2022-07-08 15:46:50.072+0000 [id=43]    INFO    hudson.plugins.ec2.EC2Cloud#provision: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Attempting to provision agent needed by excess workload of 1 units
+2022-07-08 15:46:50.326+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#getImage: Getting image for request {ExecutableUsers: [],Filters: [],ImageIds: [ami-0d62bfc95a79935d6],Owners: [],}
+2022-07-08 15:46:50.383+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Considering launching
+2022-07-08 15:46:50.383+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#setupRootDevice: AMI had /dev/sda1
+2022-07-08 15:46:50.383+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#setupRootDevice: {DeleteOnTermination: true,Iops: 3000,SnapshotId: snap-094808f6a6a17259f,VolumeSize: 10,VolumeType: gp3,Throughput: 125,Encrypted: false}
+2022-07-08 15:46:50.383+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. EBS default encryption value set to: Based on AMI (null)
+2022-07-08 15:46:50.384+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Setting Instance Initiated Shutdown Behavior : ShutdownBehavior.Terminate
+2022-07-08 15:46:50.631+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Looking for existing instances with describe-instance: {Filters: [{Name: image-id,Values: [ami-0d62bfc95a79935d6]}, {Name: instance-type,Values: [t3.large]}, {Name: key-name,Values: [upc-jenkins]}, {Name: availability-zone,Values: [eu-west-1a]}, {Name: subnet-id,Values: [subnet-0618829c82bc8a86f]}, {Name: instance.group-id,Values: [sg-0aef74dd9a247a844]}, {Name: tag:Name,Values: [upc.Test.jenkins.slave]}, {Name: tag:jenkins_slave_type,Values: [demand_UPC Jenkins Builder]}, {Name: tag:jenkins_server_url,Values: [https://jenkins.dev.privacy.elsevier.com/]}],InstanceIds: [],}
+2022-07-08 15:46:51.735+0000 [id=43]    INFO    hudson.plugins.ec2.SlaveTemplate#logProvisionInfo: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Return instance: {AmiLaunchIndex: 0,ImageId: ami-0d62bfc95a79935d6,InstanceId: i-031bd027c3fbf4370,InstanceType: t3.large,KeyName: upc-jenkins,LaunchTime: Fri Jul 08 15:46:51 UTC 2022,Monitoring: {State: disabled},Placement: {AvailabilityZone: eu-west-1a,GroupName: ,Tenancy: dedicated,},PrivateDnsName: ip-10-68-196-129.eu-west-1.compute.internal,PrivateIpAddress: 10.68.196.129,ProductCodes: [],PublicDnsName: ,State: {Code: 0,Name: pending},StateTransitionReason: ,SubnetId: subnet-0618829c82bc8a86f,VpcId: vpc-03fa76a89a01c8f81,Architecture: x86_64,BlockDeviceMappings: [],ClientToken: 7b2ca275-633b-4669-a739-b340e390a2f0,EbsOptimized: false,EnaSupport: true,Hypervisor: xen,IamInstanceProfile: {Arn: arn:aws:iam::435543970398:instance-profile/builder_agent_profile,Id: AIPAWK2DRSJPPD26XXH3Z},ElasticGpuAssociations: [],ElasticInferenceAcceleratorAssociations: [],NetworkInterfaces: [{Attachment: {AttachTime: Fri Jul 08 15:46:51 UTC 2022,AttachmentId: eni-attach-0ca18e1d2ccb75373,DeleteOnTermination: true,DeviceIndex: 0,Status: attaching,NetworkCardIndex: 0},Description: ,Groups: [{GroupName: upc.Test.jenkins.ec2-sg,GroupId: sg-0aef74dd9a247a844}],Ipv6Addresses: [],MacAddress: 06:42:2e:3d:6e:95,NetworkInterfaceId: eni-010bdf2f94e6b48b8,OwnerId: 435543970398,PrivateDnsName: ip-10-68-196-129.eu-west-1.compute.internal,PrivateIpAddress: 10.68.196.129,PrivateIpAddresses: [{Primary: true,PrivateDnsName: ip-10-68-196-129.eu-west-1.compute.internal,PrivateIpAddress: 10.68.196.129}],SourceDestCheck: true,Status: in-use,SubnetId: subnet-0618829c82bc8a86f,VpcId: vpc-03fa76a89a01c8f81,InterfaceType: interface,Ipv4Prefixes: [],Ipv6Prefixes: []}],RootDeviceName: /dev/sda1,RootDeviceType: ebs,SecurityGroups: [{GroupName: upc.Test.jenkins.ec2-sg,GroupId: sg-0aef74dd9a247a844}],SourceDestCheck: true,StateReason: {Code: pending,Message: pending},Tags: [{Key: Name,Value: upc.Test.jenkins.slave}, {Key: jenkins_slave_type,Value: demand_UPC Jenkins Builder}, {Key: jenkins_server_url,Value: https://jenkins.dev.privacy.elsevier.com/}],VirtualizationType: hvm,CpuOptions: {CoreCount: 1,ThreadsPerCore: 2},CapacityReservationSpecification: {CapacityReservationPreference: open,},Licenses: [],MetadataOptions: {State: pending,HttpTokens: optional,HttpPutResponseHopLimit: 1,HttpEndpoint: enabled,HttpProtocolIpv6: disabled,InstanceMetadataTags: disabled},EnclaveOptions: {Enabled: false},PrivateDnsNameOptions: {HostnameType: ip-name,EnableResourceNameDnsARecord: false,EnableResourceNameDnsAAAARecord: false},MaintenanceOptions: {AutoRecovery: default}}
+2022-07-08 15:46:51.735+0000 [id=43]    INFO    hudson.plugins.ec2.EC2Cloud#provision: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'}. Attempting provision finished, excess workload: 0
+2022-07-08 15:46:51.735+0000 [id=43]    INFO    hudson.plugins.ec2.EC2Cloud#provision: We have now 2 computers, waiting for 1 more
+2022-07-08 15:46:51.736+0000 [id=43]    INFO    h.s.NodeProvisioner$StandardStrategyImpl#apply: Started provisioning EC2 (Builder) - UPC Jenkins Builder from ec2-Builder with 1 executors. Remaining excess workload: 0
+2022-07-08 15:46:56.919+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud$2#call: SlaveTemplate{description='UPC Jenkins Builder', labels='builder'} Node EC2 (Builder) - UPC Jenkins Builder (i-031bd027c3fbf4370) moved to RUNNING state in 5 seconds and is ready to be connected by Jenkins
+2022-07-08 15:47:00.073+0000 [id=27]    INFO    h.p.ec2.EC2RetentionStrategy#start: Start requested for EC2 (Builder) - UPC Jenkins Builder (i-031bd027c3fbf4370)
+2022-07-08 15:47:00.073+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Launching instance: i-031bd027c3fbf4370
+2022-07-08 15:47:00.074+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: bootstrap()
+2022-07-08 15:47:00.074+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Getting keypair...
+2022-07-08 15:47:00.085+0000 [id=27]    INFO    hudson.slaves.NodeProvisioner#update: EC2 (Builder) - UPC Jenkins Builder provisioning successfully completed. We have now 3 computer(s)
+2022-07-08 15:47:00.123+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Using private key upc-jenkins (SHA-1 fingerprint f9:a6:41:6a:17:5d:07:11:1b:bf:f6:cd:2d:3e:ea:ab:e2:3e:56:62)
+2022-07-08 15:47:00.123+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Authenticating as centos
+2022-07-08 15:47:00.183+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connecting to 10.68.196.129 on port 22, with timeout 10000.
+2022-07-08 15:47:10.185+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Failed to connect via ssh: The kexTimeout (10000 ms) expired.
+2022-07-08 15:47:10.185+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Waiting for SSH to come up. Sleeping 5.
+2022-07-08 15:47:15.243+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connecting to 10.68.196.129 on port 22, with timeout 10000.
+2022-07-08 15:47:15.246+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Failed to connect via ssh: There was a problem while connecting to 10.68.196.129:22
+2022-07-08 15:47:15.246+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Waiting for SSH to come up. Sleeping 5.
+2022-07-08 15:47:20.320+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connecting to 10.68.196.129 on port 22, with timeout 10000.
+2022-07-08 15:47:20.385+0000 [id=484]   INFO    hudson.plugins.ec2.EC2Cloud#log: The SSH key ssh-ed25519 17:c4:e8:b9:6c:08:9d:5f:ff:77:67:ba:37:cd:99:a6 has been automatically trusted for connections to EC2 (Builder) - UPC Jenkins Builder (i-031bd027c3fbf4370)
+2022-07-08 15:47:20.396+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connected via SSH.
+2022-07-08 15:47:20.551+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: connect fresh as root
+2022-07-08 15:47:20.681+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connecting to 10.68.196.129 on port 22, with timeout 10000.
+2022-07-08 15:47:20.716+0000 [id=486]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connection allowed after the host key has been verified
+2022-07-08 15:47:20.726+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Connected via SSH.
+2022-07-08 15:47:20.848+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Creating tmp directory (/tmp) if it does not exist
+2022-07-08 15:47:21.015+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Executing init script
+2022-07-08 15:48:31.847+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Creating ~/.hudson-run-init
+2022-07-08 15:48:31.885+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Verifying: java -fullversion
+2022-07-08 15:48:31.954+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Verifying: which scp
+2022-07-08 15:48:32.022+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Copying remoting.jar to: /tmp
+2022-07-08 15:48:32.222+0000 [id=475]   INFO    hudson.plugins.ec2.EC2Cloud#log: Launching remoting agent (via Trilead SSH2 Connection):  java  -jar /tmp/remoting.jar -workDir /tmp
+2022-07-08 15:48:47.342+0000 [id=552]   WARNING c.c.j.GitHubRepositoryName$1#applyNullSafe: Failed to obtain repository com.cloudbees.jenkins.GitHubRepositoryName$1@2b10bf5
+org.kohsuke.github.HttpException: {"message":"Resource protected by organization SAML enforcement. You must grant your Personal Access token access to an organization within this business.","documentation_url":"https://docs.github.com/articles/authenticating-to-a-github-organization-with-saml-single-sign-on/"}
+        at org.kohsuke.github.GitHubConnectorResponseErrorHandler$1.onError(GitHubConnectorResponseErrorHandler.java:56)
+        at org.kohsuke.github.GitHubClient.detectKnownErrors(GitHubClient.java:424)
+        at org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:386)
+        at org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:355)
+        at org.kohsuke.github.Requester.fetch(Requester.java:76)
+        at org.kohsuke.github.GHRepository.read(GHRepository.java:131)
+        at org.kohsuke.github.GitHub.getRepository(GitHub.java:673)
+        at com.cloudbees.jenkins.GitHubRepositoryName$1.applyNullSafe(GitHubRepositoryName.java:227)
+        at com.cloudbees.jenkins.GitHubRepositoryName$1.applyNullSafe(GitHubRepositoryName.java:223)
+        at org.jenkinsci.plugins.github.util.misc.NullSafeFunction.apply(NullSafeFunction.java:18)
+        at com.google.common.collect.Iterators$6.transform(Iterators.java:826)
+        at com.google.common.collect.TransformedIterator.next(TransformedIterator.java:52)
+        at com.google.common.collect.Iterators$5.computeNext(Iterators.java:669)
+        at com.google.common.collect.AbstractIterator.tryToComputeNext(AbstractIterator.java:146)
+        at com.google.common.collect.AbstractIterator.hasNext(AbstractIterator.java:141)
+        at com.google.common.collect.Iterators$ConcatenatedIterator.hasNext(Iterators.java:1395)
+        at com.google.common.collect.Iterators.addAll(Iterators.java:366)
+        at com.google.common.collect.Lists.newArrayList(Lists.java:147)
+        at com.google.common.collect.Lists.newArrayList(Lists.java:133)
+        at org.jenkinsci.plugins.github.util.FluentIterableWrapper.toList(FluentIterableWrapper.java:148)
+        at org.jenkinsci.plugins.github.status.sources.ManuallyEnteredRepositorySource.repos(ManuallyEnteredRepositorySource.java:51)
+        at org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter.perform(GitHubCommitStatusSetter.java:136)
+        at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+        at org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:101)
+        at org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:71)
+        at org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:47)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+2022-07-08 15:49:34.721+0000 [id=599]   INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 15:49:34.835+0000 [id=599]   INFO    h.plugins.ec2.EC2SlaveMonitor#removeDeadNodes: EC2 instance is dead: i-0f758c8deb24e7047
+2022-07-08 15:49:34.836+0000 [id=599]   INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 114 ms
+2022-07-08 15:49:34.890+0000 [id=524]   INFO    h.plugins.ec2.EC2OndemandSlave#lambda$terminate$0: EC2 instance already terminated: i-0f758c8deb24e7047
+2022-07-08 15:49:34.896+0000 [id=524]   INFO    h.plugins.ec2.EC2OndemandSlave#lambda$terminate$0: Removed EC2 instance from jenkins controller: i-0f758c8deb24e7047
+2022-07-08 15:59:17.167+0000 [id=652]   INFO    o.j.p.workflow.job.WorkflowRun#finish: Web Application Deployment/UPC-1254 #9 completed: ABORTED
+2022-07-08 15:59:17.453+0000 [id=652]   WARNING j.p.slack.StandardSlackService#postToSlack: Slack post may have failed. Response: null
+2022-07-08 15:59:17.454+0000 [id=652]   WARNING j.p.slack.StandardSlackService#postToSlack: Response Code: 400
+2022-07-08 15:59:34.721+0000 [id=788]   INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 15:59:34.817+0000 [id=788]   INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 95 ms
+2022-07-08 16:00:27.597+0000 [id=170]   INFO    h.r.SynchronousCommandTransport$ReaderThread#run: I/O error in channel EC2 (Builder) - UPC Jenkins Builder (i-0f758c8deb24e7047)
+java.io.EOFException
+        at java.base/java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2905)
+        at java.base/java.io.ObjectInputStream$BlockDataInputStream.readShort(ObjectInputStream.java:3400)
+        at java.base/java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:936)
+        at java.base/java.io.ObjectInputStream.<init>(ObjectInputStream.java:379)
+        at hudson.remoting.ObjectInputStreamEx.<init>(ObjectInputStreamEx.java:49)
+        at hudson.remoting.Command.readFrom(Command.java:142)
+        at hudson.remoting.Command.readFrom(Command.java:128)
+        at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:35)
+        at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:61)
+Caused: java.io.IOException: Unexpected termination of the channel
+        at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:75)
+2022-07-08 16:02:09.683+0000 [id=831]   WARNING c.c.j.GitHubRepositoryName$1#applyNullSafe: Failed to obtain repository com.cloudbees.jenkins.GitHubRepositoryName$1@17a489dd
+org.kohsuke.github.HttpException: {"message":"Resource protected by organization SAML enforcement. You must grant your Personal Access token access to an organization within this business.","documentation_url":"https://docs.github.com/articles/authenticating-to-a-github-organization-with-saml-single-sign-on/"}
+        at org.kohsuke.github.GitHubConnectorResponseErrorHandler$1.onError(GitHubConnectorResponseErrorHandler.java:56)
+        at org.kohsuke.github.GitHubClient.detectKnownErrors(GitHubClient.java:424)
+        at org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:386)
+        at org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:355)
+        at org.kohsuke.github.Requester.fetch(Requester.java:76)
+        at org.kohsuke.github.GHRepository.read(GHRepository.java:131)
+        at org.kohsuke.github.GitHub.getRepository(GitHub.java:673)
+        at com.cloudbees.jenkins.GitHubRepositoryName$1.applyNullSafe(GitHubRepositoryName.java:227)
+        at com.cloudbees.jenkins.GitHubRepositoryName$1.applyNullSafe(GitHubRepositoryName.java:223)
+        at org.jenkinsci.plugins.github.util.misc.NullSafeFunction.apply(NullSafeFunction.java:18)
+        at com.google.common.collect.Iterators$6.transform(Iterators.java:826)
+        at com.google.common.collect.TransformedIterator.next(TransformedIterator.java:52)
+        at com.google.common.collect.Iterators$5.computeNext(Iterators.java:669)
+        at com.google.common.collect.AbstractIterator.tryToComputeNext(AbstractIterator.java:146)
+        at com.google.common.collect.AbstractIterator.hasNext(AbstractIterator.java:141)
+        at com.google.common.collect.Iterators$ConcatenatedIterator.hasNext(Iterators.java:1395)
+        at com.google.common.collect.Iterators.addAll(Iterators.java:366)
+        at com.google.common.collect.Lists.newArrayList(Lists.java:147)
+        at com.google.common.collect.Lists.newArrayList(Lists.java:133)
+        at org.jenkinsci.plugins.github.util.FluentIterableWrapper.toList(FluentIterableWrapper.java:148)
+        at org.jenkinsci.plugins.github.status.sources.ManuallyEnteredRepositorySource.repos(ManuallyEnteredRepositorySource.java:51)
+        at org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter.perform(GitHubCommitStatusSetter.java:136)
+        at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+        at org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:101)
+        at org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:71)
+        at org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:47)
+        at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+2022-07-08 16:09:34.721+0000 [id=1002]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 16:09:34.825+0000 [id=1002]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 103 ms
+2022-07-08 16:12:24.653+0000 [id=979]   INFO    o.j.p.workflow.job.WorkflowRun#finish: Web Application Deployment/UPC-1254 #10 completed: ABORTED
+2022-07-08 16:12:24.941+0000 [id=979]   WARNING j.p.slack.StandardSlackService#postToSlack: Slack post may have failed. Response: null
+2022-07-08 16:12:24.942+0000 [id=979]   WARNING j.p.slack.StandardSlackService#postToSlack: Response Code: 400
+2022-07-08 16:19:34.721+0000 [id=1079]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 16:19:34.784+0000 [id=1079]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 62 ms
+2022-07-08 16:23:56.458+0000 [id=38]    INFO    h.p.ec2.EC2RetentionStrategy#internalCheck: Idle timeout of EC2 (Builder) - UPC Jenkins Builder (i-031bd027c3fbf4370) after 11 idle minutes, instance statusRUNNING
+2022-07-08 16:23:56.458+0000 [id=38]    INFO    h.plugins.ec2.EC2AbstractSlave#idleTimeout: EC2 instance idle time expired: i-031bd027c3fbf4370
+2022-07-08 16:23:56.655+0000 [id=1089]  INFO    h.plugins.ec2.EC2OndemandSlave#lambda$terminate$0: Terminated EC2 instance (terminated): i-031bd027c3fbf4370
+2022-07-08 16:23:56.658+0000 [id=1089]  INFO    h.plugins.ec2.EC2OndemandSlave#lambda$terminate$0: Removed EC2 instance from jenkins controller: i-031bd027c3fbf4370
+2022-07-08 16:29:34.721+0000 [id=1097]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 16:29:34.722+0000 [id=1097]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 0 ms
+2022-07-08 16:31:57.995+0000 [id=1099]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started Periodic background build discarder
+2022-07-08 16:31:58.094+0000 [id=1099]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished Periodic background build discarder. 99 ms
+2022-07-08 16:39:34.721+0000 [id=1106]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Started EC2 alive agents monitor
+2022-07-08 16:39:34.722+0000 [id=1106]  INFO    hudson.model.AsyncPeriodicWork#lambda$doRun$1: Finished EC2 alive agents monitor. 0 ms
+[centos@ip-10-68-197-214 ~]$ ls
+check_for_jobs.sh  jenkins  update-and-deploy.sh
+[centos@ip-10-68-197-214 ~]$ cd
+[centos@ip-10-68-197-214 ~]$ cd /var
+[centos@ip-10-68-197-214 var]$ ls
+adm  cache  crash  db  empty  games  gopher  kerberos  lib  local  lock  log  mail  nis  opt  preserve  run  spool  tmp  yp
+[centos@ip-10-68-197-214 var]$ cd log
+[centos@ip-10-68-197-214 log]$ ls
+aide      audit     chrony          daemon.log  falcon-sensor.log  grubby_prune_debug  maillog   newrelic-infra  qemu-ga  secure   tallylog    user-data.log
+amazon    boot.log  cloud-init.log  dmesg       falconctl.log      kern.log            messages  nr-license.log  rhsm     spooler  tuned       wtmp
+anaconda  btmp      cron            dmesg.old   grubby             lastlog             newrelic  puppetlabs      sa       syslog   unused.log  yum.log
+[centos@ip-10-68-197-214 log]$ cat syslog
+cat: syslog: Permission denied
+[centos@ip-10-68-197-214 log]$ sudo cat syslog 0
+cat: 0: No such file or directory
+[centos@ip-10-68-197-214 log]$ sudo cat syslog
+[centos@ip-10-68-197-214 log]$ Connection to 10.68.197.214 closed by remote host.
+Connection to 10.68.197.214 closed.
+(sandbox3.8) ubuntu@ELS-yJmFto3LbUp:~/upcjenkinsamirefresh$

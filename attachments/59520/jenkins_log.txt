@@ -1,0 +1,36 @@
+Started by user John
+[Sun Nov 20 11:35:21 CET 2022] Starting branch indexing...
+ > git rev-parse --is-inside-work-tree # timeout=10
+Setting origin to http://jenkins@gerrit/a/sandbox
+ > git config remote.origin.url http://jenkins@gerrit/a/sandbox # timeout=10
+Fetching origin...
+Looking for open changes with query 'p:sandbox status:open -age:24w ' ...
+Fetching upstream changes from origin
+ > git --version # timeout=10
+ > git --version # 'git version 2.17.1'
+ > git config --get remote.origin.url # timeout=10
+using GIT_ASKPASS to set credentials gerrit http
+ > git fetch --tags --progress -- origin +refs/heads/*:refs/remotes/origin/* refs/changes/26/10526/1:refs/remotes/origin/26/10526/1 refs/changes/60/10360/1:refs/remotes/origin/60/10360/1 refs/changes/31/10031/6:refs/remotes/origin/31/10031/6 # timeout=10
+ERROR: [Sun Nov 20 11:35:22 CET 2022] Could not update folder level actions from source 542821e0-fbd9-4c60-ab3a-182f27c9f2fb
+[Sun Nov 20 11:35:22 CET 2022] Finished branch indexing. Indexing took 0.32 sec
+FATAL: Failed to recompute children of Gerrit » sandbox
+hudson.plugins.git.GitException: Command "git fetch --tags --progress -- origin +refs/heads/*:refs/remotes/origin/* refs/changes/26/10526/1:refs/remotes/origin/26/10526/1 refs/changes/60/10360/1:refs/remotes/origin/60/10360/1 refs/changes/31/10031/6:refs/remotes/origin/31/10031/6" returned status code 128:
+stdout: 
+stderr: remote: Server Error
+fatal: unable to access 'http://jenkins@gerrit/a/sandbox/': The requested URL returned error: 500
+
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2736)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:2111)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.access$500(CliGitAPIImpl.java:87)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$1.execute(CliGitAPIImpl.java:623)
+	at jenkins.plugins.gerrit.AbstractGerritSCMSource.doRetrieve(AbstractGerritSCMSource.java:671)
+	at jenkins.plugins.gerrit.AbstractGerritSCMSource.retrieveActions(AbstractGerritSCMSource.java:237)
+	at jenkins.scm.api.SCMSource.fetchActions(SCMSource.java:848)
+	at jenkins.branch.MultiBranchProject.computeChildren(MultiBranchProject.java:598)
+	at com.cloudbees.hudson.plugins.folder.computed.ComputedFolder.updateChildren(ComputedFolder.java:278)
+	at com.cloudbees.hudson.plugins.folder.computed.FolderComputation.run(FolderComputation.java:166)
+	at jenkins.branch.MultiBranchProject$BranchIndexing.run(MultiBranchProject.java:1032)
+	at hudson.model.ResourceController.execute(ResourceController.java:107)
+	at hudson.model.Executor.run(Executor.java:449)
+Finished: FAILURE
+

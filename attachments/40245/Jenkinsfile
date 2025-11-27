@@ -1,0 +1,12 @@
+pipeline {
+    agent { label 'master' }
+    stages {
+        stage('sample') {
+            steps {
+                retry(3) {
+                    sh 'sleep 60'
+                }
+            }
+        }
+    }
+}

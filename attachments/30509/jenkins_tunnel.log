@@ -1,0 +1,50 @@
+Started by upstream project "saucelabs" build number 19
+originally caused by:
+ Started by user Leo Gallucci
+[EnvInject] - Loading node environment variables.
+Building remotely on ip-*********.z.aws (swarm) in workspace /home/ubuntu/workspace/saucelabs
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/angular/protractor.git # timeout=10
+Fetching upstream changes from https://github.com/angular/protractor.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/angular/protractor.git +refs/heads/*:refs/remotes/origin/*
+Checking out Revision 19738d3f85fdae980624cd67db1ca1c18d9def3d (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 19738d3f85fdae980624cd67db1ca1c18d9def3d
+ > git rev-list 19738d3f85fdae980624cd67db1ca1c18d9def3d # timeout=10
+Starting pre-build for Sauce Labs plugin
+Starting Sauce Connect on master node using identifier: "sauceusername-19"
+Launching Sauce Connect on ip-********.z.aws
+20 Aug 10:57:12 - Sauce Connect 4.3.11, build 1757 2b421bb
+20 Aug 10:57:12 - Using CA certificate bundle /etc/ssl/certs/ca-certificates.crt.
+20 Aug 10:57:12 - Using CA certificate verify path /etc/ssl/certs.
+20 Aug 10:57:12 - Starting up; pid 10545
+20 Aug 10:57:12 - Command line arguments: /var/lib/jenkins/sc-4.3.11-linux/bin/sc -u sauceusername -k **** -P 4445 --tunnel-identifier "sauceusername-19"
+20 Aug 10:57:12 - Using no proxy for connecting to Sauce Labs REST API.
+20 Aug 10:57:12 - Resolving saucelabs.com to 162.222.73.28 took 1 ms.
+20 Aug 10:57:12 - Started scproxy on port 40756.
+20 Aug 10:57:12 - Please wait for 'you may start your tests' to start your tests.
+20 Aug 10:57:12 - Starting secure remote tunnel VM...
+20 Aug 10:57:15 - POST https://saucelabs.com/rest/v1/sauceusername/tunnels: Failure when receiving data from the peer.
+20 Aug 10:57:15 - Error creating tunnel.
+20 Aug 10:57:15 - Sauce Connect could not establish a connection.
+20 Aug 10:57:15 - Please check your firewall and proxy settings.
+20 Aug 10:57:15 - You can also use sc --doctor to launch Sauce Connect in diagnostic mode.
+20 Aug 10:57:15 - Cleaning up.
+20 Aug 10:57:18 - Goodbye.
+Error launching Sauce Connect
+Flushing Sauce Connect Input Stream
+Flushing Sauce Connect Error Stream
+Closing Sauce Connect process
+FATAL: Error launching Sauce Connect
+com.saucelabs.ci.sauceconnect.AbstractSauceTunnelManager$SauceConnectDidNotStartException: Error launching Sauce Connect
+    at com.saucelabs.ci.sauceconnect.AbstractSauceTunnelManager.openConnection(AbstractSauceTunnelManager.java:322)
+    at hudson.plugins.sauce_ondemand.SauceOnDemandBuildWrapper$SauceConnectHandler.call(SauceOnDemandBuildWrapper.java:919)
+    at hudson.plugins.sauce_ondemand.SauceOnDemandBuildWrapper.setUp(SauceOnDemandBuildWrapper.java:356)
+    at hudson.model.Build$BuildExecution.doRun(Build.java:156)
+    at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:537)
+    at hudson.model.Run.execute(Run.java:1744)
+    at hudson.matrix.MatrixRun.run(MatrixRun.java:146)
+    at hudson.model.ResourceController.execute(ResourceController.java:98)
+    at hudson.model.Executor.run(Executor.java:374)

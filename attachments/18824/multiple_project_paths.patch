@@ -1,0 +1,434 @@
+diff --git a/src/main/java/hudson/plugins/tfs/TeamFoundationServerScm.java b/src/main/java/hudson/plugins/tfs/TeamFoundationServerScm.java
+index 3f59ec0..28e6409 100644
+--- a/src/main/java/hudson/plugins/tfs/TeamFoundationServerScm.java
++++ b/src/main/java/hudson/plugins/tfs/TeamFoundationServerScm.java
+@@ -40,6 +40,7 @@ import hudson.plugins.tfs.model.ChangeSet;
+ import hudson.plugins.tfs.util.BuildVariableResolver;
+ import hudson.plugins.tfs.util.BuildWorkspaceConfigurationRetriever;
+ import hudson.plugins.tfs.util.BuildWorkspaceConfigurationRetriever.BuildWorkspaceConfiguration;
++import hudson.plugins.tfs.util.ProjectPathUtil;
+ import hudson.scm.ChangeLogParser;
+ import hudson.scm.RepositoryBrowsers;
+ import hudson.scm.SCM;
+@@ -164,9 +165,9 @@ public class TeamFoundationServerScm extends SCM {
+         }
+         
+         build.addAction(workspaceConfiguration);
+-        CheckoutAction action = new CheckoutAction(workspaceConfiguration.getWorkspaceName(), workspaceConfiguration.getProjectPath(), workspaceConfiguration.getWorkfolder(), isUseUpdate());
++        CheckoutAction action = new CheckoutAction(workspaceConfiguration, isUseUpdate());
+         try {
+-            List<ChangeSet> list = action.checkout(server, workspaceFilePath, (build.getPreviousBuild() != null ? build.getPreviousBuild().getTimestamp() : null));
++            List<ChangeSet> list = action.checkout(server, workspaceFilePath, build.getPreviousBuild() != null ? build.getPreviousBuild().getTimestamp() : null);
+             ChangeSetWriter writer = new ChangeSetWriter();
+             writer.write(list, changelogFile);
+         } catch (ParseException pe) {
+@@ -184,10 +185,17 @@ public class TeamFoundationServerScm extends SCM {
+         } else {
+             Server server = createServer(new TfTool(getDescriptor().getTfExecutable(), launcher, listener, workspace), lastRun);
+             try {
+-                return (server.getProject(getProjectPath(lastRun)).getDetailedHistory(
++                for(String projectPath : ProjectPathUtil.getProjectPaths(getProjectPath(lastRun)))
++                {
++                    if(server.getProject(projectPath).getDetailedHistory(
+                             lastRun.getTimestamp(), 
+                             Calendar.getInstance()
+-                        ).size() > 0);
++                          ).size() > 0)
++                    {
++                      return true;
++                    }
++                }
++                return false;
+             } catch (ParseException pe) {
+                 listener.fatalError(pe.getMessage());
+                 throw new AbortException();
+@@ -296,7 +304,8 @@ public class TeamFoundationServerScm extends SCM {
+         public static final String WORKSPACE_NAME_REGEX = "[^\"/:<>\\|\\*\\?]+[^\\s\\.\"/:<>\\|\\*\\?]$";
+         public static final String USER_AT_DOMAIN_REGEX = "\\w+@\\w+";
+         public static final String DOMAIN_SLASH_USER_REGEX = "\\w+\\\\\\w+";
+-        public static final String PROJECT_PATH_REGEX = "^\\$\\/.*";
++        public static final String PROJECT_PATH_REGEX = "^\\$\\/[^:;]*(\\s*:[^;]+)?(;\\s*\\$\\/[^:;]*(\\s*:[^;]+)?)*$";
++
+         private String tfExecutable;
+         
+         protected DescriptorImpl() {
+diff --git a/src/main/java/hudson/plugins/tfs/actions/CheckoutAction.java b/src/main/java/hudson/plugins/tfs/actions/CheckoutAction.java
+index ec865f1..c6794ea 100644
+--- a/src/main/java/hudson/plugins/tfs/actions/CheckoutAction.java
++++ b/src/main/java/hudson/plugins/tfs/actions/CheckoutAction.java
+@@ -5,6 +5,8 @@ import java.text.ParseException;
+ import java.util.ArrayList;
+ import java.util.Calendar;
+ import java.util.List;
++import java.util.Map;
++import java.util.Map.Entry;
+ 
+ import hudson.FilePath;
+ import hudson.plugins.tfs.model.ChangeSet;
+@@ -12,49 +14,64 @@ import hudson.plugins.tfs.model.Project;
+ import hudson.plugins.tfs.model.Server;
+ import hudson.plugins.tfs.model.Workspace;
+ import hudson.plugins.tfs.model.Workspaces;
++import hudson.plugins.tfs.model.WorkspaceConfiguration;
+ 
+ public class CheckoutAction {
+ 
+-    private final String workspaceName;
+-    private final String projectPath;
+-    private final String localFolder;
++    private final WorkspaceConfiguration workspaceConfiguration;
+     private final boolean useUpdate;
+ 
+-    public CheckoutAction(String workspaceName, String projectPath, String localFolder, boolean useUpdate) {
+-        this.workspaceName = workspaceName;
+-        this.projectPath = projectPath;
+-        this.localFolder = localFolder;
++    public CheckoutAction(WorkspaceConfiguration workspaceConfiguration, boolean useUpdate) {
++        this.workspaceConfiguration = workspaceConfiguration;
+         this.useUpdate = useUpdate;
+     }
+ 
+     public List<ChangeSet> checkout(Server server, FilePath workspacePath, Calendar lastBuildTimestamp) throws IOException, InterruptedException, ParseException {
+         
++        String workspaceName = workspaceConfiguration.getWorkspaceName();
+         Workspaces workspaces = server.getWorkspaces();
+-        Project project = server.getProject(projectPath);
+         
+         if (workspaces.exists(workspaceName) && !useUpdate) {
+             Workspace workspace = workspaces.getWorkspace(workspaceName);
+             workspaces.deleteWorkspace(workspace);
+         }
+         
++        Map<Project, String> projectMappings = getProjectMappings(server);
++        
+         Workspace workspace;
+         if (! workspaces.exists(workspaceName)) {
+-            FilePath localFolderPath = workspacePath.child(localFolder);
++            for(Project project : projectMappings.keySet()) {
++                FilePath localFolderPath = workspacePath.child(projectMappings.get(project));
+             if (!useUpdate && localFolderPath.exists()) {
+                 localFolderPath.deleteContents();
+             }
++            }
+             workspace = workspaces.newWorkspace(workspaceName);
+-            workspace.mapWorkfolder(project, localFolder);
++            for(Project project : projectMappings.keySet()) {
++                workspace.mapWorkfolder(project, projectMappings.get(project));
++            }
+         } else {
+             workspace = workspaces.getWorkspace(workspaceName);
+         }
+         
+-        project.getFiles(localFolder);
++        List<ChangeSet> changes = new ArrayList<ChangeSet>();
++        for(Project project : projectMappings.keySet()) {
++            project.getFiles(projectMappings.get(project));
+         
+         if (lastBuildTimestamp != null) {
+-            return project.getDetailedHistory(lastBuildTimestamp, Calendar.getInstance());
++                changes.addAll(project.getDetailedHistory(lastBuildTimestamp, Calendar.getInstance()));
++            }
++        }
++        return changes;
+         }
+         
+-        return new ArrayList<ChangeSet>();
++    private Map<Project, String> getProjectMappings(Server server)
++    {
++        Map<Project, String> mappings = new java.util.HashMap<Project, String>();
++        for(Entry<String, String> mapping : workspaceConfiguration.getProjectMappings())
++        {
++            mappings.put(server.getProject(mapping.getKey()), mapping.getValue());
++        }
++        return mappings;
+     }
+ }
+diff --git a/src/main/java/hudson/plugins/tfs/model/WorkspaceConfiguration.java b/src/main/java/hudson/plugins/tfs/model/WorkspaceConfiguration.java
+index 40b7271..3fcecc9 100644
+--- a/src/main/java/hudson/plugins/tfs/model/WorkspaceConfiguration.java
++++ b/src/main/java/hudson/plugins/tfs/model/WorkspaceConfiguration.java
+@@ -1,8 +1,11 @@
+ package hudson.plugins.tfs.model;
+ 
+ import java.io.Serializable;
++import java.util.Map.Entry;
++import java.util.Set;
+ 
+ import hudson.model.InvisibleAction;
++import hudson.plugins.tfs.util.ProjectPathUtil;
+ 
+ /**
+  * An action for storing TFS configuration data in a build 
+@@ -43,8 +46,8 @@ public class WorkspaceConfiguration extends InvisibleAction implements Serializa
+         return workfolder;
+     }
+ 
+-    public String getProjectPath() {
+-        return projectPath;
++    public Set<Entry<String, String>> getProjectMappings() {
++        return ProjectPathUtil.getProjectMappings(projectPath, workfolder).entrySet();
+     }
+ 
+     public String getServerUrl() {
+diff --git a/src/main/java/hudson/plugins/tfs/util/ProjectPathUtil.java b/src/main/java/hudson/plugins/tfs/util/ProjectPathUtil.java
+new file mode 100644
+index 0000000..262cf39
+--- /dev/null
++++ b/src/main/java/hudson/plugins/tfs/util/ProjectPathUtil.java
+@@ -0,0 +1,26 @@
++package hudson.plugins.tfs.util;
++
++import java.util.HashMap;
++import java.util.Map;
++
++public class ProjectPathUtil
++{
++    public static String [] getProjectPaths(String projectPaths)
++    {
++        return getProjectMappings(projectPaths, "").keySet().toArray(new String[0]);
++    }
++
++    public static Map<String, String> getProjectMappings(String projectPaths, String localRoot)
++    {
++        Map<String, String> mappedPaths = new HashMap<String, String>();
++        String [] splitProjectPaths = projectPaths.split("\\s*;\\s*");
++        for(String pathSpec : splitProjectPaths)
++        {
++            String [] pathSpecParts = pathSpec.split("\\s*:\\s*");
++            String serverPath = pathSpecParts[0];
++            String localPath = localRoot + (pathSpecParts.length == 1 ? "" : ("\\" + pathSpecParts[1]));
++            mappedPaths.put(serverPath, localPath);
++        }
++        return mappedPaths;
++    }
++}
+diff --git a/src/main/resources/hudson/plugins/tfs/TeamFoundationServerScm/config.jelly b/src/main/resources/hudson/plugins/tfs/TeamFoundationServerScm/config.jelly
+index f5b3d34..b4accec 100644
+--- a/src/main/resources/hudson/plugins/tfs/TeamFoundationServerScm/config.jelly
++++ b/src/main/resources/hudson/plugins/tfs/TeamFoundationServerScm/config.jelly
+@@ -4,7 +4,7 @@
+              checkUrl="'${rootURL}/scm/TeamFoundationServerScm/fieldCheck?errorText='+escape('${%Server URL is mandatory.}')+'&amp;value='+escape(this.value)"/>
+     </f:entry>
+     
+-    <f:entry title="Project path" help="/plugin/tfs/project.html">
++    <f:entry title="Project paths" help="/plugin/tfs/project.html">
+         <f:textbox name="tfs.projectPath" value="${scm.projectPath}"
+              checkUrl="'${rootURL}/scm/TeamFoundationServerScm/projectPathCheck?value='+escape(this.value)"/>
+     </f:entry>
+@@ -37,4 +37,4 @@
+     </f:advanced>
+     
+     <t:listScmBrowsers name="tfs.browser" />
+-</j:jelly>
+\ No newline at end of file
++</j:jelly>
+diff --git a/src/main/webapp/project.html b/src/main/webapp/project.html
+index 6aee1d0..a871d2b 100644
+--- a/src/main/webapp/project.html
++++ b/src/main/webapp/project.html
+@@ -2,4 +2,8 @@
+   <p>
+ 	The name of the project as it is registered on the server.
+   </p>
+-</div>
+\ No newline at end of file
++  <p>
++    Optionally, you can include multiple server paths, along with mappings to subfolders of the job's working
++    folder. For example: <code>$/project/path1 : path1 ; $project/some/other/path : some\path</code>
++  </p>
++</div>
+diff --git a/src/test/java/hudson/plugins/tfs/actions/CheckoutActionTest.java b/src/test/java/hudson/plugins/tfs/actions/CheckoutActionTest.java
+index 0897fbb..08c91e4 100644
+--- a/src/test/java/hudson/plugins/tfs/actions/CheckoutActionTest.java
++++ b/src/test/java/hudson/plugins/tfs/actions/CheckoutActionTest.java
+@@ -1,6 +1,7 @@
+ package hudson.plugins.tfs.actions;
+ 
+ import static org.junit.Assert.*;
++import static org.junit.matchers.JUnitMatchers.*;
+ import static org.mockito.Mockito.*;
+ 
+ import java.io.FileFilter;
+@@ -15,6 +16,7 @@ import hudson.plugins.tfs.model.Project;
+ import hudson.plugins.tfs.model.Server;
+ import hudson.plugins.tfs.model.Workspace;
+ import hudson.plugins.tfs.model.Workspaces;
++import hudson.plugins.tfs.model.WorkspaceConfiguration;
+ 
+ import org.junit.After;
+ import org.junit.Before;
+@@ -30,6 +32,8 @@ public class CheckoutActionTest {
+     private @Mock Workspaces workspaces;
+     private @Mock Workspace workspace;
+     private @Mock Project project;
++    private @Mock Project project2;
++    private @Mock ChangeSet changeset;
+     
+     @Before public void setup() throws Exception {
+         MockitoAnnotations.initMocks(this);
+@@ -50,7 +54,7 @@ public class CheckoutActionTest {
+         when(workspaces.newWorkspace("workspace")).thenReturn(workspace);
+         when(workspaces.getWorkspace("workspace")).thenReturn(workspace);
+         
+-        new CheckoutAction("workspace", "project", ".", false).checkout(server, hudsonWs,null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "."), false).checkout(server, hudsonWs,null);
+         
+         verify(workspaces).newWorkspace("workspace");
+         verify(workspace).mapWorkfolder(project, ".");
+@@ -61,32 +65,37 @@ public class CheckoutActionTest {
+     @Test
+     public void assertFirstCheckoutUsingUpdate() throws Exception {
+         when(server.getWorkspaces()).thenReturn(workspaces);
+-        when(server.getProject("project")).thenReturn(project);
++        when(server.getProject("$/path1")).thenReturn(project);
++        when(server.getProject("$/path2")).thenReturn(project2);
+         when(workspaces.exists(new Workspace(server, "workspace"))).thenReturn(false);
+         when(workspaces.newWorkspace("workspace")).thenReturn(workspace);
+         
+-        new CheckoutAction("workspace", "project", ".", true).checkout(server, hudsonWs,null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "$/path1 : a ; $/path2 : b", "."), true).checkout(server, hudsonWs,null);
+         
+         verify(workspaces).newWorkspace("workspace");
+-        verify(workspace).mapWorkfolder(project, ".");
+-        verify(project).getFiles(".");
++        verify(workspace).mapWorkfolder(project, ".\\a");
++        verify(workspace).mapWorkfolder(project2, ".\\b");
++        verify(project).getFiles(".\\a");
++        verify(project2).getFiles(".\\b");
+         verify(workspaces, never()).deleteWorkspace(isA(Workspace.class));
+     }
+ 
+     @Test
+     public void assertSecondCheckoutUsingUpdate() throws Exception {
+         when(server.getWorkspaces()).thenReturn(workspaces);
+-        when(server.getProject("project")).thenReturn(project);
++        when(server.getProject("$/path1")).thenReturn(project);
++        when(server.getProject("$/path2")).thenReturn(project2);
+         when(workspaces.exists("workspace")).thenReturn(true);
+         when(workspaces.getWorkspace("workspace")).thenReturn(workspace);
+         when(server.getLocalHostname()).thenReturn("LocalComputer");
+         when(workspace.getComputer()).thenReturn("LocalComputer");
+         
+-        new CheckoutAction("workspace", "project", ".", true).checkout(server, hudsonWs, null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "$/path1 : a ; $/path2 : b", "."), true).checkout(server, hudsonWs, null);
+ 
+-        verify(project).getFiles(".");
++        verify(project).getFiles(".\\a");
++        verify(project2).getFiles(".\\b");
+         verify(workspaces, never()).newWorkspace("workspace");
+-        verify(workspace, never()).mapWorkfolder(project, ".");
++        verify(workspace, never()).mapWorkfolder(isA(Project.class), isA(String.class));
+         verify(workspaces, never()).deleteWorkspace(isA(Workspace.class));
+     }
+ 
+@@ -98,7 +107,7 @@ public class CheckoutActionTest {
+         when(workspaces.newWorkspace("workspace")).thenReturn(workspace);
+         when(workspaces.getWorkspace("workspace")).thenReturn(workspace);
+         
+-        new CheckoutAction("workspace", "project", ".", false).checkout(server, hudsonWs,null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "."), false).checkout(server, hudsonWs,null);
+ 
+         verify(workspaces).newWorkspace("workspace");
+         verify(workspace).mapWorkfolder(project, ".");
+@@ -115,7 +124,7 @@ public class CheckoutActionTest {
+         when(server.getLocalHostname()).thenReturn("LocalComputer");
+         when(workspace.getComputer()).thenReturn("LocalComputer");
+         
+-        new CheckoutAction("workspace", "project", ".", true).checkout(server, hudsonWs, null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "."), true).checkout(server, hudsonWs, null);
+         
+         verify(project, never()).getDetailedHistory(isA(Calendar.class), isA(Calendar.class));
+     }
+@@ -123,6 +132,7 @@ public class CheckoutActionTest {
+     @Test
+     public void assertDetailedHistoryIsRetrievedInSecondBuild() throws Exception {
+         List<ChangeSet> list = new ArrayList<ChangeSet>();
++        list.add(changeset);
+         when(server.getWorkspaces()).thenReturn(workspaces);
+         when(server.getProject("project")).thenReturn(project);
+         when(workspaces.exists("workspace")).thenReturn(true);
+@@ -131,9 +141,10 @@ public class CheckoutActionTest {
+         when(workspace.getComputer()).thenReturn("LocalComputer");
+         when(project.getDetailedHistory(isA(Calendar.class), isA(Calendar.class))).thenReturn(list);
+         
+-        CheckoutAction action = new CheckoutAction("workspace", "project", ".", true);
++        CheckoutAction action = new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "."), true);
+         List<ChangeSet> actualList = action.checkout(server, hudsonWs, Util.getCalendar(2008, 9, 24));
+-        assertSame("The list from the detailed history, was not the same as returned from checkout", list, actualList);
++        assertThat("The list from the detailed history should contain the correct changeset.", actualList, hasItem(changeset));
++        assertEquals("The list from the detailed history should contain only the one returned changeset.", 1, actualList.size());
+         
+         verify(project).getDetailedHistory(eq(Util.getCalendar(2008, 9, 24)), isA(Calendar.class));
+     }
+@@ -150,7 +161,7 @@ public class CheckoutActionTest {
+         when(workspaces.exists(new Workspace(server, "workspace"))).thenReturn(false);
+         when(workspaces.newWorkspace("workspace")).thenReturn(workspace);
+         
+-        new CheckoutAction("workspace", "project", "tfs-ws", false).checkout(server, hudsonWs, null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "tfs-ws"), false).checkout(server, hudsonWs, null);
+         
+         assertTrue("The local folder was removed", tfsWs.exists());
+         assertEquals("The local TFS folder was not cleaned", 0, tfsWs.list((FileFilter)null).size());
+@@ -170,7 +181,7 @@ public class CheckoutActionTest {
+         when(server.getLocalHostname()).thenReturn("LocalComputer");
+         when(workspace.getComputer()).thenReturn("LocalComputer");
+         
+-        new CheckoutAction("workspace", "project", "tfs-ws", true).checkout(server, hudsonWs, null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "tfs-ws"), true).checkout(server, hudsonWs, null);
+ 
+         assertTrue("The local folder was removed", tfsWs.exists());
+         assertEquals("The TFS workspace path was cleaned", 1, hudsonWs.list((FileFilter)null).size());
+@@ -185,7 +196,7 @@ public class CheckoutActionTest {
+         when(server.getProject("project")).thenReturn(project);
+         when(workspaces.newWorkspace("workspace")).thenReturn(workspace);
+         
+-        new CheckoutAction("workspace", "project", ".", false).checkout(server, hudsonWs, null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "."), false).checkout(server, hudsonWs, null);
+         
+         verify(server).getWorkspaces();
+         verify(workspaces, times(2)).exists("workspace");
+@@ -203,7 +214,7 @@ public class CheckoutActionTest {
+         when(workspaces.getWorkspace("workspace")).thenReturn(workspace);
+         when(server.getProject("project")).thenReturn(project);
+         
+-        new CheckoutAction("workspace", "project", ".", true).checkout(server, hudsonWs, null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "."), true).checkout(server, hudsonWs, null);
+         
+         verify(server).getWorkspaces();
+         verify(workspaces, times(2)).exists("workspace");
+@@ -219,7 +230,7 @@ public class CheckoutActionTest {
+         when(workspaces.newWorkspace("workspace")).thenReturn(workspace);
+         when(server.getProject("project")).thenReturn(project);
+         
+-        new CheckoutAction("workspace", "project", ".", false).checkout(server, hudsonWs, null);
++        new CheckoutAction(new WorkspaceConfiguration("don't care", "workspace", "project", "."), false).checkout(server, hudsonWs, null);
+         
+         verify(server).getWorkspaces();
+         verify(workspaces, times(2)).exists("workspace");
+diff --git a/src/test/java/hudson/plugins/tfs/model/WorkspaceConfigurationTest.java b/src/test/java/hudson/plugins/tfs/model/WorkspaceConfigurationTest.java
+index 037a099..2da6d6b 100644
+--- a/src/test/java/hudson/plugins/tfs/model/WorkspaceConfigurationTest.java
++++ b/src/test/java/hudson/plugins/tfs/model/WorkspaceConfigurationTest.java
+@@ -1,8 +1,11 @@
+ package hudson.plugins.tfs.model;
+ 
+ import static org.hamcrest.CoreMatchers.*;
++import static org.junit.matchers.JUnitMatchers.*;
+ import static org.junit.Assert.*;
+ 
++import java.util.Iterator;
++import java.util.Map.Entry;
+ import org.junit.Test;
+ 
+ public class WorkspaceConfigurationTest {
+@@ -18,4 +21,10 @@ public class WorkspaceConfigurationTest {
+         assertThat(one, not(new WorkspaceConfiguration("server", "workspace", "aproject", "workfolder")));
+         assertThat(one, not(new WorkspaceConfiguration("server", "workspace", "project", "aworkfolder")));
+     }
++
++    @Test public void assertAssumesRootMapping() {
++        WorkspaceConfiguration configuration = new WorkspaceConfiguration("server", "workspace", "$/path1", "workfolder");
++        Entry<String, String> mapping = (Entry<String, String>) configuration.getProjectMappings().toArray()[0];
++        assertEquals("workfolder", mapping.getValue());
++    }
+ }

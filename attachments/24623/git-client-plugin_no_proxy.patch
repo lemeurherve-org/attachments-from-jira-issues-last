@@ -1,0 +1,26 @@
+diff --git a/src/main/java/org/jenkinsci/plugins/gitclient/CliGitAPIImpl.java b/src/main/java/org/jenkinsci/plugins/gitclient/CliGitAPIImpl.java
+index 2e2ec76..7160cdb 100644
+--- a/src/main/java/org/jenkinsci/plugins/gitclient/CliGitAPIImpl.java
++++ b/src/main/java/org/jenkinsci/plugins/gitclient/CliGitAPIImpl.java
+@@ -1439,9 +1439,18 @@ public class CliGitAPIImpl extends LegacyCompatibleGitAPIImpl {
+             }
+ 
+             if (proxy != null) {
+-                client.getHostConfiguration().setProxy(proxy.name, proxy.port);
+-                if (proxy.getUserName() != null && proxy.getPassword() != null)
+-                    client.getState().setProxyCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxy.getUserName(), proxy.getPassword()));
++            	boolean shouldProxy = true;
++                for(Pattern p : proxy.getNoProxyHostPatterns()) {
++                    if(p.matcher(uri.getHost()).matches()) {
++                        shouldProxy = false;
++                        break;
++                    }
++                }
++                if(shouldProxy) {
++                    client.getHostConfiguration().setProxy(proxy.name, proxy.port);
++                    if (proxy.getUserName() != null && proxy.getPassword() != null)
++                        client.getState().setProxyCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxy.getUserName(), proxy.getPassword()));
++                }
+             }
+ 
+             List<String> candidates = new ArrayList<String>();

@@ -1,0 +1,510 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Builds the SAST product</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.redmine.RedmineProjectProperty>
+      <redmineWebsite>http://goesr01.ast.lmco.com:8181/redmine/</redmineWebsite>
+      <projectName>astrelease</projectName>
+      <redmineVersion>true</redmineVersion>
+    </hudson.plugins.redmine.RedmineProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>SIMICS_REV</name>
+          <description>Used to specify which revision/tag to build.  By default, it will build &quot;default&quot;</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>USE_SAST_CONTAINER_REV</name>
+          <description>When checked, the job will use the revision specified in SAST_CONTAINER_REV to derive the revision for each subprroject.  When not checked, the build will be configured to use the revisions specified in all other *_REV parameters.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SAST_CONTAINER_REV</name>
+          <description>Used to specify which revision/tag of the sast_product repository to use.  Only used when USE_SAST_CONTAINER_REV is checked.</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+          <name>CONTAINER_OVERRIDES</name>
+          <description>When USE_SAST_CONTAINER_REV is checked, this parameter allows specific revision to overriden in the container.  This supports the use case, &quot;I want put together a development build of SAST that is reconfigured to use a specific revision of a subcomponent that I&apos;ve modified.</description>
+          <quoteValue>false</quoteValue>
+          <type>PT_MULTI_SELECT</type>
+          <value>SIM_COMMON_REV,SIM_INTERFACE_REV,SIM_REMOTE_REV,SIM_UI_REV,AST_REV,SIM_REV,FSW_CONTAINER_REV</value>
+          <propertyFile></propertyFile>
+          <propertyKey></propertyKey>
+          <defaultValue></defaultValue>
+          <defaultPropertyFile></defaultPropertyFile>
+          <defaultPropertyKey></defaultPropertyKey>
+        </com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SIM_COMMON_REV</name>
+          <description>Used to specify which revision/tag of the SimCommon repository to use.  By default, it will use&quot;default&quot;</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SIM_INTERFACE_REV</name>
+          <description>Used to specify which revision/tag of the SimExternalInterfaces repository to use.  By default, it will use&quot;default&quot;</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SIM_REMOTE_REV</name>
+          <description>Used to specify which revision/tag of the SimRemoteModels repository to use.  By default, it will use &quot;default&quot;</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SIM_REV</name>
+          <description>Used to specify which revision/tag of the SimRemoteModels repository to use.  By default, it will use &quot;default&quot;</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>SIM_UI_REV</name>
+          <description>Used to specify which revision/tag of the SimulationUserInterface repository to use.  By default, it will use &quot;default&quot;.</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>AST_REV</name>
+          <description>Used to specify which revision/tag to build.  By default, it will build &quot;default&quot;</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FSW_CONTAINER_REV</name>
+          <description>Used to specify which revision to build.  By default, it will build &quot;default&quot;</description>
+          <defaultValue>default</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FSW_PRODUCT_BUILD</name>
+          <description>Optional value that can be used to copy a specific of the FSW product rather than specifying a container revision.  Useful to test a development build of the FSW product that isn&apos;t associated with a revision in the container repository.
+
+If the default value of NONE is changed, this parameter will be used in place of FSW_CONTAINER_REV.</description>
+          <defaultValue>NONE</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.mercurial.MercurialSCM">
+    <installation>(Default)</installation>
+    <source>ssh://goesrsvn@goesr01.ast.lmco.com//disk01/data/hg/sast_product</source>
+    <modules></modules>
+    <subdir>sast_product</subdir>
+    <clean>false</clean>
+    <browser class="hudson.plugins.mercurial.browser.HgWeb">
+      <url>http://goesr01.ast.lmco.com/hg/sast_product/</url>
+    </browser>
+  </scm>
+  <assignedNode>ast_linux_x64</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>cd sast_product
+./waf configure
+waf params</command>
+    </hudson.tasks.Shell>
+    <EnvInjectBuilder>
+      <info>
+        <propertiesFilePath>sast_product/build/params.properties</propertiesFilePath>
+      </info>
+    </EnvInjectBuilder>
+    <hudson.tasks.Shell>
+      <command>#Remove all old artifacts
+rm -rf dist
+rm -rf sim
+echo $SIM_COMMON_REV
+echo $SIM_INTERFACE_REV
+echo $WILLY_WONKA
+</command>
+    </hudson.tasks.Shell>
+    <hudson.plugins.copyartifact.CopyArtifact>
+      <projectName>sim-common-linux64/SIM_COMMON_REV=${SIM_COMMON_REV}</projectName>
+      <filter></filter>
+      <target></target>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+        <stable>true</stable>
+      </selector>
+      <optional>true</optional>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.logic.Not">
+        <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
+          <file>dist/SIM_COMMON*.egg</file>
+          <baseDir class="org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace"/>
+        </condition>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+              <configs>
+                <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+              </configs>
+              <projects>sim-common-linux64</projects>
+              <condition>ALWAYS</condition>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+              <block>
+                <buildStepFailureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </buildStepFailureThreshold>
+                <unstableThreshold>
+                  <name>UNSTABLE</name>
+                  <ordinal>1</ordinal>
+                  <color>YELLOW</color>
+                </unstableThreshold>
+                <failureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </failureThreshold>
+              </block>
+              <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+            </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+        <hudson.plugins.copyartifact.CopyArtifact>
+          <projectName>sim-common-linux64/SIM_COMMON_REV=${SIM_COMMON_REV}</projectName>
+          <filter></filter>
+          <target></target>
+          <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
+          </selector>
+          <optional>true</optional>
+        </hudson.plugins.copyartifact.CopyArtifact>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <hudson.plugins.copyartifact.CopyArtifact>
+      <projectName>sim-remote-models-linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV},SIM_REMOTE_REV=${SIM_REMOTE_REV}</projectName>
+      <filter></filter>
+      <target></target>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+        <stable>true</stable>
+      </selector>
+      <optional>true</optional>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.logic.Not">
+        <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
+          <file>dist/SIM_REMOTE*.egg</file>
+          <baseDir class="org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace"/>
+        </condition>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+              <configs>
+                <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+              </configs>
+              <projects>sim-remote-models-linux64</projects>
+              <condition>ALWAYS</condition>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+              <block>
+                <buildStepFailureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </buildStepFailureThreshold>
+                <unstableThreshold>
+                  <name>UNSTABLE</name>
+                  <ordinal>1</ordinal>
+                  <color>YELLOW</color>
+                </unstableThreshold>
+                <failureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </failureThreshold>
+              </block>
+              <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+            </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+        <hudson.plugins.copyartifact.CopyArtifact>
+          <projectName>sim-remote-models-linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV},SIM_REMOTE_REV=${SIM_REMOTE_REV}</projectName>
+          <filter></filter>
+          <target></target>
+          <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
+          </selector>
+        </hudson.plugins.copyartifact.CopyArtifact>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <hudson.plugins.copyartifact.CopyArtifact>
+      <projectName>sim-interfaces-linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV}</projectName>
+      <filter></filter>
+      <target></target>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+        <stable>true</stable>
+      </selector>
+      <optional>true</optional>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.logic.Not">
+        <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
+          <file>dist/SIM_EXTERNAL_INTERFACES*.egg</file>
+          <baseDir class="org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace"/>
+        </condition>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+              <configs>
+                <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+              </configs>
+              <projects>sim-interfaces-linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV}</projects>
+              <condition>ALWAYS</condition>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+              <block>
+                <buildStepFailureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </buildStepFailureThreshold>
+                <unstableThreshold>
+                  <name>UNSTABLE</name>
+                  <ordinal>1</ordinal>
+                  <color>YELLOW</color>
+                </unstableThreshold>
+                <failureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </failureThreshold>
+              </block>
+              <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+            </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+        <hudson.plugins.copyartifact.CopyArtifact>
+          <projectName>sim-interfaces-linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV}</projectName>
+          <filter></filter>
+          <target></target>
+          <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
+          </selector>
+        </hudson.plugins.copyartifact.CopyArtifact>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <hudson.plugins.copyartifact.CopyArtifact>
+      <projectName>sim-ui-linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_UI_REV=${SIM_UI_REV}</projectName>
+      <filter></filter>
+      <target></target>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+        <stable>true</stable>
+      </selector>
+      <optional>true</optional>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.logic.Not">
+        <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
+          <file>SIM_UI*.egg</file>
+          <baseDir class="org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace"/>
+        </condition>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+              <configs>
+                <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+              </configs>
+              <projects>sim-ui-linux64</projects>
+              <condition>ALWAYS</condition>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+              <block>
+                <buildStepFailureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </buildStepFailureThreshold>
+                <unstableThreshold>
+                  <name>UNSTABLE</name>
+                  <ordinal>1</ordinal>
+                  <color>YELLOW</color>
+                </unstableThreshold>
+                <failureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </failureThreshold>
+              </block>
+              <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+            </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+        <hudson.plugins.copyartifact.CopyArtifact>
+          <projectName>sim-ui-linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_UI_REV=${SIM_UI_REV}</projectName>
+          <filter></filter>
+          <target></target>
+          <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
+          </selector>
+        </hudson.plugins.copyartifact.CopyArtifact>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <hudson.plugins.copyartifact.CopyArtifact>
+      <projectName>ast_simics_linux64/SIMICS_REV=${SIMICS_REV}</projectName>
+      <filter></filter>
+      <target></target>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+        <stable>true</stable>
+      </selector>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <hudson.plugins.copyartifact.CopyArtifact>
+      <projectName>ast_build_linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV},SIM_REMOTE_REV=${SIM_REMOTE_REV},AST_REV=${AST_REV},SIMICS_REV=${SIMICS_REV},SIM_UI_REV=${SIM_UI_REV}</projectName>
+      <filter></filter>
+      <target></target>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector"/>
+      <optional>true</optional>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.logic.Not">
+        <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
+          <file>AST_SIM_INTERFACES*.egg</file>
+          <baseDir class="org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace"/>
+        </condition>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+              <configs>
+                <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+              </configs>
+              <projects>ast_build_linux64</projects>
+              <condition>ALWAYS</condition>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+              <block>
+                <buildStepFailureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </buildStepFailureThreshold>
+                <unstableThreshold>
+                  <name>UNSTABLE</name>
+                  <ordinal>1</ordinal>
+                  <color>YELLOW</color>
+                </unstableThreshold>
+                <failureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </failureThreshold>
+              </block>
+              <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+            </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+        <hudson.plugins.copyartifact.CopyArtifact>
+          <projectName>ast_build_linux64/SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV},SIM_REMOTE_REV=${SIM_REMOTE_REV},AST_REV=${AST_REV},SIMICS_REV=${SIMICS_REV},SIM_UI_REV=${SIM_UI_REV}</projectName>
+          <filter></filter>
+          <target></target>
+          <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
+          </selector>
+        </hudson.plugins.copyartifact.CopyArtifact>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <hudson.plugins.copyartifact.CopyArtifact>
+      <projectName>sim-python-linux64/SIM_REV=${SIM_REV},SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV}</projectName>
+      <filter></filter>
+      <target></target>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+        <stable>true</stable>
+      </selector>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.logic.Not">
+        <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
+          <file>sim/projects/PySim/Simulation/simulation.so</file>
+          <baseDir class="org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace"/>
+        </condition>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+              <configs>
+                <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+              </configs>
+              <projects>sim-python-linux64</projects>
+              <condition>ALWAYS</condition>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+              <block>
+                <buildStepFailureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </buildStepFailureThreshold>
+                <unstableThreshold>
+                  <name>UNSTABLE</name>
+                  <ordinal>1</ordinal>
+                  <color>YELLOW</color>
+                </unstableThreshold>
+                <failureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                </failureThreshold>
+              </block>
+              <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+            </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+        <hudson.plugins.copyartifact.CopyArtifact>
+          <projectName>sim-python-linux64/SIM_REV=${SIM_REV},SIM_COMMON_REV=${SIM_COMMON_REV},SIM_INTERFACE_REV=${SIM_INTERFACE_REV}</projectName>
+          <filter></filter>
+          <target></target>
+          <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+            <stable>true</stable>
+          </selector>
+        </hudson.plugins.copyartifact.CopyArtifact>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <hudson.tasks.Shell>
+      <command>mkdir -p dist/python
+cp -rf sim/projects/PySim/Simulation dist/python
+cp -rf sim/projects/data dist</command>
+    </hudson.tasks.Shell>
+    <hudson.plugins.copyartifact.CopyArtifact>
+      <projectName>fsw-kernel/KERNEL_REV=${KERNEL_REV}</projectName>
+      <filter>dist/kernel/exe/vxWorks</filter>
+      <target>dist/bin</target>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector">
+        <stable>true</stable>
+      </selector>
+      <flatten>true</flatten>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <hudson.tasks.Shell>
+      <command>cp ast/scripts/common/* .
+cp ast/scripts/linux64/* .</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.chucknorris.CordellWalkerRecorder>
+      <factGenerator/>
+    </hudson.plugins.chucknorris.CordellWalkerRecorder>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>simics/**, dist/**,*.py,*.sh</artifacts>
+      <latestOnly>false</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.Fingerprinter>
+      <targets></targets>
+      <recordBuildArtifacts>true</recordBuildArtifacts>
+    </hudson.tasks.Fingerprinter>
+  </publishers>
+  <buildWrappers/>
+</project>

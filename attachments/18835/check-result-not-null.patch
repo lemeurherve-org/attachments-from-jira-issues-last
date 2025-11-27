@@ -1,0 +1,46 @@
+Index: main/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+===================================================================
+--- main/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java	(revision 22642)
++++ main/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java	(working copy)
+@@ -429,9 +429,7 @@
+ 				// If there are changes for this module, add it.
+ 				// Also add it if we've never seen this module before,
+ 				// or if the previous build of this module failed or was unstable.
+-                                if ((mb.getPreviousBuiltBuild() == null) ||
+-                                    (!getChangeSetFor(m).isEmpty()) 
+-                                    || (mb.getPreviousBuiltBuild().getResult().isWorseThan(Result.SUCCESS))) {
++                                if (shouldBuild(m, mb)) {
+                                     changedModules.add(m.getModuleName().toString());
+                                 }
+                             }
+@@ -523,6 +521,30 @@
+             }
+         }
+ 
++        private boolean shouldBuild(MavenModule m, MavenBuild mb) {
++            return changesExistFor(m) || lastBuiltBuildEmptyOrFailedFor(mb);
++        }
++
++        private boolean changesExistFor(MavenModule m) {
++            return !getChangeSetFor(m).isEmpty();
++        }
++
++        private boolean lastBuiltBuildEmptyOrFailedFor(MavenBuild mb) {
++            MavenBuild previousBuiltBuild = mb.getPreviousBuiltBuild();
++
++            if (previousBuiltBuild == null) {
++                return true;
++            }
++
++            Result result = previousBuiltBuild.getResult();
++
++            if (result == null) {
++                return true;
++            }
++
++            return result.isWorseThan(Result.SUCCESS);
++        }
++
+         private void parsePoms(BuildListener listener, PrintStream logger, EnvVars envVars, MavenInstallation mvn) throws IOException, InterruptedException {
+             logger.println("Parsing POMs");
+ 

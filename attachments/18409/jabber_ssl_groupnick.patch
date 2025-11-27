@@ -1,0 +1,242 @@
+Index: java/hudson/plugins/jabber/im/transport/JabberPublisherDescriptor.java
+===================================================================
+--- java/hudson/plugins/jabber/im/transport/JabberPublisherDescriptor.java      (revision 13441)
++++ java/hudson/plugins/jabber/im/transport/JabberPublisherDescriptor.java      (working copy)
+@@ -24,9 +24,11 @@
+     private static final String PREFIX = "jabberPlugin.";
+     public static final String PARAMETERNAME_PORT = JabberPublisherDescriptor.PREFIX + "port";
+     public static final String PARAMETERNAME_HOSTNAME = JabberPublisherDescriptor.PREFIX + "hostname";
++    public static final String PARAMETERNAME_SSL = JabberPublisherDescriptor.PREFIX + "ssl";
+     public static final String PARAMETERNAME_PRESENCE = JabberPublisherDescriptor.PREFIX + "exposePresence";
+     public static final String PARAMETERNAME_PASSWORD = JabberPublisherDescriptor.PREFIX + "password";
+     public static final String PARAMETERNAME_NICKNAME = JabberPublisherDescriptor.PREFIX + "nick";
++    public static final String PARAMETERNAME_GROUP_NICKNAME = JabberPublisherDescriptor.PREFIX + "groupNick";
+     public static final String PARAMETERNAME_TARGETS = JabberPublisherDescriptor.PREFIX + "targets";
+     public static final String PARAMETERNAME_STRATEGY = JabberPublisherDescriptor.PREFIX + "strategy";
+     public static final String PARAMETERNAME_NOTIFY_START = JabberPublisherDescriptor.PREFIX + "notifyStart";
+@@ -47,8 +49,10 @@
+
+     private int port = 5222;
+     private String hostname = null;
++    private boolean legacySSL = false;
+     private String hudsonNickname = "hudson";
+     private String hudsonPassword = "secret";
++    private String groupChatNickname = null;
+     private boolean exposePresence = true;
+     private String initialGroupChats = null;
+     private String commandPrefix = DEFAULT_COMMAND_PREFIX;
+@@ -61,9 +65,9 @@
+         {
+             JabberIMConnectionProvider.getInstance().createConnection(this);
+         }
+-        catch (final IMException dontCare)
++        catch (final Exception dontCare)
+         {
+-            // Server temporarily unavailable ?
++            // Server temporarily unavailable or misconfigured?
+             dontCare.printStackTrace();
+         }
+     }
+@@ -109,6 +113,15 @@
+         }
+     }
+
++    private void applyGroupChatNickname(final HttpServletRequest req) throws FormException
++    {
++        this.groupChatNickname = req.getParameter(JabberPublisherDescriptor.PARAMETERNAME_GROUP_NICKNAME);
++        if (this.groupChatNickname != null && this.groupChatNickname.trim().length() == 0)
++        {
++            this.groupChatNickname = null;
++        }
++    }
++
+     private void applyPort(final HttpServletRequest req) throws FormException
+     {
+         final String p = Util.fixEmptyAndTrim(req.getParameter(JabberPublisherDescriptor.PARAMETERNAME_PORT));
+@@ -132,6 +145,11 @@
+         }
+     }
+
++    private void applyLegacySSL(final HttpServletRequest req)
++    {
++        this.legacySSL = req.getParameter(JabberPublisherDescriptor.PARAMETERNAME_SSL) != null;
++    }
++
+     private void applyPresence(final HttpServletRequest req)
+     {
+         this.exposePresence = req.getParameter(JabberPublisherDescriptor.PARAMETERNAME_PRESENCE) != null;
+@@ -174,6 +192,11 @@
+         return this.hudsonPassword;
+     }
+
++    public String getGroupChatNickname()
++    {
++        return this.groupChatNickname;
++    }
++
+     public int getPort()
+     {
+         return this.port;
+@@ -188,6 +211,11 @@
+         else            return String.valueOf(port);
+     }
+
++    public boolean isLegacySSL()
++    {
++        return this.legacySSL;
++    }
++
+     public boolean isExposePresence()
+     {
+         return this.exposePresence;
+@@ -260,8 +288,10 @@
+         applyPresence(req);
+         applyHostname(req);
+         applyPort(req);
++        applyLegacySSL(req);
+         applyNickname(req);
+         applyPassword(req);
++        applyGroupChatNickname(req);
+         applyInitialGroupChats(req);
+         applyCommandPrefix(req);
+
+@@ -297,4 +327,4 @@
+             }
+         }.process();
+     }
+-}
+\ No newline at end of file
++}
+Index: java/hudson/plugins/jabber/im/transport/JabberIMConnection.java
+===================================================================
+--- java/hudson/plugins/jabber/im/transport/JabberIMConnection.java     (revision 13441)
++++ java/hudson/plugins/jabber/im/transport/JabberIMConnection.java     (working copy)
+@@ -12,6 +12,7 @@
+ import hudson.plugins.jabber.tools.Assert;
+ import org.jivesoftware.smack.Chat;
+ import org.jivesoftware.smack.GroupChat;
++import org.jivesoftware.smack.SSLXMPPConnection;
+ import org.jivesoftware.smack.XMPPConnection;
+ import org.jivesoftware.smack.XMPPException;
+ import org.jivesoftware.smack.packet.Presence;
+@@ -59,6 +60,7 @@
+      * 'john.doe' (service name.)
+      */
+     private final String nick;
++    private final String groupChatNick;
+     /**
+      * Optional server name. If the {@link #nick} is username+service name, this field
+      * can be omitted, in which case reverse DNS lookup and other defaulting mechanism is used
+@@ -66,14 +68,17 @@
+      */
+     private final String hostname;
+     private final int port;
++    private final boolean legacySSL;
+
+     JabberIMConnection(final JabberPublisherDescriptor desc) throws IMException
+     {
+         Assert.isNotNull(desc, "Parameter 'desc' must not be null.");
+         this.hostname = desc.getHostname();
+         this.port = desc.getPort();
++        this.legacySSL = desc.isLegacySSL();
+         this.nick = desc.getHudsonNickname();
+         this.passwd = desc.getHudsonPassword();
++        this.groupChatNick = desc.getGroupChatNickname() != null ? desc.getGroupChatNickname() : this.nick;
+         this.botCommandPrefix = desc.getCommandPrefix();
+         try
+         {
+@@ -146,15 +151,18 @@
+                 String serviceName = getServiceName();
+                 if(serviceName==null)
+                 {
+-                    this.connection = new XMPPConnection(this.hostname, this.port);
++                    this.connection = this.legacySSL ? new SSLXMPPConnection(this.hostname, this.port)
++                                                     : new XMPPConnection(this.hostname, this.port);
+                 }
+                 else if(hostname==null)
+                 {
+-                    this.connection = new XMPPConnection(serviceName);
++                    this.connection = this.legacySSL ? new SSLXMPPConnection(serviceName)
++                                                     : new XMPPConnection(serviceName);
+                 }
+                 else
+                 {
+-                    this.connection = new XMPPConnection(this.hostname, this.port, serviceName);
++                    this.connection = this.legacySSL ? new SSLXMPPConnection(this.hostname, this.port, serviceName)
++                                                     : new XMPPConnection(this.hostname, this.port, serviceName);
+                 }
+
+                 this.connection.login(getUserName(), this.passwd);
+@@ -169,13 +177,13 @@
+             GroupChatCacheEntry cacheEntry = groupChatCache.get(groupChatName);
+             if (cacheEntry == null) {
+                 GroupChat groupChat = this.connection.createGroupChat(groupChatName);
+-                groupChat.join(this.nick);
++                groupChat.join(this.groupChatNick);
+
+                 // get rid of old messages:
+                 while (groupChat.pollMessage() != null) {
+                 }
+
+-                Bot bot = new Bot(groupChat, this.nick, this.botCommandPrefix);
++                Bot bot = new Bot(groupChat, this.groupChatNick, this.botCommandPrefix);
+
+                 cacheEntry = new GroupChatCacheEntry(groupChat, bot);
+                 groupChatCache.put(groupChatName, cacheEntry);
+@@ -240,5 +248,4 @@
+             throw new IMException(e);
+         }
+     }
+-
+ }
+Index: resources/hudson/plugins/jabber/im/transport/JabberPublisher/global.jelly
+===================================================================
+--- resources/hudson/plugins/jabber/im/transport/JabberPublisher/global.jelly   (revision 13441)
++++ resources/hudson/plugins/jabber/im/transport/JabberPublisher/global.jelly   (working copy)
+@@ -1,7 +1,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+        xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+-  <j:set var="base" value="${rootURL}/plugin/jabber"/>
++  <j:set var="base" value="/plugin/jabber"/>
+
+   <f:section title="Jabber Notification">
+                <f:entry title="Jabber ID" help="${base}/help-id.html">
+@@ -25,6 +25,9 @@
+       <f:entry title="Port" help="${base}/help-port.html">
+         <f:textbox name="${descriptor.PARAMETERNAME_PORT}" value="${descriptor.portString}" />
+       </f:entry>
++      <f:entry title="Legacy SSL">
++        <f:checkbox name="${descriptor.PARAMETERNAME_SSL}" checked="${descriptor.legacySSL}"/>
++      </f:entry>
+       <f:entry title="Expose presence" help="${base}/help-presence.html">
+         <f:checkbox name="${descriptor.PARAMETERNAME_PRESENCE}" checked="${descriptor.exposePresence}"/>
+       </f:entry>
+@@ -32,6 +35,10 @@
+         <f:textbox name="${descriptor.PARAMETERNAME_COMMAND_PREFIX}"
+           value="${descriptor.commandPrefix}" />
+       </f:entry>
++      <f:entry title="Group chat nickname" help="${base}/help-group-nick.html">
++        <f:textbox name="${descriptor.PARAMETERNAME_GROUP_NICKNAME}"
++          value="${descriptor.groupChatNickname}" />
++      </f:entry>
+     </f:advanced>
+     </f:section>
+-</j:jelly>
+\ No newline at end of file
++</j:jelly>
+Index: webapp/help-group-nick.html
+===================================================================
+--- webapp/help-group-nick.html (revision 0)
++++ webapp/help-group-nick.html (revision 0)
+@@ -0,0 +1,3 @@
++<div>
++    Alternate nickname to use in group chats; leave blank to use Jabber ID from above.
++</div>
+
+Property changes on: webapp/help-group-nick.html
+___________________________________________________________________
+Name: svn:keywords
+   + Author Date Id Revision
+Name: svn:eol-style
+   + native

@@ -1,0 +1,16 @@
+(Pipeline stage)
+        buildMavenInDocker(sonarImage) {
+          withCredentials([string(credentialsId: sonarCreds, variable: 'sonarToken')]) {
+            withEnv(["sonarToken=${sonarToken}"]) {
+              stage('Static Analysis') {
+                def xmlFilesInDir = findFiles(glob: '**/jacoco.xml')
+                String filePaths = "-Dsonar.coverage.jacoco.xmlReportPaths="
+                for (resultsFile in xmlFilesInDir) {
+                  filePaths += "${workspace}/${resultsFile},"
+                }
+                sh "mvn -B -e ${filePaths} ${sonarOptions} -Dmaven.repo.local=${env.WORKSPACE}/.repository -Dsonar.login=${sonarToken}  sonar:sonar"
+                sonarqubeToSplunk artifact: './target/sonar/report-task.txt'
+              }
+            }
+          }
+        }

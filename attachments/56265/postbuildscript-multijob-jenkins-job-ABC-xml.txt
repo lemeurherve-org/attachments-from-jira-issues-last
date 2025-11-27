@@ -1,0 +1,86 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?><com.tikal.jenkins.plugins.multijob.MultiJobProject plugin="jenkins-multijob-plugin@1.36">
+  <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@2.0.1">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <org.bstick12.jenkinsci.plugins.leastload.LeastLoadDisabledProperty plugin="leastload@3.0.0">
+      <leastLoadDisabled>false</leastLoadDisabled>
+    </org.bstick12.jenkinsci.plugins.leastload.LeastLoadDisabledProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.18.1">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+    <com.suryagaddipati.jenkins.SlaveUtilizationProperty plugin="slave-utilization-plugin@1.8">
+      <needsExclusiveAccessToNode>false</needsExclusiveAccessToNode>
+      <singleInstancePerSlave>false</singleInstancePerSlave>
+      <slaveUtilizationPercentage>0</slaveUtilizationPercentage>
+    </com.suryagaddipati.jenkins.SlaveUtilizationProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.32">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>echo AAA</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <org.jenkinsci.plugins.postbuildscript.PostBuildScript plugin="postbuildscript@3.0.0">
+      <config>
+        <scriptFiles/>
+        <groovyScripts/>
+        <buildSteps>
+          <org.jenkinsci.plugins.postbuildscript.model.PostBuildStep>
+            <results>
+              <string>FAILURE</string>
+            </results>
+            <role>BOTH</role>
+            <buildSteps>
+              <com.tikal.jenkins.plugins.multijob.MultiJobBuilder plugin="jenkins-multijob-plugin@1.36">
+                <phaseName>Sandbox Archive</phaseName>
+                <phaseJobs>
+                  <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+                    <jobName>LinuxKernel-Archive</jobName>
+                    <jobAlias/>
+                    <currParams>true</currParams>
+                    <aggregatedTestResults>false</aggregatedTestResults>
+                    <exposedSCM>false</exposedSCM>
+                    <disableJob>false</disableJob>
+                    <parsingRulesPath/>
+                    <maxRetries>0</maxRetries>
+                    <enableRetryStrategy>false</enableRetryStrategy>
+                    <enableCondition>false</enableCondition>
+                    <abortAllJob>true</abortAllJob>
+                    <condition/>
+                    <configs class="empty-list"/>
+                    <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+                    <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+                    <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+                  </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+                </phaseJobs>
+                <continuationCondition>ALWAYS</continuationCondition>
+                <executionType>PARALLEL</executionType>
+                <quietPeriodGroovy>index &lt; 5 ? 0 : 2 * 60</quietPeriodGroovy>
+              </com.tikal.jenkins.plugins.multijob.MultiJobBuilder>
+            </buildSteps>
+            <stopOnFailure>false</stopOnFailure>
+          </org.jenkinsci.plugins.postbuildscript.model.PostBuildStep>
+        </buildSteps>
+        <markBuildUnstable>false</markBuildUnstable>
+      </config>
+    </org.jenkinsci.plugins.postbuildscript.PostBuildScript>
+  </publishers>
+  <buildWrappers/>
+  <pollSubjobs>false</pollSubjobs>
+</com.tikal.jenkins.plugins.multijob.MultiJobProject>

@@ -1,0 +1,41 @@
+import hudson.tasks.junit.CaseResult;
+import hudson.tasks.test.AbstractTestResultAction
+import hudson.tasks.test.TestResult
+
+regressing_tests = []
+
+AbstractTestResultAction currentTestResultAction = build.getAction(AbstractTestResultAction.class)
+if (currentTestResultAction != null) {
+
+  //Workaround to jenkins bug https://issues.jenkins-ci.org/browse/JENKINS-30413  "Failed test age is incorrect if same test name exist in different package"
+  AbstractTestResultAction previousTestResultAction = currentTestResultAction.getPreviousResult()
+  List<CaseResult> previous_failedTests = previousTestResultAction.getFailedTests();
+
+  List<CaseResult> failedTests = currentTestResultAction.getFailedTests();
+  failedTests.each() { failedT ->
+    boolean bRegression = (failedT.getAge() == 1);
+    if ( bRegression )
+    {
+      //Workaround to jenkins bug https://issues.jenkins-ci.org/browse/JENKINS-30413  "Failed test age is incorrect if same test name exist in different package"
+      //
+      boolean bPreviouslyFailing = false
+      previous_failedTests.each() { prev_failedT ->
+        if ( failedT.getFullDisplayName() == prev_failedT.getFullDisplayName() )
+        {
+          //out.println("The test " + failedT.getFullDisplayName() + "has a failing age of 1 but was also failing previously so skippping it." )
+          bPreviouslyFailing=true
+          return true
+        }
+      }
+
+      if ( ! bPreviouslyFailing )
+      {
+        regressing_tests.add(failedT)
+      }
+    }
+  }
+}
+//If no regressions were found, tells email-ext jenkins extension to not send the email:
+if ( regressing_tests.size() == 0 ) {
+  cancel=true
+}

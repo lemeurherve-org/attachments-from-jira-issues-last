@@ -1,0 +1,69 @@
+#!/usr/bin/env groovy
+node {
+	def parameters = [
+		'workspaceDir' : '......',
+		'InternalToolsFolder' : '.....',
+		'p4Path' : '......',
+		'versionName' : 'B378',
+		'buildFolderName' : 'B378DEV',
+		'buildParams' : '......',
+		'emailNotification': '......',
+		'platform' : 'WIN',
+		'edition' : 'DEV'
+	]
+	node (parameters['versionName']) {
+		timestamps{
+			stage ('Sync-Internal-Tools') {
+				dir (parameters['InternalToolsFolder']) {
+					SyncInternalTools (parameters['InternalToolsFolder'], parameters['versionName'], parameters['platform'], parameters['edition'])
+				}
+			}
+			dir (parameters['workspaceDir'] + parameters['buildFolderName']) {
+				stage ('Get-Source') {
+					GetSource (parameters['workspaceDir'], parameters['buildFolderName'], parameters['p4Path'])
+				}
+				stage ('Build') {
+					Build (parameters['workspaceDir'], parameters['buildFolderName'], parameters['edition'], parameters['buildParams'], parameters['emailNotification'])
+				}
+			}
+			stage ('Remove-Data-Disk') {
+				dir (parameters['InternalToolsFolder']) {
+					RemoveDisk (parameters['InternalToolsFolder'], parameters['versionName'], parameters['platform'], parameters['edition'])
+				}
+			}
+		}		
+	}
+	
+}
+
+def SyncInternalTools (internalToolsFolder, versionName, platform, edition) {
+	checkout(.....
+}	
+
+def GetSource (workspaceDir, buildFolderName, p4Path)
+{
+	checkout(.....
+}
+
+def Build (workspaceDir, buildFolderName, edition, buildParams, emailNotification) {
+	try {
+		def result = bat "...."
+		if (result != 0) {
+			SendMailTo("${emailNotification}", 'Build Succeded')
+		}
+	}catch (e) {
+		SendMailTo("${emailNotification}", 'Build Failed')
+	}
+}
+
+def RemoveDisk (internalToolsFolder, versionName, platform, edition) {
+		PowerShell ("...")
+}
+
+def SendMailTo (address,message) {
+	echo "${address}: ${message}"
+}
+
+def PowerShell (psCmd) {
+    bat "powershell.exe -NonInteractive -ExecutionPolicy Bypass -Command \"\$ErrorActionPreference='Stop';[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;$psCmd;EXIT \$global:LastExitCode\""
+}

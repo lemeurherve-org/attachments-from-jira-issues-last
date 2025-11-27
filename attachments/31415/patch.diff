@@ -1,0 +1,22 @@
+--- PathRestriction2.java	2015-12-09 14:48:39.084133000 +0000
++++ PathRestriction.java	2015-12-08 16:55:57.666731200 +0000
+@@ -99,6 +99,19 @@
+         
+         List<Pattern> included = getIncludedPatterns();
+         List<Pattern> excluded = getExcludedPatterns();
++        
++        PrintStream stream = listener.getLogger();
++        stream.println("processing commit: " + commit.getCommitId());
++        for (String path : paths) {
++            stream.println("affected path: " + path);
++        }
++        
++        for (Pattern pattern : included) {
++            stream.println("included path pattern: " + pattern.pattern());
++        }
++        for (Pattern pattern : excluded) {
++            stream.println("excluded path pattern: " + pattern.pattern());
++        }
+ 
+         // Assemble the list of included paths
+         List<String> includedPaths = new ArrayList<String>(paths.size());

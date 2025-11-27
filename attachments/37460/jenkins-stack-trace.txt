@@ -1,0 +1,122 @@
+Started by user Stephen Donner
+Checking out git ${REPOSITORY} to read Jenkinsfile
+Wiping out workspace first.
+Cloning the remote Git repository
+Cloning repository https://github.com/stephendonner/mozillians-tests.git
+ > /usr/bin/git init /var/lib/jenkins/jobs/mozillians.adhoc/workspace@script # timeout=10
+Fetching upstream changes from https://github.com/stephendonner/mozillians-tests.git
+ > /usr/bin/git --version # timeout=10
+ > /usr/bin/git fetch --tags --progress https://github.com/stephendonner/mozillians-tests.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git config remote.origin.url https://github.com/stephendonner/mozillians-tests.git # timeout=10
+ > /usr/bin/git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > /usr/bin/git config remote.origin.url https://github.com/stephendonner/mozillians-tests.git # timeout=10
+Fetching upstream changes from https://github.com/stephendonner/mozillians-tests.git
+ > /usr/bin/git fetch --tags --progress https://github.com/stephendonner/mozillians-tests.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git rev-parse origin/jenkins_42858^{commit} # timeout=10
+Checking out Revision 3b1f6450d1b7461caca9b7ffc1991f3ffd164360 (origin/jenkins_42858)
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f 3b1f6450d1b7461caca9b7ffc1991f3ffd164360
+ > /usr/bin/git rev-list aef7cbc2f84b0e3e0eae0b65a721e5e577d6dfcf # timeout=10
+Loading library fxtest@1.6
+ > /usr/bin/git rev-parse --is-inside-work-tree # timeout=10
+Setting origin to https://github.com/mozilla/fxtest-jenkins-pipeline.git
+ > /usr/bin/git config remote.origin.url https://github.com/mozilla/fxtest-jenkins-pipeline.git # timeout=10
+Fetching origin...
+Fetching upstream changes from origin
+ > /usr/bin/git --version # timeout=10
+ > /usr/bin/git fetch --tags --progress origin +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git rev-parse 1.6^{commit} # timeout=10
+Wiping out workspace first.
+Cloning the remote Git repository
+Cloning repository https://github.com/mozilla/fxtest-jenkins-pipeline.git
+ > /usr/bin/git init /var/lib/jenkins/jobs/mozillians.adhoc/workspace@libs/fxtest # timeout=10
+Fetching upstream changes from https://github.com/mozilla/fxtest-jenkins-pipeline.git
+ > /usr/bin/git --version # timeout=10
+ > /usr/bin/git fetch --tags --progress https://github.com/mozilla/fxtest-jenkins-pipeline.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git config remote.origin.url https://github.com/mozilla/fxtest-jenkins-pipeline.git # timeout=10
+ > /usr/bin/git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > /usr/bin/git config remote.origin.url https://github.com/mozilla/fxtest-jenkins-pipeline.git # timeout=10
+Fetching upstream changes from https://github.com/mozilla/fxtest-jenkins-pipeline.git
+ > /usr/bin/git fetch --tags --progress https://github.com/mozilla/fxtest-jenkins-pipeline.git +refs/heads/*:refs/remotes/origin/*
+Checking out Revision bb7edb8b1de33d27a9cf49de8fc99b949950b336 (1.6)
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f bb7edb8b1de33d27a9cf49de8fc99b949950b336
+ > /usr/bin/git rev-list bb7edb8b1de33d27a9cf49de8fc99b949950b336 # timeout=10
+[Pipeline] node
+Running on CL7-DOCKER-A in /home/jenkins/workspace/mozillians.adhoc
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Wiping out workspace first.
+Cloning the remote Git repository
+Cloning repository https://github.com/stephendonner/mozillians-tests.git
+ > /usr/bin/git init /home/jenkins/workspace/mozillians.adhoc # timeout=10
+Fetching upstream changes from https://github.com/stephendonner/mozillians-tests.git
+ > /usr/bin/git --version # timeout=10
+ > /usr/bin/git fetch --tags --progress https://github.com/stephendonner/mozillians-tests.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git config remote.origin.url https://github.com/stephendonner/mozillians-tests.git # timeout=10
+ > /usr/bin/git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > /usr/bin/git config remote.origin.url https://github.com/stephendonner/mozillians-tests.git # timeout=10
+Fetching upstream changes from https://github.com/stephendonner/mozillians-tests.git
+ > /usr/bin/git fetch --tags --progress https://github.com/stephendonner/mozillians-tests.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git rev-parse origin/jenkins_42858^{commit} # timeout=10
+Checking out Revision 3b1f6450d1b7461caca9b7ffc1991f3ffd164360 (origin/jenkins_42858)
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f 3b1f6450d1b7461caca9b7ffc1991f3ffd164360
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] mail
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] End of Pipeline
+groovy.lang.MissingPropertyException: No such property: MOZ_VARS for class: groovy.lang.Binding
+	at groovy.lang.Binding.getVariable(Binding.java:63)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onGetProperty(SandboxInterceptor.java:224)
+	at org.kohsuke.groovy.sandbox.impl.Checker$4.call(Checker.java:241)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedGetProperty(Checker.java:238)
+	at com.cloudbees.groovy.cps.sandbox.SandboxInvoker.getProperty(SandboxInvoker.java:28)
+	at com.cloudbees.groovy.cps.impl.PropertyAccessBlock.rawGet(PropertyAccessBlock.java:20)
+	at Script1.run(Script1.groovy:1)
+	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.withEnvBlock(jar:file:/var/lib/jenkins/plugins/pipeline-model-definition/WEB-INF/lib/pipeline-model-definition.jar!/org/jenkinsci/plugins/pipeline/modeldefinition/ModelInterpreter.groovy:217)
+	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.call(jar:file:/var/lib/jenkins/plugins/pipeline-model-definition/WEB-INF/lib/pipeline-model-definition.jar!/org/jenkinsci/plugins/pipeline/modeldefinition/ModelInterpreter.groovy:76)
+	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.inDeclarativeAgent(jar:file:/var/lib/jenkins/plugins/pipeline-model-definition/WEB-INF/lib/pipeline-model-definition.jar!/org/jenkinsci/plugins/pipeline/modeldefinition/ModelInterpreter.groovy:362)
+	at org.jenkinsci.plugins.pipeline.modeldefinition.agent.impl.AnyScript.run(jar:file:/var/lib/jenkins/plugins/pipeline-model-definition/WEB-INF/lib/pipeline-model-definition.jar!/org/jenkinsci/plugins/pipeline/modeldefinition/agent/impl/AnyScript.groovy:44)
+	at org.jenkinsci.plugins.pipeline.modeldefinition.agent.CheckoutScript.checkoutAndRun(jar:file:/var/lib/jenkins/plugins/pipeline-model-extensions/WEB-INF/lib/pipeline-model-extensions.jar!/org/jenkinsci/plugins/pipeline/modeldefinition/agent/CheckoutScript.groovy:57)
+	at org.jenkinsci.plugins.pipeline.modeldefinition.agent.CheckoutScript.doCheckout(jar:file:/var/lib/jenkins/plugins/pipeline-model-extensions/WEB-INF/lib/pipeline-model-extensions.jar!/org/jenkinsci/plugins/pipeline/modeldefinition/agent/CheckoutScript.groovy:40)
+	at org.jenkinsci.plugins.pipeline.modeldefinition.agent.impl.LabelScript.run(jar:file:/var/lib/jenkins/plugins/pipeline-model-definition/WEB-INF/lib/pipeline-model-definition.jar!/org/jenkinsci/plugins/pipeline/modeldefinition/agent/impl/LabelScript.groovy:44)
+	at ___cps.transform___(Native Method)
+	at com.cloudbees.groovy.cps.impl.PropertyishBlock$ContinuationImpl.get(PropertyishBlock.java:74)
+	at com.cloudbees.groovy.cps.LValueBlock$GetAdapter.receive(LValueBlock.java:30)
+	at com.cloudbees.groovy.cps.impl.PropertyishBlock$ContinuationImpl.fixName(PropertyishBlock.java:66)
+	at sun.reflect.GeneratedMethodAccessor660.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at com.cloudbees.groovy.cps.impl.ConstantBlock.eval(ConstantBlock.java:21)
+	at com.cloudbees.groovy.cps.Next.step(Next.java:74)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:154)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:18)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:33)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:108)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:165)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:330)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$100(CpsThreadGroup.java:82)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:242)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:230)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:64)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:112)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+Finished: FAILURE

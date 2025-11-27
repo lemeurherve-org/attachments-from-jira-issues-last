@@ -1,0 +1,226 @@
+Index: src/main/java/hudson/scm/subversion/CheckoutUpdater.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/hudson/scm/subversion/CheckoutUpdater.java	(revision 40315)
++++ src/main/java/hudson/scm/subversion/CheckoutUpdater.java	(revision )
+@@ -81,7 +81,7 @@
+ 
+                     File local = new File(ws, location.getLocalDir());
+                     svnuc.setEventHandler(new SubversionUpdateEventHandler(new PrintStream(pos), externals, local, location.getLocalDir()));
+-                    svnuc.doCheckout(location.getSVNURL(), local.getCanonicalFile(), SVNRevision.HEAD, getRevision(location), SVNDepth.INFINITY, true);
++                    svnuc.doCheckout(location.getSVNURL(), local.getCanonicalFile(), SVNRevision.HEAD, getRevision(location), SVNDepth.fromString(location.getDepthOption()), true);
+                 } catch (SVNCancelException e) {
+                     listener.error("Subversion checkout has been canceled");
+                     throw (InterruptedException)new InterruptedException().initCause(e);
+Index: src/test/java/hudson/scm/SubversionSCMTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/hudson/scm/SubversionSCMTest.java	(revision 40315)
++++ src/test/java/hudson/scm/SubversionSCMTest.java	(revision )
+@@ -710,7 +710,7 @@
+ //        SLAVE_DEBUG_PORT = 8001;
+         File repo = new CopyExisting(getClass().getResource("HUDSON-6030.zip")).allocate();
+         SubversionSCM scm = new SubversionSCM(ModuleLocation.parse(new String[]{"file://" + repo.getPath()},
+-                                                                   new String[]{"."}),
++                                                                   new String[]{"."}, null),
+                                               new UpdateUpdater(), null, ".*/bar", "", "", "", "");
+ 
+         FreeStyleProject p = createFreeStyleProject("testExcludedRegions");
+@@ -742,7 +742,7 @@
+ //        SLAVE_DEBUG_PORT = 8001;
+         File repo = new CopyExisting(getClass().getResource("HUDSON-6030.zip")).allocate();
+         SubversionSCM scm = new SubversionSCM(ModuleLocation.parse(new String[]{"file://" + repo.getPath()},
+-                                                                   new String[]{"."}),
++                                                                   new String[]{"."}, null),
+                                               new UpdateUpdater(), null, "", "", "", "", ".*/foo");
+ 
+         FreeStyleProject p = createFreeStyleProject("testExcludedRegions");
+Index: src/main/resources/hudson/scm/SubversionSCM/config.jelly
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/resources/hudson/scm/SubversionSCM/config.jelly	(revision 40315)
++++ src/main/resources/hudson/scm/SubversionSCM/config.jelly	(revision )
+@@ -32,6 +32,14 @@
+         <f:entry title="${%Local module directory} (${%optional})" field="local">
+           <f:textbox value="${loc!=null?loc.local:'.'}" />
+         </f:entry>
++          <f:entry title="${%Repository depth option}" field="depthOption">
++              <select name="depthOption">
++                  <f:option value="infinity" selected="${loc.depthOption=='infinity'}">infinity</f:option>
++                  <f:option value="empty" selected="${loc.depthOption=='empty'}">empty</f:option>
++                  <f:option value="files" selected="${loc.depthOption=='files'}">files</f:option>
++                  <f:option value="immediates" selected="${loc.depthOption=='immediates'}">immediates</f:option>
++              </select>
++          </f:entry>
+         <f:entry>
+           <div align="right">
+             <input type="button" value="${%Add more locations...}" class="repeatable-add show-if-last" />
+Index: src/main/java/hudson/scm/SubversionSCM.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/hudson/scm/SubversionSCM.java	(revision 40315)
++++ src/main/java/hudson/scm/SubversionSCM.java	(revision )
+@@ -112,6 +112,7 @@
+ 
+ import org.apache.commons.beanutils.PropertyUtils;
+ import org.apache.commons.io.FileUtils;
++import org.apache.commons.lang.StringUtils;
+ import org.apache.tools.ant.BuildException;
+ import org.apache.tools.ant.Project;
+ import org.apache.tools.ant.taskdefs.Chmod;
+@@ -131,6 +132,7 @@
+ import org.tmatesoft.svn.core.SVNLogEntry;
+ import org.tmatesoft.svn.core.SVNLogEntryPath;
+ import org.tmatesoft.svn.core.SVNNodeKind;
++import org.tmatesoft.svn.core.SVNDepth;
+ import org.tmatesoft.svn.core.SVNProperties;
+ import org.tmatesoft.svn.core.SVNURL;
+ import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+@@ -230,7 +232,7 @@
+      */
+     public SubversionSCM(String[] remoteLocations, String[] localLocations,
+                          boolean useUpdate, SubversionRepositoryBrowser browser, String excludedRegions) {
+-        this(ModuleLocation.parse(remoteLocations,localLocations), useUpdate, false, browser, excludedRegions, null, null, null);
++        this(ModuleLocation.parse(remoteLocations,localLocations, null), useUpdate, false, browser, excludedRegions, null, null, null);
+     }
+ 
+     /**
+@@ -238,7 +240,7 @@
+      */
+      public SubversionSCM(String[] remoteLocations, String[] localLocations,
+                          boolean useUpdate, SubversionRepositoryBrowser browser, String excludedRegions, String excludedUsers, String excludedRevprop) {
+-        this(ModuleLocation.parse(remoteLocations,localLocations), useUpdate, false, browser, excludedRegions, excludedUsers, excludedRevprop, null);
++        this(ModuleLocation.parse(remoteLocations,localLocations, null), useUpdate, false, browser, excludedRegions, excludedUsers, excludedRevprop, null);
+     }
+ 
+    /**
+@@ -2304,17 +2306,35 @@
+          */
+         @Exported
+         public final String local;
+-
++        
+         /**
++         * Subversion remote depth. Used as "--depth" option for checkout and update commands.
++         * Default value is "infinity".
++         */
++        @Exported
++        public final String depthOption;
++
++        /**
+          * Cache of the repository UUID.
+          */
+         private transient volatile UUID repositoryUUID;
+         private transient volatile SVNURL repositoryRoot;
+ 
+-        @DataBoundConstructor
++        /**
++         * Constructor to support backward compatibility.
++         * @param remote remote repository.
++         * @param local local repository.
++         */
+         public ModuleLocation(String remote, String local) {
++            this(remote, local, null);
++        }
++
++        @DataBoundConstructor
++        public ModuleLocation(String remote, String local,String depthOption) {
+             this.remote = Util.removeTrailingSlash(Util.fixNull(remote).trim());
+             this.local = fixEmptyAndTrim(local);
++            this.depthOption = StringUtils.isEmpty(depthOption) ? SVNDepth.INFINITY.getName()
++                    : depthOption;
+         }
+ 
+         /**
+@@ -2392,6 +2412,15 @@
+         }
+ 
+         /**
++         * Returns the value of remote depth option.
++         *
++         * @return the value of remote depth option.
++         */
++        public String getDepthOption() {
++            return depthOption;
++        }
++
++        /**
+          * @deprecated This method is used by {@link #getExpandedLocation(AbstractBuild)}
+          *             which is deprecated since it expands variables only based
+          *             on build parameters.
+@@ -2415,7 +2444,7 @@
+          *             to be performed on all env vars rather than just build parameters.
+          */
+         public ModuleLocation getExpandedLocation(AbstractBuild<?, ?> build) {
+-            return new ModuleLocation(getExpandedRemote(build), getExpandedLocalDir(build));
++            return new ModuleLocation(getExpandedRemote(build), getExpandedLocalDir(build), getDepthOption());
+         }
+         
+         /**
+@@ -2424,7 +2453,7 @@
+          * @return Output ModuleLocation expanded according to specified env vars.
+          */
+         public ModuleLocation getExpandedLocation(EnvVars env) {
+-            return new ModuleLocation(env.expand(remote), env.expand(getLocalDir()));
++            return new ModuleLocation(env.expand(remote), env.expand(getLocalDir()), getDepthOption());
+         }
+ 
+         @Override
+@@ -2434,7 +2463,7 @@
+ 
+         private static final long serialVersionUID = 1L;
+ 
+-        public static List<ModuleLocation> parse(String[] remoteLocations, String[] localLocations) {
++        public static List<ModuleLocation> parse(String[] remoteLocations, String[] localLocations, String[] depthOptions) {
+             List<ModuleLocation> modules = new ArrayList<ModuleLocation>();
+             if (remoteLocations != null && localLocations != null) {
+                 int entries = Math.min(remoteLocations.length, localLocations.length);
+@@ -2445,7 +2474,7 @@
+ 
+                     if (remoteLoc != null) {// null if skipped
+                         remoteLoc = Util.removeTrailingSlash(remoteLoc.trim());
+-                        modules.add(new ModuleLocation(remoteLoc, Util.nullify(localLocations[i])));
++                        modules.add(new ModuleLocation(remoteLoc, Util.nullify(localLocations[i]), depthOptions != null? depthOptions[i] : null));
+                     }
+                 }
+             }
+Index: src/main/java/hudson/scm/subversion/UpdateUpdater.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/hudson/scm/subversion/UpdateUpdater.java	(revision 40315)
++++ src/main/java/hudson/scm/subversion/UpdateUpdater.java	(revision )
+@@ -133,7 +133,7 @@
+ 
+                 preUpdate(location, local);
+                 listener.getLogger().println("Updating " + location.remote);
+-                svnuc.doUpdate(local.getCanonicalFile(), r, SVNDepth.INFINITY, true, false);
++                svnuc.doUpdate(local.getCanonicalFile(), r, SVNDepth.fromString(location.getDepthOption()), true, false);
+             } catch (SVNCancelException e) {
+                 listener.error("Subversion update has been canceled");
+                 throw (InterruptedException)new InterruptedException().initCause(e);
+Index: src/main/java/hudson/scm/subversion/UpdateWithRevertUpdater.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/hudson/scm/subversion/UpdateWithRevertUpdater.java	(revision 40315)
++++ src/main/java/hudson/scm/subversion/UpdateWithRevertUpdater.java	(revision )
+@@ -58,7 +58,7 @@
+         @Override
+         protected void preUpdate(ModuleLocation module, File local) throws SVNException, IOException {
+             listener.getLogger().println("Reverting " + local);
+-            manager.getWCClient().doRevert(new File[]{local.getCanonicalFile()}, SVNDepth.INFINITY, null);
++            manager.getWCClient().doRevert(new File[]{local.getCanonicalFile()}, SVNDepth.fromString(location.getDepthOption()), null);
+         }
+     }
+ 

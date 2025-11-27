@@ -1,0 +1,88 @@
+From c7f84117f2923cdbff4597ef08596276de16faa1 Mon Sep 17 00:00:00 2001
+From: Bertrand Latinville <noone@nodomain.com>
+Date: Thu, 5 Apr 2012 15:56:20 +0200
+Subject: [PATCH] Include region polling problem in case of multiple commits
+
+---
+ src/main/java/hudson/plugins/git/GitAPI.java  |    6 ++++--
+ src/main/java/hudson/plugins/git/GitSCM.java  |   10 ++++++----
+ src/main/java/hudson/plugins/git/IGitAPI.java |    3 ++-
+ 3 files changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/git/GitAPI.java b/src/main/java/hudson/plugins/git/GitAPI.java
+index 16d68da..415d80c 100644
+--- a/src/main/java/hudson/plugins/git/GitAPI.java
++++ b/src/main/java/hudson/plugins/git/GitAPI.java
+@@ -6,6 +6,7 @@ import hudson.Launcher;
+ import hudson.FilePath.FileCallable;
+ import hudson.Launcher.LocalLauncher;
+ import hudson.model.TaskListener;
++import hudson.plugins.git.util.BuildData;
+ import hudson.remoting.VirtualChannel;
+ import hudson.util.ArgumentListBuilder;
+ 
+@@ -321,9 +322,10 @@ public class GitAPI implements IGitAPI {
+      * @return The git show output, in List form.
+      * @throws GitException if errors were encountered running git show.
+      */
+-    public List<String> showRevision(Revision r) throws GitException {
+-        String revName = r.getSha1String();
++    public List<String> showRevision(Revision r, BuildData buildData) throws GitException {
++        String revName = buildData.lastBuild.revision.sha1.name() +".." + r.getSha1String();
+         String result = "";
++        
+ 
+         if (revName != null) {
+             result = launchCommand("show", "--no-abbrev", "--format=raw", "-M", "--raw", revName);
+diff --git a/src/main/java/hudson/plugins/git/GitSCM.java b/src/main/java/hudson/plugins/git/GitSCM.java
+index 44caec2..1fa0a56 100644
+--- a/src/main/java/hudson/plugins/git/GitSCM.java
++++ b/src/main/java/hudson/plugins/git/GitSCM.java
+@@ -740,7 +740,7 @@ public class GitSCM extends SCM implements Serializable {
+                     List<Revision> candidates = new ArrayList<Revision>();
+ 
+                     for (Revision c : origCandidates) {
+-                        if (!isRevExcluded(git, c, listener)) {
++                        if (!isRevExcluded(git, c, listener, buildData)) {
+                             candidates.add(c);
+                         }
+                     }
+@@ -1743,9 +1743,11 @@ public class GitSCM extends SCM implements Serializable {
+      * @param listener
+      * @return true if any exclusion files are matched, false otherwise.
+      */
+-    private boolean isRevExcluded(IGitAPI git, Revision r, TaskListener listener) {
+-        try {
+-            List<String> revShow = git.showRevision(r);
++    private boolean isRevExcluded(IGitAPI git, Revision r, TaskListener listener, BuildData buildData) {
++        
++    	
++    	try {
++            List<String> revShow = git.showRevision(r, buildData);
+ 
+             // If the revision info is empty, something went weird, so we'll just
+             // return false.
+diff --git a/src/main/java/hudson/plugins/git/IGitAPI.java b/src/main/java/hudson/plugins/git/IGitAPI.java
+index eaa3092..390ccbb 100644
+--- a/src/main/java/hudson/plugins/git/IGitAPI.java
++++ b/src/main/java/hudson/plugins/git/IGitAPI.java
+@@ -2,6 +2,7 @@ package hudson.plugins.git;
+ 
+ import hudson.EnvVars;
+ import hudson.model.TaskListener;
++import hudson.plugins.git.util.BuildData;
+ 
+ import java.io.File;
+ import java.io.IOException;
+@@ -110,7 +111,7 @@ public interface IGitAPI {
+     ObjectId mergeBase(ObjectId sha1, ObjectId sha12);
+     String getAllLogEntries(String branch);
+ 
+-    List<String> showRevision(Revision r) throws GitException;
++    List<String> showRevision(Revision r, BuildData buildData) throws GitException;
+     String getHeadRev(String remoteRepoUrl, String branch) throws GitException;
+ 
+     String getReference();
+-- 
+1.7.2.5
+

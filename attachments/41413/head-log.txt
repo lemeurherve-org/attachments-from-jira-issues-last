@@ -1,0 +1,25 @@
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository https://bitbucket.org/<myteam>/<myrepo>.git
+ > git init /Users/<myuser>/Jenkins/workspace/<myrepo>_PR-465-head-X5YKVHLRL7VSL4XCFVVZYKRAQF472XSUQAPQ7VKL5YYYAFCZMZAQ # timeout=10
+Fetching upstream changes from https://bitbucket.org/<myteam>/<myrepo>.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials <My Bitbucket Account>
+ > git fetch --no-tags --progress https://bitbucket.org/<myteam>/<myrepo>.git +refs/heads/<PR-branch-name>:refs/remotes/origin/PR-465-head
+ > git config remote.origin.url https://bitbucket.org/<myteam>/<myrepo>.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/<PR-branch-name>:refs/remotes/origin/PR-465-head # timeout=10
+ > git config remote.origin.url https://bitbucket.org/<myteam>/<myrepo>.git # timeout=10
+Cleaning workspace
+ > git rev-parse --verify HEAD # timeout=10
+No valid HEAD. Skipping the resetting
+ > git clean -fdx # timeout=10
+Fetching without tags
+Fetching upstream changes from https://bitbucket.org/<myteam>/<myrepo>.git
+using GIT_ASKPASS to set credentials <My Bitbucket Account>
+ > git fetch --no-tags --progress https://bitbucket.org/<myteam>/<myrepo>.git +refs/heads/<PR-branch-name>:refs/remotes/origin/PR-465-head
+Checking out Revision ffc51be962085acea995ebe1c9656a55dc229841 (PR-465-head)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f ffc51be962085acea995ebe1c9656a55dc229841
+Commit message: "<My commit message>"
+First time build. Skipping changelog.
+[Bitbucket] Notifying pull request build result

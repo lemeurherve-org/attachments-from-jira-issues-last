@@ -1,0 +1,27 @@
+Index: src/main/java/org/jenkinsci/plugins/rundeck/RundeckNotifier.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/org/jenkinsci/plugins/rundeck/RundeckNotifier.java	(revision d15cadcae70cb5e0223e1bebc8c98c5ff92b0f3d)
++++ src/main/java/org/jenkinsci/plugins/rundeck/RundeckNotifier.java	(date 1557353503000)
+@@ -102,7 +102,7 @@
+     }
+ 
+     @DataBoundConstructor
+-    public RundeckNotifier(String rundeckInstance, String jobId, String options, String nodeFilters, String tags,
++    public RundeckNotifier(String rundeckInstance, String jobId, String options, String nodeFilters, String tag,
+                            Boolean shouldWaitForRundeckJob, Boolean shouldFailTheBuild, Boolean notifyOnAllStatus,
+                            Boolean includeRundeckLogs, Boolean tailLog,
+                            String jobUser, String jobPassword, String jobToken) {
+@@ -110,8 +110,8 @@
+         this.jobId = jobId;
+         this.options = options;
+         this.nodeFilters = nodeFilters;
+-        this.tags = extracttags(tags,",");
+-        this.tag = null;
++        this.tags = extracttags(null,",");
++        this.tag = tag;
+         this.shouldWaitForRundeckJob = shouldWaitForRundeckJob;
+         this.shouldFailTheBuild = shouldFailTheBuild;
+         this.notifyOnAllStatus = notifyOnAllStatus;

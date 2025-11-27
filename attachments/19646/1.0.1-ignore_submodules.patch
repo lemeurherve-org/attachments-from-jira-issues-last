@@ -1,0 +1,171 @@
+From b63c97867f8d731941dbed53bd09ef02f28450f7 Mon Sep 17 00:00:00 2001
+From: Marc Branchaud <marcnarc@xiplink.com>
+Date: Tue, 10 Aug 2010 12:26:26 -0400
+Subject: [PATCH] Add option to ignore submodules.
+
+---
+ src/main/java/hudson/plugins/git/GitSCM.java       |   49 ++++++++++++--------
+ .../hudson/plugins/git/GitSCM/config.jelly         |    5 ++
+ src/main/webapp/ignoreSubmodules.html              |    3 +
+ src/test/java/hudson/plugins/git/GitSCMTest.java   |    2 +-
+ 4 files changed, 39 insertions(+), 20 deletions(-)
+ create mode 100644 src/main/webapp/ignoreSubmodules.html
+
+diff --git a/src/main/java/hudson/plugins/git/GitSCM.java b/src/main/java/hudson/plugins/git/GitSCM.java
+index 5cc7808..d015750 100644
+--- a/src/main/java/hudson/plugins/git/GitSCM.java
++++ b/src/main/java/hudson/plugins/git/GitSCM.java
+@@ -111,6 +111,8 @@ public class GitSCM extends SCM implements Serializable {
+ 
+     private Collection<SubmoduleConfig> submoduleCfg;
+ 
++    private boolean ignoreSubmodules;
++
+     public static final String GIT_BRANCH = "GIT_BRANCH";
+     public static final String GIT_COMMIT = "GIT_COMMIT";
+ 
+@@ -124,6 +126,10 @@ public class GitSCM extends SCM implements Serializable {
+         return submoduleCfg;
+     }
+ 
++    public boolean getIgnoreSubmodules() {
++        return ignoreSubmodules;
++    }
++
+     public void setSubmoduleCfg(Collection<SubmoduleConfig> submoduleCfg) {
+         this.submoduleCfg = submoduleCfg;
+     }
+@@ -135,6 +141,7 @@ public class GitSCM extends SCM implements Serializable {
+                   PreBuildMergeOptions mergeOptions,
+                   boolean doGenerateSubmoduleConfigurations,
+                   Collection<SubmoduleConfig> submoduleCfg,
++                  boolean ignoreSubmodules,
+                   boolean clean,
+                   boolean wipeOutWorkspace,
+                   BuildChooser buildChooser, GitRepositoryBrowser browser,
+@@ -156,6 +163,7 @@ public class GitSCM extends SCM implements Serializable {
+ 
+         this.doGenerateSubmoduleConfigurations = doGenerateSubmoduleConfigurations;
+         this.submoduleCfg = submoduleCfg;
++        this.ignoreSubmodules = ignoreSubmodules;
+ 
+         this.clean = clean;
+         this.wipeOutWorkspace = wipeOutWorkspace;
+@@ -469,23 +477,25 @@ public class GitSCM extends SCM implements Serializable {
+             List<IndexEntry> submodules = new GitUtils(listener, git)
+                 .getSubmodules("HEAD");
+ 
+-            for (IndexEntry submodule : submodules) {
+-                try {
+-                    RemoteConfig submoduleRemoteRepository = getSubmoduleRepository(workspace, remoteRepository, submodule.getFile());
+-                    File subdir = new File(workspace, submodule.getFile());
+-                    IGitAPI subGit = new GitAPI(git.getGitExe(), new FilePath(subdir),
+-                                                listener, git.getEnvironment());
+-
+-                    subGit.fetch(submoduleRemoteRepository);
+-                } catch (Exception ex) {
+-                    listener
+-                        .getLogger()
+-                        .println(
+-                                 "Problem fetching from submodule "
+-                                 + submodule.getFile()
+-                                 + " - could be unavailable. Continuing anyway");
+-                }
++            if (!getIgnoreSubmodules()) {
++                for (IndexEntry submodule : submodules) {
++                    try {
++                        RemoteConfig submoduleRemoteRepository = getSubmoduleRepository(workspace, remoteRepository, submodule.getFile());
++                        File subdir = new File(workspace, submodule.getFile());
++                        IGitAPI subGit = new GitAPI(git.getGitExe(), new FilePath(subdir),
++                                                    listener, git.getEnvironment());
++
++                            subGit.fetch(submoduleRemoteRepository);
++                        } catch (Exception ex) {
++                        listener
++                            .getLogger()
++                            .println(
++                                     "Problem fetching from submodule "
++                                     + submodule.getFile()
++                                     + " - could be unavailable. Continuing anyway");
++                    }
+ 
++                }
+             }
+         } catch (GitException ex) {
+             listener.error(
+@@ -734,7 +744,7 @@ public class GitSCM extends SCM implements Serializable {
+                         }
+ 
+                         
+-                        if (git.hasGitModules()) {
++                        if (git.hasGitModules() && !getIgnoreSubmodules()) {
+                             git.submoduleInit();
+                             git.submoduleUpdate();
+                         }
+@@ -815,7 +825,7 @@ public class GitSCM extends SCM implements Serializable {
+                                 return new Object[]{null, buildData};
+                             }
+ 
+-                            if (git.hasGitModules()) {
++                            if (git.hasGitModules() && !getIgnoreSubmodules()) {
+                                 git.submoduleUpdate();
+                             }
+ 
+@@ -879,7 +889,7 @@ public class GitSCM extends SCM implements Serializable {
+                         combinator.createSubmoduleCombinations();
+                     }
+ 
+-                    if (git.hasGitModules()) {
++                    if (git.hasGitModules() && !getIgnoreSubmodules()) {
+                         git.submoduleInit();
+                         git.submoduleSync();
+ 
+@@ -1059,6 +1069,7 @@ public class GitSCM extends SCM implements Serializable {
+                               mergeOptions,
+                               req.getParameter("git.generate") != null,
+                               submoduleCfg,
++                              req.getParameter("git.ignoreSubmodules") != null,
+                               req.getParameter("git.clean") != null,
+                               req.getParameter("git.wipeOutWorkspace") != null,
+                               req.bindJSON(BuildChooser.class,formData.getJSONObject("buildChooser")),
+diff --git a/src/main/resources/hudson/plugins/git/GitSCM/config.jelly b/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
+index f8c6ddc..64e8db0 100644
+--- a/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
++++ b/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
+@@ -168,6 +168,11 @@
+               </j:forEach>
+           </select>
+       </f:entry>
++
++    <f:entry title="Ignore submodules" help="/plugin/git/ignoreSubmodules.html">
++      <f:checkbox name="git.ignoreSubmodules" checked="${scm.ignoreSubmodules}" />
++    </f:entry>
++
+   </f:advanced>
+   
+   <t:listScmBrowsers name="git.browser" />
+diff --git a/src/main/webapp/ignoreSubmodules.html b/src/main/webapp/ignoreSubmodules.html
+new file mode 100644
+index 0000000..472a3e8
+--- /dev/null
++++ b/src/main/webapp/ignoreSubmodules.html
+@@ -0,0 +1,3 @@
++<div>
++  Do not automatically update any submodules in the main git repository.
++</div>
+diff --git a/src/test/java/hudson/plugins/git/GitSCMTest.java b/src/test/java/hudson/plugins/git/GitSCMTest.java
+index 62a5bb7..84ce149 100644
+--- a/src/test/java/hudson/plugins/git/GitSCMTest.java
++++ b/src/test/java/hudson/plugins/git/GitSCMTest.java
+@@ -390,7 +390,7 @@ public class GitSCMTest extends HudsonTestCase {
+                 createRemoteRepositories(relativeTargetDir),
+                 Collections.singletonList(new BranchSpec(branchString)),
+                 new PreBuildMergeOptions(), false, Collections.<SubmoduleConfig>emptyList(), false,
+-                false, new DefaultBuildChooser(), null, null, authorOrCommitter, relativeTargetDir,
++                false, false, new DefaultBuildChooser(), null, null, authorOrCommitter, relativeTargetDir,
+                 excludedRegions, excludedUsers, localBranch));
+         project.getBuildersList().add(new CaptureEnvironmentBuilder());
+         return project;
+-- 
+1.7.2.1
+

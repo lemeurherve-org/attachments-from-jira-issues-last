@@ -1,0 +1,63 @@
+Branch indexing
+Connecting to https://api.github.com using eugmes/****** (Github Jenkins access token)
+Obtained Jenkinsfile from e1debe80f411776930a8d31e5881a893b791ced1+a7f15db4ea40de685f700822e7c70f0672ac0c2d (a2ed24d915d46c6346ab94ac470a6f66fcb729a3)
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /Users/eugen/.jenkins/workspace/test_PR-1
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+using credential GithubToken
+Wiping out workspace first.
+Cloning the remote Git repository
+Cloning with configured refspecs honoured and without tags
+Cloning repository https://github.com/eugmes/test.git
+ > git init /Users/eugen/.jenkins/workspace/test_PR-1 # timeout=10
+Fetching upstream changes from https://github.com/eugmes/test.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials Github Jenkins access token
+ > git fetch --no-tags --force --progress -- https://github.com/eugmes/test.git +refs/pull/1/head:refs/remotes/origin/PR-1 +refs/heads/master:refs/remotes/origin/master # timeout=10
+ > git config remote.origin.url https://github.com/eugmes/test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/pull/1/head:refs/remotes/origin/PR-1 # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/master:refs/remotes/origin/master # timeout=10
+ > git config remote.origin.url https://github.com/eugmes/test.git # timeout=10
+Fetching without tags
+Fetching upstream changes from https://github.com/eugmes/test.git
+using GIT_ASKPASS to set credentials Github Jenkins access token
+ > git fetch --no-tags --force --progress -- https://github.com/eugmes/test.git +refs/pull/1/head:refs/remotes/origin/PR-1 +refs/heads/master:refs/remotes/origin/master # timeout=10
+Merging remotes/origin/master commit a7f15db4ea40de685f700822e7c70f0672ac0c2d into PR head commit e1debe80f411776930a8d31e5881a893b791ced1
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f e1debe80f411776930a8d31e5881a893b791ced1 # timeout=10
+ > git remote # timeout=10
+ > git config --get remote.origin.url # timeout=10
+using GIT_ASKPASS to set credentials Github Jenkins access token
+ > git merge a7f15db4ea40de685f700822e7c70f0672ac0c2d # timeout=10
+ > git rev-parse HEAD^{commit} # timeout=10
+Merge succeeded, producing 12136815f05477c42305659f7d4e73e8d3bea555
+Checking out Revision 12136815f05477c42305659f7d4e73e8d3bea555 (PR-1)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 12136815f05477c42305659f7d4e73e8d3bea555 # timeout=10
+Commit message: "Merge commit 'a7f15db4ea40de685f700822e7c70f0672ac0c2d' into HEAD"
+ > git rev-list --no-walk 671ff86181f0b8ac96385c3521da53949155f646 # timeout=10
+First time build. Skipping changelog.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] echo
+huge success
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+
+GitHub has been notified of this commit’s build result
+
+Finished: SUCCESS

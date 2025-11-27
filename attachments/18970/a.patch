@@ -1,0 +1,22 @@
+Index: main/core/src/main/java/hudson/tasks/Ant.java
+===================================================================
+--- main/core/src/main/java/hudson/tasks/Ant.java	(revision 24675)
++++ main/core/src/main/java/hudson/tasks/Ant.java	(working copy)
+@@ -171,7 +171,7 @@
+         }
+ 
+         if(buildFile!=null) {
+-            args.add("-file", buildFilePath.getName());
++            args.add("-file", buildFilePath.getRemote());
+         }
+ 
+         args.addKeyValuePairs("-D",build.getBuildVariables());
+@@ -204,7 +204,7 @@
+ 
+         long startTime = System.currentTimeMillis();
+         try {
+-            int r = launcher.launch().cmds(args).envs(env).stdout(listener).pwd(buildFilePath.getParent()).join();
++            int r = launcher.launch().cmds(args).envs(env).stdout(listener).pwd(build.getWorkspace()).join();
+             return r==0;
+         } catch (IOException e) {
+             Util.displayIOException(e,listener);

@@ -1,0 +1,73 @@
+Index: maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+===================================================================
+--- maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java	(revision )
++++ maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java	(revision )
+@@ -206,7 +206,7 @@
+ 
+             private boolean belongsToSubsidiary(List<MavenModule> subsidiaries, String path) {
+                 for (MavenModule sub : subsidiaries)
+-                    if (FilenameUtils.separatorsToUnix(path).startsWith(FilenameUtils.normalize(sub.getRelativePath())))
++                    if (FilenameUtils.separatorsToUnix(path).startsWith(normalizePath(sub.getRelativePath())))
+                         return true;
+                 return false;
+             }
+@@ -216,7 +216,7 @@
+              */
+             private boolean isDescendantOf(ChangeLogSet.Entry e, MavenModule mod) {
+                 for (String path : e.getAffectedPaths()) {
+-                    if (FilenameUtils.separatorsToUnix(path).startsWith(FilenameUtils.normalize(mod.getRelativePath())))
++                    if (FilenameUtils.separatorsToUnix(path).startsWith(normalizePath(mod.getRelativePath())))
+                         return true;
+                 }
+                 return false;
+@@ -281,7 +281,7 @@
+         
+         return result != 0 ? result : -1;
+     }
+-    
++
+     /**
+      * Estimates the duration overhead the {@link MavenModuleSetBuild} itself adds
+      * to the sum of duration of the module builds.
+@@ -309,6 +309,18 @@
+         return Math.round((double)overhead / moduleSetBuilds.size());
+     }
+ 
++    private static String normalizePath(String relPath) {
++        // JENKINS-8525 FilenameUtils.normalize for ../foo returns null
++        if (StringUtils.isEmpty(relPath) || StringUtils.startsWith( relPath, "../" )) {
++            LOGGER.config("No need to normalize " + (StringUtils.isEmpty(relPath) ? "an empty path" : relPath));
++        } else {
++            String tmp = FilenameUtils.normalize( relPath );
++            LOGGER.config("Normalized path " + relPath + " to "+tmp);
++            relPath = tmp;
++        }
++        return relPath;
++    }
++
+     /**
+      * Gets the version of Maven used for build.
+      *
+@@ -492,7 +504,7 @@
+                                              "Either your server has no Maven installations defined, or the requested Maven version does not exist.");
+                 
+                 mvn = mvn.forEnvironment(envVars).forNode(Computer.currentComputer().getNode(), listener);
+-
++                
+                 MavenInformation mavenInformation = getModuleRoot().act( new MavenVersionCallable( mvn.getHome() ));
+                 
+                 String mavenVersion = mavenInformation.getVersion();
+@@ -1209,11 +1221,8 @@
+         private void toPomInfo(MavenProject mp, PomInfo parent, Map<String,MavenProject> abslPath, Set<PomInfo> infos) throws IOException {
+             
+             String relPath = PathTool.getRelativeFilePath( this.moduleRootPath, mp.getBasedir().getPath() );
++            relPath = normalizePath(relPath);
+-            
++
+-            // JENKINS-8525 FilenameUtils.normalize for ../foo returns null 
+-            if (!StringUtils.startsWith( relPath, "../" )) {
+-                relPath = FilenameUtils.normalize( relPath );
+-            }
+             if (parent == null ) {
+                 relPath = getRootPath(rootPOMRelPrefix);
+             }

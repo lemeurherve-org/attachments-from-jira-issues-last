@@ -1,0 +1,129 @@
+import java.util.*;
+import java.text.SimpleDateFormat;
+
+
+pipeline {
+    agent {
+        label "***"
+    }
+
+    environment {
+        CODE="${params.CODE_URL}"
+        PIPELINE_CODE = "***"
+        BRANCH="${params.GIT_BRANCH}"
+        CERT_ID="${params.CERT_ID}"
+        TASK_UUID="${params.TASK_UUID}"
+        BUILD_CMD="${params.BUILD_CMD}"
+        FROM_USER="${params.FROM_USER}"
+        DEPLOY_PATH="${params.DEPLOY_PATH}"
+        DEPLOY_CMD="${params.DEPLOY_CMD}"
+        DEPLOY_FILE="${params.DEPLOY_FILE}"
+        DEPLOY_IP="${params.DEPLOY_IP}"
+        COPY_PATH="${params.COPY_PATH}"
+        TASK_NUMBER="${params.TASK_NUMBER}"
+        DEPLOY_FILE_NAME="${params.DEPLOY_FILE_NAME}"
+        DEPLOY_AREA="${params.DEPLOY_AREA}"
+        SONAR_ENABLED="${params.SONAR_ENABLED}"
+        MVN_RULE_ENABLED="${params.MVN_RULE_ENABLED}"
+        TEST_ENABLED="${params.TEST_ENABLED}"
+        DEPLOY_PASSWORD="${params.DEPLOY_PASSWORD}"
+        SSH_USER="${params.SSH_USER}"
+        SSH_PORT="${params.SSH_PORT}"
+        PUBLIC_REPOSITORY="${PUBLIC_REPOSITORY}"
+        PUBLIC_TAG="${PUBLIC_TAG}"
+        PROD_ID="${params.PROD_ID}"
+        HEALTH_CHECK_URL="${params.HEALTH_CHECK_URL}"
+        MQ_TYPE="${params.MQ_TYPE}"
+        DEPLOY_ENV="${params.DEPLOY_ENV}"
+        INIT_FAIL="false"
+
+
+    }
+
+    stages {
+        stage('jenkinsInitQueue') {
+            steps {
+
+                echo "initializing ..."
+                echo "${GIT_COMMIT}"
+                echo "${GIT_BRANCH}"
+                script {
+                    begin = new Date()
+                    start_time = begin.format('yyyy-MM-dd HH:mm:ss')
+                    DATETIME_TAG = begin.format('yyyyMMddHHmmss')
+                    IMAGE_TAG_NAME = 'ts' + DATETIME_TAG
+                    echo "init success"
+                    echo "${BRANCH}"
+					echo "checkout  BEGIN"
+					 //拉取代码失败的话如果设置清空空间的话也是会清空的，但是不会清空jenkins拉取的代码
+					//def scmVars = checkout([$class: "GitSCM", branches: [[name: "${BRANCH}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: "CleanBeforeCheckout", deleteUntrackedNestedRepositories: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${CERT_ID}", url: "$CODE"]]])
+					def scmVars = checkout scmGit(branches: [[name: "${BRANCH}"]], extensions: [[$class: "CleanBeforeCheckout", deleteUntrackedNestedRepositories: true]], userRemoteConfigs: [[credentialsId: "${CERT_ID}", url: "$CODE"]])
+					//scmVars.each { k, v -> env[k] = v }
+					//sh 'env | grep GIT_'
+					// Display the variable using scmVars
+					echo "scmVars.GIT_COMMIT"
+					echo "${scmVars}"
+					echo "1111111111111111111"
+					echo "${env}"
+					echo "2222222222222222222"
+					def aaaaa = env.getEnvironment()
+					echo "${aaaaa}"
+					echo "3333333333333333333"
+					sh 'env'
+					echo "4444444444444444444"
+					sh 'printenv'
+					echo "5555555555555555555"
+					echo "${scmVars.GIT_COMMIT}"
+					echo "${env.GIT_COMMIT}"
+					echo "env.GIT_COMMIT"
+					// Displaying the variables saving it as environment variable
+					env.GIT_COMMIT = scmVars.GIT_COMMIT
+					echo "env.GIT_COMMIT"
+					echo "${env.GIT_COMMIT}"
+					echo "checkout  END"
+					echo "${BRANCH}"
+					echo "${CERT_ID}"
+					echo "${CODE}"
+					echo "${GIT_COMMIT}"
+					echo "${GIT_BRANCH}"
+					//echo "${BRANCH_NAME}"
+					//echo "${GIT_LOCAL_BRANCH}"
+					echo "${GIT_URL}"
+                    //checkout([$class: "GitSCM", branches: [[name: "dev"]], doGenerateSubmoduleConfigurations: false, extensions: [ [$class: 'RelativeTargetDirectory', relativeTargetDir: 'params']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${CERT_ID}", url: "$PIPELINE_CODE"]]])
+
+                }
+            }
+            // 发送执行通知
+            post {
+            }
+
+        }
+
+
+        stage('jenkinsBuildQueue') {
+        }
+
+        stage("junitQueue"){
+        }
+
+    stage('parall') {
+            parallel{
+        stage('sonarScancode') {
+        }
+
+
+        stage('deploy') {
+            }
+        }}}
+    }
+
+    post {
+        success {
+        }
+        failure {
+        }
+        aborted {
+        }
+    }
+}
+

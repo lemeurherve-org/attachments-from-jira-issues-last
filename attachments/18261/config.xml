@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project>
+  <actions class="java.util.concurrent.CopyOnWriteArrayList"/>
+  <description>Run regression for various combination on Linux</description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <triggers class="vector"/>
+  <axes serialization="custom">
+    <unserializable-parents/>
+    <list>
+      <default>
+        <size>2</size>
+      </default>
+      <int>10</int>
+      <hudson.matrix.Axis>
+        <name>MyTestConfig</name>
+        <values>
+          <string>ConfigOne</string>
+          <string>ConfigTwo</string>
+        </values>
+      </hudson.matrix.Axis>
+      <hudson.matrix.Axis>
+        <name>label</name>
+        <values>
+          <string>linux</string>
+        </values>
+      </hudson.matrix.Axis>
+    </list>
+  </axes>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>/opt/mytest/regrtest.sh</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</matrix-project>

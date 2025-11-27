@@ -1,0 +1,190 @@
+Started by user weakcamel
+[Pipeline] node
+Running on swarm-hostname.redacted.com in /var/spool/jenkins/workspace/docker-build-weeps
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Agent Setup)
+[Pipeline] sh
+[docker-build-weeps] Running shell script
++ docker pull weakcamel/centos-python2-build:3
+3: Pulling from weakcamel/centos-python2-build
+9fdffd8ae79b: Pulling fs layer
+7fe2b8aa7afb: Pulling fs layer
+ef9291fad85f: Pulling fs layer
+ef9291fad85f: Verifying Checksum
+ef9291fad85f: Download complete
+7fe2b8aa7afb: Verifying Checksum
+7fe2b8aa7afb: Download complete
+9fdffd8ae79b: Verifying Checksum
+9fdffd8ae79b: Download complete
+9fdffd8ae79b: Pull complete
+7fe2b8aa7afb: Pull complete
+ef9291fad85f: Pull complete
+Digest: sha256:5190b05cb095c0b15ab6e8d9f83c6f174fec414585c8fb702391a1d575dcad37
+Status: Downloaded newer image for weakcamel/centos-python2-build:3
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] sh
+[docker-build-weeps] Running shell script
++ docker inspect -f . weakcamel/centos-python2-build:3
+.
+[Pipeline] withDockerContainer
+swarm-hostname.redacted.com does not seem to be running inside a container
+$ docker run -t -d -u 2885:1033 -w /var/spool/jenkins/workspace/docker-build-weeps -v /var/spool/jenkins/workspace/docker-build-weeps:/var/spool/jenkins/workspace/docker-build-weeps:rw,z -v /var/spool/jenkins/workspace/docker-build-weeps@tmp:/var/spool/jenkins/workspace/docker-build-weeps@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** --entrypoint cat weakcamel/centos-python2-build:3
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (build and unit test)
+[Pipeline] git
+Cloning the remote Git repository
+Cloning repository https://github.com/k-bx/python-semver.git
+ > git init /var/spool/jenkins/workspace/docker-build-weeps # timeout=10
+Fetching upstream changes from https://github.com/k-bx/python-semver.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/k-bx/python-semver.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url https://github.com/k-bx/python-semver.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/k-bx/python-semver.git # timeout=10
+Fetching upstream changes from https://github.com/k-bx/python-semver.git
+ > git fetch --tags --progress https://github.com/k-bx/python-semver.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 2001c62d1a0361c44acc7076d8ce91e1d1c66141 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 2001c62d1a0361c44acc7076d8ce91e1d1c66141
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b master 2001c62d1a0361c44acc7076d8ce91e1d1c66141
+Commit message: "2.7.9 version"
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[docker-build-weeps] Running shell script
++ virtualenv /tmp/venv
+New python executable in /tmp/venv/bin/python
+Installing Setuptools..............................................................................................................................................................................................................................done.
+Installing Pip.....................................................................................................................................................................................................................................................................................................................................done.
+[Pipeline] sh
+[docker-build-weeps] Running shell script
++ . /tmp/venv/bin/activate
+++ deactivate nondestructive
+++ unset pydoc
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
+++ '[' -n '' ']'
+++ unset VIRTUAL_ENV
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/tmp/venv
+++ export VIRTUAL_ENV
+++ _OLD_VIRTUAL_PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+++ PATH=/tmp/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+++ export PATH
+++ '[' -n '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ '[' x '!=' x ']'
++++ basename /tmp/venv
+++ '[' venv = __ ']'
++++ basename /tmp/venv
+++ PS1='(venv)'
+++ export PS1
+++ alias 'pydoc=python -m pydoc'
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
++ python setup.py build
+running build
+running build_py
+creating build
+creating build/lib
+copying semver.py -> build/lib
+running egg_info
+creating semver.egg-info
+writing semver.egg-info/PKG-INFO
+writing top-level names to semver.egg-info/top_level.txt
+writing dependency_links to semver.egg-info/dependency_links.txt
+writing manifest file 'semver.egg-info/SOURCES.txt'
+reading manifest file 'semver.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+writing manifest file 'semver.egg-info/SOURCES.txt'
+[Pipeline] sh
+[docker-build-weeps] Running shell script
++ . /tmp/venv/bin/activate
+++ deactivate nondestructive
+++ unset pydoc
+++ '[' -n '' ']'
+++ '[' -n '' ']'
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
+++ '[' -n '' ']'
+++ unset VIRTUAL_ENV
+++ '[' '!' nondestructive = nondestructive ']'
+++ VIRTUAL_ENV=/tmp/venv
+++ export VIRTUAL_ENV
+++ _OLD_VIRTUAL_PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+++ PATH=/tmp/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+++ export PATH
+++ '[' -n '' ']'
+++ '[' -z '' ']'
+++ _OLD_VIRTUAL_PS1=
+++ '[' x '!=' x ']'
++++ basename /tmp/venv
+++ '[' venv = __ ']'
++++ basename /tmp/venv
+++ PS1='(venv)'
+++ export PS1
+++ alias 'pydoc=python -m pydoc'
+++ '[' -n /bin/sh -o -n '' ']'
+++ hash -r
++ python setup.py bdist_rpm
+running bdist_rpm
+running egg_info
+writing semver.egg-info/PKG-INFO
+writing top-level names to semver.egg-info/top_level.txt
+writing dependency_links to semver.egg-info/dependency_links.txt
+reading manifest file 'semver.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+writing manifest file 'semver.egg-info/SOURCES.txt'
+creating build/bdist.linux-x86_64
+creating build/bdist.linux-x86_64/rpm
+creating build/bdist.linux-x86_64/rpm/SOURCES
+creating build/bdist.linux-x86_64/rpm/SPECS
+creating build/bdist.linux-x86_64/rpm/BUILD
+creating build/bdist.linux-x86_64/rpm/RPMS
+creating build/bdist.linux-x86_64/rpm/SRPMS
+writing 'build/bdist.linux-x86_64/rpm/SPECS/semver.spec'
+running sdist
+running check
+creating semver-2.7.9
+creating semver-2.7.9/semver.egg-info
+making hard links in semver-2.7.9...
+hard linking MANIFEST.in -> semver-2.7.9
+hard linking README.rst -> semver-2.7.9
+hard linking semver.py -> semver-2.7.9
+hard linking setup.py -> semver-2.7.9
+hard linking semver.egg-info/PKG-INFO -> semver-2.7.9/semver.egg-info
+hard linking semver.egg-info/SOURCES.txt -> semver-2.7.9/semver.egg-info
+hard linking semver.egg-info/dependency_links.txt -> semver-2.7.9/semver.egg-info
+hard linking semver.egg-info/top_level.txt -> semver-2.7.9/semver.egg-info
+Writing semver-2.7.9/setup.cfg
+creating dist
+Creating tar archive
+removing 'semver-2.7.9' (and everything under it)
+copying dist/semver-2.7.9.tar.gz -> build/bdist.linux-x86_64/rpm/SOURCES
+building RPMs
+rpmbuild -ba --define _topdir /var/spool/jenkins/workspace/docker-build-weeps/build/bdist.linux-x86_64/rpm --clean build/bdist.linux-x86_64/rpm/SPECS/semver.spec
+error: Bad owner/group: /var/spool/jenkins/workspace/docker-build-weeps/build/bdist.linux-x86_64/rpm/SOURCES/semver-2.7.9.tar.gz
+error: command 'rpmbuild' failed with exit status 1
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+$ docker stop --time=1 ad5f5b08c96db0219af7bbf401e30744b0df698184a0043b4d6e302d38768e37
+$ docker rm -f ad5f5b08c96db0219af7bbf401e30744b0df698184a0043b4d6e302d38768e37
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+Finished: FAILURE
+

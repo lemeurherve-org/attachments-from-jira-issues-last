@@ -1,0 +1,76 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject plugin="workflow-multibranch@2.22">
+  <actions/>
+  <description>Multi-branch pipeline for [Bitbucket public Jenkins bugs](https://bitbucket.org/markewaite/jenkins-bugs) using **Bitbucket branch source**</description>
+  <displayName>jenkins-bugs (Bitbucket)</displayName>
+  <properties>
+    <org.jenkinsci.plugins.docker.workflow.declarative.FolderConfig plugin="docker-workflow@1.24">
+      <dockerLabel></dockerLabel>
+      <registry plugin="docker-commons@1.17"/>
+    </org.jenkinsci.plugins.docker.workflow.declarative.FolderConfig>
+    <org.jenkinsci.plugins.pipeline.maven.MavenConfigFolderOverrideProperty plugin="pipeline-maven@3.9.2">
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      <override>false</override>
+    </org.jenkinsci.plugins.pipeline.maven.MavenConfigFolderOverrideProperty>
+  </properties>
+  <folderViews class="jenkins.branch.MultiBranchProjectViewHolder" plugin="branch-api@2.6.0">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </folderViews>
+  <healthMetrics>
+    <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric plugin="cloudbees-folder@6.14">
+      <nonRecursive>false</nonRecursive>
+    </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+  </healthMetrics>
+  <icon class="jenkins.branch.MetadataActionFolderIcon" plugin="branch-api@2.6.0">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </icon>
+  <orphanedItemStrategy class="com.cloudbees.hudson.plugins.folder.computed.DefaultOrphanedItemStrategy" plugin="cloudbees-folder@6.14">
+    <pruneDeadBranches>true</pruneDeadBranches>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>-1</numToKeep>
+  </orphanedItemStrategy>
+  <triggers>
+    <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger plugin="cloudbees-folder@6.14">
+      <spec>H/30 * * * *</spec>
+      <interval>28800000</interval>
+    </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
+  </triggers>
+  <disabled>false</disabled>
+  <sources class="jenkins.branch.MultiBranchProject$BranchSourceList" plugin="branch-api@2.6.0">
+    <data>
+      <jenkins.branch.BranchSource>
+        <source class="com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource" plugin="cloudbees-bitbucket-branch-source@2.9.2">
+          <id>1f3defdb-4494-4828-8c87-c8d036ab0755</id>
+          <serverUrl>https://bitbucket.org</serverUrl>
+          <credentialsId>jenkins-bugs-repo-scan-password-bitbucket</credentialsId>
+          <repoOwner>markewaite</repoOwner>
+          <repository>jenkins-bugs</repository>
+          <traits>
+            <com.cloudbees.jenkins.plugins.bitbucket.BranchDiscoveryTrait>
+              <strategyId>1</strategyId>
+            </com.cloudbees.jenkins.plugins.bitbucket.BranchDiscoveryTrait>
+            <com.cloudbees.jenkins.plugins.bitbucket.OriginPullRequestDiscoveryTrait>
+              <strategyId>1</strategyId>
+            </com.cloudbees.jenkins.plugins.bitbucket.OriginPullRequestDiscoveryTrait>
+            <com.cloudbees.jenkins.plugins.bitbucket.ForkPullRequestDiscoveryTrait>
+              <strategyId>1</strategyId>
+              <trust class="com.cloudbees.jenkins.plugins.bitbucket.ForkPullRequestDiscoveryTrait$TrustEveryone"/>
+            </com.cloudbees.jenkins.plugins.bitbucket.ForkPullRequestDiscoveryTrait>
+            <com.cloudbees.jenkins.plugins.bitbucket.SSHCheckoutTrait>
+              <credentialsId>markewaite-bitbucket-rsa-private-key</credentialsId>
+            </com.cloudbees.jenkins.plugins.bitbucket.SSHCheckoutTrait>
+          </traits>
+        </source>
+        <strategy class="jenkins.branch.DefaultBranchPropertyStrategy">
+          <properties class="empty-list"/>
+        </strategy>
+      </jenkins.branch.BranchSource>
+    </data>
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </sources>
+  <factory class="org.jenkinsci.plugins.workflow.multibranch.WorkflowBranchProjectFactory">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+    <scriptPath>Jenkinsfile</scriptPath>
+  </factory>
+</org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject>

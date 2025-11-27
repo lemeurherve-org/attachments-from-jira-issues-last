@@ -1,0 +1,109 @@
+Return-Path: <mail@vijaykiran.com>
+Received: from fsun.fe.think ([unix socket])
+	 by fsun.fe.think (Cyrus v2.4.18-Fedora-RPM-2.4.18-2.fc24) with LMTPA;
+	 Thu, 24 Nov 2016 20:59:25 +0100
+X-Sieve: CMU Sieve 2.4
+Received: from listserv.isdn4linux.de (www.fritz-elfert.de [82.165.11.104])
+	by fsun.fe.think (8.15.2/8.15.2) with ESMTPS id uAOJxOph007414
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=OK)
+	for <felfert@lbk.dyn.fritz-elfert.de>; Thu, 24 Nov 2016 20:59:25 +0100
+Received: from mail-wj0-x22c.google.com (mail-wj0-x22c.google.com [IPv6:2a00:1450:400c:c01:0:0:0:22c])
+	by listserv.isdn4linux.de (8.15.2/8.15.2) with ESMTPS id uAOJxKUJ025396
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL)
+	for <fritz@fritz-elfert.de>; Thu, 24 Nov 2016 20:59:22 +0100
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.99.2 at listserv.isdn4linux.de
+Authentication-Results: listserv.isdn4linux.de;
+	dkim=pass (2048-bit key) header.d=vijaykiran-com.20150623.gappssmtp.com header.i=@vijaykiran-com.20150623.gappssmtp.com header.b=RGPYPLzk
+Received: by mail-wj0-x22c.google.com with SMTP id qp4so41518031wjc.3
+        for <fritz@fritz-elfert.de>; Thu, 24 Nov 2016 11:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vijaykiran-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=WEqDDOCAGaMkQT5EGacyd4WAaMkiaAm0ILKRZJsz7Rg=;
+        b=RGPYPLzkYBhIjd5/MWgLqABC/Wix6ec/XF+EcSpdRNa9lkwlqFUG06jnFn5DFlHpYU
+         BzfJwcEhOCHZsnh4t3Qixwnez227+2PivDSVByIsMmrLMdze+y/b/sm7hlY3Qf4Vc4La
+         SxNACYRcMAL7RT1t4OY0H69jKLZJGyAQ+8GCLdaxJvm7SzGcYKKgyBxdRzushd7lMl8z
+         0rGRN0Eh2ZnxCRA6o/mzX1+0BdLx5tA2vi46vhE9b3OINrkEyXKDqgPd3PZCMfdPaYWN
+         aDRRlWIa59zxK/gb5MYsjn+MDXX4xTW6Al9eVak+Zw/HEkBc4oAKeOCz6W3QNbr8OtDi
+         HzZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=WEqDDOCAGaMkQT5EGacyd4WAaMkiaAm0ILKRZJsz7Rg=;
+        b=ETdTi6c5ZRvR7BnAGvjOBTXAC7HoCN7q2RG6mjNjxqmN1kti0KHNUA2a8sdagLAa60
+         paPvXxuPbj8qI6bDnylUzLumi1qlQcLrVUksw7pjyMUjPp9Lk7puIXTDbpoQL1xQ2QX/
+         Rf4KgqL1Ev7XfpWzGlvFKcc9XySKi2CK8jEyGDGfXT4KZkyv1KjBwFugicM1ECXSCcsa
+         N2uEMEFqpm47fgC8POYuca3xao4AZESW+kU6MrK0hK81aM9r6dxj7NzhdnKqtiPDy08B
+         npvPwgA8i/wQkWYt/A6HZLf5k8sTDqDc3uJe84HISr/s0lPZFvuUDd6K6poPIOOkVlLO
+         /SpA==
+X-Gm-Message-State: AKaTC020lizE//PGR6QSCh6RkZh5IrEw/K7mkv+V7sVsFAVmTy25wGYOZAYNUtc9pXF6sw==
+X-Received: by 10.194.169.227 with SMTP id ah3mr3846211wjc.2.1480017558982;
+        Thu, 24 Nov 2016 11:59:18 -0800 (PST)
+Received: from [192.168.178.107] (52D90D03.cm-11-1a.dynamic.ziggo.nl. [82.217.13.3])
+        by smtp.gmail.com with ESMTPSA id bj1sm43490313wjc.17.2016.11.24.11.59.17
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 24 Nov 2016 11:59:18 -0800 (PST)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 10.1 \(3251\))
+Subject: Re: Licensing decision for jenkins jclouds plugin required
+From: Vijay Kiran <mail@vijaykiran.com>
+In-Reply-To: <a13266d3-d675-7912-f016-dacc224d0ef3@fritz-elfert.de>
+Date: Thu, 24 Nov 2016 20:59:18 +0100
+Cc: m.mavlyutov@gmail.com, MaprapuH@gmail.com, m-ceros@yandex.ru
+Content-Transfer-Encoding: 7bit
+Message-Id: <317C4224-FCFF-40EF-88EE-B0A3EBAF1443@vijaykiran.com>
+References: <55ba8045-08a6-8f68-8daf-12b152c432cb@fritz-elfert.de>
+ <a13266d3-d675-7912-f016-dacc224d0ef3@fritz-elfert.de>
+To: Fritz Elfert <fritz@fritz-elfert.de>
+X-Mailer: Apple Mail (2.3251)
+X-Greylist: Recipient e-mail whitelisted, not delayed by milter-greylist-4.6 (listserv.isdn4linux.de [IPv6:2001:8d8:912:a9e:ab05:ddc6:eb4a:1ffd]); Thu, 24 Nov 2016 20:59:23 +0100 (CET)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE autolearn=ham autolearn_force=no
+	version=3.4.1-i4l
+X-Spam-Checker-Version: SpamAssassin 3.4.1-i4l (2015-04-28) on
+	listserv.isdn4linux.de
+
+For me Apache License seems to good :)
+
+
+> On 24 Nov 2016, at 20:36, Fritz Elfert <fritz@fritz-elfert.de> wrote:
+> 
+> Unfortunately, I still do not have enough responses (adrian's mail
+> bounces). So could *you* PLEASE reply?
+> 
+> Thanks
+> -Fritz
+> 
+> On 19.11.2016 03:29, Fritz Elfert wrote:
+>> Hi guys,
+>> 
+>> I am writing to you, because you were initiators resp. are
+>> co-maintainers or major contributors of the JClouds Jenkins Plugin
+>> https://wiki.jenkins-ci.org/display/JENKINS/JClouds+Plugin
+>> 
+>> I am the current maintainer of this plugin and recently was asked about
+>> its license. To my surprise, there was *no* licensing information *at*
+>> *all* in any of the sources.
+>> 
+>> My thoughts regarding a license were:
+>> It uses apache-jclouds as its primary functionality and therefore it
+>> should have the same license (Apache 2.0 License)
+>> 
+>> Before officially choosing this license, I just want to ask for your
+>> opinion:
+>> 
+>> ==> Are you ok with choosing Apache 2.0 License for this plugin?
+>> 
+>> I will only choose a license, if I get a simple majority (meaning: at
+>> least 3 of you should agree). So please just take the time for a short
+>> answer.
+>> 
+>> Thanks
+>> -Fritz
+>> 
+> 
+> 
+

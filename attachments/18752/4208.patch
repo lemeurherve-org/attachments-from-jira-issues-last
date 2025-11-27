@@ -1,0 +1,114 @@
+Index: src/main/java/hudson/plugins/statusmonitor/PluginImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/statusmonitor/PluginImpl.java	(revision 21318)
++++ src/main/java/hudson/plugins/statusmonitor/PluginImpl.java	(arbetskopia)
+@@ -17,6 +17,6 @@
+ 	@Override
+ 	public void start() throws Exception {
+ 		BuildStep.PUBLISHERS.addNotifier(MONITOR_PUBLISHER_DESCRIPTOR);
+-		Hudson.getInstance().getActions().add(new MonitorAction());
++//		Hudson.getInstance().getActions().add(new MonitorAction());
+ 	}
+ }
+Index: src/main/java/hudson/plugins/statusmonitor/MonitorPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/statusmonitor/MonitorPublisher.java	(revision 21318)
++++ src/main/java/hudson/plugins/statusmonitor/MonitorPublisher.java	(arbetskopia)
+@@ -11,6 +11,7 @@
+ 
+ import java.io.IOException;
+ import java.util.List;
++import hudson.tasks.BuildStepMonitor;
+ 
+ 
+ 
+@@ -58,4 +59,7 @@
+ 		}
+ 	}
+ 
++    public BuildStepMonitor getRequiredMonitorService() {
++        return BuildStepMonitor.BUILD;
++    }
+ }
+Index: src/main/java/hudson/plugins/statusmonitor/MonitorAction.java
+===================================================================
+--- src/main/java/hudson/plugins/statusmonitor/MonitorAction.java	(revision 21318)
++++ src/main/java/hudson/plugins/statusmonitor/MonitorAction.java	(arbetskopia)
+@@ -5,6 +5,8 @@
+ import hudson.model.Project;
+ import hudson.tasks.Publisher;
+ 
++import hudson.Extension;
++import hudson.model.RootAction;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+@@ -13,15 +15,14 @@
+ import org.kohsuke.stapler.export.Exported;
+ import org.kohsuke.stapler.export.ExportedBean;
+ 
+-
+-
+ /**
+  * Status Monitor, shows the configured Jobs in a single screen overview
+  * 
+  * @author Daniel Galán y Martins
+  */
+ @ExportedBean (defaultVisibility = 999)
+-public class MonitorAction implements Action {
++@Extension
++public class MonitorAction implements RootAction {
+ 
+ 	private static final long serialVersionUID = 1L;
+ 
+@@ -42,7 +43,7 @@
+ 
+ 	public String getUrlName() {
+ 		// The name of the URL path segment
+-		return "monitor";
++		return "/monitor";
+ 	}
+ 
+ 
+@@ -139,5 +140,4 @@
+ 		}
+ 		return 2;
+ 	}
+-
+ }
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 21318)
++++ pom.xml	(arbetskopia)
+@@ -4,7 +4,7 @@
+ 	<parent>
+ 		<groupId>org.jvnet.hudson.plugins</groupId>
+ 		<artifactId>plugin</artifactId>
+-		<version>1.287</version>
++		<version>1.320</version>
+ 		<relativePath>../pom.xml</relativePath>
+ 	</parent>
+ 
+@@ -14,22 +14,6 @@
+ 	<name>Hudson Status Monitor</name>
+ 	<url>http://wiki.hudson-ci.org/display/HUDSON/Status+Monitor+Plugin</url>
+ 
+-	<dependencies>
+-		<dependency>
+-			<groupId>org.jvnet.hudson.main</groupId>
+-			<artifactId>hudson-core</artifactId>
+-			<version>1.287</version>
+-			<scope>provided</scope>
+-		</dependency>
+-		<dependency>
+-			<groupId>org.jvnet.hudson.main</groupId>
+-			<artifactId>hudson-war</artifactId>
+-			<type>war</type>
+-			<version>1.287</version>
+-			<scope>test</scope>
+-		</dependency>
+-	</dependencies>
+-
+ 	<build>
+ 		<!--
+       Since new versions need to overwrite old versions, it's better

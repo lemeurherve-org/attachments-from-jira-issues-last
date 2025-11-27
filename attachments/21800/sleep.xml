@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.test</groupId>
+	<artifactId>jenkinsutil</artifactId>
+	<packaging>jar</packaging>
+	<version>latest</version>
+	<name>jenkinsutil</name>
+	<url>http://maven.apache.org</url>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>http://<host:port>/artifactory/repo</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<name>Internal Mirror of Central Plugins Repository</name>
+			<url>http://<host:port>/artifactory/repo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>CLEAN_WORKING_DIR</id>
+						<phase>clean</phase>
+						<configuration>
+							<tasks>
+								<echo message="Sleeping zzz" />
+								<sleep seconds="30" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

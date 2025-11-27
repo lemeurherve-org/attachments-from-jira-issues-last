@@ -1,0 +1,18 @@
+Index: src/main/java/hudson/WebAppMain.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/WebAppMain.java,v
+retrieving revision 1.7
+diff -u -r1.7 WebAppMain.java
+--- src/main/java/hudson/WebAppMain.java	13 May 2007 17:59:23 -0000	1.7
++++ src/main/java/hudson/WebAppMain.java	22 May 2007 14:02:17 -0000
+@@ -44,6 +44,10 @@
+         home.mkdirs();
+         System.out.println("hudson home directory: "+home);
+ 
++        // check that home exists (as mkdirs could have failed silently), otherwise throw a meaningful error
++        if (! home.exists())
++            throw new RuntimeException("Hudson home directory does not exist: '" + home + "'.  Make sure to set HUDSON_HOME as environment variable or system property if you wish to override the default location.");
++
+         ServletContext context = event.getServletContext();
+ 
+         // make sure that we are using XStream in the "enhanced" (JVM-specific) mode

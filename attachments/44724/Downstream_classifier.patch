@@ -1,0 +1,39 @@
+diff --git a/jenkins-plugin/src/main/java/org/jenkinsci/plugins/pipeline/maven/dao/PipelineMavenPluginH2Dao.java b/jenkins-plugin/src/main/java/org/jenkinsci/plugins/pipeline/maven/dao/PipelineMavenPluginH2Dao.java
+index c9903ed..f09fedd 100644
+--- a/jenkins-plugin/src/main/java/org/jenkinsci/plugins/pipeline/maven/dao/PipelineMavenPluginH2Dao.java
++++ b/jenkins-plugin/src/main/java/org/jenkinsci/plugins/pipeline/maven/dao/PipelineMavenPluginH2Dao.java
+@@ -109,8 +109,8 @@ public class PipelineMavenPluginH2Dao implements PipelineMavenPluginDao {
+ 
+     @Override
+     public void recordDependency(String jobFullName, int buildNumber, String groupId, String artifactId, String version, String type, String scope, boolean ignoreUpstreamTriggers, String classifier) {
+-        LOGGER.log(Level.FINE, "recordDependency({0}#{1}, {2}:{3}:{4}:{5}, {6}, ignoreUpstreamTriggers:{7}})",
+-                new Object[]{jobFullName, buildNumber, groupId, artifactId, version, type, scope, ignoreUpstreamTriggers});
++        LOGGER.log(Level.FINE, "recordDependency({0}#{1}, {2}:{3}:{4}:{5}:{6}, {7}, ignoreUpstreamTriggers:{8}})",
++                new Object[]{jobFullName, buildNumber, groupId, artifactId, version, type, classifier, scope, ignoreUpstreamTriggers});
+         long buildPrimaryKey = getOrCreateBuildPrimaryKey(jobFullName, buildNumber);
+         long artifactPrimaryKey = getOrCreateArtifactPrimaryKey(groupId, artifactId, version, type, classifier);
+ 
+@@ -193,8 +193,8 @@ public class PipelineMavenPluginH2Dao implements PipelineMavenPluginDao {
+ 
+     @Override
+     public void recordGeneratedArtifact(String jobFullName, int buildNumber, String groupId, String artifactId, String version, String type, String baseVersion, String repositoryUrl, boolean skipDownstreamTriggers, String extension, String classifier) {
+-        LOGGER.log(Level.FINE, "recordGeneratedArtifact({0}#{1}, {2}:{3}:{4}:{5}, version:{6}, repositoryUrl:{7}, skipDownstreamTriggers:{8})",
+-                new Object[]{jobFullName, buildNumber, groupId, artifactId, baseVersion, type, version, repositoryUrl, skipDownstreamTriggers});
++        LOGGER.log(Level.FINE, "recordGeneratedArtifact({0}#{1}, {2}:{3}:{4}:{5}:{6}, version:{7}, repositoryUrl:{8}, skipDownstreamTriggers:{9})",
++                new Object[]{jobFullName, buildNumber, groupId, artifactId, baseVersion, type, classifier, version, repositoryUrl, skipDownstreamTriggers});
+         long buildPrimaryKey = getOrCreateBuildPrimaryKey(jobFullName, buildNumber);
+         long artifactPrimaryKey = getOrCreateArtifactPrimaryKey(groupId, artifactId, baseVersion, type, classifier);
+ 
+diff --git a/jenkins-plugin/src/main/java/org/jenkinsci/plugins/pipeline/maven/publishers/PipelineGraphPublisher.java b/jenkins-plugin/src/main/java/org/jenkinsci/plugins/pipeline/maven/publishers/PipelineGraphPublisher.java
+index 51115da..b8d3d1b 100644
+--- a/jenkins-plugin/src/main/java/org/jenkinsci/plugins/pipeline/maven/publishers/PipelineGraphPublisher.java
++++ b/jenkins-plugin/src/main/java/org/jenkinsci/plugins/pipeline/maven/publishers/PipelineGraphPublisher.java
+@@ -188,7 +188,7 @@ public class PipelineGraphPublisher extends MavenPublisher {
+ 
+                 dao.recordDependency(run.getParent().getFullName(), run.getNumber(),
+                         dependency.groupId, dependency.artifactId, dependency.baseVersion, dependency.type, dependency.getScope(),
+-                        this.ignoreUpstreamTriggers, null);
++                        this.ignoreUpstreamTriggers, dependency.classifier);
+ 
+             } catch (RuntimeException e) {
+                 listener.error("[withMaven] pipelineGraphPublisher - WARNING: Exception recording " + dependency.getId() + " on build, skip");

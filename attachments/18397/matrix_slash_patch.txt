@@ -1,0 +1,77 @@
+Index: core/src/main/java/hudson/model/AbstractItem.java
+===================================================================
+--- core/src/main/java/hudson/model/AbstractItem.java	(revision 21263)
++++ core/src/main/java/hudson/model/AbstractItem.java	(working copy)
+@@ -166,7 +166,7 @@
+     }
+ 
+     public String getShortUrl() {
+-        return getParent().getUrlChildPrefix()+'/'+getName()+'/';
++        return getParent().getUrlChildPrefix()+'/'+Util.rawEncode(getName())+'/';
+     }
+ 
+     public String getSearchUrl() {
+Index: core/src/main/java/hudson/matrix/MatrixProject.java
+===================================================================
+--- core/src/main/java/hudson/matrix/MatrixProject.java	(revision 21263)
++++ core/src/main/java/hudson/matrix/MatrixProject.java	(working copy)
+@@ -81,6 +81,7 @@
+ 
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
++import org.kohsuke.stapler.TokenList;
+ import org.kohsuke.stapler.HttpResponse;
+ 
+ /**
+@@ -326,7 +327,7 @@
+ 
+             for (File v : valuesDir) {
+                 Map<String,String> c = new HashMap<String, String>(combination);
+-                c.put(axis,v.getName());
++                c.put(axis,TokenList.decode(v.getName()));
+ 
+                 try {
+                     XmlFile config = Items.getConfigFile(v);
+@@ -443,7 +444,7 @@
+     public File getRootDirFor(Combination combination) {
+         File f = getConfigurationsDir();
+         for (Entry<String, String> e : combination.entrySet())
+-            f = new File(f,"axis-"+e.getKey()+'/'+e.getValue());
++            f = new File(f,"axis-"+e.getKey()+'/'+Util.rawEncode(e.getValue()));
+         f.getParentFile().mkdirs();
+         return f;
+     }
+Index: core/src/main/java/hudson/matrix/MatrixBuild.java
+===================================================================
+--- core/src/main/java/hudson/matrix/MatrixBuild.java	(revision 21263)
++++ core/src/main/java/hudson/matrix/MatrixBuild.java	(working copy)
+@@ -82,7 +82,15 @@
+     public final class RunPtr {
+         public final Combination combination;
+         private RunPtr(Combination c) { this.combination=c; }
+-        public MatrixRun getRun() { return MatrixBuild.this.getRun(combination); }
++
++        public MatrixRun getRun() {
++            return MatrixBuild.this.getRun(combination);
++        }
++
++        public String getShortUrl() {
++            return Util.rawEncode(combination.toString());
++        }
++
+         public String getTooltip() {
+             MatrixRun r = getRun();
+             if(r!=null) return r.getIconColor().getDescription();
+Index: core/src/main/resources/hudson/matrix/MatrixBuild/ajaxMatrix.jelly
+===================================================================
+--- core/src/main/resources/hudson/matrix/MatrixBuild/ajaxMatrix.jelly	(revision 21263)
++++ core/src/main/resources/hudson/matrix/MatrixBuild/ajaxMatrix.jelly	(working copy)
+@@ -34,7 +34,7 @@
+           <img src="${imagesURL}/24x24/grey.gif" tooltip="${%Not run}" alt="${%Not run}"/>
+         </j:when>
+         <j:otherwise>
+-          <a href="${p.combination}/">
++          <a href="${p.shortUrl}/">
+             <img src="${imagesURL}/24x24/${b.buildStatusUrl}" tooltip="${p.tooltip}" alt="${p.tooltip}"/>
+             <j:if test="${empty(o.x) and empty(o.y)}">
+               ${p.combination.toString(o.z)}

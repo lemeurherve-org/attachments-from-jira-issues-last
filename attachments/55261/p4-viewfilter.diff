@@ -1,0 +1,130 @@
+diff --git a/src/main/java/org/jenkinsci/plugins/p4/tasks/PollTask.java b/src/main/java/org/jenkinsci/plugins/p4/tasks/PollTask.java
+index 7a15320..b76c292 100644
+--- a/src/main/java/org/jenkinsci/plugins/p4/tasks/PollTask.java
++++ b/src/main/java/org/jenkinsci/plugins/p4/tasks/PollTask.java
+@@ -155,13 +155,13 @@ public class PollTask extends AbstractTask implements FileCallable<List<P4Ref>>,
+ 					boolean isFileInViewMask = false;
+ 					String p = s.getDepotPathString();
+ 					for (String maskPath : viewMask.split("\n")) {
+-						if (p.startsWith(maskPath)) {
++						if (isMatch(p, maskPath)) {
+ 							isFileInViewMask = true;
+ 						}
+ 
+ 						if (maskPath.startsWith("-")) {
+ 							String excludedMaskPath = maskPath.substring(maskPath.indexOf("-") + 1);
+-							if (p.startsWith(excludedMaskPath)) {
++							if (isMatch(p, excludedMaskPath)) {
+ 								isFileInViewMask = false;
+ 							}
+ 						}
+@@ -206,6 +206,23 @@ public class PollTask extends AbstractTask implements FileCallable<List<P4Ref>>,
+ 		return false;
+ 	}
+ 
++	/**
++	 * Check if path and path mask match
++	 * @param path path Path in depot
++	 * @param mask mask File mask, may contain wildcards
++	 * @return boolean
++	 */
++	private boolean isMatch(String path, String mask) {
++		mask = mask
++				.replace("*", ".*")
++				.replace("/.../", "/.+/");
++
++		Pattern p = Pattern.compile('^' + mask + ".*");
++		Matcher m = p.matcher(path);
++
++		return m.matches();
++	}
++
+ 	public void checkRoles(RoleChecker checker) throws SecurityException {
+ 		checker.check((RoleSensitive) this, Roles.SLAVE);
+ 	}
+diff --git a/src/main/resources/org/jenkinsci/plugins/p4/filters/FilterViewMaskImpl/help-viewMask.html b/src/main/resources/org/jenkinsci/plugins/p4/filters/FilterViewMaskImpl/help-viewMask.html
+index 006d421..528bae1 100644
+--- a/src/main/resources/org/jenkinsci/plugins/p4/filters/FilterViewMaskImpl/help-viewMask.html
++++ b/src/main/resources/org/jenkinsci/plugins/p4/filters/FilterViewMaskImpl/help-viewMask.html
+@@ -9,6 +9,7 @@
+ 		<br/>
+ 		<code style="margin-left: 60.0px;">-//depot/main/tests/001</code>
+ 		<br/>
++		<code style="margin-left: 60.0px;">-//.../*.txt</code>
+ 	</p>
+ 	<p style="margin-left: 60.0px;">
+ 		<strong>Case A</strong> (change will not be filtered, as index.xml is 
+@@ -52,4 +53,15 @@
+ 		<li style="margin-left: 90.0px;"><code>//depot/main/tests/001/test.xml</code>
+ 		</li>
+ 	</ul>
++	<p style="margin-left: 60.0px;">
++		<strong>Case E</strong> (change will be filtered, as *.txt files
++		are excluded with view mask):
++	</p>
++	<p style="margin-left: 90.0px;">Files:</p>
++	<ul>
++		<li style="margin-left: 90.0px;"><code>//depot/main/tests/readme.txt</code>
++		</li>
++		<li style="margin-left: 90.0px;"><code>//depot/main/tests/001/readme.txt</code>
++		</li>
++	</ul>
+ </div>
+\ No newline at end of file
+diff --git a/src/test/java/org/jenkinsci/plugins/p4/client/PollingTest.java b/src/test/java/org/jenkinsci/plugins/p4/client/PollingTest.java
+index a42645f..4c373ff 100644
+--- a/src/test/java/org/jenkinsci/plugins/p4/client/PollingTest.java
++++ b/src/test/java/org/jenkinsci/plugins/p4/client/PollingTest.java
+@@ -234,6 +234,52 @@ public class PollingTest extends DefaultEnvironment {
+ 		assertThat(pollHandler.getLogBuffer(), containsString("found change: 4"));
+ 	}
+ 
++	@Test
++	public void testPollingMaskExclWildcard() throws Exception {
++
++		String client = "PollingMaskExcl.ws";
++		String view = "//depot/... //" + client + "/...";
++		WorkspaceSpec spec = new WorkspaceSpec(view, null);
++
++		FreeStyleProject project = jenkins.createFreeStyleProject("PollingMaskExclWildcard");
++		ManualWorkspaceImpl workspace = new ManualWorkspaceImpl("none", false, client, spec, false);
++
++		Populate populate = new AutoCleanImpl();
++		List<Filter> filter = new ArrayList<Filter>();
++
++		// Filter changes outside of //depot/Data and and all *-1.dat files
++		StringBuilder sb = new StringBuilder();
++		sb.append("//depot/Data");
++		sb.append("\n");
++		sb.append("-//.../*-1.dat");
++
++		FilterViewMaskImpl mask = new FilterViewMaskImpl(sb.toString());
++		filter.add(mask);
++		PerforceScm scm = new PerforceScm(CREDENTIAL, workspace, filter, populate, null);
++		project.setScm(scm);
++		project.save();
++
++		// Build at change 1
++		List<ParameterValue> list = new ArrayList<ParameterValue>();
++		list.add(new StringParameterValue(ReviewProp.SWARM_STATUS.toString(), "submitted"));
++		list.add(new StringParameterValue(ReviewProp.P4_CHANGE.toString(), "1"));
++		Action actions = new SafeParametersAction(new ArrayList<ParameterValue>(), list);
++
++		FreeStyleBuild build;
++		Cause.UserIdCause cause = new Cause.UserIdCause();
++		build = project.scheduleBuild2(0, cause, actions).get();
++		assertEquals(Result.SUCCESS, build.getResult());
++
++		// Poll for changes incrementally
++		Logger polling = Logger.getLogger("Polling");
++		TestHandler pollHandler = new TestHandler();
++		polling.addHandler(pollHandler);
++		LogTaskListener listener = new LogTaskListener(polling, Level.INFO);
++		project.poll(listener);
++		assertThat(pollHandler.getLogBuffer(), containsString("found change: 17"));
++		assertThat(pollHandler.getLogBuffer(), not(containsString("found change: 18")));
++	}
++
+ 	@Test
+ 	public void testPatternList() throws Exception {
+ 

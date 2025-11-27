@@ -1,0 +1,33 @@
+diff --git a/src/main/resources/hudson/plugins/view/dashboard/Dashboard/main.jelly b/src/main/resources/hudson/plugins/view/dashboard/Dashboard/main.jelly
+index ddea621..4b0982d 100644
+--- a/src/main/resources/hudson/plugins/view/dashboard/Dashboard/main.jelly
++++ b/src/main/resources/hudson/plugins/view/dashboard/Dashboard/main.jelly
+@@ -23,6 +23,12 @@ THE SOFTWARE.
+ -->
+ 
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
++	<style type="text/css">
++		#header, #side-panel {
++			display:none;
++		}
++	</style>
++	<div align="right"><a href="./configure"><img height="16" alt="" width="16" src="${imagesURL}/16x16/notepad.png" />configure</a></div>
+   <j:set var="views" value="${it.owner.views}" />
+   <j:set var="currentView" value="${it}" />
+   <j:choose>
+diff --git a/src/main/resources/hudson/plugins/view/dashboard/DashboardPortlet/main.jelly b/src/main/resources/hudson/plugins/view/dashboard/DashboardPortlet/main.jelly
+index 17e8d33..1b8056a 100644
+--- a/src/main/resources/hudson/plugins/view/dashboard/DashboardPortlet/main.jelly
++++ b/src/main/resources/hudson/plugins/view/dashboard/DashboardPortlet/main.jelly
+@@ -24,5 +24,10 @@ THE SOFTWARE.
+ 
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+   <!-- Reuse the portlet page by default for maximized portlet view -->
++	<style type="text/css">
++		#header, #side-panel {
++			display:none;
++		}
++	</style>
+   <st:include page="portlet.jelly" />
+ </j:jelly>
+\ No newline at end of file

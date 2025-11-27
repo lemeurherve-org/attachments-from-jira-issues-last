@@ -1,0 +1,33 @@
+From 35a32494527a73eac752844d39dcc8d9e26c6891 Mon Sep 17 00:00:00 2001
+From: Jacek Kowalczyk <jacek.kowalczyk@tomtom.com>
+Date: Fri, 2 Aug 2013 16:04:03 +0200
+Subject: [PATCH] proposed solution for issue JENKINS-19015
+
+---
+ .../jenkins/plugins/multijob/MultiJobBuilder.java  |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/main/java/com/tikal/jenkins/plugins/multijob/MultiJobBuilder.java b/src/main/java/com/tikal/jenkins/plugins/multijob/MultiJobBuilder.java
+index 382bab8..844a461 100644
+--- a/src/main/java/com/tikal/jenkins/plugins/multijob/MultiJobBuilder.java
++++ b/src/main/java/com/tikal/jenkins/plugins/multijob/MultiJobBuilder.java
+@@ -32,6 +32,7 @@ import java.util.HashMap;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Map;
++import java.util.concurrent.CancellationException;
+ import java.util.concurrent.ExecutionException;
+ import java.util.concurrent.Future;
+ 
+@@ -142,6 +143,8 @@ public class MultiJobBuilder extends Builder implements DependecyDeclarer {
+ 						break;
+ 					} catch (ExecutionException e) {
+ 						failed = true;
++					} catch (CancellationException e) {
++						failed = true;
+ 					}
+ 				} else if (project.isBuilding()) {
+ 					addSubBuild(thisBuild, thisProject,
+-- 
+1.7.9.5
+

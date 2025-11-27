@@ -1,0 +1,11 @@
+--- CVSSCM.java.orig	2008-02-15 14:08:13.000000000 +0200
++++ CVSSCM.java	2008-02-15 17:20:12.000000000 +0200
+@@ -578,7 +578,7 @@
+         if(!checkContents(new File(cvs,"Root"),cvsroot))
+             return false;
+         if(branch!=null) {
+-            if(!checkContents(new File(cvs,"Tag"),'T'+branch))
++            if(!checkContents(new File(cvs,"Tag"),'T'+branch) && !(isTag() && checkContents(new File(cvs,"Tag"),'N'+branch)))
+                 return false;
+         } else {
+             File tag = new File(cvs,"Tag");

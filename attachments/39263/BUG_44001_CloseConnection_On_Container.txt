@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins-slave 
+  # Note that the Pod does not need to be in the same namespace as the loader.
+  labels:
+    component:  XXX
+spec:
+  containers:
+  - name: jnlp
+    image: jenkinsci/jnlp-slave:3.10-1 
+    command: ["/usr/local/bin/jenkins-slave"]
+    args: ["XXX","jenkins-slave"]
+    workingDir: /home/jenkins
+    env: 
+    - name: JENKINS_URL
+      value: http://XXX:8080
+    - name: JENKINS_TUNNEL
+      value: XXXX:50000
+    - name: JENKINS_SECRET
+      value: XXXXX
+    - name: HOME
+      value: /home/jenkins
+    - name: JENKINS_NAME
+      value: jenkins-slave
+    - name: JENKINS_JNLP_URL 
+      value: http://XXX:8080/computer/jenkins-slave/slave-agent.jnlp
+    - name: JENKINS_LOCATION_URL
+      value: https://XXXX/
+    ports:
+    - containerPort: 50000
+      name: "jnlp-port"
+  - name: docker
+    image: docker:17.07-rc
+    command: ["cat"]
+    workingDir: /tmp 
+    securityContext:
+      privileged: true
+    tty: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/docker.sock
+      name: docker-sock
+  volumes:
+  - hostPath:
+      path: /var/run/docker.sock
+    name: docker-sock 

@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project plugin="matrix-project@1.12">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.InheritParentStrategy"/>
+      <permission>hudson.model.Item.Read:anonymous</permission>
+      <permission>hudson.model.Item.Read:authenticated</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>DELIVERY_AXIS</name>
+          <description></description>
+          <defaultValue>profil1 profil2 profil3 profil4 profil5 profil6 profil7 profil8 profil9 profil10 profil11 profil12 profil13 profil14 profil15 profil16 profil17 profil18 profil19 profil20 profil21 profil22 profil23 profil24 profil25 profil26 profil27 profil28 profil29</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PLATFORM_AXIS</name>
+          <description></description>
+          <defaultValue>x86 x64 armv7 armv7hf arm64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>OS_AXIS</name>
+          <description></description>
+          <defaultValue>win linux android ios</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>COMPILER_AXIS</name>
+          <description></description>
+          <defaultValue>vc7 vc8 vc10 vc14 gcc4 ndkr10e clang6</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@2.0.1">
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <categories class="java.util.concurrent.CopyOnWriteArrayList"/>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <limitOneJobWithMatchingParams>false</limitOneJobWithMatchingParams>
+      <matrixOptions>
+        <throttleMatrixBuilds>true</throttleMatrixBuilds>
+        <throttleMatrixConfigurations>false</throttleMatrixConfigurations>
+      </matrixOptions>
+      <paramsToUseForLimit></paramsToUseForLimit>
+      <configVersion>1</configVersion>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>linux-centos-5.5</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis plugin="dynamic-axis@1.0.3">
+      <name>delivery</name>
+      <values>
+        <string>DELIVERY_AXIS</string>
+      </values>
+      <varName>DELIVERY_AXIS</varName>
+      <axisValues>
+        <string>default</string>
+      </axisValues>
+    </ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis>
+    <ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis plugin="dynamic-axis@1.0.3">
+      <name>ptm</name>
+      <values>
+        <string>PLATFORM_AXIS</string>
+      </values>
+      <varName>PLATFORM_AXIS</varName>
+      <axisValues>
+        <string>default</string>
+      </axisValues>
+    </ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis>
+    <ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis plugin="dynamic-axis@1.0.3">
+      <name>hos</name>
+      <values>
+        <string>OS_AXIS</string>
+      </values>
+      <varName>OS_AXIS</varName>
+      <axisValues>
+        <string>default</string>
+      </axisValues>
+    </ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis>
+    <ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis plugin="dynamic-axis@1.0.3">
+      <name>cc</name>
+      <values>
+        <string>COMPILER_AXIS</string>
+      </values>
+      <varName>COMPILER_AXIS</varName>
+      <axisValues>
+        <string>default</string>
+      </axisValues>
+    </ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis>
+    <hudson.matrix.LabelAxis>
+      <name>nd</name>
+      <values>
+        <string>linux-centos-5.5</string>
+        <string>vs2015</string>
+        <string>windows7</string>
+        <string>xcode7</string>
+        <string>build-opst-urt-ubuntu-14.04-jenkins-urt-micromatcher</string>
+      </values>
+    </hudson.matrix.LabelAxis>
+  </axes>
+  <combinationFilter>(hos==&quot;linux&quot;).implies(cc==&quot;gcc4&quot; &amp;&amp; ((nd==&quot;linux-centos-5.5&quot; &amp;&amp; (ptm==&quot;x86&quot; || ptm==&quot;x64&quot; || ptm==&quot;armv7&quot;)) || (nd==&quot;build-opst-urt-ubuntu-14.04-jenkins-urt-micromatcher&quot; &amp;&amp; ptm==&quot;armv7hf&quot;)) ) &amp;&amp; (hos==&quot;android&quot;).implies((nd==&quot;linux-centos-5.5&quot;) &amp;&amp; (ptm==&quot;armv7&quot;) &amp;&amp; (cc==&quot;ndkr10e&quot;)) &amp;&amp; (hos==&quot;win&quot;).implies(cc==&quot;vc7&quot; || cc==&quot;vc8&quot; || cc==&quot;vc10&quot; || cc==&quot;vc14&quot;) &amp;&amp; (cc==&quot;vc7&quot;).implies(nd==&quot;windows7&quot; &amp;&amp; ptm==&quot;x86&quot; &amp;&amp; delivery==&quot;profil10&quot;) &amp;&amp; (cc==&quot;vc8&quot; || cc==&quot;vc10&quot;).implies(nd==&quot;windows7&quot; &amp;&amp; (ptm==&quot;x86&quot; || ptm==&quot;x64&quot;)) &amp;&amp; (cc==&quot;vc14&quot;).implies(nd==&quot;vs2015&quot; &amp;&amp; (ptm==&quot;x86&quot; || ptm==&quot;x64&quot;) &amp;&amp; (delivery==&quot;profil6&quot; || delivery==&quot;print&quot;)) &amp;&amp; (hos==&quot;ios&quot;).implies(nd==&quot;xcode7&quot; &amp;&amp; cc==&quot;clang6&quot; &amp;&amp; (ptm==&quot;armv7&quot; || ptm==&quot;arm64&quot;)) &amp;&amp; (ptm==&quot;armv7hf&quot;).implies(delivery==&quot;profil27&quot;) &amp;&amp; (ptm==&quot;armv7&quot; || ptm==&quot;arm64&quot;).implies(delivery.contains(&quot;profil27&quot;) || delivery==&quot;profil1&quot; || delivery==&quot;profil2&quot; || delivery==&quot;profil3&quot; || delivery==&quot;profil7&quot; || delivery==&quot;profil8&quot; || delivery==&quot;profil4&quot;)</combinationFilter>
+  <builders/>
+  <publishers/>
+  <buildWrappers>
+    <matrixtieparent.BuildWrapperMtp plugin="matrixtieparent@1.2">
+      <labelName>linux-centos-5.5</labelName>
+    </matrixtieparent.BuildWrapperMtp>
+  </buildWrappers>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>false</runSequentially>
+  </executionStrategy>
+</matrix-project>

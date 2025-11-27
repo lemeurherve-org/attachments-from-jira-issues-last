@@ -1,0 +1,31 @@
+index d3d2299..6ce85b2 100644
+--- a/src/main/java/hudson/plugins/copyartifact/CopyArtifact.java
++++ b/src/main/java/hudson/plugins/copyartifact/CopyArtifact.java
+@@ -148,6 +148,18 @@ public class CopyArtifact extends Builder {
+         return optional != null && optional;
+     }
+ 
++    private boolean isFixedJobName(String jobName) {
++        // job name is fixed if there's no variable
++        if (!jobName.contains("$"))
++            return true;
++        // if there's a variable but no job name/filter separator, it cannot be a fixed job name
++        if (!jobName.contains("/"))
++            return false;
++        // if both exist, separator must be before variable
++        return jobName.indexOf('/') < jobName.indexOf('$');
++    }
++
++
+     @Override
+     public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener)
+             throws InterruptedException {
+@@ -158,7 +170,7 @@ public class CopyArtifact extends Builder {
+             env.overrideAll(build.getBuildVariables()); // Add in matrix axes..
+             expandedProject = env.expand(projectName);
+             JobResolver job = new JobResolver(build.getProject().getParent(),expandedProject);
+-            if (job.job != null && !expandedProject.equals(projectName)
++            if (job.job != null && !isFixedJobName(projectName)
+                 // If projectName is parameterized, need to do permission check on source project.
+                 // Would like to check if user who started build has permission, but unable to get
+                 // Authentication object for arbitrary user.. instead, only allow use of parameters

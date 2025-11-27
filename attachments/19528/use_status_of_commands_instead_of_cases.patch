@@ -1,0 +1,131 @@
+Index: SuiteResult.java
+===================================================================
+--- SuiteResult.java	(revision 32250)
++++ SuiteResult.java	(working copy)
+@@ -14,14 +14,27 @@
+ public class SuiteResult implements Serializable {
+ 
+ 	private int numTestPasses;
+-	private int numTestFailures;	
++	private int numTestFailures;
++	private int numCommandPasses;
++	private int numCommandFailures;
++	private int numCommandErrors;
++
+ 		
+ 	public SuiteResult(int numTestPasses, int numTestFailures)
+ 	{
+ 		this.numTestPasses = numTestPasses;
+-		this.numTestFailures = numTestFailures;		
++		this.numTestFailures = numTestFailures;
+ 	}	
+ 
++	public SuiteResult(int numTestPasses, int numTestFailures, int numCommandPasses,
++		int numCommandFailures, int numCommandErrors)
++	{
++		this.numTestPasses = numTestPasses;
++		this.numTestFailures = numTestFailures;
++		this.numCommandPasses = numCommandPasses;
++		this.numCommandFailures = numCommandFailures;
++		this.numCommandErrors = numCommandErrors;
++	}	
+ 	public int getNumTestPasses() {
+ 		return numTestPasses;
+ 	}
+@@ -30,9 +43,24 @@
+ 		return numTestFailures;
+ 	}
+ 
++	public int numCommandPasses() {
++		return numCommandPasses;
++	}
++
++	public int numCommandFailures() {
++		return numCommandFailures;
++	}
++
++	public int numCommandErrors() {
++		return numCommandErrors;
++	}
++
+ 	public static SuiteResult parse(InputStream xmlReport) throws Exception {
+ 		int numTestPasses = 0;
+ 		int numTestFailures = 0;
++		int numCommandPasses = 0;
++		int numCommandFailures = 0;
++		int numCommandErrors = 0;
+ 		
+ 		BufferedReader buff = null;
+ 		try
+@@ -41,6 +69,9 @@
+ 
+ 			numTestPasses = Integer.valueOf(readInfo(buff,"numTestPasses:")).intValue();
+ 			numTestFailures = Integer.valueOf(readInfo(buff,"numTestFailures:")).intValue();
++			numCommandPasses = Integer.valueOf(readInfo(buff,"numCommandPasses:")).intValue();
++			numCommandFailures = Integer.valueOf(readInfo(buff,"numCommandFailures:")).intValue();
++			numCommandErrors = Integer.valueOf(readInfo(buff,"numCommandErrors:")).intValue();
+ 			
+ 			buff.close();
+ 		}
+@@ -52,7 +83,7 @@
+ 			}
+ 		}
+ 		
+-        return new SuiteResult(numTestPasses, numTestFailures);
++        return new SuiteResult(numTestPasses, numTestFailures, numCommandPasses, numCommandFailures, numCommandErrors);
+     }
+ 	
+ 	private static String readInfo(BufferedReader buff, String infoName) throws IOException
+Index: SeleniumhqPublisher.java
+===================================================================
+--- SeleniumhqPublisher.java	(revision 32250)
++++ SeleniumhqPublisher.java	(working copy)
+@@ -160,9 +160,12 @@
+         listener.getLogger().println("  Test failures: " + action.getResult().getNumTestFailures());
+         listener.getLogger().println("  Test totals  : " + action.getResult().getNumTestTotal());
+ 
+-        if (action.getResult().getNumTestFailures() > 0)
++        if (action.getResult().numCommandFailures() > 0)
+             build.setResult(Result.UNSTABLE);
+ 
++        if (action.getResult().numCommandErrors() > 0)
++            build.setResult(Result.FAILURE);
++
+         return true;
+     }
+ 
+Index: TestResult.java
+===================================================================
+--- TestResult.java	(revision 32250)
++++ TestResult.java	(working copy)
+@@ -51,6 +51,30 @@
+ 		return count;
+ 	}
+ 
++	public int numCommandPasses() {
++		int count = 0;
++		for (SuiteResult suite : suites) {
++			count += suite.numCommandPasses();
++		}
++		return count;
++	}
++
++	public int numCommandFailures() {
++		int count = 0;
++		for (SuiteResult suite : suites) {
++			count += suite.numCommandFailures();
++		}
++		return count;
++	}
++
++	public int numCommandErrors() {
++		int count = 0;
++		for (SuiteResult suite : suites) {
++			count += suite.numCommandErrors();
++		}
++		return count;
++	}
++
+ 	public int getNumTestTotal()
+ 	{
+ 		return getNumTestPasses() + getNumTestFailures();

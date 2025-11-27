@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Build waf_alerter rpm</description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>25</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.14.0">
+#####      <projectUrl>https://github.com/L1-folder/L2-folder/</projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>RELEASE_VERSION</name>
+          <description>The release version number (i.e., 1.2.3.4)</description>
+          <defaultValue>0.1.0.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_TAG</name>
+          <description>An actual git tag in Git tag in https://github.com/L1-folder/L2-folder</description>
+          <defaultValue>${RELEASE_VERSION}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.promoted__builds.JobPropertyImpl plugin="promoted-builds@2.25">
+      <activeProcessNames>
+        <string>PromotionToReleasesAndYUM-PROD</string>
+        <string>PromotionToDropsAndYUM-QA</string>
+      </activeProcessNames>
+    </hudson.plugins.promoted__builds.JobPropertyImpl>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.5.2">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <refspec>+refs/tags/*:refs/remotes/origin/tags/* </refspec>
+        <url>git@github.com:L1-folder/L2-folder.git</url>
+#######        <credentialsId>XXXXXXXXXXXXXXX</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>origin/tags/${GIT_TAG}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <browser class="hudson.plugins.git.browser.GithubWeb">
+      <url>https://github.com/L1-folder/L2-folder</url>
+    </browser>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <assignedNode>AthenaSwarmPool</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>export VERSION=$RELEASE_VERSION
+make bootstrap
+make prod-rpms quiet=no VERSION=$RELEASE_VERSION</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <jenkins.plugins.hipchat.HipChatNotifier plugin="hipchat@1.0.0">
+      <token></token>
+      <room>VDPS WAF</room>
+      <notifications>
+        <jenkins.plugins.hipchat.model.NotificationConfig>
+          <notifyEnabled>true</notifyEnabled>
+          <textFormat>false</textFormat>
+          <notificationType>STARTED</notificationType>
+          <color>GREEN</color>
+          <messageTemplate></messageTemplate>
+        </jenkins.plugins.hipchat.model.NotificationConfig>
+        <jenkins.plugins.hipchat.model.NotificationConfig>
+          <notifyEnabled>true</notifyEnabled>
+          <textFormat>false</textFormat>
+          <notificationType>SUCCESS</notificationType>
+          <color>GREEN</color>
+          <messageTemplate></messageTemplate>
+        </jenkins.plugins.hipchat.model.NotificationConfig>
+        <jenkins.plugins.hipchat.model.NotificationConfig>
+          <notifyEnabled>true</notifyEnabled>
+          <textFormat>false</textFormat>
+          <notificationType>FAILURE</notificationType>
+          <color>RED</color>
+          <messageTemplate></messageTemplate>
+        </jenkins.plugins.hipchat.model.NotificationConfig>
+      </notifications>
+      <startJobMessage>$JOB_NAME #$BUILD_NUMBER $RELEASE_VERSION $STATUS ($CHANGES_OR_CAUSE) (&lt;a href=&quot;$URL&quot;&gt;Open&lt;/a&gt;)</startJobMessage>
+      <completeJobMessage>$JOB_NAME #$BUILD_NUMBER $RELEASE_VERSION $STATUS after $DURATION (&lt;a href=&quot;$URL&quot;&gt;Open&lt;/a&gt;)</completeJobMessage>
+    </jenkins.plugins.hipchat.HipChatNotifier>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.28">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter></cleanupParameter>
+      <externalDelete></externalDelete>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+    <org.jfrog.hudson.generic.ArtifactoryGenericConfigurator plugin="artifactory@2.5.1">
+      <details>
+        <artifactoryName>XXXXXXXXXXXXXXX</artifactoryName>
+        <artifactoryUrl>https://artifactory.com/artifactory</artifactoryUrl>
+        <deployReleaseRepository>
+          <keyFromText></keyFromText>
+          <keyFromSelect>yum-dev-local</keyFromSelect>
+          <dynamicMode>false</dynamicMode>
+        </deployReleaseRepository>
+        <stagingPlugin/>
+      </details>
+      <resolverDetails>
+        <artifactoryName>XXXXXXXXXXXXXXX</artifactoryName>
+        <artifactoryUrl>https://artifactory.com/artifactory</artifactoryUrl>
+        <stagingPlugin/>
+      </resolverDetails>
+      <deployerCredentialsConfig>
+        <credentials>
+          <username></username>
+          <password></password>
+        </credentials>
+        <credentialsId></credentialsId>
+        <overridingCredentials>false</overridingCredentials>
+      </deployerCredentialsConfig>
+      <resolverCredentialsConfig>
+        <credentials>
+          <username></username>
+          <password></password>
+        </credentials>
+        <credentialsId></credentialsId>
+        <overridingCredentials>false</overridingCredentials>
+      </resolverCredentialsConfig>
+      <deployPattern>packages/prod/RHEL-6/*.rpm =&gt; RHEL-6-x86_64/waf_alerter/waf_alerter-$RELEASE_VERSION/</deployPattern>
+      <resolvePattern></resolvePattern>
+      <matrixParams></matrixParams>
+      <deployBuildInfo>true</deployBuildInfo>
+      <includeEnvVars>false</includeEnvVars>
+      <envVarsPatterns>
+        <includePatterns></includePatterns>
+        <excludePatterns>*password*,*secret*</excludePatterns>
+      </envVarsPatterns>
+      <discardOldBuilds>false</discardOldBuilds>
+      <discardBuildArtifacts>true</discardBuildArtifacts>
+      <multiConfProject>false</multiConfProject>
+    </org.jfrog.hudson.generic.ArtifactoryGenericConfigurator>
+    <EnvInjectPasswordWrapper plugin="envinject@1.92.1">
+      <injectGlobalPasswords>true</injectGlobalPasswords>
+      <maskPasswordParameters>false</maskPasswordParameters>
+      <passwordEntries>
+        <EnvInjectPasswordEntry>
+          <name>USER_name</name>
+          <value>password=</value>
+        </EnvInjectPasswordEntry>
+      </passwordEntries>
+    </EnvInjectPasswordWrapper>
+  </buildWrappers>

@@ -1,0 +1,13 @@
+diff --git a/src/main/resources/hudson/plugins/logparser/LogParserAction/summary.jelly b/src/main/resources/hudson/plugins/logparser/LogParserAction/summary.jelly
+index 2cd481c..6b832a1 100644
+--- a/src/main/resources/hudson/plugins/logparser/LogParserAction/summary.jelly
++++ b/src/main/resources/hudson/plugins/logparser/LogParserAction/summary.jelly
+@@ -3,7 +3,7 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+   <j:set var="parseSucceeded" value="${it.result.failedToParseError == null}"/>
+   <j:set var="parseFailed" value="${it.result.failedToParseError != null}"/>
+-  <t:summary icon="graph.gif">
++  <t:summary icon="${it.getIconFileName()}">
+     <j:if test="${parseSucceeded}">
+       <a href="${it.getUrlNameStat()}">${it.result.totalErrors} errors, ${it.result.totalWarnings} warnings</a>
+     </j:if>

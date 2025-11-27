@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.9">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="alu.mts.build_discarder.ExtendedLogRotator" plugin="alu-mts-build_discarder@1.1">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>-1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+        <inheritDaysBuild>true</inheritDaysBuild>
+        <inheritNumBuild>true</inheritNumBuild>
+        <inheritDaysArtifact>true</inheritDaysArtifact>
+        <inheritNumArtifact>true</inheritNumArtifact>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@1.9.0">
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <categories class="java.util.concurrent.CopyOnWriteArrayList"/>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <limitOneJobWithMatchingParams>false</limitOneJobWithMatchingParams>
+      <paramsToUseForLimit></paramsToUseForLimit>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.23">
+    <script>env.sleepTime=10
+node(&apos;MTS_RH6_X64&apos;) {
+    env.initialName=&apos;Level1&apos;
+    // Initializing level 1
+    stage(&apos;Start&apos;) {
+        env.stageName=env.initialName
+        sh(&apos;&apos;&apos;
+                #!/bn/bash
+                echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+        &apos;&apos;&apos;)
+    }
+
+parallel &apos;MRS_LDB&apos;:{
+
+        node(&apos;ENODEB_MRS_LDB&apos;) {
+            env.stageName=&apos;configure&apos;
+            stage (&apos;configure&apos;) {
+            sh(&apos;&apos;&apos;
+                    #!/bn/bash
+                    echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                    sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+            &apos;&apos;&apos;)
+            }
+            env.stageName=&apos;make&apos;
+            stage (&apos;make&apos;) {
+            sh(&apos;&apos;&apos;
+                    #!/bn/bash
+                    echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                    sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+            &apos;&apos;&apos;)        }
+            env.stageName=&apos;test&apos;
+            stage (&apos;test&apos;) {
+            sh(&apos;&apos;&apos;
+                    #!/bn/bash
+                    echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                    sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+            &apos;&apos;&apos;)
+            }
+        }
+       
+    }, 
+    &apos;MTS_LRH5&apos;:{
+        node(&apos;MTS_LRH5&apos;) {
+            env.stageName=&apos;configure&apos;
+            stage (&apos;configure&apos;) {
+            sh(&apos;&apos;&apos;
+                    #!/bn/bash
+                    echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                    sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+            &apos;&apos;&apos;)
+            }
+            env.stageName=&apos;make&apos;
+            stage (&apos;make&apos;) {
+            sh(&apos;&apos;&apos;
+                    #!/bn/bash
+                    echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                    sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+            &apos;&apos;&apos;)        }
+            env.stageName=&apos;test&apos;
+            stage (&apos;test&apos;) {
+            sh(&apos;&apos;&apos;
+                    #!/bn/bash
+                    echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                    sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+            &apos;&apos;&apos;)
+            }
+        }
+    },
+    &apos;LB&apos;: {
+        node(&apos;LB_2machines&apos;) {
+                env.stageName=&apos;configure&apos;
+                stage (&apos;configure&apos;) {
+                sh(&apos;&apos;&apos;
+                        #!/bn/bash
+                        echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                        sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+                &apos;&apos;&apos;)
+                }
+                env.stageName=&apos;make&apos;
+                stage (&apos;make&apos;) {
+                sh(&apos;&apos;&apos;
+                        #!/bn/bash
+                        echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                        sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+                &apos;&apos;&apos;)        }
+                env.stageName=&apos;test&apos;
+                stage (&apos;test&apos;) {
+                sh(&apos;&apos;&apos;
+                        #!/bn/bash
+                        echo &quot;Starting ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+                        sleep $(( 1 + $RANDOM % ${sleepTime} )) 
+                &apos;&apos;&apos;)
+                }
+            }
+        }
+        env.stageName=env.initialName+&apos;_End&apos;
+        stage(&apos;End&apos;) {
+        sh(&apos;&apos;&apos;
+            #!/bin/bash
+            sleep $(( 1 + $RANDOM % ${sleepTime} ))
+            echo &quot;This is the end for ${JOB_NAME}.${stageName} at $(date +&apos;%s&apos;) on ${NODE_NAME}&quot;
+        &apos;&apos;&apos;)          
+        }       
+    }</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+</flow-definition>

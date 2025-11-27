@@ -1,0 +1,50 @@
+Started by user anonymous
+Building in workspace /home/marslo/Jenkins/jobs/trigger_by_git/workspace
+ > git rev-parse --is-inside-work-tree
+Fetching changes from the remote Git repository
+ > git config remote.origin.url git@github.com:Marslo/Others.git
+Cleaning workspace
+ > git rev-parse --verify HEAD
+Resetting working tree
+ > git reset --hard
+ > git clean -fdx
+Fetching upstream changes from git@github.com:Marslo/Others.git
+ > git --version
+ > git fetch --tags --progress git@github.com:Marslo/Others.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/newbr1^{commit}
+Checking out Revision 0bd22591afff0f67e84f9ce97365e1772351b3ce (origin/newbr1)
+ > git config core.sparsecheckout
+ > git checkout -f 0bd22591afff0f67e84f9ce97365e1772351b3ce
+ > git branch -a
+ > git rev-parse [1;32m(detached from 0bd2259)[m^{commit}
+FATAL: Could not checkout HEAD with start point 0bd22591afff0f67e84f9ce97365e1772351b3ce
+hudson.plugins.git.GitException: Could not checkout HEAD with start point 0bd22591afff0f67e84f9ce97365e1772351b3ce
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$8.execute(CliGitAPIImpl.java:1497)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:896)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1252)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:604)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:86)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:513)
+	at hudson.model.Run.execute(Run.java:1710)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:231)
+Caused by: hudson.plugins.git.GitException: Command "git rev-parse [1;32m(detached from 0bd2259)[m^{commit}" returned status code 128:
+stdout: [1;32m(detached from 0bd2259)[m^{commit}
+
+stderr: fatal: ambiguous argument '[1;32m(detached from 0bd2259)[m^{commit}': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1325)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1301)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1297)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1084)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1094)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.revParse(CliGitAPIImpl.java:490)
+	at hudson.plugins.git.GitAPI.revParse(GitAPI.java:257)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.parseBranches(CliGitAPIImpl.java:1402)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.getBranches(CliGitAPIImpl.java:1413)
+	at hudson.plugins.git.GitAPI.getBranches(GitAPI.java:154)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$8.execute(CliGitAPIImpl.java:1483)
+	... 9 more

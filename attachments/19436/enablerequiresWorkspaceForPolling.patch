@@ -1,0 +1,54 @@
+Index: src/main/java/hudson/plugins/perforce/PerforceSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/perforce/PerforceSCM.java	(revision 31175)
++++ src/main/java/hudson/plugins/perforce/PerforceSCM.java	(working copy)
+@@ -925,8 +925,18 @@
+         
+         // Ensure that the root is appropriate (it might be wrong if the user
+         // created it, or if we previously built on another node).
+-
+-        String localPath = getLocalPathName(workspace, launcher.isUnix());
++        
++        // Both launcher and workspace can be null if requiresWorkspaceForPolling returns true
++        // So provide 'reasonable' default values.
++        boolean isunix = true;
++        if (launcher!= null)
++        	isunix=launcher.isUnix();
++        
++        String localPath = p4workspace.getRoot();
++        
++        if (workspace!=null)
++        	localPath = getLocalPathName(workspace, isunix);
++        
+         if (!localPath.equals(p4workspace.getRoot()) && !dontChangeRoot && !dontUpdateClient) {
+             log.println("Changing P4 Client Root to: " + localPath);
+             forceSync = true;
+@@ -1769,7 +1779,16 @@
+     }
+ 
+     @Override public boolean requiresWorkspaceForPolling() {
+-        return true;
++	// If slaveClientNameFormat is empty - not using a host specific name, so can always
++	// use 'master' to calculate poll changes without a local workspace
++	// This allows slaves to be thrown away and still allow polling to work
++
++	if(getSlaveClientNameFormat().equals("${basename}")) {
++		Logger.getLogger(PerforceSCM.class.getName()).info(
++			"No SlaveClientName supplied - assuming shared clientname - so no Workspace required for Polling");
++		return false;
++	}
++      return true;
+     }
+ 
+ }
+Index: src/main/webapp/help/clientNameFormat.html
+===================================================================
+--- src/main/webapp/help/clientNameFormat.html	(revision 31175)
++++ src/main/webapp/help/clientNameFormat.html	(working copy)
+@@ -11,4 +11,6 @@
+ </ul>
+   </p>
+   <p>The recommended default value is "${basename}-${hash}" (without quotes).</p>
++ <p> When set to the default ${basename} is used, and this also enables polling to occur on the master</p>
++<p>This allows polling to occur without the last slave to be online</p>
+ </div>

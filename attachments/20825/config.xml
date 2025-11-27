@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition>
+          <name>triggerednode</name>
+          <description></description>
+          <allowedSlaves>
+            <string>slave1</string>
+            <string>master</string>
+          </allowedSlaves>
+          <defaultValue>master</defaultValue>
+        </org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <de.pellepelster.jenkins.walldisplay.WallDisplayJobProperty/>
+    <org.jvnet.hudson.plugins.shelveproject.ShelveProjectProperty/>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>svn://corporate.svn.server/Jenkins/JenkinsTest/trunk</remote>
+        <local>src</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>echo stream=${stream}
+
+echo WORKSPACE=${WORKSPACE}
+
+ls -al ${WORKSPACE}/src/meta.properties
+
+env</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger>
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs>
+            <org.jvnet.jenkins.plugins.nodelabelparameter.parameterizedtrigger.NodeLabelBuildParameter>
+              <name>node</name>
+              <nodeLabel>${stream}</nodeLabel>
+            </org.jvnet.jenkins.plugins.nodelabelparameter.parameterizedtrigger.NodeLabelBuildParameter>
+          </configs>
+          <projects>test_envinject_triggeredBuild</projects>
+          <condition>SUCCESS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+  </publishers>
+  <buildWrappers>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuildWrapper>
+      <info>
+        <propertiesFilePath>src/meta.properties</propertiesFilePath>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuildWrapper>
+    <org.jenkinsCi.plugins.projectDescriptionSetter.DescriptionSetterWrapper>
+      <charset>UTF-8</charset>
+      <projectDescriptionFilename>src/meta.properties</projectDescriptionFilename>
+    </org.jenkinsCi.plugins.projectDescriptionSetter.DescriptionSetterWrapper>
+  </buildWrappers>
+</project>

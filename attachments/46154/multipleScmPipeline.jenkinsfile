@@ -1,0 +1,40 @@
+node {
+    def checkoutBranches = [:]
+    def generateBranches = [:]
+    generateBranches['generate git repo 1'] = {
+        dir("/tmp/repo1") {
+            sh "git init || true"
+            sh "date > file1.txt"
+            sh 'git add file1.txt'
+            sh "git commit --message='commit 1-1'"
+            sh "date > file2.txt"
+            sh 'git add file2.txt'
+            sh "git commit --message='commit 1-2'"
+        }
+    }
+    generateBranches['generate git repo 2'] = {
+        dir("/tmp/repo2") {
+            sh "git init || true"
+            sh "date > file1.txt"
+            sh 'git add file1.txt'
+            sh "git commit --message='commit 2-1'"
+            sh "date > file2.txt"
+            sh 'git add file2.txt'
+            sh "git commit --message='commit 2-2'"
+        }
+    }
+    parallel generateBranches
+    checkoutBranches['checkout repo1'] = {
+        checkout([ $class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[ $class: 'RelativeTargetDirectory', relativeTargetDir: 'repo1' ]],
+            submoduleCfg: [],
+            userRemoteConfigs:[[ name: 'origin', url: '/tmp/repo1' ]]
+        ])
+    }
+    checkoutBranches['checkout repo2'] = {
+        checkout([ $class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[ $class: 'RelativeTargetDirectory', relativeTargetDir: 'repo2' ]],
+            submoduleCfg: [],
+            userRemoteConfigs:[[ name: 'origin', url: '/tmp/repo2' ]]
+        ])
+    }
+    parallel checkoutBranches
+}

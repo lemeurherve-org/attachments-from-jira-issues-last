@@ -1,0 +1,137 @@
+pipeline {
+    agent none
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: "10"))
+        disableConcurrentBuilds()
+        skipDefaultCheckout()
+    }
+
+    stages {
+        stage('Checkout') {
+            agent any
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            agent any
+            steps {
+                withMaven(maven: 'maven') {
+                    sh "mvn clean verify"
+                }
+            }
+        }
+
+        stage('Deploy Artifacts to Nexus') {
+            agent any
+            when {
+                allOf {
+                    expression {
+                        currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                    }
+                    anyOf {
+                        branch 'main'
+                        branch 'trunk'
+                    }
+                }
+            }
+            steps {
+                withMaven(maven: 'maven') {
+                    sh "mvn deploy"
+                }
+            }
+        }
+
+        stage('Analysis') {
+            agent any
+            when {
+                expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                }
+            }
+            steps {
+                withMaven(maven: 'maven') {
+                    sh "mvn spotbugs:spotbugs checkstyle:checkstyle"
+                }
+                recordIssues(tools: [checkStyle(), spotBugs(useRankAsPriority: true)])
+            }
+        }
+
+        stage('Release Version?') {
+            agent none
+            when {
+                allOf {
+                    expression {
+                        currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                    }
+                    anyOf {
+                        branch 'main'
+                        branch 'trunk'
+                    }
+                }
+            }
+            steps {
+                script {
+                    try {
+                        timeout(time: 1, unit: "DAYS") {
+                            env.RELEASE_SCOPE = input message: 'Which Version type to increment?', ok: 'OK', parameters: [choice(name: 'Scope', choices: 'none\npatch\nminor\nmajor', description: 'What is the scope of the Release?')]
+                        }
+                    } catch (err) {
+                        env.RELEASE_SCOPE = 'none'
+                    }
+                }
+                echo "${env.RELEASE_SCOPE}"
+            }
+        }
+
+        stage('Build Release Version') {
+            agent any
+            when {
+                beforeAgent true
+                allOf {
+                    expression {
+                        (currentBuild.result == null || currentBuild.result == 'SUCCESS')
+                    }
+                    not { environment name: 'RELEASE_SCOPE', value: 'none' }
+                    anyOf {
+                        branch 'main'
+                        branch 'trunk'
+                    }
+                }
+            }
+
+            environment {
+                GIT_AUTHOR_NAME='Jenkins'
+                GIT_AUTHOR_EMAIL=''
+                GIT_AUTH = credentials('scm-jenkins')
+            }
+
+            steps {
+                withMaven(maven: 'maven') {
+                    script {
+                        env.JAVA_HOME="${tool 'JDK-8'}"
+                        env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+                        env.OLD_VERSION=readMavenVersion()
+                        env.NEW_VERSION=semanticVersionBump "${env.OLD_VERSION}", "${env.RELEASE_SCOPE}"
+                        env.NEXT_DEV_VERSION=semanticVersionBump "${env.NEW_VERSION}"
+                    }
+                    echo "Current Version: ${env.OLD_VERSION}"
+                    echo "Release Version: ${env.NEW_VERSION}"
+                    echo "Next Development Version: ${env.NEXT_DEV_VERSION}"
+
+                    sh 'mvn -B release:prepare release:perform -DautoVersionSubmodules=true -DreleaseVersion=${NEW_VERSION} -DdevelopmentVersion=${NEXT_DEV_VERSION} -Dpassword=${GIT_AUTH_PSW} -Dusername=${GIT_AUTH_USR}'
+                }
+            }
+
+            post {
+                cleanup {
+                    cleanWs notFailBuild: true
+                }
+            }
+        }
+    }
+
+
+}

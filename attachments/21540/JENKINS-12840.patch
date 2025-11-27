@@ -1,0 +1,45 @@
+diff --git a/src/main/java/hudson/plugins/cloneworkspace/CloneWorkspaceSCM.java b/src/main/java/hudson/plugins/cloneworkspace/CloneWorkspaceSCM.java
+index 8d3981a..24c7b44 100644
+--- a/src/main/java/hudson/plugins/cloneworkspace/CloneWorkspaceSCM.java
++++ b/src/main/java/hudson/plugins/cloneworkspace/CloneWorkspaceSCM.java
+@@ -48,8 +48,8 @@
+ import java.io.BufferedReader;
+ import java.io.FileOutputStream;
+ import java.io.PrintWriter;
+-import java.util.LinkedHashMap;
+-import java.util.Map;
++import java.util.ArrayList;
++import java.util.List;
+ import java.util.logging.Logger;
+ 
+ import net.sf.json.JSONObject;
+@@ -330,11 +330,12 @@
+             return req.bindJSON(CloneWorkspaceSCM.class, formData);
+         }
+ 
+-        public Map<String,String> getEligibleParents() {
+-            final Map<String, String> parentNames = new LinkedHashMap<String, String>();
+-            for (final AbstractProject<?,?> p : Hudson.getInstance().getItems(AbstractProject.class)) {
++        public List<String> getEligibleParents() {
++            List<String> parentNames = new ArrayList<String>();
++
++            for (AbstractProject p : Hudson.getInstance().getItems(AbstractProject.class)) {
+                 if (p.getPublishersList().get(CloneWorkspacePublisher.class) != null) {
+-                    parentNames.put(p.getName(), p.getDisplayName());
++                    parentNames.add(p.getDisplayName());
+                 }
+             }
+ 
+diff --git a/src/main/resources/hudson/plugins/cloneworkspace/CloneWorkspaceSCM/config.jelly b/src/main/resources/hudson/plugins/cloneworkspace/CloneWorkspaceSCM/config.jelly
+index 214e532..f385634 100644
+--- a/src/main/resources/hudson/plugins/cloneworkspace/CloneWorkspaceSCM/config.jelly
++++ b/src/main/resources/hudson/plugins/cloneworkspace/CloneWorkspaceSCM/config.jelly
+@@ -27,7 +27,7 @@
+     <select name="parentJobName">
+       <j:if test="${!empty(descriptor.getEligibleParents())}">
+         <j:forEach var="parentProject" items="${descriptor.getEligibleParents()}">
+-          <f:option value="${parentProject.key}" selected="${scm.parentJobName==parentProject.key}">${parentProject.value}</f:option>
++          <f:option value="${parentProject}" selected="${scm.parentJobName==parentProject}">${parentProject}</f:option>
+         </j:forEach>
+       </j:if>
+     </select>

@@ -1,0 +1,67 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.7">
+      <siteName>http://jira-us/atlassian-jira/</siteName>
+    </hudson.plugins.jira.JiraProjectProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.31">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs.JobRestrictionProperty plugin="job-restrictions@0.8"/>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>UNITTEST</name>
+          <description></description>
+          <defaultValue>API/rma/ReturnLabelUnitTest.php</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>testserv1</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>/web/unitTesting</customWorkspace>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>phpunit -c phpunit.xml --log-junit generatedJUnitFiles/$UNITTEST.xml unit/$UNITTEST||echo &quot;Failures occurred while building $UNITTEST&quot;</command>
+    </hudson.tasks.Shell>
+    <org.jenkinsci.plugins.xunit.XUnitBuilder plugin="xunit@2.3.3">
+      <types>
+        <PHPUnitJunitHudsonTestType>
+          <pattern>generatedJUnitFiles/$UNITTEST.xml</pattern>
+          <skipNoTestFiles>false</skipNoTestFiles>
+          <failIfNotNew>true</failIfNotNew>
+          <deleteOutputFiles>false</deleteOutputFiles>
+          <stopProcessingIfError>true</stopProcessingIfError>
+        </PHPUnitJunitHudsonTestType>
+      </types>
+      <thresholds>
+        <org.jenkinsci.plugins.xunit.threshold.FailedThreshold>
+          <unstableThreshold>0</unstableThreshold>
+          <unstableNewThreshold>0</unstableNewThreshold>
+          <failureThreshold>0</failureThreshold>
+          <failureNewThreshold>0</failureNewThreshold>
+        </org.jenkinsci.plugins.xunit.threshold.FailedThreshold>
+        <org.jenkinsci.plugins.xunit.threshold.SkippedThreshold/>
+      </thresholds>
+      <thresholdMode>1</thresholdMode>
+      <extraConfiguration>
+        <testTimeMargin>3000</testTimeMargin>
+        <reduceLog>true</reduceLog>
+      </extraConfiguration>
+    </org.jenkinsci.plugins.xunit.XUnitBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

@@ -1,0 +1,854 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <displayName>XXXXX Tests</displayName>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.advancedqueue.AdvancedQueueSorterJobProperty plugin="PrioritySorter@2.8">
+      <useJobPriority>false</useJobPriority>
+      <priority>-1</priority>
+    </jenkins.advancedqueue.AdvancedQueueSorterJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>SUITE_NAME</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>All</string>
+              <string>Custom</string>
+              <string>Active</string>
+              <string>ActiveFailing</string>
+              <string>Core</string>
+              <string>Random</string>
+              <string>Missing</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <com.seitenbau.jenkins.plugins.dynamicparameter.ChoiceParameterDefinition plugin="dynamicparameter@0.2.0">
+          <name>Product_Server</name>
+          <description></description>
+          <__uuid>635ddc65-6f1d-44d5-95ed-32a3584e55ba</__uuid>
+          <__remote>false</__remote>
+          <__script>def slaves = [&quot;New - Delete when finished&quot;,&quot;New - Keep when finished&quot;];
+hudson.model.Hudson.instance.slaves.each {
+  if(it.displayName.indexOf(&quot;Product&quot;) &gt; -1) {
+   slaves.add(it.displayName);
+  }
+}
+return slaves;</__script>
+          <__localBaseDirectory serialization="custom">
+            <hudson.FilePath>
+              <default>
+                <remote>C:\Program Files (x86)\Jenkins\dynamic_parameter\classpath</remote>
+              </default>
+              <boolean>true</boolean>
+            </hudson.FilePath>
+          </__localBaseDirectory>
+          <__remoteBaseDirectory>dynamic_parameter_classpath</__remoteBaseDirectory>
+          <__classPath>hudson.model.*</__classPath>
+          <readonlyInputField>false</readonlyInputField>
+        </com.seitenbau.jenkins.plugins.dynamicparameter.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>OLD_SUITE_BUILD_NUMBER</name>
+          <description></description>
+          <defaultValue>0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>TIMEOUT_IN_MINUTES</name>
+          <description></description>
+          <defaultValue>0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CUSTOM_TEST_LIST</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>Product_BUILDNUMBER</name>
+          <description></description>
+          <defaultValue>0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>BROWSER</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>chrome</string>
+              <string>firefox</string>
+              <string>IE</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.31">
+      <project>BuildChildProjects</project>
+      <filter>ProductWebNUnitTestList.zip</filter>
+      <target></target>
+      <excludes></excludes>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector"/>
+      <doNotFingerprintArtifacts>false</doNotFingerprintArtifacts>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <hudson.plugins.python.Python plugin="python@1.2">
+      <command>import zipfile
+import os
+
+with zipfile.ZipFile(&apos;ProductWebNUnitTestList.zip&apos;, &quot;r&quot;) as zipProduct:
+    zipProduct.extractall(os.environ[&quot;WORKSPACE&quot;] + &apos;\\test_list&apos;)</command>
+    </hudson.plugins.python.Python>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@1.20">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>// Test Id Record and Missing/Custom Setter Script
+//
+// Determines missing or custom tests and copies necessary .properties files into the test_list directory.
+// Determines tests for the given suite and records the test identifiers into the job.properties file
+//
+import hudson.model.*
+import hudson.util.*
+import groovy.io.FileType
+import com.google.common.io.Files
+
+def env = Thread.currentThread().executable.parent.builds[0].properties.get(&quot;envVars&quot;);
+
+def suite = env[&quot;SUITE_NAME&quot;];
+def workspace = env[&quot;WORKSPACE&quot;];
+def projectname = env[&quot;JOB_NAME&quot;];
+def currentBuildNum = env[&quot;BUILD_NUMBER&quot;];
+def product = &quot;ProductId_&quot;;
+
+println(&quot;Suite Name: &quot; + suite);
+
+try {
+  // Missing: Get Missing Tests
+  if (suite == &quot;Missing&quot;) {
+    println(&quot;Gathering missing tests...&quot;);
+    // read job props file and get test ids
+    def oldBuildNum = env[&quot;OLD_SUITE_BUILD_NUMBER&quot;];
+    if (oldBuildNum == &quot;0&quot;) { oldBuildNum = getLatestBuild(projectname); }
+    
+    println(&quot;Using $projectname build #$oldBuildNum results\r\n&quot;);
+    
+    // determine missing tests
+    def testsSupposedToRun = readTestIdsFromJobsFile(&quot;R:/$projectname/$oldBuildNum/job.properties&quot;, product);
+    
+    def testsActuallyRun = getTestsFromFileList(&quot;R:/$projectname/$oldBuildNum&quot;, product);
+    
+    def missingTests = getMissingTests(testsSupposedToRun, testsActuallyRun);
+    println(&quot;Build #&quot; + oldBuildNum + &quot;,&quot;);
+    println(&quot;Missing tests:\r\n&quot; + missingTests);
+    copyTestsFromAll(missingTests, &quot;$workspace/test_list/Missing&quot;, workspace);
+    println(&quot;Done.&quot;);
+  }
+  //
+  
+  // Custom: Get Custom Tests
+  if (suite == &quot;Custom&quot;) {
+    println(&quot;Gathering custom tests...&quot;);
+    List&lt;String&gt; customTests = Arrays.asList(env[&apos;CUSTOM_TEST_LIST&apos;].split(&quot;\\s*,\\s*&quot;));
+    copyTestsFromAll(customTests, &quot;$workspace/test_list/Custom&quot;, workspace);
+    println(&quot;Done.&quot;);
+  }
+  //
+    
+  // create job props file with suite
+  println(&quot;Creating the job.properties file with the list of test names...&quot;);
+  def resultsPath = &quot;R:/$projectname/$currentBuildNum&quot;;
+  File jobpropsfolder = new File(resultsPath);
+  if (!jobpropsfolder.exists()) { jobpropsfolder.mkdirs(); }
+  File jobpropsfile = new File(&quot;$resultsPath/job.properties&quot;);
+
+  Properties currentRunProps = new Properties();
+  currentRunProps.setProperty(&quot;SUITE_NAME&quot;, suite);
+  //
+  
+  // get test ids for this job
+  def testsdir = &quot;$workspace/test_list/$suite&quot;;
+  def testids = getTestsFromFileList(testsdir, product);
+  def testnames = &quot;&quot;;
+  testids.each {
+    if (matchesFilter(it, product)) {
+      testnames += getTestSubstring(it, product) + &quot;,&quot;;
+    }
+  }
+  currentRunProps.setProperty(&quot;TEST_IDS&quot;, testnames);
+  writePropsToFile(currentRunProps, jobpropsfile);
+  println(&quot;Done.&quot;);
+  //
+  
+  // Copy tests to current_run
+  println(&quot;Copy test properties files to /current_run&quot;);
+  def currentRunPath = &quot;$workspace/test_list/current_run&quot;;
+  File currentRunFolder = new File(currentRunPath);
+  if (!currentRunFolder.exists()) {
+    jobpropsfolder.mkdirs();
+    println(&quot;Created $currentRunPath because it did not exist&quot;);
+  }
+  copyTestsFromAll(testids, currentRunPath, workspace);
+  //  
+}
+catch(err) {
+  println(&quot;Exception: $err&quot;);
+}
+
+//
+// Functions
+//
+
+// Read the full list of tests attempted to run, provided by the TEST_IDS property in the job.properties file
+def readTestIdsFromJobsFile (path, filterString) {
+  def fileprops = readPropsFromFile(path);
+  List&lt;String&gt; fullList = Arrays.asList(fileprops.getProperty(&quot;TEST_IDS&quot;).split(&quot;\\s*,\\s*&quot;));
+  ArrayList&lt;String&gt; filteredList = new ArrayList&lt;String&gt;();
+  fullList.each {
+    if (matchesFilter(it, filterString)) {
+      filteredList.add(it);
+    }
+  }  
+  return filteredList;
+}
+
+def writePropsToFile (props, file) {
+  props.store(file.newWriter(), null);
+}
+
+def readPropsFromFile (filepath) {
+  File file = new File(filepath);
+  Properties props = new Properties();
+  props.load(file.newDataInputStream());
+  return props;
+}
+
+def getTestSubstring(name, filterString) {
+  def isProduct = false;
+  
+  if (matchesFilter(name, filterString)) {
+    isProduct = true;
+  } 
+  
+  if (isProduct &amp;&amp; name.indexOf(&quot;_Build&quot;) &gt; -1) {
+    return name.substring(0, name.indexOf(&quot;_Build&quot;));
+  }
+  else if (isProduct &amp;&amp; name.indexOf(&quot;.properties&quot;) &gt; -1) {
+    return name.substring(0, name.indexOf(&quot;.properties&quot;))
+  }
+  else {
+    return name;
+  }
+}
+
+def matchesFilter(name, filter) {
+  if (name.indexOf(filter) &gt; -1) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// Read a list of files, get a list of test names from their filenames,
+// and filter out non-test names.
+def getTestsFromFileList(dir, filterString) {
+  ArrayList&lt;String&gt; fullList = new ArrayList&lt;String&gt;();
+  ArrayList&lt;String&gt; filteredList = new ArrayList&lt;String&gt;();
+  
+  def folder = new File(dir);
+  folder.eachFileRecurse(FileType.FILES) {
+    file -&gt; fullList &lt;&lt; getTestSubstring(file.name, filterString)
+  }
+  // filter non-test entries in list
+  fullList.each {
+    if (matchesFilter(it, filterString)) {
+      filteredList.add(it);
+    }
+  }
+  return filteredList;
+}
+
+def getLatestBuild(jobname) { 
+  def job = hudson.model.Hudson.instance.getItem(jobname);
+  return job.getLastSuccessfulBuild().number; 
+}
+
+def getMissingTests(list1, list2) {  
+  ArrayList&lt;String&gt; difference = new ArrayList&lt;String&gt;();
+  def common = list1.intersect(list2);
+  difference = list1.plus(list2);
+  difference.removeAll(common);
+  return difference;
+}
+
+def copyTestsFromAll(testList, suitePath, ws) {
+  
+  // Create destination folder
+  File destDir = new File(suitePath);
+  if (!destDir.exists()) { destDir.mkdirs(); }
+  
+  // Create TestList.csv
+  File csv = new File(&quot;$suitePath/TestList.csv&quot;);
+  
+  testList.each {
+    File dest = new File(&quot;$suitePath/$it&quot; + &quot;.properties&quot;);
+    File source = new File(&quot;$ws/test_list/All/$it&quot; + &quot;.properties&quot;);
+    println(&quot;Copying $source to $destDir&quot;);
+    Files.copy(source, dest);
+    csv.append(it + &quot;\r\n&quot;);
+  }  
+}</command>
+      </scriptSource>
+      <bindings></bindings>
+      <classpath></classpath>
+    </hudson.plugins.groovy.SystemGroovy>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@1.20">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>// Node Quantity Set Script
+//
+// Sets $NODE_QUANTITY to default number depending on $SUITE_NAME
+//
+//
+import hudson.model.*
+import groovy.io.FileType
+
+// Get suite name
+def env = Thread.currentThread().executable.parent.builds[0].properties.get(&quot;envVars&quot;);
+def workspace = env[&apos;WORKSPACE&apos;];
+def suite = env[&apos;SUITE_NAME&apos;];
+def product = &quot;ProductId_&quot;;
+println(&quot;Setting node quantity to number of tests.&quot;);
+println(&quot;Suite name: $suite&quot;);
+
+// Read suite name and assign node quantity LEQ 40
+def nodequantity = getTestQuantity(&quot;$workspace/test_list/$suite&quot;, product).toString();
+
+println(&quot;Node quantity: $nodequantity&quot;)
+assert nodequantity != &quot;0&quot; : &quot;Node quantity was not set. Are you trying to run Missing without any missing tests?&quot;
+println(&quot;Done.&quot;);
+
+
+// Set NODE_QUANTITY variable for later use
+def envset = new ParametersAction([
+  new StringParameterValue(&quot;NODE_QUANTITY&quot;, nodequantity),
+  new StringParameterValue(&quot;CHILD_PROJECT&quot;, &quot;ChildProject&quot;)
+])
+// NOTE: This method ONLY WORKS when the environment variables
+// being set DON&apos;T EXIST ALREADY. Gosh darn.
+Thread.currentThread().executable.addAction(envset)
+
+//
+// Functions
+//
+
+def getTestQuantity(testspath, productString) {
+  def quantity = getTestsFromFileList(testspath, productString).size();
+  if (quantity &gt; 40) { println(&quot;Restricting node quantity to 40, since there are more than 40 tests.&quot;); return 40; }
+  else { return quantity }
+}
+
+// Returns the substring for the PRE or PFC tests, index 0 to index of &apos;.properties&apos;
+// Note: This method does not filter for products
+def getTestSubstring(name, filterString) {
+  def isProduct = false;
+  
+  if (matchesFilter(name, filterString)) {
+    isProduct = true;
+  }
+  
+  if (isProduct &amp;&amp; name.indexOf(&quot;_Build&quot;) &gt; -1) {
+    return name.substring(0, name.indexOf(&quot;_Build&quot;));
+  }
+  else if (isProduct &amp;&amp; name.indexOf(&quot;.properties&quot;) &gt; -1) {
+    return name.substring(0, name.indexOf(&quot;.properties&quot;))
+  }
+  else {
+    return name;
+  }
+}
+
+// Read a list of files, get a list of test names from their filenames,
+// and filter out non-test names.
+def getTestsFromFileList(dir, filterString) {
+  ArrayList&lt;String&gt; fullList = new ArrayList&lt;String&gt;();
+  ArrayList&lt;String&gt; filteredList = new ArrayList&lt;String&gt;();
+  
+  def folder = new File(dir);
+  folder.eachFileRecurse(FileType.FILES) {
+    file -&gt; fullList &lt;&lt; getTestSubstring(file.name, filterString)
+  }
+  // filter non-test entries in list
+  fullList.each {
+    if (matchesFilter(it, filterString)) {
+      filteredList.add(it);
+    }
+  }
+  return filteredList;
+}
+
+def matchesFilter(name, filter) {
+  if (name.indexOf(filter) &gt; -1) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+</command>
+      </scriptSource>
+      <bindings></bindings>
+      <classpath></classpath>
+    </hudson.plugins.groovy.SystemGroovy>
+    <hudson.plugins.parameterizedtrigger.TriggerBuilder plugin="parameterized-trigger@2.25">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+              <properties>PURPOSE=ProductTEST
+INSTANCE_TYPE=[type]
+QUANTITY=$NODE_QUANTITY
+JENKINS_URL=http://jenkins-testing/
+OTHER_PARAMETERS=--label:&quot;Product-testing&quot;</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <projects>UTILITIES_Create_Jenkins_Node</projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <block>
+            <buildStepFailureThreshold>
+              <name>FAILURE</name>
+              <ordinal>2</ordinal>
+              <color>RED</color>
+              <completeBuild>true</completeBuild>
+            </buildStepFailureThreshold>
+            <unstableThreshold>
+              <name>UNSTABLE</name>
+              <ordinal>1</ordinal>
+              <color>YELLOW</color>
+              <completeBuild>true</completeBuild>
+            </unstableThreshold>
+            <failureThreshold>
+              <name>FAILURE</name>
+              <ordinal>2</ordinal>
+              <color>RED</color>
+              <completeBuild>true</completeBuild>
+            </failureThreshold>
+          </block>
+          <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+        </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.31">
+      <project>UTILITIES_Create_Jenkins_Node</project>
+      <filter>node_names.properties</filter>
+      <target></target>
+      <excludes></excludes>
+      <selector class="hudson.plugins.copyartifact.SpecificBuildSelector">
+        <buildNumber>${TRIGGERED_BUILD_NUMBER_UTILITIES_Create_Jenkins_Node}</buildNumber>
+      </selector>
+      <doNotFingerprintArtifacts>false</doNotFingerprintArtifacts>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@1.20">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>// Browser Setup Script
+//
+// Creates individual .properties files for each node created, in order to build DeployBrowserForTest uniquely for each one.
+//
+//
+import hudson.model.*
+import groovy.io.FileType
+
+def env = Thread.currentThread().executable.parent.builds[0].properties.get(&quot;envVars&quot;);
+def workspace = env[&apos;WORKSPACE&apos;];
+def browser = env[&apos;BROWSER&apos;];
+println(&quot;Creating browser setup prop files.&quot;);
+def nodes = readPropsFromFile(&quot;$workspace/node_names.properties&quot;).getProperty(&quot;NODE_NAMES&quot;).split(&apos;,&apos;);
+
+for (int i = 0; i &lt; nodes.size(); i++) {
+  Properties node = new Properties();
+  node.setProperty(&quot;BROWSER&quot;, browser);
+  node.setProperty(&quot;NODE_NAME&quot;, nodes[i]);
+  def filename = &quot;browser_&quot; + nodes[i].substring(nodes[i].indexOf(&quot;i-&quot;), nodes[i].size()) + &quot;.properties&quot;
+  def f = new File(&quot;$workspace\\$filename&quot;);
+  writePropsToFile(node, f);
+  println(&quot;Props file $filename for &quot; + nodes[i] + &quot; created at $f.path&quot;);
+}
+
+println(&quot;Done.&quot;);
+println(&quot;Deploy testing web servers while the Product testers come online.&quot;);
+
+def readPropsFromFile (filepath) {
+  File file = new File(filepath);
+  Properties props = new Properties();
+  props.load(file.newDataInputStream());
+  return props;
+}
+
+def writePropsToFile (props, file) {
+  props.store(file.newWriter(), null);
+}</command>
+      </scriptSource>
+      <bindings></bindings>
+      <classpath></classpath>
+    </hudson.plugins.groovy.SystemGroovy>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder plugin="conditional-buildstep@1.3.3">
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$DontRun" plugin="run-condition@1.0"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.logic.Or" plugin="run-condition@1.0">
+        <conditions>
+          <org.jenkins__ci.plugins.run__condition.logic.ConditionContainer>
+            <condition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition">
+              <arg1>${ENV,var=&quot;Product_Server&quot;}</arg1>
+              <arg2>New - Delete when finished</arg2>
+              <ignoreCase>false</ignoreCase>
+            </condition>
+          </org.jenkins__ci.plugins.run__condition.logic.ConditionContainer>
+          <org.jenkins__ci.plugins.run__condition.logic.ConditionContainer>
+            <condition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition">
+              <arg1>${ENV,var=&quot;Product_Server&quot;}</arg1>
+              <arg2>New - Keep when finished</arg2>
+              <ignoreCase>false</ignoreCase>
+            </condition>
+          </org.jenkins__ci.plugins.run__condition.logic.ConditionContainer>
+        </conditions>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder plugin="parameterized-trigger@2.25">
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+              <configs>
+                <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+                  <properties>PRODUCT_TO_TEST=Product
+Product_BUILDNUMBER=${Product_BUILDNUMBER}</properties>
+                </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+              </configs>
+              <projects>DeployTestingWebservers</projects>
+              <condition>ALWAYS</condition>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+              <block>
+                <buildStepFailureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                  <completeBuild>true</completeBuild>
+                </buildStepFailureThreshold>
+                <unstableThreshold>
+                  <name>UNSTABLE</name>
+                  <ordinal>1</ordinal>
+                  <color>YELLOW</color>
+                  <completeBuild>true</completeBuild>
+                </unstableThreshold>
+                <failureThreshold>
+                  <name>FAILURE</name>
+                  <ordinal>2</ordinal>
+                  <color>RED</color>
+                  <completeBuild>true</completeBuild>
+                </failureThreshold>
+              </block>
+              <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+            </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+        <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.31">
+          <project>DeployTestingWebservers</project>
+          <filter>productserver_deployed.properties</filter>
+          <target></target>
+          <excludes></excludes>
+          <selector class="hudson.plugins.copyartifact.StatusBuildSelector"/>
+          <doNotFingerprintArtifacts>false</doNotFingerprintArtifacts>
+        </hudson.plugins.copyartifact.CopyArtifact>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@1.20">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>import hudson.model.*;
+import hudson.util.*;
+
+def env = Thread.currentThread().executable.parent.builds[0].properties.get(&quot;envVars&quot;);
+def workspace = env[&quot;WORKSPACE&quot;];
+def ProductNode = env[&quot;Product_Server&quot;];
+
+def serverpropfile = new File(&quot;$workspace\\productserver_deployed.properties&quot;);
+if (!serverpropfile.exists()) {
+  serverpropfile.createNewFile();
+}
+def serverprops = readPropsFromFile(serverpropfile);
+
+if (ProductNode != &quot;New&quot;) {
+  def ProductIp = getNode(ProductNode).getNodeDescription().substring(getNode(ProductNode).getNodeDescription().indexOf(&quot;IP: &quot;) + 4);
+  serverprops.setProperty(&quot;Product_Product_SITE&quot;, ProductIp);
+  serverprops.setProperty(&quot;NODE_NAMES&quot;, serverprops.getProperty(&quot;NODE_NAMES&quot;) + &quot;,$ProductNode&quot;);
+}
+writePropsToFile(serverprops, serverpropfile);
+
+def getNode(nodename) {
+  return hudson.model.Hudson.instance.getNode(nodename);
+}
+
+def readPropsFromFile (file) {
+  Properties props = new Properties();
+  props.load(file.newDataInputStream());
+  return props;
+}
+
+def writePropsToFile (props, file) {
+  props.store(file.newWriter(), null);
+}</command>
+      </scriptSource>
+      <bindings></bindings>
+      <classpath></classpath>
+    </hudson.plugins.groovy.SystemGroovy>
+    <hudson.plugins.parameterizedtrigger.TriggerBuilder plugin="parameterized-trigger@2.25">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          <configs class="empty-list"/>
+          <configFactories>
+            <hudson.plugins.parameterizedtrigger.FileBuildParameterFactory>
+              <filePattern>browser_*.properties</filePattern>
+              <noFilesFoundAction>SKIP</noFilesFoundAction>
+            </hudson.plugins.parameterizedtrigger.FileBuildParameterFactory>
+          </configFactories>
+          <projects>DeployBrowserForTest</projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <block/>
+          <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+        </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+    <hudson.plugins.parameterizedtrigger.TriggerBuilder plugin="parameterized-trigger@2.25">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+              <properties>Product_BUILDNUMBER=${Product_BUILDNUMBER}
+ChildProjectS_BUILDNUMBER=${COPYARTIFACT_BUILD_NUMBER_BUILDChildProjectS}
+PARENT_PROJECT_NAME=${JOB_NAME}
+PARENT_PROJECT_BUILD_NUMBER=${BUILD_NUMBER}
+NODE_LABEL=Product-testing</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+            <hudson.plugins.parameterizedtrigger.FileBuildParameters>
+              <propertiesFile>productserver_deployed.properties</propertiesFile>
+              <failTriggerOnMissing>false</failTriggerOnMissing>
+              <useMatrixChild>false</useMatrixChild>
+              <onlyExactRuns>false</onlyExactRuns>
+            </hudson.plugins.parameterizedtrigger.FileBuildParameters>
+          </configs>
+          <configFactories>
+            <hudson.plugins.parameterizedtrigger.FileBuildParameterFactory>
+              <filePattern>test_list/current_run/*.properties</filePattern>
+              <noFilesFoundAction>FAIL</noFilesFoundAction>
+            </hudson.plugins.parameterizedtrigger.FileBuildParameterFactory>
+          </configFactories>
+          <projects>ChildProject</projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+        </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@1.20">
+      <scriptSource class="hudson.plugins.groovy.StringScriptSource">
+        <command>// ChildProject Monitor Script
+//
+// Wait for tests to finish, only continue when all tests are longer running or timeout occurs.
+//
+import hudson.model.*
+
+  try {
+    def env = Thread.currentThread().executable.parent.builds[0].properties.get(&quot;envVars&quot;);
+    def projectname = env[&apos;CHILD_PROJECT&apos;];
+    def suite = env[&apos;SUITE_NAME&apos;];
+    def timeout = env[&apos;TIMEOUT_IN_MINUTES&apos;].toInteger();
+    def defaults = [ &apos;Custom&apos;:60, &apos;Core&apos;:45, &apos;Active&apos;:90, &apos;ActiveFailing&apos;:60, &apos;Random&apos;:45, &apos;All&apos;:120, &apos;Missing&apos;:60 ];
+    if (timeout == 0) { timeout = defaults[suite]; }
+  
+    def proj = hudson.model.Hudson.instance.getItem(projectname);
+    println(&quot;$projectname is in the queue: &quot; + proj.isInQueue());
+    println(&quot;$projectname is building: &quot; + isJobRunning(projectname));
+    println(&quot;Waiting for $projectname to finish with a timeout of $timeout minutes.&quot;);
+
+	// Check if project is building every minute, print waiting message every 10 minutes
+	def count = 0;
+	boolean timedOut = false;
+	while (isJobRunning(projectname) || proj.isInQueue()) {
+	  count++;
+	  Thread.sleep(60000);
+	  if (count % 10 == 0) {
+	    println(&quot;$projectname is still building and has been building for $count minutes.&quot;);
+	    printActiveJobs(runningJobs(projectname), projectname);
+	  }
+	  if (count == timeout) {
+        println(&quot;$projectname is no longer building. Continuing with job...&quot;);
+	    timedOut = true;
+	    break;
+	  }
+	}
+	if (!timedOut) { println(&quot;All $projectname jobs are done building.&quot;); }
+	else { println(&quot;TIMEOUT PERIOD REACHED: $timeout minutes have passed.&quot;); }
+	  }
+catch (err) {
+  println(&quot;Exception: $err&quot;);
+}
+
+def isJobRunning(jobname) {  
+  runningJobs(jobname).find {
+    if (it.toString().contains(jobname)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+def printActiveJobs(list, name) {
+  def logentry = &quot;The following $name builds are still running:\r\n&quot;;
+  list.each {
+    logentry += it.getDisplayName() + &quot;, &quot;;
+  }
+  println(logentry + &quot;\r\n&quot;);
+}
+
+def runningJobs(jobname) {
+  def myJobs = hudson.model.Hudson.instance.items.findAll{job -&gt; 
+  job.name==jobname} 
+
+  def jobsRuns = myJobs.collect{job -&gt; job.getBuilds()} 
+  def jobRuns = jobsRuns.flatten();
+  return jobRuns.findAll{run -&gt; run.building};
+    }</command>
+      </scriptSource>
+      <bindings></bindings>
+      <classpath></classpath>
+    </hudson.plugins.groovy.SystemGroovy>
+    <hudson.tasks.BatchFile>
+      <command>REM Copy results to workspace
+xcopy /y &quot;R:\%JOB_NAME%\%BUILD_NUMBER%\*&quot; &quot;%WORKSPACE%&quot;</command>
+    </hudson.tasks.BatchFile>
+    <hudson.tasks.BatchFile>
+      <command>SET</command>
+    </hudson.tasks.BatchFile>
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.31">
+      <project>NUnit Result Aggregator</project>
+      <filter>NUnitResultAggregator.exe, NUnitTestUtilities.dll</filter>
+      <target></target>
+      <excludes></excludes>
+      <selector class="hudson.plugins.copyartifact.StatusBuildSelector"/>
+      <doNotFingerprintArtifacts>false</doNotFingerprintArtifacts>
+    </hudson.plugins.copyartifact.CopyArtifact>
+    <hudson.tasks.BatchFile>
+      <command>cd &quot;%WORKSPACE%
+NUnitResultAggregator.exe -out &quot;Aggregate_TestResults.html&quot; -i &quot;Project %JOB_NAME%; Build %BUILD_NUMBER%; Date %BUILD_ID%; BuildChildProjects Build %COPYARTIFACT_BUILD_NUMBER_BUILDChildProjectS%&quot; -testList &quot;%WORKSPACE%\test_list\current_run\TestList.csv&quot; -linkPath &quot;%JENKINS_URL%job/%CHILD_PROJECT%/&quot; -testReport &quot;%WORKSPACE%\test_list\ChildProjectsReport.xml&quot;</command>
+    </hudson.tasks.BatchFile>
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+      <condition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition" plugin="run-condition@1.0">
+        <arg1>${ENV,var=&quot;Product_Server&quot;}</arg1>
+        <arg2>New - Delete when finished</arg2>
+        <ignoreCase>false</ignoreCase>
+      </condition>
+      <buildStep class="hudson.plugins.parameterizedtrigger.TriggerBuilder" plugin="parameterized-trigger@2.25">
+        <configs>
+          <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+            <configs>
+              <hudson.plugins.parameterizedtrigger.FileBuildParameters>
+                <propertiesFile>productserver_deployed.properties</propertiesFile>
+                <failTriggerOnMissing>false</failTriggerOnMissing>
+                <useMatrixChild>false</useMatrixChild>
+                <onlyExactRuns>false</onlyExactRuns>
+              </hudson.plugins.parameterizedtrigger.FileBuildParameters>
+            </configs>
+            <projects>UTILITIES_Delete_Jenkins_Node</projects>
+            <condition>ALWAYS</condition>
+            <triggerWithNoParameters>false</triggerWithNoParameters>
+            <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+          </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+        </configs>
+      </buildStep>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
+    </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>**/*</artifacts>
+      <excludes>source/**/*</excludes>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+    </hudson.tasks.ArtifactArchiver>
+    <htmlpublisher.HtmlPublisher plugin="htmlpublisher@1.3">
+      <reportTargets>
+        <htmlpublisher.HtmlPublisherTarget>
+          <reportName>Aggregated Results</reportName>
+          <reportDir></reportDir>
+          <reportFiles>Aggregate_TestResults.html</reportFiles>
+          <keepAll>true</keepAll>
+          <allowMissing>false</allowMissing>
+          <wrapperName>htmlpublisher-wrapper.html</wrapperName>
+        </htmlpublisher.HtmlPublisherTarget>
+      </reportTargets>
+    </htmlpublisher.HtmlPublisher>
+    <xunit plugin="xunit@1.90">
+      <types>
+        <NUnitJunitHudsonTestType>
+          <pattern>*_Results.xml</pattern>
+          <skipNoTestFiles>false</skipNoTestFiles>
+          <failIfNotNew>true</failIfNotNew>
+          <deleteOutputFiles>true</deleteOutputFiles>
+          <stopProcessingIfError>true</stopProcessingIfError>
+        </NUnitJunitHudsonTestType>
+      </types>
+      <thresholds>
+        <org.jenkinsci.plugins.xunit.threshold.FailedThreshold>
+          <unstableThreshold></unstableThreshold>
+          <unstableNewThreshold></unstableNewThreshold>
+          <failureThreshold></failureThreshold>
+          <failureNewThreshold></failureNewThreshold>
+        </org.jenkinsci.plugins.xunit.threshold.FailedThreshold>
+        <org.jenkinsci.plugins.xunit.threshold.SkippedThreshold>
+          <unstableThreshold></unstableThreshold>
+          <unstableNewThreshold></unstableNewThreshold>
+          <failureThreshold></failureThreshold>
+          <failureNewThreshold></failureNewThreshold>
+        </org.jenkinsci.plugins.xunit.threshold.SkippedThreshold>
+      </thresholds>
+      <thresholdMode>1</thresholdMode>
+      <extraConfiguration>
+        <testTimeMargin>3000</testTimeMargin>
+      </extraConfiguration>
+    </xunit>
+    <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.25">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.FileBuildParameters>
+              <propertiesFile>node_names.properties</propertiesFile>
+              <failTriggerOnMissing>false</failTriggerOnMissing>
+              <useMatrixChild>false</useMatrixChild>
+              <onlyExactRuns>false</onlyExactRuns>
+            </hudson.plugins.parameterizedtrigger.FileBuildParameters>
+          </configs>
+          <projects>UTILITIES_Delete_Jenkins_Node, </projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+        </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.BuildTrigger>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.22">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter></cleanupParameter>
+      <externalDelete></externalDelete>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@1.3">
+      <template>#${BUILD_NUMBER} ${ENV,var=&quot;SUITE_NAME&quot;}</template>
+    </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+  </buildWrappers>
+</project>

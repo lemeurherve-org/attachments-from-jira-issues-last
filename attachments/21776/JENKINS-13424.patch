@@ -1,0 +1,122 @@
+diff --git a/src/main/java/hudson/plugins/accurev/AccurevSCM.java b/src/main/java/hudson/plugins/accurev/AccurevSCM.java
+index 22b1143..640808c 100644
+--- a/src/main/java/hudson/plugins/accurev/AccurevSCM.java
++++ b/src/main/java/hudson/plugins/accurev/AccurevSCM.java
+@@ -82,6 +82,7 @@ public class AccurevSCM extends SCM {
+     private final boolean useRevert;
+     private final boolean useSnapshot;
+     private final String snapshotNameFormat;
++    private final boolean replicasync;
+     private final boolean synctime;
+     private final String workspace;
+     private final String workspaceSubPath;
+@@ -98,6 +99,7 @@ public class AccurevSCM extends SCM {
+                       boolean useWorkspace,
+                       String workspace,
+                       String workspaceSubPath,
++                      boolean replicasync,
+                       boolean synctime,
+                       boolean useUpdate,
+                       boolean usePurgeIfLastFailed,
+@@ -112,6 +114,7 @@ public class AccurevSCM extends SCM {
+         this.useWorkspace = useWorkspace;
+         this.workspace = workspace;
+         this.workspaceSubPath = workspaceSubPath;
++        this.replicasync = replicasync;
+         this.synctime = synctime;
+         this.useUpdate = useUpdate;
+         this.usePurgeIfLastFailed = usePurgeIfLastFailed;
+@@ -187,6 +190,17 @@ public class AccurevSCM extends SCM {
+     }
+ 
+     /**
++     * Getter for property 'replicasync'.
++     *
++     * @return Value for property 'replicasync'.
++     */
++    public boolean isReplicasync() {
++        return replicasync;
++    }
++
++    /**
++
++    /**
+      * Getter for property 'synctime'.
+      *
+      * @return Value for property 'synctime'.
+@@ -338,6 +352,14 @@ public class AccurevSCM extends SCM {
+             return false;
+         }
+ 
++        if (replicasync) {
++            listener.getLogger().println("Synchronizing the replica repository...");
++            if (!replicasync(server, accurevEnv, workspace, listener, accurevPath, launcher)) {
++                return false;
++            }
++        }
++
++
+         if (synctime) {
+             listener.getLogger().println("Synchronizing clock with the server...");
+             if (!synctime(server, accurevEnv, workspace, listener, accurevPath, launcher)) {
+@@ -725,6 +747,14 @@ public class AccurevSCM extends SCM {
+             return false;
+         }
+ 
++        if (replicasync) {
++            listener.getLogger().println("Synchronizing the replica repository...");
++            if (!replicasync(server, accurevEnv, workspace, listener, accurevPath, launcher)) {
++                listener.getLogger().println("Synchronizing replica failure");
++                return false;
++            }
++        }
++
+         if (synctime) {
+             listener.getLogger().println("Synchronizing clock with the server...");
+             if (!synctime(server, accurevEnv, workspace, listener, accurevPath, launcher)) {
+@@ -905,6 +935,23 @@ public class AccurevSCM extends SCM {
+         }
+     }
+ 
++    private boolean replicasync(//
++            final AccurevServer server, //
++            final Map<String, String> accurevEnv, //
++            final FilePath workspace, //
++            final TaskListener listener, //
++            final String accurevPath, //
++            final Launcher launcher) throws IOException, InterruptedException {
++        final ArgumentListBuilder cmd = new ArgumentListBuilder();
++        cmd.add(accurevPath);
++        cmd.add("replica");
++        cmd.add("sync");
++        addServer(cmd, server);
++        final boolean success = AccurevLauncher.runCommand("Replicasync command", launcher, cmd, null, getOptionalLock(),
++                accurevEnv, workspace, listener, logger);
++        return success;
++    }
++
+     private boolean synctime(//
+             final AccurevServer server, //
+             final Map<String, String> accurevEnv, //
+@@ -1342,6 +1389,7 @@ public class AccurevSCM extends SCM {
+                     req.getParameter("accurev.useWorkspace") != null, //
+                     req.getParameter("accurev.workspace"), //
+                     req.getParameter("accurev.workspaceSubPath"), //
++                    req.getParameter("accurev.replicasync") != null, //
+                     req.getParameter("accurev.synctime") != null, //
+                     req.getParameter("accurev.useUpdate") != null, //
+                     req.getParameter("accurev.usePurgeIfLastFailed") != null, //
+diff --git a/src/main/resources/hudson/plugins/accurev/AccurevSCM/config.jelly b/src/main/resources/hudson/plugins/accurev/AccurevSCM/config.jelly
+index 992942f..7e6a48d 100644
+--- a/src/main/resources/hudson/plugins/accurev/AccurevSCM/config.jelly
++++ b/src/main/resources/hudson/plugins/accurev/AccurevSCM/config.jelly
+@@ -37,6 +37,9 @@
+                 <f:checkbox name="accurev.useRevert" checked="${scm.useRevert}"/>
+             </f:entry>
+         </f:optionalBlock>
++        <f:entry title="Synchronize an Accurev replica repository">
++            <f:checkbox name="accurev.replicasync" checked="${scm.replicasync}"/>
++        </f:entry>
+         <f:entry title="Synchronize clock with Accurev server">
+             <f:checkbox name="accurev.synctime" checked="${scm.synctime}"/>
+         </f:entry>

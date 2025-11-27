@@ -1,0 +1,36 @@
+From c9b0132738cf0bfa89d2fa982df8848320c90187 Mon Sep 17 00:00:00 2001
+From: Sergey Vidyuk <svidyuk@ac-sw.com>
+Date: Tue, 2 Aug 2011 19:53:01 +0700
+Subject: [PATCH] Use build to generate parameters for build completed event
+
+This patch makes it possible to use <BUILDURL> in the build completed
+events command line.
+---
+ .../trigger/gerritnotifier/ParameterExpander.java  |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/gerritnotifier/ParameterExpander.java b/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/gerritnotifier/ParameterExpander.java
+index da7d6b9..982ec50 100644
+--- a/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/gerritnotifier/ParameterExpander.java
++++ b/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/gerritnotifier/ParameterExpander.java
+@@ -353,15 +353,13 @@ public class ParameterExpander {
+         int verified = getMinimumVerifiedValue(memoryImprint);
+         int codeReview = getMinimumCodeReviewValue(memoryImprint);
+ 
+-        Map<String, String> parameters = createStandardParameters(null, memoryImprint.getEvent(), codeReview, verified);
+-        parameters.put("BUILDS_STATS", createBuildsStats(memoryImprint));
+-
+-
+         AbstractBuild build = null;
+         Entry[] entries = memoryImprint.getEntries();
+         if (entries.length > 0 && entries[0].getBuild() != null) {
+             build = entries[0].getBuild();
+         }
++        Map<String, String> parameters = createStandardParameters(build, memoryImprint.getEvent(), codeReview, verified);
++        parameters.put("BUILDS_STATS", createBuildsStats(memoryImprint));
+         return expandParameters(command, build, listener, parameters);
+     }
+ 
+-- 
+1.7.6
+

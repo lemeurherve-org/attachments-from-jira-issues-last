@@ -1,0 +1,82 @@
+#!groovy
+
+def getAllParameters() {
+  return [
+    [type: 'CB',     name: 'BUILDS',                              default: true]
+  ]
+}
+
+AllParameters = getAllParameters()
+
+def MainBuildParam = [$class: 'DynamicReferenceParameter',
+            choiceType: 'ET_FORMATTED_HTML', description: '', name: 'l', randomName: 'choice-parameter-11', referencedParameters: '', omitValueField: false,
+            script: [$class: 'GroovyScript',
+                fallbackScript: [classpath: [], sandbox: true, script: '<html><body>BROKEN OR UNAPPROVED SCRIPT</body></html>'],
+                script: [classpath: [], sandbox: false, script: '''
+html =
+"""
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <!--NOT POSSIBLE DUE TO OLD JQUERY VERSION IN JENKINS. THIS MEANS THAT FOR INSTANCE TOOLTIPS IS NOT LOOKING AS EXPECTED
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  -->
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <style>
+    .tt {data-toggle: tooltip;}
+  </style>
+ </head>
+ <body>
+  <div class="row">
+   <div class="col-md-8">
+    <table class="table table-bordered table-condensed">
+     <tbody>
+      <tr>
+       <td>BUILDS</td>
+       <td><input type="checkbox" id="CB_BUILDS" class="tt" title="Build"></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+ </body>
+</html>
+"""
+return html
+''']]]
+
+def AllParams = []
+AllParams.add(MainBuildParam)
+
+def allParametersInfo = ''
+def param = AllParameters.get(0)
+def name = param.name
+def checked =  param.default ? "checked" : ""
+def code = " \"<input type='checkbox' id='" + name + "' name='value' " + checked + ">"
+code += "<script type='text/javascript'>document.getElementById('CB_" + name + "').on('change', function() {"
+code += "document.getElementById('CB_" + name + "').checked = this.checked; });"
+code += "document.getElementById('CB_" + name + "').checked = " + param.default + ";</script> \" "
+def P = [$class: 'DynamicReferenceParameter', choiceType: 'ET_FORMATTED_HIDDEN_HTML', name: name, description: '', omitValueField: true,
+    script: [$class: 'GroovyScript', script: [classpath: [], sandbox: false, script: code]]]
+AllParams.add(P)
+
+allParametersInfo += "${param.name} = '${env[param.name]}'\n"
+
+//Define the pipeline parameters
+properties([
+    buildDiscarder(logRotator(artifactDaysToKeepStr: "5", artifactNumToKeepStr: "10", daysToKeepStr: "10", numToKeepStr: "5")),
+    parameters(AllParams)
+])
+
+node('windows') {
+    checkout scm
+    echo ">>>>>>>>>>>>>>>>>>>>"
+    echo allParametersInfo
+    echo "<<<<<<<<<<<<<<<<<<<<"
+}

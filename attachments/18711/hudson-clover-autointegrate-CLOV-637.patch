@@ -1,0 +1,272 @@
+Index: src/main/webapp/help-json.html
+===================================================================
+--- src/main/webapp/help-json.html	Wed Jul 22 15:53:19 EST 2009
++++ src/main/webapp/help-json.html	Wed Jul 22 15:53:19 EST 2009
+@@ -0,0 +1,3 @@
++<div>
++    Automatically generate a JSON Clover report as well.
++</div>
+\ No newline at end of file
+Index: src/main/webapp/help-cloverConfig.html
+===================================================================
+--- src/main/webapp/help-cloverConfig.html	Thu Jul 23 14:53:18 EST 2009
++++ src/main/webapp/help-cloverConfig.html	Thu Jul 23 14:53:18 EST 2009
+@@ -0,0 +1,4 @@
++<div>
++    Clover can be automatically integrated into your Ant build by selecting this option.
++    If you have any questions about Clover please don't hesitate to <a href="http://support.atlassian.com/">contact Atlassian.</a>
++</div>
+\ No newline at end of file
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 19834)
++++ pom.xml	Thu Jul 23 12:01:55 EST 2009
+@@ -13,4 +13,24 @@
+     <version>1.8-SNAPSHOT</version>
+     <name>Hudson Clover plugin</name>
+     <url>http://wiki.hudson-ci.org/display/HUDSON/Clover+Plugin</url>
++    <dependencies>
++        <dependency>
++          <groupId>com.cenqua.clover</groupId>
++          <artifactId>clover</artifactId>
++          <version>2.5.2-SNAPSHOT</version>
++        </dependency>
++
++        <!-- Build breaks without these: -->        
++        <dependency>
++          <groupId>jfree</groupId>
++          <artifactId>jcommon</artifactId>
++          <version>1.0.16</version>
++        </dependency>
++        <dependency>
++          <groupId>jfree</groupId>
++          <artifactId>jfreechart</artifactId>
++          <version>1.0.13</version>
++        </dependency>
++
++    </dependencies>
+ </project>
+Index: src/main/webapp/help-historical.html
+===================================================================
+--- src/main/webapp/help-historical.html	Thu Jul 23 16:11:56 EST 2009
++++ src/main/webapp/help-historical.html	Thu Jul 23 16:11:56 EST 2009
+@@ -0,0 +1,4 @@
++<div>
++    Generate a Clover historical chart to track your code coverage and other metrics over time.
++    Also view which Classes increased or decreased in Coverage between builds.
++</div>
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/clover/CloverBuildWrapper/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/clover/CloverBuildWrapper/config.jelly	Thu Jul 23 14:51:55 EST 2009
++++ src/main/resources/hudson/plugins/clover/CloverBuildWrapper/config.jelly	Thu Jul 23 14:51:55 EST 2009
+@@ -0,0 +1,13 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
++    <f:entry title="Generate an historical report" help="/plugin/clover/help-historical.html">
++        <f:checkbox name="clover.historical" checked="${instance.historical}"/>
++    </f:entry>
++
++    <f:entry title="Generate a json report" help="/plugin/clover/help-json.html">
++        <f:checkbox name="clover.json" checked="${instance.json}"/>
++    </f:entry>
++    
++    <f:entry title="Clover License String" help="/plugin/clover/help-license.html">
++        <f:textarea name="clover.licenseCert" value="${instance.licenseCert}" />
++    </f:entry>
++</j:jelly>
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/clover/PluginImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/clover/PluginImpl.java	(revision 10807)
++++ src/main/java/hudson/plugins/clover/PluginImpl.java	Thu Jul 23 16:11:56 EST 2009
+@@ -2,7 +2,6 @@
+ 
+ import hudson.Plugin;
+ import hudson.tasks.BuildStep;
+-import hudson.plugins.clover.CloverPublisher;
+ 
+ /**
+  * Entry point of a plugin.
+Index: src/main/java/hudson/plugins/clover/CloverBuildWrapper.java
+===================================================================
+--- src/main/java/hudson/plugins/clover/CloverBuildWrapper.java	Thu Jul 23 15:56:13 EST 2009
++++ src/main/java/hudson/plugins/clover/CloverBuildWrapper.java	Thu Jul 23 15:56:13 EST 2009
+@@ -0,0 +1,144 @@
++package hudson.plugins.clover;
++
++import hudson.tasks.BuildWrapper;
++import hudson.tasks.BuildWrapperDescriptor;
++import hudson.Launcher;
++import hudson.Proc;
++import hudson.FilePath;
++import hudson.Extension;
++import hudson.Util;
++import hudson.remoting.Channel;
++import hudson.model.AbstractBuild;
++import hudson.model.BuildListener;
++import hudson.model.Run;
++import hudson.model.Descriptor;
++import hudson.model.AbstractProject;
++import hudson.model.Hudson;
++
++import java.io.IOException;
++import java.io.OutputStream;
++import java.util.Map;
++
++import org.kohsuke.stapler.StaplerRequest;
++import org.kohsuke.stapler.DataBoundConstructor;
++import net.sf.json.JSONObject;
++import com.atlassian.clover.api.ci.CIOptions;
++import com.atlassian.clover.api.ci.AntIntegrator;
++
++/**
++ * A BuildWrapper that decorates the command line just before a build with targets and properties that will automatically
++ * integrate Clover into the Ant build.
++ *
++ */
++public class CloverBuildWrapper extends BuildWrapper {
++
++
++    public boolean historical = true;
++    public boolean json = false;
++    public String licenseCert;
++
++    @DataBoundConstructor
++    public CloverBuildWrapper(boolean historical, boolean json, String licenseCert) {
++        this.historical = historical;
++        this.json = json;
++        this.licenseCert = licenseCert;
++    }
++
++    @Override
++    public Environment setUp(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
++        return new Environment(){};
++    }
++
++    @Override
++    public Launcher decorateLauncher(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException, Run.RunnerAbortedException {
++
++
++        final DescriptorImpl DESCRIPTOR = Hudson.getInstance().getDescriptorByType(DescriptorImpl.class);
++
++
++        final String license = Util.nullify(licenseCert) == null ? DESCRIPTOR.licenseCert : licenseCert;
++        final CIOptions options = CIOptions.newDefaults().
++                                      generateJson(this.json).
++                                      generateHistorical(this.historical).
++                                      useLicenseCert(license);
++
++        final Launcher outer = launcher;
++        return new Launcher(outer) {
++            @Override
++            public Proc launch(ProcStarter starter) throws IOException {
++
++                AntIntegrator integrator = new AntIntegrator(options);
++                // decorateArguments takes a list of just the targets. does not include '/usr/bin/ant'
++                integrator.decorateArguments(starter.cmds().subList(1, starter.cmds().size() -1));
++
++                // masks.length must equal cmds.length
++                boolean[] masks = new boolean[starter.cmds().size()];
++                for (int i = 0; i < starter.masks().length; i++) {
++                    masks[i] = starter.masks()[i];
++                }
++                starter.masks(masks);
++
++                return outer.launch(starter);
++            }
++
++            @Override
++            public Channel launchChannel(String[] cmd, OutputStream out, FilePath workDir, Map<String, String> envVars) throws IOException, InterruptedException {
++                return outer.launchChannel(cmd,out,workDir,envVars);
++            }
++
++            @Override
++            public void kill(Map<String, String> modelEnvVars) throws IOException, InterruptedException {
++                outer.kill(modelEnvVars);
++            }
++
++        };
++    }
++
++    public static final Descriptor<BuildWrapper> DESCRIPTOR = new DescriptorImpl();
++    
++
++    /**
++     * Descriptor for {@link CloverPublisher}. Used as a singleton. The class is marked as public so that it can be
++     * accessed from views.
++     * <p/>
++     * <p/>
++     * See <tt>views/hudson/plugins/clover/CloverPublisher/*.jelly</tt> for the actual HTML fragment for the
++     * configuration screen.
++     */
++    @Extension
++    public static final class DescriptorImpl extends BuildWrapperDescriptor {
++
++        public String licenseCert;
++
++        public DescriptorImpl() {
++            super(CloverBuildWrapper.class);
++            load();
++        }
++
++        /** This human readable name is used in the configuration screen. */
++        public String getDisplayName() {
++            return "Automatically measure Code Coverage using Clover ";
++        }
++
++        @Override
++        public String getHelpFile() {
++            return "/plugin/clover/help-cloverConfig.html";
++        }
++        
++
++        @Override
++        public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
++            req.bindParameters(this, "clover.");
++            save();
++            return true;
++        }
++
++        public boolean isApplicable(AbstractProject<?, ?> item) {
++            //TODO: enable only for builds that use Ant.
++            // TODO: also support the Maven2 builder.
++            return true;
++        }
++
++
++    }
++}
+Index: src/main/resources/index.jelly
+===================================================================
+--- src/main/resources/index.jelly	(revision 10807)
++++ src/main/resources/index.jelly	Thu Jul 23 15:26:35 EST 2009
+@@ -1,3 +1,3 @@
+ <div>
+-  This plugin integrates <a href="http://www.cenqua.com/clover/">Clover code coverage reports</a> to Hudson.
++  This plugin integrates <a href="http://atlassian.com/clover/">Clover code coverage reports</a> to Hudson.
+ </div>
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/clover/CloverBuildWrapper/global.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/clover/CloverBuildWrapper/global.jelly	Thu Jul 23 15:25:41 EST 2009
++++ src/main/resources/hudson/plugins/clover/CloverBuildWrapper/global.jelly	Thu Jul 23 15:25:41 EST 2009
+@@ -0,0 +1,7 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
++    <f:section title="Manage Clover">
++        <f:entry title="Clover License String" help="/plugin/clover/help-license.html">
++            <f:textarea name="clover.licenseCert" value="${descriptor.licenseCert}"/>
++        </f:entry>
++    </f:section>
++</j:jelly>
+\ No newline at end of file
+Index: src/main/webapp/help-license.html
+===================================================================
+--- src/main/webapp/help-license.html	Thu Jul 23 14:52:44 EST 2009
++++ src/main/webapp/help-license.html	Thu Jul 23 14:52:44 EST 2009
+@@ -0,0 +1,5 @@
++<div>
++    Copy and paste the contents of your clover license file to this text field.
++    You can obtain a 30 day Clover evaluation license from <a href="http://my.atlassian.com">my.atlassian.com</a>.
++    If you have any questions about Clover please don't hesitate to <a href="http://support.atlassian.com/">contact Atlassian.</a> 
++</div>
+\ No newline at end of file

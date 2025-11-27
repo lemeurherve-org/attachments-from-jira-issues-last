@@ -1,0 +1,163 @@
+Thread Dump
+
+Channel reader thread: channel
+
+"Channel reader thread: channel" Id=9 Group=main RUNNABLE (in native)
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.FilterInputStream.read(FilterInputStream.java:116)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	-  locked java.io.BufferedInputStream@712c47
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2249)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2542)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2552)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1297)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:925)
+
+main
+
+"main" Id=1 Group=main WAITING on hudson.remoting.Channel@18fef3d
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.Channel@18fef3d
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.Channel.join(Channel.java:706)
+	at hudson.remoting.Launcher.main(Launcher.java:419)
+	at hudson.remoting.Launcher.main(Launcher.java:399)
+	at hudson.remoting.Launcher.main(Launcher.java:395)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at hudson.maven.agent.Main.main(Main.java:122)
+	at hudson.maven.agent.Main.main(Main.java:62)
+
+pool-1-thread-1
+
+"pool-1-thread-1" Id=10 Group=main WAITING on hudson.remoting.PipeWindow$Real@2d2678
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.PipeWindow$Real@2d2678
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.PipeWindow$Real.get(PipeWindow.java:99)
+	at hudson.remoting.ProxyOutputStream._write(ProxyOutputStream.java:133)
+	at hudson.remoting.ProxyOutputStream._write(ProxyOutputStream.java:108)
+	at hudson.remoting.ProxyOutputStream.write(ProxyOutputStream.java:103)
+	at hudson.remoting.RemoteOutputStream.write(RemoteOutputStream.java:110)
+	at hudson.remoting.RemoteOutputStream.write(RemoteOutputStream.java:110)
+	at hudson.Util.copyStream(Util.java:418)
+	at hudson.FilePath$30.invoke(FilePath.java:1365)
+	at hudson.FilePath$30.invoke(FilePath.java:1360)
+	at hudson.FilePath.act(FilePath.java:753)
+	at hudson.FilePath.act(FilePath.java:735)
+	at hudson.FilePath.copyTo(FilePath.java:1360)
+	at hudson.FilePath.copyTo(FilePath.java:1335)
+	at hudson.maven.reporters.MavenArtifact.archive(MavenArtifact.java:200)
+	at hudson.maven.reporters.MavenArtifactArchiver.postBuild(MavenArtifactArchiver.java:123)
+	at hudson.maven.MavenModuleSetBuild$Builder.postModule(MavenModuleSetBuild.java:744)
+	at hudson.maven.MavenBuilder$Adapter.fireLeaveModule(MavenBuilder.java:317)
+	at hudson.maven.MavenBuilder$Adapter.endModule(MavenBuilder.java:282)
+	at org.apache.maven.lifecycle.LifecycleExecutorInterceptor$EventMonitorImpl.endEvent(LifecycleExecutorInterceptor.java:92)
+	at org.apache.maven.monitor.event.DefaultEventDispatcher.dispatchEnd(DefaultEventDispatcher.java:54)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:360)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:180)
+	at org.apache.maven.lifecycle.LifecycleExecutorInterceptor.execute(LifecycleExecutorInterceptor.java:65)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:328)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:138)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:362)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)
+	at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)
+	at hudson.maven.agent.Main.launch(Main.java:165)
+	at hudson.maven.MavenBuilder.call(MavenBuilder.java:165)
+	at hudson.maven.MavenModuleSetBuild$Builder.call(MavenModuleSetBuild.java:694)
+	at hudson.maven.MavenModuleSetBuild$Builder.call(MavenModuleSetBuild.java:638)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:114)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:270)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:441)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:619)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@17a3607
+
+pool-1-thread-2
+
+"pool-1-thread-2" Id=13 Group=main WAITING on hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue$SerializableLock@13908f1
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue$SerializableLock@13908f1
+	at java.lang.Object.wait(Object.java:485)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:316)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:994)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1054)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:575)
+	at java.lang.Thread.run(Thread.java:619)
+
+pool-1-thread-3
+
+"pool-1-thread-3" Id=14 Group=main WAITING on hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue$SerializableLock@13908f1
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue$SerializableLock@13908f1
+	at java.lang.Object.wait(Object.java:485)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:316)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:994)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1054)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:575)
+	at java.lang.Thread.run(Thread.java:619)
+
+pool-1-thread-4
+
+"pool-1-thread-4" Id=16 Group=main WAITING on hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue$SerializableLock@13908f1
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue$SerializableLock@13908f1
+	at java.lang.Object.wait(Object.java:485)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:316)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:994)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1054)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:575)
+	at java.lang.Thread.run(Thread.java:619)
+
+pool-1-thread-5
+
+"pool-1-thread-5" Id=15 Group=main WAITING on hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue$SerializableLock@13908f1
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue$SerializableLock@13908f1
+	at java.lang.Object.wait(Object.java:485)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:316)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:994)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1054)
+	at hidden.edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:575)
+	at java.lang.Thread.run(Thread.java:619)
+
+Attach Listener
+
+"Attach Listener" Id=5 Group=system RUNNABLE
+
+Finalizer
+
+"Finalizer" Id=3 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@120c6b
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@120c6b
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:116)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:132)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
+
+Reference Handler
+
+"Reference Handler" Id=2 Group=system WAITING on java.lang.ref.Reference$Lock@ed771a
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@ed771a
+	at java.lang.Object.wait(Object.java:485)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+
+Signal Dispatcher
+
+"Signal Dispatcher" Id=4 Group=system RUNNABLE
+

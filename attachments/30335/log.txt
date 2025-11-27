@@ -1,0 +1,49 @@
+Creating new app.
+Pushing app bits.
+org.cloudfoundry.client.lib.org.springframework.http.converter.HttpMessageNotReadableException: Could not read JSON: Can not deserialize instance of java.lang.String out of START_OBJECT token
+ at [Source: org.apache.http.conn.EofSensorInputStream@291d9514; line: 10, column: 83]; nested exception is org.cloudfoundry.client.lib.org.codehaus.jackson.map.JsonMappingException: Can not deserialize instance of java.lang.String out of START_OBJECT token
+ at [Source: org.apache.http.conn.EofSensorInputStream@291d9514; line: 10, column: 83]
+	at org.cloudfoundry.client.lib.org.springframework.http.converter.json.MappingJacksonHttpMessageConverter.readJavaType(MappingJacksonHttpMessageConverter.java:181)
+	at org.cloudfoundry.client.lib.org.springframework.http.converter.json.MappingJacksonHttpMessageConverter.read(MappingJacksonHttpMessageConverter.java:173)
+	at org.cloudfoundry.client.lib.org.springframework.web.client.HttpMessageConverterExtractor.extractData(HttpMessageConverterExtractor.java:94)
+	at org.cloudfoundry.client.lib.org.springframework.web.client.RestTemplate$ResponseEntityResponseExtractor.extractData(RestTemplate.java:715)
+	at org.cloudfoundry.client.lib.org.springframework.web.client.RestTemplate$ResponseEntityResponseExtractor.extractData(RestTemplate.java:700)
+	at org.cloudfoundry.client.lib.rest.LoggingRestTemplate$1.extractData(LoggingRestTemplate.java:61)
+	at org.cloudfoundry.client.lib.org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:518)
+	at org.cloudfoundry.client.lib.rest.LoggingRestTemplate.doExecute(LoggingRestTemplate.java:54)
+	at org.cloudfoundry.client.lib.org.springframework.web.client.RestTemplate.execute(RestTemplate.java:473)
+	at org.cloudfoundry.client.lib.org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:446)
+	at org.cloudfoundry.client.lib.rest.CloudControllerClientImpl.processAsyncJob(CloudControllerClientImpl.java:1284)
+	at org.cloudfoundry.client.lib.rest.CloudControllerClientImpl.uploadApplication(CloudControllerClientImpl.java:1265)
+	at org.cloudfoundry.client.lib.rest.CloudControllerClientImpl.uploadApplication(CloudControllerClientImpl.java:1224)
+	at org.cloudfoundry.client.lib.CloudFoundryClient.uploadApplication(CloudFoundryClient.java:265)
+	at com.activestate.cloudfoundryjenkins.CloudFoundryPushPublisher.pushAppBits(CloudFoundryPushPublisher.java:409)
+	at com.activestate.cloudfoundryjenkins.CloudFoundryPushPublisher.processOneApp(CloudFoundryPushPublisher.java:255)
+	at com.activestate.cloudfoundryjenkins.CloudFoundryPushPublisher.perform(CloudFoundryPushPublisher.java:179)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:779)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:726)
+	at hudson.model.Build$BuildExecution.post2(Build.java:185)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:671)
+	at hudson.model.Run.execute(Run.java:1769)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:374)
+Caused by: org.cloudfoundry.client.lib.org.codehaus.jackson.map.JsonMappingException: Can not deserialize instance of java.lang.String out of START_OBJECT token
+ at [Source: org.apache.http.conn.EofSensorInputStream@291d9514; line: 10, column: 83]
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.JsonMappingException.from(JsonMappingException.java:163)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.StdDeserializationContext.mappingException(StdDeserializationContext.java:219)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.std.StringDeserializer.deserialize(StringDeserializer.java:44)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.std.StringDeserializer.deserialize(StringDeserializer.java:13)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.std.MapDeserializer._readAndBind(MapDeserializer.java:319)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.std.MapDeserializer.deserialize(MapDeserializer.java:249)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.std.MapDeserializer.deserialize(MapDeserializer.java:33)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.std.MapDeserializer._readAndBind(MapDeserializer.java:319)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.std.MapDeserializer.deserialize(MapDeserializer.java:249)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.deser.std.MapDeserializer.deserialize(MapDeserializer.java:33)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.ObjectMapper._readMapAndClose(ObjectMapper.java:2725)
+	at org.cloudfoundry.client.lib.org.codehaus.jackson.map.ObjectMapper.readValue(ObjectMapper.java:1916)
+	at org.cloudfoundry.client.lib.org.springframework.http.converter.json.MappingJacksonHttpMessageConverter.readJavaType(MappingJacksonHttpMessageConverter.java:178)
+	... 25 more
+Build step 'Push to Cloud Foundry' marked build as failure
+Finished: FAILURE

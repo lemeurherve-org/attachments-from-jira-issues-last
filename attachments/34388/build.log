@@ -1,0 +1,50 @@
+Branch indexing
+ > git rev-parse --is-inside-work-tree # timeout=10
+Setting origin to https://foo/repo.git
+ > git config remote.origin.url https://foo/repo.git # timeout=10
+Fetching origin...
+Fetching upstream changes from origin
+ > git config --get remote.origin.url # timeout=10
+using GIT_ASKPASS to set credentials
+ > git fetch -t https://foo/repo.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+Seen branch in repository origin/develop
+Seen branch in repository origin/master
+Seen 2 remote branches
+Wiping out workspace first.
+Cloning the remote Git repository
+Cloning repository https://foo/repo.git
+ > git init /var/jenkins_home/workspace/foo_repo_develop-I3VKD7ZBX2LZ7Y62PTJJL5MVD3WHHPV4VYRNKXLL3Q2UZHIP7GJQ@script # timeout=10
+Fetching upstream changes from https://foo/repo.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials
+ > git fetch --tags --progress https://foo/repo.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url https://foo/repo.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://foo/repo.git # timeout=10
+Pruning obsolete local branches
+Fetching upstream changes from https://foo/repo.git
+using GIT_ASKPASS to set credentials
+ > git fetch --tags --progress https://foo/repo.git +refs/heads/*:refs/remotes/origin/* --prune
+ > git rev-parse origin/develop^{commit} # timeout=10
+Checking out Revision 33cf2ba0140668e5d9bf91de0f181e68f4fcf053 (origin/develop)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 33cf2ba0140668e5d9bf91de0f181e68f4fcf053
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b develop 33cf2ba0140668e5d9bf91de0f181e68f4fcf053
+ > git rev-list 77ddf6e1f2ee0fa96c7d7f27c7284f04afec1ec2 # timeout=10
+Loading library foo@master
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://foo/lib.git # timeout=10
+Fetching upstream changes from https://foo/lib.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials
+ > git fetch --tags --progress https://foo/lib.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision cc48aecdf5a286c1fcb5bc0692f81bd2908ec9d3 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f cc48aecdf5a286c1fcb5bc0692f81bd2908ec9d3
+ > git rev-list cc48aecdf5a286c1fcb5bc0692f81bd2908ec9d3 # timeout=10
+[Pipeline] End of Pipeline
+java.lang.NullPointerException: Cannot get property 'stages' on null object

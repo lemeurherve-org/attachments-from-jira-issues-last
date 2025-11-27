@@ -1,0 +1,756 @@
+Index: src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java	(revision 37111)
++++ src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java	(working copy)
+@@ -3,28 +3,28 @@
+ import hudson.EnvVars;
+ import hudson.Extension;
+ import hudson.Launcher;
+-import hudson.model.AbstractBuild;
++import hudson.matrix.MatrixAggregatable;
++import hudson.matrix.MatrixAggregator;
++import hudson.matrix.MatrixConfiguration;
++import hudson.matrix.MatrixBuild;
++import hudson.matrix.MatrixProject;
++import hudson.model.AbstractProject;
+ import hudson.model.BuildListener;
+ import hudson.model.Result;
++import hudson.model.AbstractBuild;
+ import hudson.model.User;
+ import hudson.plugins.emailext.plugins.ContentBuilder;
+ import hudson.plugins.emailext.plugins.EmailTrigger;
+ import hudson.plugins.emailext.plugins.EmailTriggerDescriptor;
++import hudson.plugins.emailext.plugins.trigger.MatrixTrigger;
+ import hudson.scm.ChangeLogSet.Entry;
+ import hudson.tasks.BuildStepDescriptor;
+ import hudson.tasks.BuildStepMonitor;
+ import hudson.tasks.MailMessageIdAction;
+-import hudson.tasks.Mailer;
+ import hudson.tasks.Notifier;
+ import hudson.tasks.Publisher;
++import hudson.tasks.Mailer;
+ 
+-import javax.mail.Address;
+-import javax.mail.Message;
+-import javax.mail.MessagingException;
+-import javax.mail.Transport;
+-import javax.mail.internet.AddressException;
+-import javax.mail.internet.InternetAddress;
+-import javax.mail.internet.MimeMessage;
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.Collection;
+@@ -38,10 +38,20 @@
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
++import javax.mail.Address;
++import javax.mail.Message;
++import javax.mail.MessagingException;
++import javax.mail.Transport;
++import javax.mail.internet.AddressException;
++import javax.mail.internet.InternetAddress;
++import javax.mail.internet.MimeMessage;
++
++import org.apache.log4j.lf5.LogLevel;
++
+ /**
+  * {@link Publisher} that sends notification e-mail.
+  */
+-public class ExtendedEmailPublisher extends Notifier {
++public class ExtendedEmailPublisher extends Notifier implements MatrixAggregatable {
+ 
+ 	private static final Logger LOGGER = Logger.getLogger(Mailer.class.getName());
+ 
+@@ -110,6 +120,9 @@
+ 	 * The default body of the emails for this project.  ($PROJECT_DEFAULT_BODY)
+ 	 */
+ 	public String defaultContent;
++	
++	
++	public MatrixTrigger matrixTrigger;
+ 
+ 	/**
+ 	 * Get the list of configured email triggers for this project.
+@@ -148,6 +161,13 @@
+ 	public boolean isConfigured() {
+ 		return !getConfiguredTriggers().isEmpty();
+ 	}
++	
++	public boolean is_execute_on_matrix_nodes(){
++		
++		return (null != this.matrixTrigger &&  
++				(MatrixTrigger.BOTH == matrixTrigger ||
++				 MatrixTrigger.ONLY_CONFIGURATIONS == matrixTrigger));  
++	}
+ 
+ 	/**
+ 	 * Return true if the project has been configured, otherwise returns false
+@@ -157,13 +177,20 @@
+ 	}
+ 
+ 	@Override
+-	public boolean prebuild(AbstractBuild<?,?> build, BuildListener listener) {
+-		return _perform(build,listener,true);
++	public boolean prebuild(AbstractBuild<?,?> build, BuildListener listener) {		
++		if ( !(build.getProject() instanceof MatrixConfiguration) || is_execute_on_matrix_nodes()){
++			return _perform(build,listener,true);
++		}
++		return true;
++		
+ 	}
+ 
+ 	@Override
+ 	public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+-		return _perform(build,listener,false);
++		if ( !(build.getProject() instanceof MatrixConfiguration) || is_execute_on_matrix_nodes()){
++			return _perform(build,listener,false);
++		}
++		return true;
+ 	}
+ 
+ 	private boolean _perform(AbstractBuild<?,?> build, BuildListener listener, boolean forPreBuild) {
+@@ -364,4 +391,38 @@
+     public static final class DescriptorImpl
+         extends ExtendedEmailPublisherDescriptor {
+     }
++
++	public MatrixAggregator createAggregator(MatrixBuild matrixbuild,
++			Launcher launcher, BuildListener buildlistener) {				
++		return new MatrixAggregator(matrixbuild, launcher, buildlistener) {
++			@Override
++            public boolean endBuild() throws InterruptedException, IOException {
++				LOGGER.log(Level.FINER,"end build of " + this.build.getDisplayName());            	
++				
++				// Will be run by parent so we check if needed to be executed by parent 
++				if (matrixTrigger != null &&
++                		(matrixTrigger == MatrixTrigger.ONLY_PARENT
++                    	 || matrixTrigger == MatrixTrigger.BOTH)) {
++
++						return ExtendedEmailPublisher.this._perform(this.build, this.listener,false);                		
++                	}
++                	return true;
++           }
++						
++			
++			@Override		 
++			public boolean startBuild() throws InterruptedException,IOException {
++				LOGGER.log(Level.FINER,"end build of " + this.build.getDisplayName());            					
++				// Will be run by parent so we check if needed to be executed by parent 
++				if (matrixTrigger != null &&
++                		(matrixTrigger == MatrixTrigger.ONLY_PARENT
++                    	 || matrixTrigger == MatrixTrigger.BOTH)) {
++						
++						return ExtendedEmailPublisher.this._perform(this.build, this.listener,true);                		
++                	}
++                	return true;
++			}
++		
++        };
++	}
+ }
+Index: src/main/java/hudson/plugins/emailext/plugins/content/JellyScriptContentBuildWrapper.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/plugins/content/JellyScriptContentBuildWrapper.java	(revision 37111)
++++ src/main/java/hudson/plugins/emailext/plugins/content/JellyScriptContentBuildWrapper.java	(working copy)
+@@ -1,14 +1,19 @@
+ package hudson.plugins.emailext.plugins.content;
+ 
+ import hudson.Functions;
++import hudson.matrix.MatrixBuild;
++import hudson.matrix.MatrixProject;
++import hudson.matrix.MatrixRun;
+ import hudson.maven.reporters.SurefireAggregatedReport;
+ import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
+ import hudson.model.Action;
+ import hudson.tasks.junit.TestResult;
+ import hudson.tasks.junit.TestResultAction;
+ import hudson.tasks.test.AggregatedTestResultAction;
+ 
+ import java.util.ArrayList;
++import java.util.Collections;
+ import java.util.List;
+ 
+ public class JellyScriptContentBuildWrapper
+@@ -74,4 +79,15 @@
+         }
+         return result;
+     }
++    
++    public List<MatrixRun> getMatrixBuildRuns(){    
++    	if (build instanceof MatrixBuild){
++    		return ((MatrixBuild)this.build).getRuns();
++    	}
++    	return Collections.emptyList();
++    }
++    
++    public boolean isMatrixProject(AbstractProject<?, ?> project) {
++		return project instanceof MatrixProject;
++	}
+ }
+Index: src/main/java/hudson/plugins/emailext/plugins/content/BuildStatusContent.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/plugins/content/BuildStatusContent.java	(revision 37111)
++++ src/main/java/hudson/plugins/emailext/plugins/content/BuildStatusContent.java	(working copy)
+@@ -31,9 +31,10 @@
+ 	String getContent(AbstractBuild<P, B> build, ExtendedEmailPublisher publisher,
+ 			EmailType emailType, Map<String, ?> args) {
+ 
+-        // Build can be "building" when the pre-build trigger is used.
++        // Build can be "building" when the pre-build trigger is used. (and in this case there is not result set yet for the build)
+         // Reporting "success", "still failing", etc doesn't make sense in this case.
+-        if (build.isBuilding()) {
++		// When using on matrix build, the build is still in building stage when matrix aggregator end build trigger is fired, though 
++        if ( (build.isBuilding()) && (null == build.getResult())) {
+             return "Building";
+         }
+         
+Index: src/main/java/hudson/plugins/emailext/plugins/trigger/MatrixTrigger.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/plugins/trigger/MatrixTrigger.java	(revision 0)
++++ src/main/java/hudson/plugins/emailext/plugins/trigger/MatrixTrigger.java	(revision 0)
+@@ -0,0 +1,17 @@
++package hudson.plugins.emailext.plugins.trigger;
++
++public enum MatrixTrigger {
++	ONLY_PARENT("Trigger only the parent job"),
++	ONLY_CONFIGURATIONS("Trigger for each configuration"),
++	BOTH("Trigger for parent and each configuration");
++	
++	private final String description;
++
++	private MatrixTrigger(String description) {
++		this.description = description;
++	}
++ 
++	public String getDescription() {
++		return description;
++	}
++}
+
+Property changes on: src\main\java\hudson\plugins\emailext\plugins\trigger\MatrixTrigger.java
+___________________________________________________________________
+Added: svn:mime-type
+   + text/plain
+
+Index: src/main/java/hudson/plugins/emailext/plugins/EmailTriggerDescriptor.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/plugins/EmailTriggerDescriptor.java	(revision 37111)
++++ src/main/java/hudson/plugins/emailext/plugins/EmailTriggerDescriptor.java	(working copy)
+@@ -9,6 +9,7 @@
+ 	
+ 	private static final String MAILER_ID_REGEX = "\\s";
+ 	protected List<String> replacesList = new ArrayList<String>();
++
+ 	
+ 	/**
+ 	 * @return The display name of the trigger type. 
+@@ -51,4 +52,5 @@
+ 	
+ 	public abstract String getHelpText();
+ 	
++	
+ }
+Index: src/main/java/hudson/plugins/emailext/ExtendedEmailPublisherDescriptor.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/ExtendedEmailPublisherDescriptor.java	(revision 37111)
++++ src/main/java/hudson/plugins/emailext/ExtendedEmailPublisherDescriptor.java	(working copy)
+@@ -1,8 +1,10 @@
+ package hudson.plugins.emailext;
+ 
++import hudson.matrix.MatrixProject;
+ import hudson.model.AbstractProject;
+ import hudson.model.Hudson;
+ import hudson.plugins.emailext.plugins.EmailTrigger;
++import hudson.plugins.emailext.plugins.trigger.MatrixTrigger;
+ import hudson.tasks.BuildStepDescriptor;
+ import hudson.tasks.Publisher;
+ import hudson.util.FormValidation;
+@@ -37,7 +39,7 @@
+      * Hudson's own URL, to put into the e-mail.
+      */
+     private String hudsonUrl;
+-
++ 
+     /**
+      * If non-null, use SMTP-AUTH
+      */
+@@ -82,9 +84,21 @@
+      * This is a global default body for sending emails.
+      */
+     private String defaultBody;
+-
++    
++    
+     private boolean overrideGlobalSettings;
+ 
++    
++    public static final String[] MATRIX_TRIGGER_VALUES;
++	
++	static {
++		MatrixTrigger[] values = MatrixTrigger.values();
++		MATRIX_TRIGGER_VALUES = new String[values.length];
++		for (int i=0; i < values.length; i++) {
++			MATRIX_TRIGGER_VALUES[i] = values[i].toString();
++		}
++	}
++	
+     @Override
+     public String getDisplayName()
+     {
+@@ -228,6 +242,17 @@
+ 
+         // Save configuration for each trigger type
+         ExtendedEmailPublisher m = new ExtendedEmailPublisher();
++        if (formData.has("matrixTrigger")){
++        	String trigger_string = formData.getString("matrixTrigger");
++        	if ((null != trigger_string) && (!trigger_string.isEmpty())){
++        		m.matrixTrigger = MatrixTrigger.valueOf(formData.getString("matrixTrigger"));
++        	}else{
++        		m.matrixTrigger = MatrixTrigger.ONLY_PARENT;
++        	}      
++        }else{
++        	m.matrixTrigger =  null;
++        }
++        
+         m.recipientList = listRecipients;
+         m.contentType = formData.getString( "project_content_type" );
+         m.defaultSubject = formData.getString( "project_default_subject" );
+@@ -319,7 +344,7 @@
+         defaultSubject = nullify( req.getParameter( "ext_mailer_default_subject" ) );
+         defaultBody = nullify( req.getParameter( "ext_mailer_default_body" ) );
+ 
+-        overrideGlobalSettings = req.getParameter( "ext_mailer_override_global_settings" ) != null;
++        overrideGlobalSettings = req.getParameter( "ext_mailer_override_global_settings" ) != null;       
+ 
+         save();
+         return super.configure( req, formData );
+@@ -354,6 +379,10 @@
+         }
+     }
+ 
++	public boolean isMatrixProject(AbstractProject<?, ?> project) {
++		return project instanceof MatrixProject;
++	}
++	
+     public FormValidation doRecipientListRecipientsCheck( @QueryParameter final String value )
+         throws IOException, ServletException
+     {
+Index: src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly	(revision 37111)
++++ src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly	(working copy)
+@@ -88,6 +88,17 @@
+ 		<td></td>
+ 	</tr>
+ 	
++	
++	 <j:if test="${descriptor.isMatrixProject(it)}"> 
++      <f:entry title="Trigger for matrix projects" help="/plugin/email-ext//help/projectConfig/help-matrixtrigger.html">
++          <select name="instance.matrixTrigger">
++           <j:forEach var="mTrig" items="${descriptor.MATRIX_TRIGGER_VALUES}">
++              <f:option selected="${instance.matrixTrigger.toString()==mTrig}">${mTrig}</f:option>
++           </j:forEach>
++         </select>
++      </f:entry>
++    </j:if>   
++  
+ 	<!-- Configure advanced properties like per-build-result status email contents, 
+ 		 whether or not to send email to developers who made changes, and whether or
+ 		 not to send email to the global list of devs-->
+Index: src/main/resources/hudson/plugins/emailext/templates/html_matrix.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/emailext/templates/html_matrix.jelly	(revision 0)
++++ src/main/resources/hudson/plugins/emailext/templates/html_matrix.jelly	(revision 0)
+@@ -0,0 +1,173 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define">
++
++<STYLE>
++BODY, TABLE, TD, TH, P {
++  font-family:Verdana,Helvetica,sans serif;
++  font-size:11px;
++  color:black;
++}
++h1 { color:black; }
++h2 { color:black; }
++h3 { color:black; }
++TD.bg1 { color:white; background-color:#0000C0; font-size:120% }
++TD.bg2 { color:white; background-color:#4040FF; font-size:110% }
++TD.bg3 { color:white; background-color:#8080FF; }
++TD.test_passed { color:blue; }
++TD.test_failed { color:red; }
++TD.console { font-family:Courier New; }
++</STYLE>
++<BODY>
++<j:set var="spc" value="&amp;nbsp;&amp;nbsp;" />
++
++
++<!-- GENERAL INFO -->
++<TABLE align="center">
++  <TR><TD align="center">
++    <j:choose>
++      <j:when test="${build.result=='SUCCESS'}">
++        <IMG SRC="${rooturl}static/e59dfe28/images/32x32/blue.gif" />
++      </j:when>
++	  <j:when test="${build.result=='FAILURE'}">
++        <IMG SRC="${rooturl}static/e59dfe28/images/32x32/red.gif" />
++      </j:when>
++      <j:otherwise>
++        <IMG SRC="${rooturl}static/e59dfe28/images/32x32/yellow.gif" />
++      </j:otherwise>
++    </j:choose>
++  </TD><TD valign="center"><B style="font-size: 200%;">BUILD ${build.result}</B></TD></TR>
++  <TR><TD>Build URL</TD><TD><A href="${rooturl}${build.url}">${rooturl}${build.url}</A></TD></TR>
++  <TR><TD>Project:</TD><TD>${project.name}</TD></TR>
++  <TR><TD>Date of build:</TD><TD>${it.timestampString}</TD></TR>
++  <TR><TD>Build duration:</TD><TD>${build.durationString}</TD></TR>
++</TABLE>
++<BR/>
++
++<!-- For matrix project output status of all mati builds-->
++<j:if test="${it.isMatrixProject(project)}">
++    <TABLE align="center">      
++        <TR>
++            <j:forEach var="matrixRun" items="${it.getMatrixBuildRuns()}" varStatus="loop">
++            <TD align="center">
++            <TABLE>
++            <TR>
++            <TD>
++            <j:choose>
++                <j:when test="${matrixRun.result=='SUCCESS'}">
++                    <IMG SRC="${rooturl}static/e59dfe28/images/16x16/blue.gif" />
++                </j:when>
++                <j:when test="${matrixRun.result=='FAILURE'}">
++                    <A HREF="#Log_${matrixRun.getParent().getDisplayName()}"> <IMG SRC="${rooturl}static/e59dfe28/images/16x16/red.gif"/> </A>
++                </j:when>
++                <j:otherwise>
++                    <IMG SRC="${rooturl}static/e59dfe28/images/16x16/yellow.gif" />
++                </j:otherwise>
++            </j:choose>
++            </TD>          
++            <TD valign="center"><B>${matrixRun.getParent().getDisplayName()} - BUILD ${matrixRun.result}</B></TD>
++            </TR>
++            </TABLE>
++            </TD>            
++        </j:forEach>
++        </TR>
++        <TR>
++            <j:forEach var="matrixRun" items="${it.getMatrixBuildRuns()}" varStatus="loop">
++                <TD>Build URL <A href="${rooturl}${matrixRun.url}">${rooturl}${matrixRun.url}</A></TD>
++            </j:forEach>
++        </TR>
++               
++        <TR>
++            <j:forEach var="matrixRun" items="${it.getMatrixBuildRuns()}" varStatus="loop">
++                <TD>Build duration: ${matrixRun.durationString}</TD>
++            </j:forEach>
++        </TR>
++        
++       
++                       
++    </TABLE>
++</j:if>
++<BR/>
++
++
++<!-- CHANGE SET -->
++<j:if test="${changeSet!=null}">
++  <j:set var="hadChanges" value="false" />
++  <TABLE width="100%">
++    <TR><TD class="bg1" colspan="2"><B>CHANGES</B></TD></TR>
++    <j:forEach var="cs" items="${changeSet.logs}" varStatus="loop">
++      <j:set var="hadChanges" value="true" />
++      <j:set var="aUser" value="${cs.hudsonUser}"/>
++      <TR>
++        <TD colspan="2" class="bg2">${spc}Revision <B>${cs.revision}</B> by
++          <B><j:choose>
++            <j:when test="${aUser!=null}">${aUser.displayName}: </j:when>
++            <j:otherwise>${cs.user}: </j:otherwise>
++          </j:choose></B>
++          <B>(${cs.msgAnnotated})</B>
++         </TD>
++      </TR>
++      <j:forEach var="p" items="${cs.paths}">
++        <TR>
++          <TD width="10%">${spc}${p.editType.name}</TD>
++          <TD>${p.value}</TD>
++        </TR>
++      </j:forEach>
++    </j:forEach>
++    <j:if test="${!hadChanges}">
++      <TR><TD colspan="2">No Changes</TD></TR>
++    </j:if>
++  </TABLE>
++<BR/>
++</j:if>
++
++
++<!-- ARTIFACTS -->
++
++<j:set var="artifacts" value="${build.artifacts}" />
++<j:if test="${artifacts!=null and artifacts.size()&gt;0}">
++  <TABLE width="100%">
++    <TR><TD class="bg1"><B>BUILD ATRIFACTS</B></TD></TR>
++    <TR>
++      <TD>
++        <j:forEach var="f" items="${artifacts}">
++      	  <li>
++      	    <a href="${rooturl}${build.url}artifact/${f}">${f}</a>
++      	  </li>
++      	</j:forEach>
++      </TD>
++    </TR>
++  </TABLE>
++<BR/>  
++</j:if>
++
++
++
++            
++<!-- CONSOLE OUTPUT -->
++
++<j:getStatic var="resultFailure" field="FAILURE" className="hudson.model.Result"/>
++<j:if test="${build.result==resultFailure}">
++<TABLE width="100%" cellpadding="0" cellspacing="0">
++<TR><TD class="bg1"><B>CONSOLE OUTPUT</B></TD></TR>
++<j:forEach var="line" items="${build.getLog(100)}"><TR><TD class="console">${line}</TD></TR></j:forEach>
++</TABLE>
++<BR/>
++</j:if>
++
++<!-- CONSOLE OUTPUT For matrix projects-->
++<j:if test="${it.isMatrixProject(project)}">   
++    <j:forEach var="matrixRun" items="${it.getMatrixBuildRuns()}" varStatus="loop">
++        <TABLE width="100%" cellpadding="0" cellspacing="0">                  
++        <j:if test="${matrixRun.result==resultFailure}">    
++                <TR> Log File </TR>           
++                <a name="#Log_${matrixRun.getParent().getDisplayName()}"> </a>
++                <TR><TD class="bg1"> <B > CONSOLE OUTPUT - ${matrixRun.getParent().getDisplayName()} </B></TD></TR>                 
++                <j:forEach var="line" items="${matrixRun.getLog(30)}"><TR><TD class="console">${line}</TD></TR></j:forEach>             
++        </j:if>
++        </TABLE>
++        <BR/>         
++    </j:forEach>    
++</j:if>            
++
++
++</BODY>
++</j:jelly>
+Index: src/main/webapp/help/projectConfig/help-matrixtrigger.html
+===================================================================
+--- src/main/webapp/help/projectConfig/help-matrixtrigger.html	(revision 0)
++++ src/main/webapp/help/projectConfig/help-matrixtrigger.html	(revision 0)
+@@ -0,0 +1,12 @@
++<div>
++  Specifies when to trigger a downstream build for matrix jobs:
++  <ul>
++  	<li>ONLY_PARENT: trigger only once when parent finishes</li>
++  	<li>ONLY_CONFIGURATIONS: trigger for each configuration</li>
++  	<li>BOTH: combination of the 2 above options</li>
++  </ul>
++	
++	Note: that downstream jobs will only be triggered, if they are not already in the build queue.
++	So, if all your configurations finish within a short timeframe, only one downstream job
++	might be triggered, even if you have selected ONLY_CONFIGURATIONS or BOTH.
++</div>
+
+Property changes on: src\main\webapp\help\projectConfig\help-matrixtrigger.html
+___________________________________________________________________
+Added: svn:mime-type
+   + text/plain
+
+Index: src/test/java/hudson/plugins/emailext/ExtendedEmailPublisherMatrixTest.java
+===================================================================
+--- src/test/java/hudson/plugins/emailext/ExtendedEmailPublisherMatrixTest.java	(revision 0)
++++ src/test/java/hudson/plugins/emailext/ExtendedEmailPublisherMatrixTest.java	(revision 0)
+@@ -0,0 +1,120 @@
++package hudson.plugins.emailext;
++
++import static org.junit.Assert.assertThat;
++import static org.junit.matchers.JUnitMatchers.hasItems;
++import hudson.matrix.Axis;
++import hudson.matrix.AxisList;
++import hudson.matrix.Combination;
++import hudson.matrix.MatrixConfiguration;
++import hudson.matrix.MatrixBuild;
++import hudson.matrix.MatrixProject;
++import hudson.model.Label;
++import hudson.plugins.emailext.plugins.EmailTrigger;
++import hudson.plugins.emailext.plugins.trigger.MatrixTrigger;
++import hudson.plugins.emailext.plugins.trigger.PreBuildTrigger;
++import hudson.slaves.DumbSlave;
++
++import java.io.IOException;
++import java.util.ArrayList;
++import java.util.LinkedList;
++import java.util.List;
++
++import org.apache.xpath.axes.AxesWalker;
++import org.jvnet.hudson.test.HudsonTestCase;
++import org.jvnet.mock_javamail.Mailbox;
++
++public class ExtendedEmailPublisherMatrixTest    extends HudsonTestCase{
++
++	private ExtendedEmailPublisher publisher;
++	private MatrixProject project;
++	private List<DumbSlave> slaves;	
++	 
++    public void setUp() throws Exception{
++    super.setUp();
++
++    publisher = new ExtendedEmailPublisher();
++    publisher.defaultSubject = "%DEFAULT_SUBJECT";
++    publisher.defaultContent = "%DEFAULT_CONTENT";
++
++    project = createMatrixProject();
++    project.getPublishersList().add( publisher );
++    slaves = new ArrayList<DumbSlave>(); 
++    slaves.add(createOnlineSlave(new Label("success-slave1")));
++    slaves.add(createOnlineSlave(new Label("success-slave2")));
++    slaves.add(createOnlineSlave(new Label("success-slave3")));
++    
++    
++   
++    //build.
++}
++
++public void tearDown() throws Exception
++{
++    super.tearDown();
++    slaves.clear();
++    Mailbox.clearAll();
++}
++
++public void testPreBuildMatrixBuildSendParentOnly() throws Exception{
++	publisher.matrixTrigger = MatrixTrigger.ONLY_PARENT;
++	PreBuildTrigger trigger = new PreBuildTrigger();
++    addEmailType( trigger );
++    publisher.getConfiguredTriggers().add( trigger );
++	MatrixBuild build = project.scheduleBuild2(0).get();
++	assertBuildStatusSuccess(build);
++	
++	
++	assertThat( "Email should have been triggered, so we should see it in the logs.", build.getLog( 100 ),
++            hasItems( "Email was triggered for: " + PreBuildTrigger.TRIGGER_NAME ) );
++	assertEquals( 1, Mailbox.get( "solganik@gmail.com" ).size() );
++}
++
++public void testPreBuildMatrixBuildSendSlavesOnly() throws Exception{	
++	addSlaveToProject(0,1,2);
++		
++	publisher.matrixTrigger = MatrixTrigger.ONLY_CONFIGURATIONS;
++	PreBuildTrigger trigger = new PreBuildTrigger();
++    addEmailType( trigger );
++    publisher.getConfiguredTriggers().add( trigger );
++   
++	
++	MatrixBuild build = project.scheduleBuild2(0).get();
++	assertBuildStatusSuccess(build);		
++	assertEquals( 3, Mailbox.get( "solganik@gmail.com" ).size() );	
++}
++
++public void testPreBuildMatrixBuildSendSlavesAndParent() throws Exception{	
++	addSlaveToProject(0,1);
++		
++	publisher.matrixTrigger = MatrixTrigger.BOTH;
++	PreBuildTrigger trigger = new PreBuildTrigger();
++    addEmailType( trigger );
++    publisher.getConfiguredTriggers().add( trigger );
++   
++	
++	MatrixBuild build = project.scheduleBuild2(0).get();
++	assertBuildStatusSuccess(build);		
++	assertEquals( 3, Mailbox.get( "solganik@gmail.com" ).size() );	
++}
++
++
++private void addEmailType( EmailTrigger trigger )
++{
++    trigger.setEmail( new EmailType()
++    {{
++            setRecipientList( "solganik@gmail.com" );
++            setSubject( "Yet another Hudson email" );
++            setBody( "Boom goes the dynamite." );
++        }} );
++}
++private void addSlaveToProject(int ... slaveInxes ) throws IOException{	
++	AxisList list = new AxisList();
++	List<String> values = new LinkedList<String>();
++	for (int slaveInx : slaveInxes) {
++		values.add(slaves.get(slaveInx).getLabelString());		
++	}
++	list.add(new Axis("label",values));
++	project.setAxes(list);
++}
++
++}
+
+Property changes on: src\test\java\hudson\plugins\emailext\ExtendedEmailPublisherMatrixTest.java
+___________________________________________________________________
+Added: svn:mime-type
+   + text/plain
+
+Index: src/test/java/hudson/plugins/emailext/ExtendedEmailPublisherTest.java
+===================================================================
+--- src/test/java/hudson/plugins/emailext/ExtendedEmailPublisherTest.java	(revision 37111)
++++ src/test/java/hudson/plugins/emailext/ExtendedEmailPublisherTest.java	(working copy)
+@@ -1,24 +1,27 @@
+ package hudson.plugins.emailext;
+ 
++import static org.hamcrest.CoreMatchers.not;
++import static org.junit.Assert.assertThat;
++import static org.junit.matchers.JUnitMatchers.containsString;
++import static org.junit.matchers.JUnitMatchers.hasItems;
+ import hudson.model.FreeStyleBuild;
+-import hudson.model.FreeStyleProject;
+ import hudson.model.Result;
++import hudson.model.FreeStyleProject;
+ import hudson.plugins.emailext.plugins.EmailTrigger;
+ import hudson.plugins.emailext.plugins.trigger.FailureTrigger;
+ import hudson.plugins.emailext.plugins.trigger.FixedTrigger;
+ import hudson.plugins.emailext.plugins.trigger.PreBuildTrigger;
+ import hudson.plugins.emailext.plugins.trigger.StillFailingTrigger;
+ import hudson.plugins.emailext.plugins.trigger.SuccessTrigger;
++
++import java.util.List;
++
+ import net.sf.json.JSONObject;
+-import org.jvnet.hudson.test.FailureBuilder;
++
+ import org.jvnet.hudson.test.HudsonTestCase;
++import org.jvnet.hudson.test.FailureBuilder;
+ import org.jvnet.mock_javamail.Mailbox;
+ 
+-import java.util.List;
+-
+-import static org.hamcrest.CoreMatchers.*;
+-import static org.junit.Assert.*;
+-import static org.junit.matchers.JUnitMatchers.*;
+ 
+ public class ExtendedEmailPublisherTest
+     extends HudsonTestCase
+@@ -239,7 +242,9 @@
+         assertThat( "UTF-8 charset should be used.", mailbox.get( 0 ).getContentType(),
+                     containsString( "charset=utf-8" ) );
+     }
+-
++    
++    
++   
+     public void testNewInstance_shouldGetBasicInformation()
+         throws Exception
+     {
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 37111)
++++ pom.xml	(working copy)
+@@ -9,7 +9,7 @@
+ 
+   <artifactId>email-ext</artifactId>
+   <packaging>hpi</packaging>
+-  <version>2.10-SNAPSHOT</version>
++  <version>2.10</version>
+   <name>Hudson Email Extension Plugin</name>
+   <url>http://wiki.hudson-ci.org/display/HUDSON/Email-ext+plugin</url>
+ 

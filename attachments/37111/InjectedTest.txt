@@ -1,0 +1,124 @@
+-------------------------------------------------------------------------------
+Test set: InjectedTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 5, Skipped: 0, Time elapsed: 19.782 sec <<< FAILURE! - in InjectedTest
+org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyTestSuite(org.jvnet.hudson.test.junit.FailedTest)  Time elapsed: 0.009 sec  <<< ERROR!
+org.jvnet.hudson.reactor.ReactorException: java.lang.Error: java.lang.reflect.InvocationTargetException
+	at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:269)
+	at jenkins.InitReactorRunner.run(InitReactorRunner.java:45)
+	at jenkins.model.Jenkins.executeReactor(Jenkins.java:1009)
+	at jenkins.model.Jenkins.<init>(Jenkins.java:877)
+	at hudson.model.Hudson.<init>(Hudson.java:85)
+	at org.jvnet.hudson.test.HudsonTestCase.newHudson(HudsonTestCase.java:494)
+	at org.jvnet.hudson.test.HudsonTestCase.setUp(HudsonTestCase.java:325)
+	at org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyTestSuite.setUp(JellyTestSuiteBuilder.java:143)
+	at org.jvnet.hudson.test.junit.GroupedTest.run(GroupedTest.java:49)
+	at junit.framework.TestSuite.runTest(TestSuite.java:252)
+	at junit.framework.TestSuite.run(TestSuite.java:247)
+	at org.junit.internal.runners.JUnit38ClassRunner.run(JUnit38ClassRunner.java:86)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:367)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:274)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:161)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:290)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:242)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:121)
+Caused by: java.lang.Error: java.lang.reflect.InvocationTargetException
+	at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:110)
+	at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+	at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:282)
+	at jenkins.model.Jenkins$7.runTask(Jenkins.java:998)
+	at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:210)
+	at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:104)
+	... 8 more
+Caused by: java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(ArrayList.java:653)
+	at java.util.ArrayList.get(ArrayList.java:429)
+	at hudson.ExtensionList.get(ExtensionList.java:171)
+	at hudson.PluginManager$PluginUpdateMonitor.getInstance(PluginManager.java:1906)
+	at hudson.maven.PluginImpl.init(PluginImpl.java:58)
+	... 13 more
+
+initializationError(org.junit.runner.manipulation.Filter)  Time elapsed: 0.001 sec  <<< ERROR!
+java.lang.Exception: No tests found matching Method org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyTestSuite(org.jvnet.hudson.test.junit.FailedTest) from org.junit.internal.requests.ClassRequest@ae2db25
+	at org.junit.internal.requests.FilterRequest.getRunner(FilterRequest.java:40)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeFailedMethod(JUnit4Provider.java:381)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:292)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:161)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:290)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:242)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:121)
+
+initializationError(org.junit.runner.manipulation.Filter)  Time elapsed: 0 sec  <<< ERROR!
+java.lang.Exception: No runnable methods
+	at org.junit.runners.BlockJUnit4ClassRunner.validateInstanceMethods(BlockJUnit4ClassRunner.java:191)
+	at org.junit.runners.BlockJUnit4ClassRunner.collectInitializationErrors(BlockJUnit4ClassRunner.java:128)
+	at org.junit.runners.ParentRunner.validate(ParentRunner.java:416)
+	at org.junit.runners.ParentRunner.<init>(ParentRunner.java:84)
+	at org.junit.runners.BlockJUnit4ClassRunner.<init>(BlockJUnit4ClassRunner.java:65)
+	at org.junit.internal.builders.JUnit4Builder.runnerForClass(JUnit4Builder.java:10)
+	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:59)
+	at org.junit.internal.builders.AllDefaultPossibilitiesBuilder.runnerForClass(AllDefaultPossibilitiesBuilder.java:26)
+	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:59)
+	at org.junit.internal.requests.ClassRequest.getRunner(ClassRequest.java:33)
+	at org.junit.internal.requests.FilterRequest.getRunner(FilterRequest.java:36)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeFailedMethod(JUnit4Provider.java:381)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:292)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:161)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:290)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:242)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:121)
+
+initializationError(org.junit.runner.manipulation.Filter)  Time elapsed: 0 sec  <<< ERROR!
+java.lang.Exception: No runnable methods
+	at org.junit.runners.BlockJUnit4ClassRunner.validateInstanceMethods(BlockJUnit4ClassRunner.java:191)
+	at org.junit.runners.BlockJUnit4ClassRunner.collectInitializationErrors(BlockJUnit4ClassRunner.java:128)
+	at org.junit.runners.ParentRunner.validate(ParentRunner.java:416)
+	at org.junit.runners.ParentRunner.<init>(ParentRunner.java:84)
+	at org.junit.runners.BlockJUnit4ClassRunner.<init>(BlockJUnit4ClassRunner.java:65)
+	at org.junit.internal.builders.JUnit4Builder.runnerForClass(JUnit4Builder.java:10)
+	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:59)
+	at org.junit.internal.builders.AllDefaultPossibilitiesBuilder.runnerForClass(AllDefaultPossibilitiesBuilder.java:26)
+	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:59)
+	at org.junit.internal.requests.ClassRequest.getRunner(ClassRequest.java:33)
+	at org.junit.internal.requests.FilterRequest.getRunner(FilterRequest.java:36)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeFailedMethod(JUnit4Provider.java:381)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:292)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:161)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:290)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:242)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:121)
+
+initializationError(org.junit.runner.manipulation.Filter)  Time elapsed: 0 sec  <<< ERROR!
+java.lang.Exception: No runnable methods
+	at org.junit.runners.BlockJUnit4ClassRunner.validateInstanceMethods(BlockJUnit4ClassRunner.java:191)
+	at org.junit.runners.BlockJUnit4ClassRunner.collectInitializationErrors(BlockJUnit4ClassRunner.java:128)
+	at org.junit.runners.ParentRunner.validate(ParentRunner.java:416)
+	at org.junit.runners.ParentRunner.<init>(ParentRunner.java:84)
+	at org.junit.runners.BlockJUnit4ClassRunner.<init>(BlockJUnit4ClassRunner.java:65)
+	at org.junit.internal.builders.JUnit4Builder.runnerForClass(JUnit4Builder.java:10)
+	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:59)
+	at org.junit.internal.builders.AllDefaultPossibilitiesBuilder.runnerForClass(AllDefaultPossibilitiesBuilder.java:26)
+	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:59)
+	at org.junit.internal.requests.ClassRequest.getRunner(ClassRequest.java:33)
+	at org.junit.internal.requests.FilterRequest.getRunner(FilterRequest.java:36)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeFailedMethod(JUnit4Provider.java:381)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:292)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:161)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:290)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:242)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:121)
+

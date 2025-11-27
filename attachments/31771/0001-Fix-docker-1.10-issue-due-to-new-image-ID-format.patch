@@ -1,0 +1,29 @@
+From 7d7365939f25e2d9e6d2bca05bd21a961b19db4e Mon Sep 17 00:00:00 2001
+From: Sarah Ryan <sarah@theartoflogic.com>
+Date: Thu, 4 Feb 2016 18:03:30 -0800
+Subject: [PATCH] Fix docker 1.10 issue due to new image ID format
+
+---
+ .../plugins/docker/commons/fingerprint/DockerFingerprints.java      | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/main/java/org/jenkinsci/plugins/docker/commons/fingerprint/DockerFingerprints.java b/src/main/java/org/jenkinsci/plugins/docker/commons/fingerprint/DockerFingerprints.java
+index 0838504..047b4e4 100644
+--- a/src/main/java/org/jenkinsci/plugins/docker/commons/fingerprint/DockerFingerprints.java
++++ b/src/main/java/org/jenkinsci/plugins/docker/commons/fingerprint/DockerFingerprints.java
+@@ -61,6 +61,12 @@ public class DockerFingerprints {
+      * @throws IllegalArgumentException Invalid ID
+      */
+     public static @Nonnull String getFingerprintHash(@Nonnull String id) {
++
++        // Remove the "sha256:" prefix, if it exists
++        if (id.indexOf("sha256:") == 0) {
++            id = id.substring(7);
++        }
++
+         if (id.length() != 64) {
+             throw new IllegalArgumentException("Expecting 64-char full image ID, but got " + id);
+         }
+-- 
+2.2.1
+

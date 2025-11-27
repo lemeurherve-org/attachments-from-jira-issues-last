@@ -1,0 +1,30 @@
+From 565d51cf095a05aa514d8043e42842f7f78b2e93 Mon Sep 17 00:00:00 2001
+From: Peter Collingbourne <collingbourne2@llnl.gov>
+Date: Wed, 2 Dec 2009 17:12:23 -0800
+Subject: [PATCH] Run the publishers after a matrix (parent) build
+
+---
+ core/src/main/java/hudson/matrix/MatrixBuild.java |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/core/src/main/java/hudson/matrix/MatrixBuild.java b/core/src/main/java/hudson/matrix/MatrixBuild.java
+index 0c0c0f5..0c30c68 100644
+--- a/core/src/main/java/hudson/matrix/MatrixBuild.java
++++ b/core/src/main/java/hudson/matrix/MatrixBuild.java
+@@ -319,7 +319,13 @@ public class MatrixBuild extends AbstractBuild<MatrixProject,MatrixBuild> {
+         public void post2(BuildListener listener) throws Exception {
+             for (MatrixAggregator a : aggregators)
+                 a.endBuild();
++	    performAllBuildStep(listener, project.getPublishers(),true);
+         }
++
++        public void cleanUp(BuildListener listener) throws Exception {
++	    performAllBuildStep(listener, project.getPublishers(),false);
++        }
++
+     }
+ 
+     /**
+-- 
+1.6.3.3
+

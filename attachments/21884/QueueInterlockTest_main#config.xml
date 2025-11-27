@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Multiproject (main and subjob) to test problem of queueing stuck when multiple instances run in parallel.</description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>2</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>NUM_SUBTASK</name>
+          <description>number of downstream jobs to build</description>
+          <defaultValue>2</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.heavy__job.HeavyJobProperty>
+      <weight>1</weight>
+    </hudson.plugins.heavy__job.HeavyJobProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <scm class="hudson.plugins.clearcase.ClearCaseSCM">
+    <viewName>ejacjim_cudb_main</viewName>
+    <mkviewOptionalParam></mkviewOptionalParam>
+    <filteringOutDestroySubBranchEvent>false</filteringOutDestroySubBranchEvent>
+    <useUpdate>false</useUpdate>
+    <removeViewOnRename>false</removeViewOnRename>
+    <excludedRegions></excludedRegions>
+    <loadRules></loadRules>
+    <useDynamicView>true</useDynamicView>
+    <viewDrive>/view</viewDrive>
+    <multiSitePollBuffer>0</multiSitePollBuffer>
+    <createDynView>false</createDynView>
+    <freezeCode>false</freezeCode>
+    <recreateView>false</recreateView>
+    <viewPath>ejacjim_cudb_main</viewPath>
+    <changeset>BRANCH</changeset>
+    <configSpec>#</configSpec>
+    <branch></branch>
+    <label></label>
+    <doNotUpdateConfigSpec>true</doNotUpdateConfigSpec>
+    <useTimeRule>false</useTimeRule>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>true</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+echo &quot;********************&quot;
+sleep 2
+echo &quot;NUM_SUBTASK=$NUM_SUBTASK&quot; &gt; /proj/madridhss/jenkins/jobs/ejacjim/properties.cfg
+echo &quot;********************&quot;
+sleep 2
+
+</command>
+    </hudson.tasks.Shell>
+    <EnvInjectBuilder>
+      <info>
+        <propertiesFilePath>/proj/madridhss/jenkins/jobs/ejacjim/properties.cfg</propertiesFilePath>
+      </info>
+    </EnvInjectBuilder>
+    <hudson.plugins.python.Python>
+      <command>import sys,os,time
+print &gt;&gt;sys.stderr, &quot;[debug] wait 5 seg.&quot;
+time.sleep(5)
+</command>
+    </hudson.plugins.python.Python>
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
+      <condition class="org.jenkins_ci.plugins.run_condition.core.NumericalComparisonCondition">
+        <lhs>$NUM_SUBTASK</lhs>
+        <rhs>0</rhs>
+        <comparator class="org.jenkins_ci.plugins.run_condition.core.NumericalComparisonCondition$GreaterThan"/>
+      </condition>
+      <buildStep class="hudson.plugins.parameterizedtrigger.TriggerBuilder">
+        <configs>
+          <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+            <configs>
+              <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+              <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+                <properties>MAIN_BUILD=$BUILD_NUMBER</properties>
+              </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+            </configs>
+            <configFactories>
+              <hudson.plugins.parameterizedtrigger.CounterBuildParameterFactory>
+                <from>1</from>
+                <to>$NUM_SUBTASK</to>
+                <step>1</step>
+                <paramExpr>CONT=$COUNT</paramExpr>
+              </hudson.plugins.parameterizedtrigger.CounterBuildParameterFactory>
+            </configFactories>
+            <projects>QueueInterlockTest_subtask</projects>
+            <condition>ALWAYS</condition>
+            <triggerWithNoParameters>false</triggerWithNoParameters>
+            <block>
+              <buildStepFailureThreshold>
+                <name>FAILURE</name>
+                <ordinal>2</ordinal>
+                <color>RED</color>
+              </buildStepFailureThreshold>
+              <unstableThreshold>
+                <name>UNSTABLE</name>
+                <ordinal>1</ordinal>
+                <color>YELLOW</color>
+              </unstableThreshold>
+              <failureThreshold>
+                <name>FAILURE</name>
+                <ordinal>2</ordinal>
+                <color>RED</color>
+              </failureThreshold>
+            </block>
+            <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+          </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+        </configs>
+      </buildStep>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$DontRun"/>
+    </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
+    <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+              <properties>MAIN_BUILD=$BUILD_NUMBER</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <projects>QueueInterlockTest_xtra</projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <block>
+            <buildStepFailureThreshold>
+              <name>FAILURE</name>
+              <ordinal>2</ordinal>
+              <color>RED</color>
+            </buildStepFailureThreshold>
+            <unstableThreshold>
+              <name>UNSTABLE</name>
+              <ordinal>1</ordinal>
+              <color>YELLOW</color>
+            </unstableThreshold>
+            <failureThreshold>
+              <name>FAILURE</name>
+              <ordinal>2</ordinal>
+              <color>RED</color>
+            </failureThreshold>
+          </block>
+          <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+        </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+  </buildWrappers>
+</project>

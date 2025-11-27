@@ -1,0 +1,18 @@
+[s IM r3.3 1 prep] $ hg log --template "<changeset node='{node}' author='{author|xmlescape}' rev='{rev}' date='{date}'><msg>{desc|xmlescape}</msg><added>{file_adds|stringify|xmlescape}</added><deleted>{file_dels|stringify|xmlescape}</deleted><files>{files|stringify|xmlescape}</files><parents>{parents}</parents></changeset>\n" --rev "Risk Cap rel 3.3 branch:0" --follow --prune 8b4999c83660ffda24179d0a921ee46b30184445 --encoding UTF-8 --encodingmode replace
+hg: parse error at 16: unexpected token: symbol
+ERROR: Failed to capture change log
+java.io.IOException: Failure detected while running hg log to determine change log
+	at hudson.plugins.mercurial.MercurialSCM.determineChanges(MercurialSCM.java:652)
+	at hudson.plugins.mercurial.MercurialSCM.checkout(MercurialSCM.java:561)
+	at hudson.scm.SCM.checkout(SCM.java:488)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1257)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:622)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:86)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:528)
+	at hudson.model.Run.execute(Run.java:1745)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:89)
+	at hudson.model.Executor.run(Executor.java:240)
+ERROR: Failed to capture change log
+Warning: you have no plugins providing access control for builds, so falling back to legacy behavior of permitting any downstream builds to be triggered
+Finished: FAILURE

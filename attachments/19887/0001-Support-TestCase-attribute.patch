@@ -1,0 +1,111 @@
+From 4a0d3eaaf3a720a9b1e128d74cf8c97864db99a6 Mon Sep 17 00:00:00 2001
+From: bleis-tift <hey_c_est_la_vie@hotmail.co.jp>
+Date: Mon, 25 Oct 2010 22:53:09 +0900
+Subject: [PATCH] Support TestCase attribute.
+
+---
+ .../plugins/nunit/NUnitReportTransformer.java      |   25 +++++++++++++++-
+ .../hudson/plugins/nunit/nunit-to-junit.xsl        |   30 ++++++++++++++++---
+ 2 files changed, 48 insertions(+), 7 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/nunit/NUnitReportTransformer.java b/src/main/java/hudson/plugins/nunit/NUnitReportTransformer.java
+index 18e4cf5..a3b4f3f 100755
+--- a/src/main/java/hudson/plugins/nunit/NUnitReportTransformer.java
++++ b/src/main/java/hudson/plugins/nunit/NUnitReportTransformer.java
+@@ -103,8 +103,7 @@ public class NUnitReportTransformer implements TestReportTransformer, Serializab
+         for (int i = 0; i < elementsByTagName.getLength(); i++) {
+             Element element = (Element) elementsByTagName.item(i);
+             DOMSource source = new DOMSource(element);
+-            String filename = JUNIT_FILE_PREFIX + element.getAttribute("name").replaceAll(ILLEGAL_FILE_CHARS_REGEX, "_") + JUNIT_FILE_POSTFIX;
+-			File junitOutputFile = new File(junitOutputPath, filename);
++            File junitOutputFile = outputFile(element.getAttribute("name").replaceAll(ILLEGAL_FILE_CHARS_REGEX, "_"), junitOutputPath);
+             FileOutputStream fileOutputStream = new FileOutputStream(junitOutputFile);
+             try {
+                 StreamResult result = new StreamResult(fileOutputStream);
+@@ -114,4 +113,26 @@ public class NUnitReportTransformer implements TestReportTransformer, Serializab
+             }
+         }
+     }
++
++    private static int seq = 2;
++    private static File outputFile(String tmp, File parent) {
++        File f = new File(parent, filename(tmp));
++        return f.exists() ? outputFileImpl(tmp, parent)
++                          : f;
++    }
++    private static File outputFileImpl(String tmp, File parent) {
++        File f = new File(parent, filename(tmp, seq));
++        if (f.exists()) {
++            seq++;
++            return outputFileImpl(tmp, parent);
++        }
++        seq = 2;
++        return f;
++    }
++    private static String filename(String name) {
++        return JUNIT_FILE_PREFIX + name + JUNIT_FILE_POSTFIX;
++    }
++    private static String filename(String name, int n) {
++        return JUNIT_FILE_PREFIX + name + "_" + n + JUNIT_FILE_POSTFIX;
++    }
+ }
+diff --git a/src/main/resources/hudson/plugins/nunit/nunit-to-junit.xsl b/src/main/resources/hudson/plugins/nunit/nunit-to-junit.xsl
+index 399ab86..35aa6c5 100644
+--- a/src/main/resources/hudson/plugins/nunit/nunit-to-junit.xsl
++++ b/src/main/resources/hudson/plugins/nunit/nunit-to-junit.xsl
+@@ -10,20 +10,20 @@
+ 			<xsl:for-each select="../..">
+ 				<xsl:variable name="firstTestName"
+ 					select="results//test-case[1]//@name" />
+-				<xsl:variable name="assembly"
++				<xsl:variable name="tmpAssembly"
+ 					select="concat(substring-before($firstTestName, @name), @name)" />
+ 				
+ 				<!--  <redirect:write file="{$outputpath}/TEST-{$assembly}.xml">-->
+ 
+-					<testsuite name="{$assembly}"
++					<testsuite name="{$tmpAssembly}"
+ 						tests="{count(*/test-case)}" time="{@time}"
+ 						failures="{count(*/test-case/failure)}" errors="0"
+ 						skipped="{count(*/test-case[@executed='False'])}">
+ 						<xsl:for-each select="*/test-case[@time!='']">
+-							<xsl:variable name="testcaseName">
++							<xsl:variable name="tmpTestcaseName">
+ 								<xsl:choose>
+-									<xsl:when test="contains(./@name, $assembly)">
+-										<xsl:value-of select="substring-after(./@name, concat($assembly,'.'))"/><!-- We either instantiate a "15" -->
++									<xsl:when test="contains(./@name, $tmpAssembly)">
++										<xsl:value-of select="substring-after(./@name, concat($tmpAssembly,'.'))"/><!-- We either instantiate a "15" -->
+ 									</xsl:when>
+ 									<xsl:otherwise>
+ 										<xsl:value-of select="./@name"/><!-- ...or a "20" -->
+@@ -31,6 +31,26 @@
+ 								</xsl:choose>
+ 							</xsl:variable>
+ 						
++							<xsl:variable name="assembly">
++								<xsl:choose>
++									<xsl:when test="string-length($tmpTestcaseName)=0">
++										<xsl:value-of select="substring-before($tmpAssembly, concat('.', ../../@name))"/>
++									</xsl:when>
++									<xsl:otherwise>
++										<xsl:value-of select="$tmpAssembly"/>
++									</xsl:otherwise>
++								</xsl:choose>
++							</xsl:variable>
++							<xsl:variable name="testcaseName">
++								<xsl:choose>
++									<xsl:when test="string-length($tmpTestcaseName)=0">
++										<xsl:value-of select="concat(../../@name, substring-after(./@name, ../../@name))"/>
++									</xsl:when>
++									<xsl:otherwise>
++										<xsl:value-of select="$tmpTestcaseName"/>
++									</xsl:otherwise>
++								</xsl:choose>
++							</xsl:variable>
+ 							<testcase classname="{$assembly}"
+ 								name="{$testcaseName}"
+ 								time="{@time}">
+-- 
+1.7.0.2.msysgit.0
+

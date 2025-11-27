@@ -1,0 +1,103 @@
+"Executor #-1 for Built-In Node : executing Job #29" daemon prio=5 tid=369751 WAITING
+    at jdk.internal.misc.Unsafe.park(Native Method)
+    at java.util.concurrent.locks.LockSupport.park(LockSupport.java:221)
+       local variable: hudson.model.OneOffExecutor#3
+    at com.google.common.util.concurrent.AbstractFuture.get(AbstractFuture.java:563)
+       local variable: com.google.common.util.concurrent.SettableFuture#1426
+       local variable: com.google.common.util.concurrent.AbstractFuture$Waiter#1
+    at com.google.common.util.concurrent.AbstractFuture$TrustedFuture.get(AbstractFuture.java:110)
+    at com.google.common.util.concurrent.Uninterruptibles.getUninterruptibly(Uninterruptibles.java:247)
+       local variable: com.google.common.util.concurrent.SettableFuture#1426
+    at com.google.common.cache.LocalCache$LoadingValueReference.waitForValue(LocalCache.java:3626)
+    at com.google.common.cache.LocalCache$Segment.waitForLoadingValue(LocalCache.java:2209)
+       local variable: com.google.common.cache.LocalCache$Segment#34
+       local variable: com.google.common.cache.LocalCache$StrongWriteEntry#1
+       local variable: java.lang.String#2468998
+    at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2196)
+    at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2079)
+       local variable: com.google.common.cache.LocalCache$Segment#34
+    at com.google.common.cache.LocalCache.get(LocalCache.java:4017)
+    at com.google.common.cache.LocalCache$LocalManualCache.get(LocalCache.java:4898)
+    at jenkins.security.UserDetailsCache.loadUserByUsername(UserDetailsCache.java:127)
+    at hudson.model.User$UserIDCanonicalIdResolver.resolveCanonicalId(User.java:1261)
+       local variable: java.lang.String#2468998
+    at hudson.model.User$CanonicalIdResolver.resolve(User.java:1202)
+       local variable: java.lang.String#2468998
+       local variable: java.util.Collections$EmptyMap#1
+       local variable: hudson.model.User$UserIDCanonicalIdResolver#1
+    at hudson.model.User.get(User.java:529)
+       local variable: java.lang.String#2468998
+    at hudson.model.User.getOrCreateByIdOrFullName(User.java:592)
+    at hudson.model.User.get(User.java:573)
+    at org.jenkinsci.plugins.p4.changes.P4ChangeEntry.setAuthor(P4ChangeEntry.java:234)
+       local variable: org.jenkinsci.plugins.p4.changes.P4ChangeEntry#4608
+    at org.jenkinsci.plugins.p4.changes.P4ChangeParser$ChangeLogHandler.endElement(P4ChangeParser.java:250)
+       local variable: org.jenkinsci.plugins.p4.changes.P4ChangeParser$ChangeLogHandler#14
+    at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.endElement(AbstractSAXParser.java:618)
+       local variable: com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser#5
+    at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanEndElement(XMLDocumentFragmentScannerImpl.java:1728)
+       local variable: com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl#4
+       local variable: com.sun.org.apache.xerces.internal.xni.QName#431
+    at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2899)
+       local variable: com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl$ContentDriver#4
+    at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:605)
+    at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:542)
+       local variable: com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl#4
+    at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:889)
+    at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:825)
+       local variable: com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration#5
+    at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
+    at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1224)
+       local variable: com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser#5
+    at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:637)
+    at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl.parse(SAXParserImpl.java:326)
+    at javax.xml.parsers.SAXParser.parse(SAXParser.java:330)
+    at org.jenkinsci.plugins.p4.changes.P4ChangeParser.parse(P4ChangeParser.java:56)
+       local variable: org.jenkinsci.plugins.workflow.job.WorkflowRun#2349
+       local variable: org.jenkinsci.plugins.p4.browsers.SwarmBrowser#3095
+       local variable: java.io.File#13251
+       local variable: org.jenkinsci.plugins.p4.client.ConnectionHelper#13
+       local variable: org.jenkinsci.plugins.p4.changes.P4ChangeParser$ChangeLogHandler#14
+    at org.jenkinsci.plugins.workflow.job.WorkflowRun.getChangeSets(WorkflowRun.java:847)
+       local variable: org.jenkinsci.plugins.workflow.job.WorkflowRun#2349
+       local variable: org.jenkinsci.plugins.workflow.job.WorkflowRun$SCMCheckout#9859
+    at jenkins.scm.RunWithSCM.calculateCulprits(RunWithSCM.java:136)
+       local variable: java.util.HashSet#170044
+    at jenkins.scm.RunWithSCM.getCulprits(RunWithSCM.java:93)
+    at org.jenkinsci.plugins.workflow.job.WorkflowRun.getCulprits(WorkflowRun.java:879)
+    at jenkins.scm.RunWithSCM.calculateCulprits(RunWithSCM.java:133)
+       local variable: org.jenkinsci.plugins.workflow.job.WorkflowRun#2350
+       local variable: java.util.HashSet#170046
+       local variable: java.util.HashSet#170046
+    at jenkins.scm.RunWithSCM.getCulprits(RunWithSCM.java:93)
+    at org.jenkinsci.plugins.workflow.job.WorkflowRun.getCulprits(WorkflowRun.java:879)
+    at jenkins.scm.RunWithSCM.calculateCulprits(RunWithSCM.java:133)
+       local variable: org.jenkinsci.plugins.workflow.job.WorkflowRun#3982
+       local variable: java.util.HashSet#170045
+       local variable: java.util.HashSet#170045
+    at jenkins.scm.RunWithSCM.getCulprits(RunWithSCM.java:93)
+    at org.jenkinsci.plugins.workflow.job.WorkflowRun.getCulprits(WorkflowRun.java:879)
+    at io.jenkins.plugins.opentelemetry.job.MonitoringRunListener._onInitialize(MonitoringRunListener.java:182)
+       local variable: io.jenkins.plugins.opentelemetry.job.MonitoringRunListener#1
+       local variable: org.jenkinsci.plugins.workflow.job.WorkflowRun#3982
+       local variable: io.opentelemetry.sdk.trace.SdkSpanBuilder#1
+    at io.jenkins.plugins.opentelemetry.job.opentelemetry.OtelContextAwareAbstractRunListener.onInitialize(OtelContextAwareAbstractRunListener.java:83)
+    at hudson.model.listeners.RunListener.lambda$fireInitialize$1(RunListener.java:234)
+    at hudson.model.listeners.RunListener$$Lambda+0x00007f30c38134e0.accept(<unresolved string 0x0>)
+    at jenkins.util.Listeners.lambda$notify$0(Listeners.java:59)
+       local variable: class hudson.model.listeners.RunListener
+       local variable: hudson.model.listeners.RunListener$$Lambda+0x00007f30c38134e0#1
+    at jenkins.util.Listeners$$Lambda+0x00007f30c2d68200.run(<unresolved string 0x0>)
+    at jenkins.util.Listeners.notify(Listeners.java:67)
+       local variable: hudson.security.ACLContext#23
+    at hudson.model.listeners.RunListener.fireInitialize(RunListener.java:232)
+    at hudson.model.Run.onStartBuilding(Run.java:2031)
+    at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:288)
+       local variable: org.jenkinsci.plugins.workflow.job.WorkflowRun#3982
+    at hudson.model.ResourceController.execute(ResourceController.java:101)
+       local variable: hudson.model.Queue#1
+       local variable: org.jenkinsci.plugins.workflow.job.WorkflowJob#182
+    at hudson.model.Executor.run(Executor.java:446)
+       local variable: hudson.model.OneOffExecutor#3
+       local variable: hudson.security.ACLContext#25
+       local variable: hudson.security.ACLContext#24

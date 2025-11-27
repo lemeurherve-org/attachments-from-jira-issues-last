@@ -1,0 +1,54 @@
+Triggered by Gerrit: http://192.168.179.12/gerrit/610
+Building on master
+Checkout:workspace / /var/lib/jenkins/jobs/project/workspace - hudson.remoting.LocalChannel@bdbd63f
+Using strategy: Gerrit Trigger
+Last Built Revision: Revision 22efd28a79038b66dc840bcd1617d26c6bf3cee2 (refs/changes/09/609/1)
+Checkout:workspace / /var/lib/jenkins/jobs/project/workspace - hudson.remoting.LocalChannel@bdbd63f
+Fetching changes from 1 remote Git repository
+Fetching upstream changes from ssh://192.168.179.12:29418/project
+Commencing build of Revision cdf3fc863d050675b33631834b3663f44c1ee983 (refs/changes/10/610/1)
+Checking out Revision cdf3fc863d050675b33631834b3663f44c1ee983 (refs/changes/10/610/1)
+Allocating TCP port ARQUILLIAN
+  -> Assigned 45343
+TCP port allocation complete
+Starting xvnc
+[workspace] $ vncserver :11
+
+New 'project-tools:11 (jenkins)' desktop is project-tools:11
+
+Starting applications specified in /var/lib/jenkins/.vnc/xstartup
+Log file is /var/lib/jenkins/.vnc/project-tools:11.log
+
+[workspace] $ /bin/sh -xe /tmp/hudson8455802933621078859.sh
++ rm -rf tests/arquillian-tests/ui/screenshots/
+Parsing POMs
+Failed to transfer Specified destination directory cannot be created: /home/jenkins-slave1/slave/workspace/project/.repository/org/jboss/arquillian/arquillian-bom/1.0.0.CR5
+Failed to transfer Specified destination directory cannot be created: /home/jenkins-slave1/slave/workspace/project/.repository/org/jboss/arquillian/extension/arquillian-drone-bom/1.0.0.CR2
+ERROR: Failed to parse POMs
+ha:AAAAWB+LCAAAAAAAAABb85aBtbiIQSmjNKU4P08vOT+vOD8nVc8DzHWtSE4tKMnMz/PLL0ldFVf2c+b/lb5MDAwVRQxSaBqcITRIIQMEMIIUFgAAckCEiWAAAAA=org.apache.maven.project.ProjectBuildingException: Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: Could not transfer artifact org.jboss.arquillian:arquillian-bom:pom:1.0.0.CR5 from/to nexus (http://192.168.179.12:8081/nexus/content/groups/public): Specified destination directory cannot be created: /home/jenkins-slave1/slave/workspace/project/.repository/org/jboss/arquillian/arquillian-bom/1.0.0.CR5 @ line 26, column 25
+[ERROR] Non-resolvable import POM: Could not transfer artifact org.jboss.arquillian.extension:arquillian-drone-bom:pom:1.0.0.CR2 from/to nexus (http://192.168.179.12:8081/nexus/content/groups/public): Specified destination directory cannot be created: /home/jenkins-slave1/slave/workspace/project/.repository/org/jboss/arquillian/extension/arquillian-drone-bom/1.0.0.CR2 @ line 46, column 25
+[ERROR] 'dependencies.dependency.version' for org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl:jar is missing. @ line 57, column 21
+[ERROR] 'dependencies.dependency.version' for org.jboss.arquillian.junit:arquillian-junit-container:jar is missing. @ line 67, column 21
+
+	at org.apache.maven.project.DefaultProjectBuilder.build(DefaultProjectBuilder.java:339)
+	at hudson.maven.MavenEmbedder.buildProjects(MavenEmbedder.java:361)
+	at hudson.maven.MavenEmbedder.readProjects(MavenEmbedder.java:331)
+	at hudson.maven.MavenModuleSetBuild$PomParser.invoke(MavenModuleSetBuild.java:1211)
+	at hudson.maven.MavenModuleSetBuild$PomParser.invoke(MavenModuleSetBuild.java:1040)
+	at hudson.FilePath.act(FilePath.java:783)
+	at hudson.FilePath.act(FilePath.java:765)
+	at hudson.maven.MavenModuleSetBuild$RunnerImpl.parsePoms(MavenModuleSetBuild.java:905)
+	at hudson.maven.MavenModuleSetBuild$RunnerImpl.doRun(MavenModuleSetBuild.java:655)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:462)
+	at hudson.model.Run.run(Run.java:1404)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:478)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:230)
+Terminating xvnc.
+$ vncserver -kill :11
+Killing Xvnc4 process ID 15807
+Archiving artifacts
+Build step 'Dependency analysis' marked build as failure
+Skipping Cobertura coverage report as build was not UNSTABLE or better ...
+Finished: FAILURE

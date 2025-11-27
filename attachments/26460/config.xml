@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>-1</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:user1</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:user2</permission>
+      <permission>hudson.model.Run.Delete:user1</permission>
+      <permission>hudson.model.Run.Delete:user2</permission>
+      <permission>hudson.model.Item.Configure:user1</permission>
+      <permission>hudson.model.Item.Configure:user2</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:user1</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:user2</permission>
+      <permission>hudson.model.Item.Read:user1</permission>
+      <permission>hudson.model.Item.Read:user2</permission>
+      <permission>hudson.model.Item.Build:user1</permission>
+      <permission>hudson.model.Item.Build:user2</permission>
+      <permission>hudson.model.Item.Cancel:user1</permission>
+      <permission>hudson.model.Item.Cancel:user2</permission>
+      <permission>hudson.model.Item.Delete:user1</permission>
+      <permission>hudson.model.Item.Delete:user2</permission>
+      <permission>hudson.scm.SCM.Tag:user1</permission>
+      <permission>hudson.scm.SCM.Tag:user2</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:user1</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:user2</permission>
+      <permission>hudson.model.Run.Update:user1</permission>
+      <permission>hudson.model.Run.Update:user2</permission>
+      <permission>hudson.model.Item.Workspace:user1</permission>
+      <permission>hudson.model.Item.Workspace:user2</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:user1</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:user2</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:user1</permission>
+      <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:user2</permission>
+      <permission>hudson.model.Item.Discover:user1</permission>
+      <permission>hudson.model.Item.Discover:user2</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.9.1">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>SVN_REVISION</name>
+          <description></description>
+          <defaultValue>HEAD</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.promoted__builds.JobPropertyImpl plugin="promoted-builds@2.17">
+      <activeProcessNames>
+        <string>Release</string>
+      </activeProcessNames>
+    </hudson.plugins.promoted__builds.JobPropertyImpl>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.4.1">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://server/svn/src/trunk/Module1/trunk/src</remote>
+        <credentialsId></credentialsId>
+        <local>Module1</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://server/svn/src/trunk/Module2/trunk/src</remote>
+        <credentialsId></credentialsId>
+        <local>Module2</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://server/svn/src/trunk/Module3/trunk/src</remote>
+        <credentialsId></credentialsId>
+        <local>Module3</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://server/svn/src/trunk/Module4/trunk/src</remote>
+        <credentialsId></credentialsId>
+        <local>Module4</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://server/svn/src/trunk/Module5/trunk/src</remote>
+        <credentialsId></credentialsId>
+        <local>Module5</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://server/svn/src/trunk/Module5/trunk/WebRoot</remote>
+        <credentialsId></credentialsId>
+        <local>build</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://server/svn/src/trunk/Module5/trunk/lib</remote>
+        <credentialsId></credentialsId>
+        <local>build/WEB-INF/lib</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://server/svn/src/trunk/Module6/trunk</remote>
+        <credentialsId></credentialsId>
+        <local>Module6</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
+    <ignoreDirPropChanges>false</ignoreDirPropChanges>
+    <filterChangelog>false</filterChangelog>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>Java6</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Ant plugin="ant@1.2">
+      <targets></targets>
+      <antName>1.8.4</antName>
+      <buildFile>Module6/build.xml</buildFile>
+      <properties>project.name=Module5</properties>
+    </hudson.tasks.Ant>
+    <hudson.tasks.BatchFile>
+      <command>echo %WORKSPACE%</command>
+    </hudson.tasks.BatchFile>
+    <hudson.plugins.sonar.SonarRunnerBuilder plugin="sonar@2.1">
+      <project></project>
+      <properties>sonar.working.directory=../
+sonar.projectKey=proj
+sonar.projectName=Project
+sonar.projectVersion=1.0
+sonar.sources=Module1,Module2,Module3,Module4,Module5
+sonar.projectKey=org.company.proj
+sonar.projectName=ModulizedProject
+sonar.projectVersion=1.0
+sonar.modules=Module1,Module2,Module3,Module4,Module5
+Module1.sonar.projectName=..\Module1
+Module2.sonar.projectName=..\Module2
+Module3.sonar.projectName=..\Module3
+Module4.sonar.projectName=..\Module4
+Module5.sonar.projectName=..\Module5
+sonar.language=java
+sonar.sourceEncoding=UTF-8
+sonar.jdbc.dialect=mssql</properties>
+      <javaOpts></javaOpts>
+      <jdk>(Inherit From Job)</jdk>
+      <task></task>
+    </hudson.plugins.sonar.SonarRunnerBuilder>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>**/*.war</artifacts>
+      <latestOnly>false</latestOnly>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <defaultExcludes>true</defaultExcludes>
+    </hudson.tasks.ArtifactArchiver>
+  </publishers>
+  <buildWrappers/>
+</project>

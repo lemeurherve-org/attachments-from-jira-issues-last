@@ -1,0 +1,50 @@
+"Handling GET /job/ALL/job/test/descriptorByName/hudson.scm.SubversionSCM$ModuleLocation/checkCredentialsId from 192.168.1.112 : RequestHandlerThread[#24]" Id=242 Group=main BLOCKED on java.lang.Object@110fed4 owned by "SCM polling for hudson.model.FreeStyleProject@3b2448[myapp/myapp-CI]" Id=186
+	at sun.security.provider.NativePRNG$RandomIO.implNextBytes(NativePRNG.java:481)
+	-  blocked on java.lang.Object@110fed4
+	at sun.security.provider.NativePRNG$RandomIO.access$400(NativePRNG.java:329)
+	at sun.security.provider.NativePRNG.engineNextBytes(NativePRNG.java:218)
+	at java.security.SecureRandom.nextBytes(SecureRandom.java:457)
+	-  locked java.security.SecureRandom@13c087d
+	at sun.security.pkcs12.PKCS12KeyStore.getSalt(PKCS12KeyStore.java:735)
+	at sun.security.pkcs12.PKCS12KeyStore.calculateMac(PKCS12KeyStore.java:1414)
+	at sun.security.pkcs12.PKCS12KeyStore.engineStore(PKCS12KeyStore.java:1170)
+	-  locked sun.security.pkcs12.PKCS12KeyStore@1fea631
+	at java.security.KeyStore.store(KeyStore.java:1365)
+	at hudson.scm.CredentialsSVNAuthenticationProviderImpl$SVNCertificateAuthenticationBuilder.<init>(CredentialsSVNAuthenticationProviderImpl.java:427)
+	at hudson.scm.CredentialsSVNAuthenticationProviderImpl$RemotableSVNAuthenticationBuilderProvider.getBuilder(CredentialsSVNAuthenticationProviderImpl.java:293)
+	at hudson.scm.CredentialsSVNAuthenticationProviderImpl.requestClientAuthentication(CredentialsSVNAuthenticationProviderImpl.java:141)
+	at org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager.getNextAuthentication(DefaultSVNAuthenticationManager.java:199)
+	at hudson.scm.FilterSVNAuthenticationManager.getNextAuthentication(FilterSVNAuthenticationManager.java:42)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPSSLKeyManager.initialize(HTTPSSLKeyManager.java:423)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPSSLKeyManager.initializeNoException(HTTPSSLKeyManager.java:403)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPSSLKeyManager.chooseClientAlias(HTTPSSLKeyManager.java:295)
+	at sun.security.ssl.AbstractKeyManagerWrapper.chooseClientAlias(SSLContextImpl.java:1100)
+	at sun.security.ssl.ClientHandshaker.serverHelloDone(ClientHandshaker.java:709)
+	at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:288)
+	at sun.security.ssl.Handshaker.processLoop(Handshaker.java:925)
+	at sun.security.ssl.Handshaker.process_record(Handshaker.java:860)
+	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:1043)
+	-  locked sun.security.ssl.SSLSocketImpl@9879de
+	-  locked java.lang.Object@be56b6
+	at sun.security.ssl.SSLSocketImpl.performInitialHandshake(SSLSocketImpl.java:1343)
+	-  locked java.lang.Object@16a8a0c
+	at sun.security.ssl.SSLSocketImpl.writeRecord(SSLSocketImpl.java:728)
+	at sun.security.ssl.AppOutputStream.write(AppOutputStream.java:123)
+	-  locked sun.security.ssl.AppOutputStream@3c3f62
+	at java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
+	at java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)
+	-  locked java.io.BufferedOutputStream@165f6f2
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.sendData(HTTPConnection.java:321)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPRequest.dispatch(HTTPRequest.java:170)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:463)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:371)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:359)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.performHttpRequest(DAVConnection.java:710)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.exchangeCapabilities(DAVConnection.java:627)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.open(DAVConnection.java:102)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVRepository.openConnection(DAVRepository.java:1032)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVRepository.testConnection(DAVRepository.java:94)
+	at hudson.scm.SubversionSCM$DescriptorImpl.checkRepositoryPath(SubversionSCM.java:2318)
+
+
+

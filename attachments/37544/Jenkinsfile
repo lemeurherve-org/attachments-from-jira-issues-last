@@ -1,0 +1,54 @@
+// Turn text secrets into environment variables
+withCredentials([
+  string(credentialsId: 'FACEBOOK_API_KEY', variable: 'FACEBOOK_API_KEY'),
+  string(credentialsId: 'FACEBOOK_API_SECRET', variable: 'FACEBOOK_API_SECRET'),
+  string(credentialsId: 'FACEBOOK_APP_TOKEN', variable: 'FACEBOOK_APP_TOKEN'),
+  string(credentialsId: 'PINTEREST_ACCESS_TOKEN', variable: 'PINTEREST_ACCESS_TOKEN'),
+  string(credentialsId: 'PINTEREST_ACCOUNT_ID', variable: 'PINTEREST_ACCOUNT_ID'),
+  string(credentialsId: 'PINTEREST_CLIENT_ID', variable: 'PINTEREST_CLIENT_ID'),
+  string(credentialsId: 'PINTEREST_CLIENT_SECRET', variable: 'PINTEREST_CLIENT_SECRET')
+]) {
+  podTemplate(label: 'default') {                                           // use the jnlp container
+      podTemplate(label: 'rails-app', inheritFrom: 'default',               // dynamically generate a new podTemplate
+        containers: [
+          containerTemplate(name: 'rails', image: 'rails:4.2.6', envVars: [ // one container is rails, with various env vars
+            containerEnvVar(key: 'DEVISE_SECRET_KEY', value: 'test'),
+            containerEnvVar(key: 'RAILS_SECRET_KEY_BASE', value: 'test'),
+            containerEnvVar(key: 'RAILS_ENV', value: 'test'),
+            containerEnvVar(key: 'DATABASE_URL', value: 'postgres://adaptly:password@localhost:5432/test'),
+            containerEnvVar(key: 'REDISTOGO_URL', value: 'redis://localhost:6379'),
+            containerEnvVar(key: 'PINTEREST_REDIRECT_URL', value: 'https://qa.adaptly.com/pinterest_auth/callback'),
+  
+          ], command:'/bin/sh -c', args:'cat', ttyEnabled: true),           // all three args are required, so we can run commands
+          containerTemplate(name: 'postgres',
+            image: '221645429527.dkr.ecr.us-east-1.amazonaws.com/postgres:development-9.6',
+            args: '', command: '', ttyEnabled: false),                      // no commands, tty are needed, container listens only
+          containerTemplate(name: 'redis',
+            image: '221645429527.dkr.ecr.us-east-1.amazonaws.com/redis:3.0',
+            args: '', command: '', ttyEnabled: false)                      // no commands, tty are needed, container listens only
+      ]) {
+      node('rails') {
+        timeout(15) {
+  
+          container('rails') {                                          // run the following commands on the rails container
+            stage('clone bone') {
+              git credentialsId: 'rsa-github', url: 'git@github.com:Adaptly/adaptly-bone.git'
+            }
+  
+            stage('bundle install') {
+              sh 'env; ls -l; bundle install'
+            }
+  
+            stage('run unit tests') {
+              sh 'bundle exec rspec spec -fd --order defined'
+            }
+  
+            stage('run javascript tests') {
+              sh 'bundle exec rake spec:javascript'
+            }
+          }
+        }
+      }
+    }
+  }
+}

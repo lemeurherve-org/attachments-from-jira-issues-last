@@ -1,0 +1,144 @@
+Started on Sep 24, 2015 4:39:57 PM
+Using strategy: Default
+using .gitcredentials to set credentials
+ > git --version # timeout=10
+[WARNING] Installed git version too old for credentials support
+ > git init /tmp/hudson6406015087608369304tmp # timeout=10
+ > git config --local credential.helper store --file=/tmp/git2495455679477638501.credentials # timeout=10
+ > git config --local --remove-section credential # timeout=10
+Could not remove the credential section from the git configuration
+FATAL: hudson.plugins.git.GitException: Command "git config --local credential.helper store --file=/tmp/git2495455679477638501.credentials" returned status code 129:
+stdout:
+stderr: error: unknown option `local'
+usage: git config [options]
+
+Config file location
+    --global              use global config file
+    --system              use system config file
+    -f, --file <FILE>     use given config file
+
+Action
+    --get                 get value: name [value-regex]
+    --get-all             get all values: key [value-regex]
+    --get-regexp          get values for regexp: name-regex [value-regex]
+    --replace-all         replace all matching variables: name value [value_regex]
+    --add                 adds a new variable: name value
+    --unset               removes a variable: name [value-regex]
+    --unset-all           removes all matches: name [value-regex]
+    --rename-section      rename section: old-name new-name
+    --remove-section      remove a section: name
+    -l, --list            list all
+    -e, --edit            opens an editor
+    --get-color <slot>    find the color configured: [default]
+    --get-colorbool <slot>
+                          find the color setting: [stdout-is-tty]
+
+Type
+    --bool                value is "true" or "false"
+    --int                 value is decimal number
+    --bool-or-int         value is --bool or --int
+    --path                value is a path (file or directory name)
+
+Other
+    -z, --null            terminate values with NUL byte
+
+
+hudson.util.IOException2: hudson.plugins.git.GitException: Command "git config --local credential.helper store --file=/tmp/git2495455679477638501.credentials" returned status code 129:
+stdout:
+stderr: error: unknown option `local'
+usage: git config [options]
+
+Config file location
+    --global              use global config file
+    --system              use system config file
+    -f, --file <FILE>     use given config file
+
+Action
+    --get                 get value: name [value-regex]
+    --get-all             get all values: key [value-regex]
+    --get-regexp          get values for regexp: name-regex [value-regex]
+    --replace-all         replace all matching variables: name value [value_regex]
+    --add                 adds a new variable: name value
+    --unset               removes a variable: name [value-regex]
+    --unset-all           removes all matches: name [value-regex]
+    --rename-section      rename section: old-name new-name
+    --remove-section      remove a section: name
+    -l, --list            list all
+    -e, --edit            opens an editor
+    --get-color <slot>    find the color configured: [default]
+    --get-colorbool <slot>
+                          find the color setting: [stdout-is-tty]
+
+Type
+    --bool                value is "true" or "false"
+    --int                 value is decimal number
+    --bool-or-int         value is --bool or --int
+    --path                value is a path (file or directory name)
+
+Other
+    -z, --null            terminate values with NUL byte
+
+
+	at hudson.plugins.git.GitSCM.compareRemoteRevisionWith(GitSCM.java:529)
+	at hudson.scm.SCM.compareRemoteRevisionWith(SCM.java:380)
+	at hudson.scm.SCM.poll(SCM.java:397)
+	at hudson.model.AbstractProject._poll(AbstractProject.java:1446)
+	at hudson.model.AbstractProject.poll(AbstractProject.java:1349)
+	at com.cloudbees.jenkins.GitHubPushTrigger$1.runPolling(GitHubPushTrigger.java:78)
+	at com.cloudbees.jenkins.GitHubPushTrigger$1.run(GitHubPushTrigger.java:104)
+	at hudson.util.SequentialExecutionQueue$QueueEntry.run(SequentialExecutionQueue.java:118)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: hudson.plugins.git.GitException: Command "git config --local credential.helper store --file=/tmp/git2495455679477638501.credentials" returned status code 129:
+stdout:
+stderr: error: unknown option `local'
+usage: git config [options]
+
+Config file location
+    --global              use global config file
+    --system              use system config file
+    -f, --file <FILE>     use given config file
+
+Action
+    --get                 get value: name [value-regex]
+    --get-all             get all values: key [value-regex]
+    --get-regexp          get values for regexp: name-regex [value-regex]
+    --replace-all         replace all matching variables: name value [value_regex]
+    --add                 adds a new variable: name value
+    --unset               removes a variable: name [value-regex]
+    --unset-all           removes all matches: name [value-regex]
+    --rename-section      rename section: old-name new-name
+    --remove-section      remove a section: name
+    -l, --list            list all
+    -e, --edit            opens an editor
+    --get-color <slot>    find the color configured: [default]
+    --get-colorbool <slot>
+                          find the color setting: [stdout-is-tty]
+
+Type
+    --bool                value is "true" or "false"
+    --int                 value is decimal number
+    --bool-or-int         value is --bool or --int
+    --path                value is a path (file or directory name)
+
+Other
+    -z, --null            terminate values with NUL byte
+
+
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1600)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1576)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1572)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1568)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:1314)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:1261)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:1252)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.getHeadRev(CliGitAPIImpl.java:2336)
+	at hudson.plugins.git.GitSCM.compareRemoteRevisionWithImpl(GitSCM.java:583)
+	at hudson.plugins.git.GitSCM.compareRemoteRevisionWith(GitSCM.java:527)
+	... 13 more
+Done. Took 45 ms
+No changes

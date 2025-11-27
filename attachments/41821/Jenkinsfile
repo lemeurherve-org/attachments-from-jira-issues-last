@@ -1,0 +1,82 @@
+pipeline {
+    agent none
+    options {
+        timeout(time: 2, unit: 'HOURS')
+        disableConcurrentBuilds()
+    }
+    stages {
+        stage("Integration tests...")
+        {
+            parallel {
+                stage('Gradle') {
+                    agent {
+                        label "alpine:jdk8-gradle-4.5"
+                    }
+                    options {
+                        timeout(time: 1, unit: 'HOURS')
+                    }
+                    steps {
+                        dir("gradle") {
+                            withMaven(mavenSettingsConfig: 'abcde') {
+                                sh 'mvn clean install'
+                            }
+                        }
+                    }
+                }
+
+                stage('Maven') {
+                    agent {
+                        label "alpine:jdk8-mvn-3.3"
+                    }
+                    options {
+                        timeout(time: 1, unit: 'HOURS')
+                    }
+                    steps {
+                        dir("maven") {
+                            withMaven(mavenSettingsConfig: 'abcde') {
+                                sh 'mvn clean install'
+                            }
+                        }
+                    }
+                    post {
+                        always {
+                            zip archive: true, dir: './maven/target', glob: '', zipFile: 'maven-target.zip'
+                        }
+                    }
+                }
+
+                stage('Nuget') {
+                    agent {
+                        label "alpine:nuget-3.4-mono"
+                    }
+                    options {
+                        timeout(time: 1, unit: 'HOURS')
+                    }
+                    steps {
+                        dir("nuget") {
+                            withMaven(mavenSettingsConfig: 'abcde') {
+                                sh 'mvn clean install'
+                            }
+                        }
+                    }
+                }
+                
+                stage('SBT') {
+                    agent {
+                        label "alpine:jdk8-sbt-1.1"
+                    }
+                    options {
+                        timeout(time: 1, unit: 'HOURS')
+                    }
+                    steps {
+                        dir("sbt") {
+                            withMaven(mavenSettingsConfig: 'abcde') {
+                                sh 'mvn clean install'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

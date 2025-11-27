@@ -1,0 +1,35 @@
+Started by user Ilya Evseenkov
+FATAL: java.io.IOException: Unexpected termination of the channel
+java.io.EOFException
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2624)
+	at java.io.ObjectInputStream$BlockDataInputStream.readShort(ObjectInputStream.java:3099)
+	at java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:853)
+	at java.io.ObjectInputStream.<init>(ObjectInputStream.java:349)
+	at hudson.remoting.ObjectInputStreamEx.<init>(ObjectInputStreamEx.java:48)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+Caused: java.io.IOException: Unexpected termination of the channel
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:73)
+Caused: hudson.remoting.RequestAbortedException
+	at hudson.remoting.Request.abort(Request.java:307)
+	at hudson.remoting.Channel.terminate(Channel.java:896)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:92)
+	at ......remote call to ugeslot-TST(Native Method)
+	at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1545)
+	at hudson.remoting.Request.call(Request.java:172)
+	at hudson.remoting.Channel.call(Channel.java:829)
+	at hudson.EnvVars.getRemote(EnvVars.java:405)
+	at hudson.model.Computer.getEnvironment(Computer.java:1160)
+	at jenkins.model.CoreEnvironmentContributor.buildEnvironmentFor(CoreEnvironmentContributor.java:30)
+	at hudson.model.Run.getEnvironment(Run.java:2269)
+	at hudson.model.AbstractBuild.getEnvironment(AbstractBuild.java:921)
+	at com.cloudbees.jenkins.plugins.customtools.CustomToolInstallWrapper.decorateLauncher(CustomToolInstallWrapper.java:158)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.createLauncher(AbstractBuild.java:566)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:492)
+	at hudson.model.Run.execute(Run.java:1728)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:405)
+Started calculate disk usage of build
+Finished Calculation of disk usage of build in 0 seconds
+Finished: FAILURE

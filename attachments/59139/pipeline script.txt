@@ -1,0 +1,8 @@
+node('built-in') {
+    stage('test') {
+        xunit([JUnit(excludesPattern: '', pattern: '', stopProcessingIfError: true)])
+        
+        echo 'currentResult: ' + currentBuild.currentResult
+        echo 'result: ' + currentBuild.result
+    }
+}

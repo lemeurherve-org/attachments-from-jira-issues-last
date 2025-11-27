@@ -1,0 +1,279 @@
+jstack -l 26047
+2011-06-24 18:06:54
+Full thread dump OpenJDK 64-Bit Server VM (1.6.0-b09 mixed mode):
+
+"/bin/sh -xe /tmp/hudson2722601456778669846.sh: stdout copier" prio=10 tid=0x00002aaafc007000 nid=0x1476 runnable [0x0000000044cce000..0x0000000044cced10]
+   java.lang.Thread.State: RUNNABLE
+        at java.io.FileInputStream.readBytes(Native Method)
+        at java.io.FileInputStream.read(FileInputStream.java:236)
+        at java.io.BufferedInputStream.read1(BufferedInputStream.java:273)
+        at java.io.BufferedInputStream.read(BufferedInputStream.java:334)
+        - locked <0x00002aaab3851b60> (a java.io.BufferedInputStream)
+        at java.io.FilterInputStream.read(FilterInputStream.java:107)
+        at hudson.util.StreamCopyThread.run(StreamCopyThread.java:60)
+
+   Locked ownable synchronizers:
+        - None
+
+"process reaper" daemon prio=10 tid=0x00002aaafc006800 nid=0x146d runnable [0x00000000449cb000..0x00000000449cbc90]
+   java.lang.Thread.State: RUNNABLE
+        at java.lang.UNIXProcess.waitForProcessExit(Native Method)
+        at java.lang.UNIXProcess.access$900(UNIXProcess.java:36)
+        at java.lang.UNIXProcess$1$1.run(UNIXProcess.java:148)
+
+   Locked ownable synchronizers:
+        - None
+
+"pool-1-thread-9" prio=10 tid=0x00002aaaf41b7c00 nid=0x57d in Object.wait() [0x00000000450d2000..0x00000000450d2a90]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x00002aaab38501b8> (a java.lang.UNIXProcess)
+        at java.lang.Object.wait(Object.java:502)
+        at java.lang.UNIXProcess.waitFor(UNIXProcess.java:181)
+        - locked <0x00002aaab38501b8> (a java.lang.UNIXProcess)
+        at hudson.Proc$LocalProc.join(Proc.java:319)
+        at hudson.Launcher$RemoteLaunchCallable$1.join(Launcher.java:928)
+        at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:616)
+        at hudson.remoting.RemoteInvocationHandler$RPCRequest.perform(RemoteInvocationHandler.java:274)
+        at hudson.remoting.RemoteInvocationHandler$RPCRequest.call(RemoteInvocationHandler.java:255)
+        at hudson.remoting.RemoteInvocationHandler$RPCRequest.call(RemoteInvocationHandler.java:215)
+        at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+        at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+        at hudson.remoting.Request$2.run(Request.java:283)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+        at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+        at java.lang.Thread.run(Thread.java:636)
+
+   Locked ownable synchronizers:
+        - <0x00002aaab3855010> (a java.util.concurrent.ThreadPoolExecutor$Worker)
+
+"pool-1-thread-5" prio=10 tid=0x00002aaaf4113400 nid=0x411 runnable [0x0000000041598000..0x000000004159ac90]
+   java.lang.Thread.State: RUNNABLE
+        at java.lang.StringBuffer.append(StringBuffer.java:241)
+        - locked <0x00002aaae71a9480> (a java.lang.StringBuffer)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1227)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.accountForIncludedDir(DirectoryScanner.java:1305)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1253)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1184)
+        at org.apache.tools.ant.DirectoryScanner.scandir(DirectoryScanner.java:1146)
+        at org.apache.tools.ant.DirectoryScanner.checkIncludePatterns(DirectoryScanner.java:928)
+        at org.apache.tools.ant.DirectoryScanner.scan(DirectoryScanner.java:882)
+        - locked <0x00002aaab3aaa5f0> (a org.apache.tools.ant.DirectoryScanner)
+        at org.apache.tools.ant.types.AbstractFileSet.getDirectoryScanner(AbstractFileSet.java:490)
+        at hudson.plugins.analysis.util.FileFinder.find(FileFinder.java:76)
+        at hudson.plugins.analysis.util.FileFinder.invoke(FileFinder.java:57)
+        at hudson.plugins.analysis.util.FileFinder.invoke(FileFinder.java:18)
+        at hudson.FilePath$FileCallableWrapper.call(FilePath.java:1980)
+        at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+        at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+        at hudson.remoting.Request$2.run(Request.java:283)
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+        at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+        at java.lang.Thread.run(Thread.java:636)
+
+   Locked ownable synchronizers:
+        - <0x00002aaab3855228> (a java.util.concurrent.ThreadPoolExecutor$Worker)
+
+"Attach Listener" daemon prio=10 tid=0x00000000072f9c00 nid=0x6c9d waiting on condition [0x0000000000000000..0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+   Locked ownable synchronizers:
+        - None
+
+"Ping thread for channel hudson.remoting.Channel@46e45076:channel" daemon prio=10 tid=0x000000000732a800 nid=0x65e5 waiting on condition [0x0000000041499000..0x0000000041499c10]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+        at java.lang.Thread.sleep(Native Method)
+        at hudson.remoting.PingThread.run(PingThread.java:86)
+
+   Locked ownable synchronizers:
+        - None
+
+"Pipe writer thread: channel" prio=10 tid=0x00002aaaf4290800 nid=0x65e4 waiting on condition [0x0000000041025000..0x0000000041025b90]
+   java.lang.Thread.State: WAITING (parking)
+        at sun.misc.Unsafe.park(Native Method)
+        - parking to wait for  <0x00002aaab3856a18> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1978)
+        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:386)
+        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1043)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1103)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+        at java.lang.Thread.run(Thread.java:636)
+
+   Locked ownable synchronizers:
+        - None
+
+"Ping thread for channel hudson.remoting.Channel@46e45076:channel" daemon prio=10 tid=0x00002aaaf41f8000 nid=0x65e2 waiting on condition [0x0000000041863000..0x0000000041863a90]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+        at java.lang.Thread.sleep(Native Method)
+        at hudson.remoting.PingThread.run(PingThread.java:86)
+
+   Locked ownable synchronizers:
+        - None
+
+"Channel reader thread: channel" prio=10 tid=0x000000000714bc00 nid=0x65e1 runnable [0x0000000041398000..0x0000000041398a10]
+   java.lang.Thread.State: RUNNABLE
+        at java.io.FileInputStream.readBytes(Native Method)
+        at java.io.FileInputStream.read(FileInputStream.java:236)
+        at java.io.BufferedInputStream.fill(BufferedInputStream.java:235)
+        at java.io.BufferedInputStream.read(BufferedInputStream.java:254)
+        - locked <0x00002aaab3857aa8> (a java.io.BufferedInputStream)
+        at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2265)
+        at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2558)
+        at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2568)
+        at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1314)
+        at java.io.ObjectInputStream.readObject(ObjectInputStream.java:368)
+        at hudson.remoting.Channel$ReaderThread.run(Channel.java:1019)
+
+   Locked ownable synchronizers:
+        - None
+
+"Low Memory Detector" daemon prio=10 tid=0x00002aaaf4096400 nid=0x65df runnable [0x0000000000000000..0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+   Locked ownable synchronizers:
+        - None
+
+"CompilerThread1" daemon prio=10 tid=0x00002aaaf4093000 nid=0x65de waiting on condition [0x0000000000000000..0x00000000435b65c0]
+   java.lang.Thread.State: RUNNABLE
+
+   Locked ownable synchronizers:
+        - None
+
+"CompilerThread0" daemon prio=10 tid=0x00002aaaf4091800 nid=0x65dd waiting on condition [0x0000000000000000..0x00000000434b5530]
+   java.lang.Thread.State: RUNNABLE
+
+   Locked ownable synchronizers:
+        - None
+
+"Signal Dispatcher" daemon prio=10 tid=0x00002aaaf4090400 nid=0x65dc runnable [0x0000000000000000..0x00000000433b5840]
+   java.lang.Thread.State: RUNNABLE
+
+   Locked ownable synchronizers:
+        - None
+
+"Finalizer" daemon prio=10 tid=0x00002aaaf4067400 nid=0x65db in Object.wait() [0x00000000432b4000..0x00000000432b4b10]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x00002aaab3857c98> (a java.lang.ref.ReferenceQueue$Lock)
+        at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:133)
+        - locked <0x00002aaab3857c98> (a java.lang.ref.ReferenceQueue$Lock)
+        at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:149)
+        at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:177)
+
+   Locked ownable synchronizers:
+        - None
+
+"Reference Handler" daemon prio=10 tid=0x00002aaaf4066000 nid=0x65da in Object.wait() [0x0000000041762000..0x0000000041762a90]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x00002aaab38502b0> (a java.lang.ref.Reference$Lock)
+        at java.lang.Object.wait(Object.java:502)
+        at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:133)
+        - locked <0x00002aaab38502b0> (a java.lang.ref.Reference$Lock)
+
+   Locked ownable synchronizers:
+        - None
+
+"main" prio=10 tid=0x000000000708b400 nid=0x65c0 in Object.wait() [0x0000000041297000..0x0000000041297f20]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x00002aaab3854c98> (a hudson.remoting.Channel)
+        at java.lang.Object.wait(Object.java:502)
+        at hudson.remoting.Channel.join(Channel.java:766)
+        - locked <0x00002aaab3854c98> (a hudson.remoting.Channel)
+        at hudson.remoting.Launcher.main(Launcher.java:420)
+        at hudson.remoting.Launcher.runWithStdinStdout(Launcher.java:366)
+        at hudson.remoting.Launcher.run(Launcher.java:206)
+        at hudson.remoting.Launcher.main(Launcher.java:168)
+
+   Locked ownable synchronizers:
+        - None
+
+"VM Thread" prio=10 tid=0x00002aaaf4060c00 nid=0x65d9 runnable
+
+"GC task thread#0 (ParallelGC)" prio=10 tid=0x0000000007095c00 nid=0x65c1 runnable
+
+"GC task thread#1 (ParallelGC)" prio=10 tid=0x0000000007097000 nid=0x65c2 runnable
+
+"GC task thread#2 (ParallelGC)" prio=10 tid=0x0000000007098400 nid=0x65c3 runnable
+
+"GC task thread#3 (ParallelGC)" prio=10 tid=0x0000000007099800 nid=0x65c4 runnable
+
+"GC task thread#4 (ParallelGC)" prio=10 tid=0x000000000709ac00 nid=0x65c5 runnable
+
+"GC task thread#5 (ParallelGC)" prio=10 tid=0x000000000709c000 nid=0x65c6 runnable
+
+"GC task thread#6 (ParallelGC)" prio=10 tid=0x000000000709d400 nid=0x65c7 runnable
+
+"GC task thread#7 (ParallelGC)" prio=10 tid=0x000000000709e800 nid=0x65c8 runnable
+
+"GC task thread#8 (ParallelGC)" prio=10 tid=0x000000000709fc00 nid=0x65c9 runnable
+
+"GC task thread#9 (ParallelGC)" prio=10 tid=0x00000000070a1000 nid=0x65ca runnable
+
+"GC task thread#10 (ParallelGC)" prio=10 tid=0x00000000070a2400 nid=0x65cb runnable
+
+"GC task thread#11 (ParallelGC)" prio=10 tid=0x00000000070a3800 nid=0x65cc runnable
+
+"GC task thread#12 (ParallelGC)" prio=10 tid=0x00000000070a4c00 nid=0x65cd runnable
+
+"GC task thread#13 (ParallelGC)" prio=10 tid=0x00000000070a6000 nid=0x65ce runnable
+
+"GC task thread#14 (ParallelGC)" prio=10 tid=0x00000000070a7400 nid=0x65cf runnable
+
+"GC task thread#15 (ParallelGC)" prio=10 tid=0x00000000070a8800 nid=0x65d0 runnable
+
+"GC task thread#16 (ParallelGC)" prio=10 tid=0x00000000070a9c00 nid=0x65d1 runnable
+
+"GC task thread#17 (ParallelGC)" prio=10 tid=0x00000000070ab000 nid=0x65d2 runnable
+
+"GC task thread#18 (ParallelGC)" prio=10 tid=0x00000000070ac400 nid=0x65d3 runnable
+
+"GC task thread#19 (ParallelGC)" prio=10 tid=0x00000000070ad800 nid=0x65d4 runnable
+
+"GC task thread#20 (ParallelGC)" prio=10 tid=0x00000000070aec00 nid=0x65d5 runnable
+
+"GC task thread#21 (ParallelGC)" prio=10 tid=0x00000000070b0000 nid=0x65d6 runnable
+
+"GC task thread#22 (ParallelGC)" prio=10 tid=0x00000000070b1400 nid=0x65d7 runnable
+
+"GC task thread#23 (ParallelGC)" prio=10 tid=0x00000000070b2800 nid=0x65d8 runnable
+
+"VM Periodic Task Thread" prio=10 tid=0x00002aaaf4098800 nid=0x65e0 waiting on condition
+
+JNI global references: 1011

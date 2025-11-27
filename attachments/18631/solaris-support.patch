@@ -1,0 +1,106 @@
+Index: svnkit/src/org/tmatesoft/svn/core/internal/util/jna/JNALibraryLoader.java
+===================================================================
+--- svnkit/src/org/tmatesoft/svn/core/internal/util/jna/JNALibraryLoader.java	(revision 5851)
++++ svnkit/src/org/tmatesoft/svn/core/internal/util/jna/JNALibraryLoader.java	(working copy)
+@@ -54,7 +54,7 @@
+             }
+         }
+         
+-        if (SVNFileUtil.isOSX || SVNFileUtil.isLinux || SVNFileUtil.isBSD) {
++        if (SVNFileUtil.isOSX || SVNFileUtil.isLinux || SVNFileUtil.isBSD || SVNFileUtil.isSolaris) {
+             try {
+                 ourCLibrary = (ISVNCLibrary) Native.loadLibrary("c", ISVNCLibrary.class);
+                 try {
+Index: svnkit/src/org/tmatesoft/svn/core/internal/util/jna/SVNLinuxUtil.java
+===================================================================
+--- svnkit/src/org/tmatesoft/svn/core/internal/util/jna/SVNLinuxUtil.java	(revision 5851)
++++ svnkit/src/org/tmatesoft/svn/core/internal/util/jna/SVNLinuxUtil.java	(working copy)
+@@ -51,7 +51,7 @@
+                 ourSharedMemory.clear();
+                 int rc;
+                 synchronized (cLibrary) {
+-                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD ? 
++                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD || SVNFileUtil.isSolaris ? 
+                             cLibrary.lstat(path, ourSharedMemory) : 
+                             cLibrary.__lxstat64(0, path, ourSharedMemory);
+                 }
+@@ -61,7 +61,7 @@
+                     }
+                     return SVNFileType.NONE;
+                 }
+-                int mode = SVNFileUtil.isOSX || SVNFileUtil.isBSD ?
++                int mode = SVNFileUtil.isOSX || SVNFileUtil.isBSD || SVNFileUtil.isSolaris ?
+                         ourSharedMemory.getShort(getFileModeOffset()) : ourSharedMemory.getInt(getFileModeOffset());
+                 int type = mode & 0170000;
+                 if (type == 0120000) {
+@@ -100,7 +100,7 @@
+                 ourSharedMemory.clear();
+                 int rc;
+                 synchronized (cLibrary) {
+-                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD ? 
++                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD || SVNFileUtil.isSolaris ? 
+                             cLibrary.lstat(path, ourSharedMemory) : 
+                             cLibrary.__lxstat64(0, path, ourSharedMemory);
+                 }
+@@ -179,7 +179,7 @@
+                 ourSharedMemory.clear();
+                 int rc;
+                 synchronized (cLibrary) {
+-                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD ? 
++                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD || SVNFileUtil.isSolaris ? 
+                             cLibrary.lstat(path, ourSharedMemory) : 
+                             cLibrary.__lxstat64(0, path, ourSharedMemory);
+                 }
+@@ -230,7 +230,7 @@
+                 ourSharedMemory.clear();
+                 int rc;
+                 synchronized (cLibrary) {
+-                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD ? 
++                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD || SVNFileUtil.isSolaris ? 
+                             cLibrary.lstat(path, ourSharedMemory) : 
+                             cLibrary.__lxstat64(0, path, ourSharedMemory);
+                 }
+@@ -281,7 +281,7 @@
+                 ourSharedMemory.clear();
+                 int rc;
+                 synchronized (cLibrary) {
+-                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD ? 
++                    rc = SVNFileUtil.isOSX || SVNFileUtil.isBSD || SVNFileUtil.isSolaris ? 
+                             cLibrary.stat(path, ourSharedMemory) : 
+                             cLibrary.__xstat64(0, path, ourSharedMemory);
+                 }
+Index: svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java
+===================================================================
+--- svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java	(revision 5851)
++++ svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java	(working copy)
+@@ -79,7 +79,7 @@
+         if (file == null) {
+             return SVNFileType.UNKNOWN;
+         }
+-        if (SVNFileUtil.isLinux || SVNFileUtil.isBSD || SVNFileUtil.isOSX) {
++        if (SVNFileUtil.isLinux || SVNFileUtil.isBSD || SVNFileUtil.isOSX || SVNFileUtil.isSolaris) {
+             if (detectSymlinks) {
+                 SVNFileType ft = SVNJNAUtil.getFileType(file);
+                 if (ft != null) {
+Index: svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java
+===================================================================
+--- svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java	(revision 5851)
++++ svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java	(working copy)
+@@ -124,7 +124,7 @@
+         isOSX = osName != null && (osNameLC.indexOf("mac") >= 0 || osNameLC.indexOf("darwin") >= 0);
+         isLinux = osName != null && (osNameLC.indexOf("linux") >= 0 || osNameLC.indexOf("hp-ux") >= 0);
+         isBSD = !isLinux && osName != null && osNameLC.indexOf("bsd") >= 0;
+-        isSolaris = !isLinux && !isBSD && osName != null && osNameLC.indexOf("solaris") >= 0;
++        isSolaris = !isLinux && !isBSD && osName != null && (osNameLC.indexOf("solaris") >= 0 || osNameLC.indexOf("sunos") >= 0);
+         isOpenVMS = !isOSX && osName != null && osNameLC.indexOf("openvms") >= 0;
+ 
+         if (!isWindows && !isOSX && !isLinux && !isBSD && !isSolaris && !isOpenVMS && !isOS2) {
+@@ -484,7 +484,7 @@
+             if (SVNJNAUtil.setWritable(file)) {
+                 return true;
+             }
+-        } else if (isLinux || isOSX || isBSD) {
++        } else if (isLinux || isOSX || isBSD || SVNFileUtil.isSolaris) {
+             if (SVNJNAUtil.setWritable(file)) {
+                 return true;
+             }

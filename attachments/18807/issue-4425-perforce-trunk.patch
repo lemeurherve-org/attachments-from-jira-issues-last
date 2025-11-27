@@ -1,0 +1,29 @@
+Index: src/main/java/com/tek42/perforce/model/Changelist.java
+===================================================================
+--- src/main/java/com/tek42/perforce/model/Changelist.java	(revision 21549)
++++ src/main/java/com/tek42/perforce/model/Changelist.java	(working copy)
+@@ -86,7 +86,9 @@
+ 	 */
+ 	public static class FileEntry implements java.io.Serializable {
+ 		public static enum Action {
+-			ADD, EDIT, DELETE, INTEGRATE, BRANCH, PURGE
++			//FIX for Hudson Issue 4425
++			//Added MOVE/DELETE and MOVE/ADD for 2009.1 support
++			ADD, EDIT, DELETE, INTEGRATE, BRANCH, PURGE, MOVE_DELETE, MOVE_ADD
+ 		}
+ 
+ 		Action action;
+Index: src/main/java/com/tek42/perforce/parse/ChangelistBuilder.java
+===================================================================
+--- src/main/java/com/tek42/perforce/parse/ChangelistBuilder.java	(revision 21549)
++++ src/main/java/com/tek42/perforce/parse/ChangelistBuilder.java	(working copy)
+@@ -157,6 +157,9 @@
+ 						String filename = entry.substring(4, revStart);
+ 						String rev = entry.substring(revStart + 1, entry.indexOf(" ", revStart));
+ 						String action = entry.substring(entry.indexOf(" ", revStart) + 1);
++						//FIX for Hudson Issue 4425
++						//replace the slashes used in the move/add and move/delete actions
++						action = action.replace('/', '_');
+ 						Changelist.FileEntry file = new Changelist.FileEntry();
+ 						file.setFilename(filename);
+ 						file.setRevision(rev);

@@ -1,0 +1,49 @@
+diff -u oldslave/config.xml newslave/config.xml
+
+--- oldslave/config.xml   2020-03-10 14:56:27.742936153 -0400
++++ newslave/config.xml   2020-03-26 16:24:09.291768188 -0400
+@@ -1,37 +1,27 @@
+ <?xml version='1.1' encoding='UTF-8'?>
+-<org.jenkinsci.plugins.vSphereCloudSlave plugin="vsphere-cloud@2.21">
+- <name>oldslave</name>
++<org.jenkinsci.plugins.vSphereCloudSlave plugin="vsphere-cloud@2.23">
++ <name>newslave</name>
+  <description></description>
+  <remoteFS>/var/jenkins</remoteFS>
+  <numExecutors>1</numExecutors>
+  <mode>EXCLUSIVE</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+  <launcher class="org.jenkinsci.plugins.vSphereCloudLauncher">
+-   <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.31.1">
+-     <host>oldslave</host>
+-     <port>22</port>
+-     <credentialsId>dfb24bad-6e53-4a6a-a3d2-c709daff317f</credentialsId>
+-     <launchTimeoutSeconds>100000</launchTimeoutSeconds>
+-     <maxNumRetries>10</maxNumRetries>
+-     <retryWaitTime>15</retryWaitTime>
+-     <sshHostKeyVerificationStrategy class="hudson.plugins.sshslaves.verifiers.NonVerifyingKeyVerificationStrategy"/>
+-     <tcpNoDelay>false</tcpNoDelay>
+-   </launcher>
+    <overrideLaunchSupported>true</overrideLaunchSupported>
+    <vsDescription>vs</vsDescription>
+-   <vmName>oldslave</vmName>
++   <vmName>newslave</vmName>
+    <waitForVMTools>false</waitForVMTools>
+-   <snapName>March2020</snapName>
++   <snapName>InitialState</snapName>
+    <launchDelay>300</launchDelay>
+    <idleAction>REVERT_AND_RESTART</idleAction>
+    <LimitedTestRunCount>0</LimitedTestRunCount>
+  </launcher>
+- <label>Linux Oracle oldslave</label>
++ <label>Linux Oracle newslave</label>
+  <nodeProperties/>
+  <userId>admin</userId>
+  <vsDescription>vs</vsDescription>
+- <vmName>oldslave</vmName>
+- <snapName>March2020</snapName>
++ <vmName>newslave</vmName>
++ <snapName>InitialState</snapName>
+  <waitForVMTools>false</waitForVMTools>
+  <launchDelay>300</launchDelay>
+  <idleOption>Revert and Restart</idleOption>

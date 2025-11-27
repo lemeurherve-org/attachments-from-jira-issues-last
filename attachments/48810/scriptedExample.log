@@ -1,0 +1,136 @@
+Started by user Allan BURDAJEWICZ
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] podTemplate
+[Pipeline] {
+[Pipeline] node
+Agent testnotdeclarative-19-xz8hc-nwsrx-nmb7d is provisioned from template Kubernetes Pod Template
+---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://mm-1.cloudbees-core.svc.cluster.local/mm-1/job/testNotDeclarative/19/"
+  labels:
+    cloudbees.com/master: "mm-1"
+    jenkins: "slave"
+    jenkins/testNotDeclarative_19-xz8hc: "true"
+  name: "testnotdeclarative-19-xz8hc-nwsrx-nmb7d"
+spec:
+  containers:
+  - env:
+    - name: "JENKINS_SECRET"
+      value: "********"
+    - name: "JENKINS_AGENT_NAME"
+      value: "testnotdeclarative-19-xz8hc-nwsrx-nmb7d"
+    - name: "JENKINS_NAME"
+      value: "testnotdeclarative-19-xz8hc-nwsrx-nmb7d"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://mm-1.cloudbees-core.svc.cluster.local/mm-1/"
+    image: "jenkins/jnlp-slave:3.27-1-alpine"
+    imagePullPolicy: "IfNotPresent"
+    name: "jnlp"
+    resources:
+      limits: {}
+      requests: {}
+    securityContext:
+      privileged: false
+    tty: false
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  nodeSelector: {}
+  restartPolicy: "Never"
+  volumes:
+  - emptyDir: {}
+    name: "workspace-volume"
+
+Running on testnotdeclarative-19-xz8hc-nwsrx-nmb7d in /home/jenkins/agent/workspace/testNotDeclarative
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (a)
+[Pipeline] echo
+hello world!
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // podTemplate
+[Pipeline] podTemplate
+[Pipeline] {
+[Pipeline] node
+Agent testnotdeclarative-19-g56xl-b1525-7nvtw is provisioned from template Kubernetes Pod Template
+---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://mm-1.cloudbees-core.svc.cluster.local/mm-1/job/testNotDeclarative/19/"
+  labels:
+    cloudbees.com/master: "mm-1"
+    jenkins: "slave"
+    jenkins/testNotDeclarative_19-g56xl: "true"
+  name: "testnotdeclarative-19-g56xl-b1525-7nvtw"
+spec:
+  containers:
+  - args:
+    - "/var/jenkins_config/jenkins-agent"
+    command:
+    - "/bin/sh"
+    env:
+    - name: "JENKINS_SECRET"
+      value: "********"
+    - name: "JENKINS_AGENT_NAME"
+      value: "testnotdeclarative-19-g56xl-b1525-7nvtw"
+    - name: "JENKINS_NAME"
+      value: "testnotdeclarative-19-g56xl-b1525-7nvtw"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://mm-1.cloudbees-core.svc.cluster.local/mm-1/"
+    image: "jenkins/jnlp-slave:3.27-1-alpine"
+    imagePullPolicy: "IfNotPresent"
+    name: "jnlp"
+    resources:
+      limits: {}
+      requests: {}
+    securityContext:
+      privileged: false
+    tty: true
+    volumeMounts:
+    - mountPath: "/var/jenkins_config"
+      name: "volume-0"
+      readOnly: false
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+    workingDir: "/home/jenkins/agent"
+  nodeSelector: {}
+  restartPolicy: "Never"
+  volumes:
+  - configMap:
+      name: "jenkins-agent"
+    name: "volume-0"
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Running on testnotdeclarative-19-g56xl-b1525-7nvtw in /home/jenkins/agent/workspace/testNotDeclarative
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (b)
+[Pipeline] echo
+hello world!
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // podTemplate
+[Pipeline] End of Pipeline
+Finished: SUCCESS

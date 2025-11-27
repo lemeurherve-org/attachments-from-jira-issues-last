@@ -1,0 +1,79 @@
+[02/03/10 14:37:04] [SSH] Checking java version of java
+Couldn't figure out the Java version of java
+Exception in thread "main" java.lang.NoClassDefFoundError: null
+Caused by: java.lang.ClassNotFoundException: null
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:200)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:188)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:307)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:301)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:252)
+	at java.lang.ClassLoader.loadClassInternal(ClassLoader.java:320)
+Could not find the main class: null.  Program will exit.
+
+[02/03/10 14:37:06] [SSH] Checking java version of /usr/bin/java
+Couldn't figure out the Java version of /usr/bin/java
+Exception in thread "main" java.lang.NoClassDefFoundError: null
+Caused by: java.lang.ClassNotFoundException: null
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:200)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:188)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:307)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:301)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:252)
+	at java.lang.ClassLoader.loadClassInternal(ClassLoader.java:320)
+Could not find the main class: null.  Program will exit.
+
+[02/03/10 14:37:06] [SSH] Checking java version of /usr/java/default/bin/java
+Couldn't figure out the Java version of /usr/java/default/bin/java
+Exception in thread "main" java.lang.NoClassDefFoundError: null
+Caused by: java.lang.ClassNotFoundException: null
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:200)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:188)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:307)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:301)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:252)
+	at java.lang.ClassLoader.loadClassInternal(ClassLoader.java:320)
+Could not find the main class: null.  Program will exit.
+
+[02/03/10 14:37:06] [SSH] Checking java version of /usr/java/latest/bin/java
+Couldn't figure out the Java version of /usr/java/latest/bin/java
+bash: /usr/java/latest/bin/java: No such file or directory
+
+[02/03/10 14:37:06] [SSH] Checking java version of /usr/local/bin/java
+Couldn't figure out the Java version of /usr/local/bin/java
+bash: /usr/local/bin/java: No such file or directory
+
+[02/03/10 14:37:07] [SSH] Checking java version of /usr/local/java/bin/java
+Couldn't figure out the Java version of /usr/local/java/bin/java
+bash: /usr/local/java/bin/java: No such file or directory
+
+[02/03/10 14:37:07] [SSH] Checking java version of /users/build/hudson_slaves/slave1/jdk/bin/java
+Couldn't figure out the Java version of /users/build/hudson_slaves/slave1/jdk/bin/java
+bash: /users/build/hudson_slaves/slave1/jdk/bin/java: No such file or directory
+
+(...)
+
+Creating jdk1.6.0_16/jre/lib/deploy.jar
+ 
+Done.
+hudson.util.IOException2: Could not find any known supported java version in [java, /usr/bin/java, /usr/java/default/bin/java, /usr/java/latest/bin/java, /usr/local/bin/java, /usr/local/java/bin/java, /users/build/hudson_slaves/slave1/jdk/bin/java], and we also failed to install JDK as a fallback
+	at hudson.plugins.sshslaves.SSHLauncher.launch(SSHLauncher.java:186)
+	at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:180)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:619)
+Caused by: com.trilead.ssh2.SFTPException: Failure (SSH_FX_FAILURE: An error occurred, but no specific error code exists to describe the failure.)
+	at com.trilead.ssh2.SFTPv3Client.expectStatusOKMessage(SFTPv3Client.java:556)
+	at com.trilead.ssh2.SFTPv3Client.mv(SFTPv3Client.java:1012)
+	at hudson.plugins.sshslaves.SFTPFileSystem.pullUp(SFTPFileSystem.java:46)
+	at hudson.tools.JDKInstaller.install(JDKInstaller.java:175)
+	at hudson.plugins.sshslaves.SSHLauncher.attemptToInstallJDK(SSHLauncher.java:271)
+	at hudson.plugins.sshslaves.SSHLauncher.launch(SSHLauncher.java:184)
+	... 6 more
+[02/03/10 14:40:12] [SSH] Connection closed.
+
+

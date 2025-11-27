@@ -1,0 +1,23 @@
+import groovy.io.*
+
+@NonCPS
+def listfiles(dir) {
+    	dlist = []
+    	flist = []
+    	new File(dir).eachDir {dlist << it.name }
+    	dlist.sort()
+    	new File(dir).eachFile(FileType.FILES, {flist << it.name })
+    	flist.sort()
+    	return (dlist << flist).flatten()
+    }
+
+stage ("deploy") {
+    script {
+        timeout(time: 300, unit: 'SECONDS') {
+          fs = listfiles("/mnt/nfs/var/nfs_share_dir/new/")
+            fs.each {
+            	println it
+            } 
+        }
+    }
+}

@@ -1,0 +1,39 @@
+diff --git a/src/main/java/hudson/plugins/parameterizedtrigger/TriggerBuilder.java b/src/main/java/hudson/plugins/parameterizedtrigger/TriggerBuilder.java
+index 2bc465e..026c066 100644
+--- a/src/main/java/hudson/plugins/parameterizedtrigger/TriggerBuilder.java
++++ b/src/main/java/hudson/plugins/parameterizedtrigger/TriggerBuilder.java
+@@ -7,6 +7,7 @@ import hudson.Util;
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
+ import hudson.model.BuildListener;
++import hudson.model.Result;
+ import hudson.tasks.BuildStepDescriptor;
+ import hudson.tasks.BuildStepMonitor;
+ import hudson.tasks.Builder;
+@@ -58,6 +59,7 @@ public class TriggerBuilder extends Builder {
+ 		for (BlockableBuildTriggerConfig config : configs) {
+             futures.put(config,config.perform(build, launcher, listener));
+         }
++		boolean buildCanContinue = true;
+         try {
+             for (Entry<BlockableBuildTriggerConfig, List<Future<AbstractBuild>>> e : futures.entrySet()) {
+                 int n=0;
+@@ -69,6 +71,9 @@ public class TriggerBuilder extends Builder {
+ 	                        AbstractBuild b = f.get();
+ 	                        listener.getLogger().println(b.getFullDisplayName()+" completed. Result was "+b.getResult());
+ 	                        build.setResult(e.getKey().getBlock().mapResult(b.getResult()));
++	                        if (b.getResult().isWorseThan(Result.SUCCESS)) {
++	                        	buildCanContinue = false;
++	                        }
+ 	                    } catch (CancellationException x) {
+ 	                        throw new AbortException(p.getFullDisplayName() +" aborted.");
+ 	                    }
+@@ -82,7 +87,7 @@ public class TriggerBuilder extends Builder {
+             throw new IOException2(e); // can't happen, I think.
+         }
+ 
+-        return true;
++        return buildCanContinue;
+ 	}
+ 
+ 	@Extension

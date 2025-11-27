@@ -1,0 +1,52 @@
+Started by an SCM change
+Started by an SCM change
+Started by an SCM change
+Building remotely on Build Agent 1 in workspace C:\Jenkins\workspace\Fusion 3.69
+FATAL: java.io.IOException: Remote call on Build Agent 1 failed
+hudson.remoting.RemotingSystemException: java.io.IOException: Remote call on Build Agent 1 failed
+	at hudson.remoting.RemoteInvocationHandler.invoke(RemoteInvocationHandler.java:183)
+	at com.sun.proxy.$Proxy75.addCredentials(Unknown Source)
+	at org.jenkinsci.plugins.gitclient.RemoteGitImpl.addCredentials(RemoteGitImpl.java:196)
+	at hudson.plugins.git.GitSCM.createClient(GitSCM.java:584)
+	at hudson.plugins.git.GitSCM.createClient(GitSCM.java:561)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:866)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1411)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:652)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:88)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:557)
+	at hudson.model.Run.execute(Run.java:1665)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:230)
+Caused by: java.io.IOException: Remote call on Build Agent 1 failed
+	at hudson.remoting.Channel.call(Channel.java:723)
+	at hudson.remoting.RemoteInvocationHandler.invoke(RemoteInvocationHandler.java:167)
+	... 13 more
+Caused by: java.lang.Error: Failed to deserialize the Callable object.
+	at hudson.remoting.UserRequest.perform(UserRequest.java:104)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:326)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at hudson.remoting.Engine$1$1.run(Engine.java:58)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.ClassCastException: cannot assign instance of com.cloudbees.plugins.credentials.CredentialsScope$2 to field com.cloudbees.plugins.credentials.BaseCredentials.scope of type com.cloudbees.plugins.credentials.CredentialsScope in instance of com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey
+	at java.io.ObjectStreamClass$FieldReflector.setObjFieldValues(Unknown Source)
+	at java.io.ObjectStreamClass.setObjFieldValues(Unknown Source)
+	at java.io.ObjectInputStream.defaultReadFields(Unknown Source)
+	at java.io.ObjectInputStream.readSerialData(Unknown Source)
+	at java.io.ObjectInputStream.readOrdinaryObject(Unknown Source)
+	at java.io.ObjectInputStream.readObject0(Unknown Source)
+	at java.io.ObjectInputStream.readArray(Unknown Source)
+	at java.io.ObjectInputStream.readObject0(Unknown Source)
+	at java.io.ObjectInputStream.defaultReadFields(Unknown Source)
+	at java.io.ObjectInputStream.readSerialData(Unknown Source)
+	at java.io.ObjectInputStream.readOrdinaryObject(Unknown Source)
+	at java.io.ObjectInputStream.readObject0(Unknown Source)
+	at java.io.ObjectInputStream.readObject(Unknown Source)
+	at hudson.remoting.UserRequest.deserialize(UserRequest.java:182)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:98)
+	... 9 more

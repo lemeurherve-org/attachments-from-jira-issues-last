@@ -1,0 +1,68 @@
+diff -crB main/resources/hudson/tasks/junit/CaseResult/index.jelly ../jenkins/core/src/main/resources/hudson/tasks/junit/CaseResult/index.jelly
+*** main/resources/hudson/tasks/junit/CaseResult/index.jelly	2011-03-21 07:17:49.000000000 +0100
+--- ../jenkins/core/src/main/resources/hudson/tasks/junit/CaseResult/index.jelly	2011-03-21 11:52:10.000000000 +0100
+***************
+*** 57,62 ****
+--- 57,64 ----
+          <a href="history">
+            ${%took(it.durationString)}
+          </a>
++         <br />
++         ${it.Owner.Time.toString()}
+        </div>
+  
+        <t:editableDescription permission="${it.owner.UPDATE}"/>
+diff -crB main/resources/hudson/tasks/junit/CaseResult/list.jelly ../jenkins/core/src/main/resources/hudson/tasks/junit/CaseResult/list.jelly
+*** main/resources/hudson/tasks/junit/CaseResult/list.jelly	2011-03-21 07:17:49.000000000 +0100
+--- ../jenkins/core/src/main/resources/hudson/tasks/junit/CaseResult/list.jelly	2011-03-21 11:51:11.000000000 +0100
+***************
+*** 45,50 ****
+--- 45,51 ----
+              <j:forEach var="badge" items="${test.testActions}">
+                <st:include it="${badge}" page="badge.jelly" optional="true"/>
+              </j:forEach>
++             ${test.Owner.Time.toString()}
+              </td>
+              <td class="pane" style="text-align:left">${test.description}</td>
+              <td class="pane" style="text-align:left" data="${test.duration}">${test.durationString}</td>
+diff -crB main/resources/hudson/tasks/junit/ClassResult/list.jelly ../jenkins/core/src/main/resources/hudson/tasks/junit/ClassResult/list.jelly
+*** main/resources/hudson/tasks/junit/ClassResult/list.jelly	2011-03-21 07:17:49.000000000 +0100
+--- ../jenkins/core/src/main/resources/hudson/tasks/junit/ClassResult/list.jelly	2011-03-21 11:50:35.000000000 +0100
+***************
+*** 44,49 ****
+--- 44,50 ----
+  		        <j:forEach var="badge" items="${p.testActions}">
+  		          <st:include it="${badge}" page="badge.jelly" optional="true"/>
+  		        </j:forEach>
++ 		        ${b.Time.toString()}
+              </td>
+              <td class="pane" style="text-align:right">${p.description}</td>
+              <td class="pane" style="text-align:right" data="${p.duration}">${p.durationString}</td>
+
+diff -crB main/resources/hudson/tasks/test/MetaTabulatedResult/list.jelly ../jenkins/core/src/main/resources/hudson/tasks/test/MetaTabulatedResult/list.jelly
+*** main/resources/hudson/tasks/test/MetaTabulatedResult/list.jelly	2011-03-21 07:17:49.000000000 +0100
+--- ../jenkins/core/src/main/resources/hudson/tasks/test/MetaTabulatedResult/list.jelly	2011-03-21 11:58:54.000000000 +0100
+***************
+*** 44,49 ****
+--- 44,50 ----
+  		        <j:forEach var="badge" items="${p.testActions}">
+  		          <st:include it="${badge}" page="badge.jelly" optional="true"/>
+  		        </j:forEach>
++ 		        ${b.Time.toString()}
+              </td>
+              <td class="pane" style="text-align:right">${p.description}</td>
+              <td class="pane" style="text-align:right" data="${p.duration}">${p.durationString}</td>
+diff -crB main/resources/hudson/tasks/test/TestResult/index.jelly ../jenkins/core/src/main/resources/hudson/tasks/test/TestResult/index.jelly
+*** main/resources/hudson/tasks/test/TestResult/index.jelly	2011-03-21 07:17:49.000000000 +0100
+--- ../jenkins/core/src/main/resources/hudson/tasks/test/TestResult/index.jelly	2011-03-21 11:30:56.000000000 +0100
+***************
+*** 36,41 ****
+--- 36,43 ----
+          <a href="history">
+            ${%took(it.durationString)}
+          </a>
++         <br />
++         ${it.Owner.Time.toString()}
+        </div>
+  
+        <t:editableDescription permission="${it.owner.UPDATE}"/>

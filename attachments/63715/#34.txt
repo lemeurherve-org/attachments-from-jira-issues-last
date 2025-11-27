@@ -1,0 +1,60 @@
+Started by user Tushar Soni
+Running as SYSTEM
+Building on the built-in node in workspace /scratch/rmbbuild/jenkins/workspace/Test Job
+No emails were triggered.
+[Test Job] $ /bin/sh -xe /tmp/jenkins6808259698850208565.sh
++ echo http://100.76.147.185:8080/
+http://100.76.147.185:8080/
++ echo http://100.76.147.185:8080/
+http://100.76.147.185:8080/
+Email was triggered for: Success
+Sending email for trigger: Success
+Sending email to: x
+ERROR: Step ‘Editable Email Notification’ aborted due to exception: 
+java.lang.ClassNotFoundException: javax.activation.DataContentHandler
+	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:445)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:592)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
+Caused: java.lang.NoClassDefFoundError: javax/activation/DataContentHandler
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1017)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at java.base/java.net.URLClassLoader.defineClass(URLClassLoader.java:524)
+	at java.base/java.net.URLClassLoader$1.run(URLClassLoader.java:427)
+	at java.base/java.net.URLClassLoader$1.run(URLClassLoader.java:421)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:712)
+	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:420)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:592)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
+	at Jenkins Main ClassLoader//org.eclipse.jetty.ee9.webapp.WebAppClassLoader.loadClass(WebAppClassLoader.java:474)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:579)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:579)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
+	at PluginClassLoader for jakarta-activation-api//jakarta.activation.MailcapCommandMap.getDataContentHandler(MailcapCommandMap.java:613)
+	at PluginClassLoader for jakarta-activation-api//jakarta.activation.MailcapCommandMap.createDataContentHandler(MailcapCommandMap.java:573)
+	at PluginClassLoader for jakarta-mail-api//io.jenkins.plugins.jakarta.activation.DelegatingCommandMap.lambda$createDataContentHandler$6(DelegatingCommandMap.java:64)
+	at PluginClassLoader for jakarta-mail-api//io.jenkins.plugins.jakarta.activation.DelegatingCommandMap.runWithContextClassLoader(DelegatingCommandMap.java:26)
+	at PluginClassLoader for jakarta-mail-api//io.jenkins.plugins.jakarta.activation.DelegatingCommandMap.createDataContentHandler(DelegatingCommandMap.java:64)
+	at PluginClassLoader for jakarta-activation-api//jakarta.activation.DataHandler.getDataContentHandler(DataHandler.java:591)
+	at PluginClassLoader for jakarta-activation-api//jakarta.activation.DataHandler.writeTo(DataHandler.java:290)
+	at PluginClassLoader for jakarta-mail-api//jakarta.mail.internet.MimeUtility.getEncoding(MimeUtility.java:318)
+	at PluginClassLoader for jakarta-mail-api//jakarta.mail.internet.MimeBodyPart.updateHeaders(MimeBodyPart.java:1562)
+	at PluginClassLoader for jakarta-mail-api//jakarta.mail.internet.MimeBodyPart.updateHeaders(MimeBodyPart.java:1156)
+	at PluginClassLoader for jakarta-mail-api//jakarta.mail.internet.MimeMultipart.updateHeaders(MimeMultipart.java:509)
+	at PluginClassLoader for jakarta-mail-api//jakarta.mail.internet.MimeBodyPart.updateHeaders(MimeBodyPart.java:1520)
+	at PluginClassLoader for jakarta-mail-api//jakarta.mail.internet.MimeMessage.updateHeaders(MimeMessage.java:2272)
+	at PluginClassLoader for jakarta-mail-api//jakarta.mail.internet.MimeMessage.saveChanges(MimeMessage.java:2232)
+	at PluginClassLoader for jakarta-mail-api//jakarta.mail.internet.MimeMessage.writeTo(MimeMessage.java:1910)
+	at PluginClassLoader for jakarta-mail-api//org.eclipse.angus.mail.smtp.SMTPTransport.sendMessage(SMTPTransport.java:1305)
+	at PluginClassLoader for email-ext//hudson.plugins.emailext.ExtendedEmailPublisher.sendMail(ExtendedEmailPublisher.java:582)
+	at PluginClassLoader for email-ext//hudson.plugins.emailext.ExtendedEmailPublisher._perform(ExtendedEmailPublisher.java:496)
+	at PluginClassLoader for email-ext//hudson.plugins.emailext.ExtendedEmailPublisher.perform(ExtendedEmailPublisher.java:397)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:818)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:767)
+	at hudson.model.Build$BuildExecution.cleanUp(Build.java:189)
+	at hudson.model.Run.execute(Run.java:1874)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:44)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:445)
+Finished: SUCCESS

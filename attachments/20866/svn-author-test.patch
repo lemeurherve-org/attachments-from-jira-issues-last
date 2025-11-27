@@ -1,0 +1,69 @@
+Index: src/test/java/hudson/scm/SubversionSCMTest.java
+===================================================================
+--- src/test/java/hudson/scm/SubversionSCMTest.java	(revision 39940)
++++ src/test/java/hudson/scm/SubversionSCMTest.java	(working copy)
+@@ -952,35 +952,53 @@
+     }
+ 
+     public void testMultiModuleEnvironmentVariables() throws Exception {
++        String antUrl = "https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-ant";
++        String mavenUrl = "https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-maven";
+         FreeStyleProject p = createFreeStyleProject();
++        
+         ModuleLocation[] locations = {
+-            new ModuleLocation("https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-ant", null),
+-            new ModuleLocation("https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-maven", null)
++            new ModuleLocation(antUrl, null),
++            new ModuleLocation(mavenUrl, null)
+         };
+         p.setScm(new SubversionSCM(Arrays.asList(locations), false, false, null, null, null, null, null, null));
+ 
+         CaptureEnvironmentBuilder builder = new CaptureEnvironmentBuilder();
+         p.getBuildersList().add(builder);
+ 
+-        assertBuildStatusSuccess(p.scheduleBuild2(0).get());
++        p.scheduleBuild2(0, new Cause.UserCause(), 
++                         new RevisionParameterAction(new SubversionSCM.SvnInfo(antUrl, 11931),
++                                                     new SubversionSCM.SvnInfo(mavenUrl, 18075))).get();
+ 
+-        assertEquals("https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-ant", builder.getEnvVars().get("SVN_URL_1"));
+-        assertEquals("https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-maven", builder.getEnvVars().get("SVN_URL_2"));
+-        assertEquals(getActualRevision(p.getLastBuild(), "https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-ant").toString(), builder.getEnvVars().get("SVN_REVISION_1"));
+-        assertEquals(getActualRevision(p.getLastBuild(), "https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-maven").toString(), builder.getEnvVars().get("SVN_REVISION_2"));
++        assertBuildStatusSuccess(p.scheduleBuild2(0, new Cause.UserCause(), 
++                                                  new RevisionParameterAction(new SubversionSCM.SvnInfo(antUrl, 21084),
++                                                                              new SubversionSCM.SvnInfo(mavenUrl, 18075))).get());
+ 
++        assertEquals(antUrl, builder.getEnvVars().get("SVN_URL_1"));
++        assertEquals(mavenUrl, builder.getEnvVars().get("SVN_URL_2"));
++        assertEquals(getActualRevision(p.getLastBuild(), antUrl).toString(), builder.getEnvVars().get("SVN_REVISION_1"));
++        assertEquals(getActualRevision(p.getLastBuild(), mavenUrl).toString(), builder.getEnvVars().get("SVN_REVISION_2"));
++        assertEquals("kohsuke", builder.getEnvVars().get("SVN_AUTHOR_1"));
++        assertEquals("added a revision to test polling", builder.getEnvVars().get("SVN_COMMIT_MSG_1"));
++        // not enough commits in the Maven repo to test second module!
+     }
+ 
+     public void testSingleModuleEnvironmentVariables() throws Exception {
++        String url = "https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-ant";
+         FreeStyleProject p = createFreeStyleProject();
+-        p.setScm(new SubversionSCM("https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-ant"));
++        p.setScm(new SubversionSCM(url));
+ 
+         CaptureEnvironmentBuilder builder = new CaptureEnvironmentBuilder();
+         p.getBuildersList().add(builder);
+ 
+-        assertBuildStatusSuccess(p.scheduleBuild2(0).get());
+-        assertEquals("https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-ant", builder.getEnvVars().get("SVN_URL"));
+-        assertEquals(getActualRevision(p.getLastBuild(), "https://svn.jenkins-ci.org/trunk/hudson/test-projects/trivial-ant").toString(), builder.getEnvVars().get("SVN_REVISION"));
++        p.scheduleBuild2(0, new Cause.UserCause(), 
++                            new RevisionParameterAction(new SubversionSCM.SvnInfo(url, 11931))).get();
++        
++        assertBuildStatusSuccess(p.scheduleBuild2(0, new Cause.UserCause(), 
++                                                  new RevisionParameterAction(new SubversionSCM.SvnInfo(url, 21084))).get());
++        assertEquals(url, builder.getEnvVars().get("SVN_URL"));
++        assertEquals(getActualRevision(p.getLastBuild(), url).toString(), builder.getEnvVars().get("SVN_REVISION"));
++        assertEquals("kohsuke", builder.getEnvVars().get("SVN_AUTHOR"));
++        assertEquals("added a revision to test polling", builder.getEnvVars().get("SVN_COMMIT_MSG"));
+     }
+ 
+     @Bug(1379)

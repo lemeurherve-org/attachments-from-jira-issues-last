@@ -1,0 +1,96 @@
+Index: src/main/java/hudson/plugins/jabber/im/transport/JabberPublisherDescriptor.java
+===================================================================
+--- src/main/java/hudson/plugins/jabber/im/transport/JabberPublisherDescriptor.java	(revision 28599)
++++ src/main/java/hudson/plugins/jabber/im/transport/JabberPublisherDescriptor.java	Mon Mar 22 11:13:47 MDT 2010
+@@ -47,6 +47,7 @@
+     public static final String PARAMETERNAME_PORT = JabberPublisherDescriptor.PREFIX + "port";
+     public static final String PARAMETERNAME_HOSTNAME = JabberPublisherDescriptor.PREFIX + "hostname";
+     public static final String PARAMETERNAME_SSL = JabberPublisherDescriptor.PREFIX + "ssl";
++    public static final String PARAMETERNAME_SASL = JabberPublisherDescriptor.PREFIX + "enableSASL";
+     public static final String PARAMETERNAME_PRESENCE = JabberPublisherDescriptor.PREFIX + "exposePresence";
+     public static final String PARAMETERNAME_PASSWORD = JabberPublisherDescriptor.PREFIX + "password";
+     public static final String PARAMETERNAME_JABBERID = JabberPublisherDescriptor.PREFIX + "jabberId";
+@@ -97,6 +98,7 @@
+     private String hudsonPassword;
+     private String groupChatNickname;
+     private boolean exposePresence = true;
++    private boolean enableSASL = true;
+     private String initialGroupChats;
+     private String commandPrefix = DEFAULT_COMMAND_PREFIX;
+     private String defaultIdSuffix;
+@@ -329,6 +331,10 @@
+         else            return String.valueOf(port);
+     }
+ 
++    public boolean isEnableSASL() {
++        return enableSASL;
++    }
++
+     public boolean isExposePresence() {
+         return this.exposePresence;
+     }
+@@ -422,6 +428,7 @@
+ 		String en = req.getParameter(PARAMETERNAME_ENABLED);
+ 		this.enabled = Boolean.valueOf(en != null);
+ 		this.exposePresence = req.getParameter(JabberPublisherDescriptor.PARAMETERNAME_PRESENCE) != null;
++        this.enableSASL = req.getParameter(JabberPublisherDescriptor.PARAMETERNAME_SASL) != null;
+ 		this.subscriptionMode = Util.fixEmptyAndTrim(req.getParameter(JabberPublisherDescriptor.PARAMETERNAME_SUBSCRIPTION_MODE));
+         applyHostname(req);
+         applyPort(req);
+Index: src/main/resources/hudson/plugins/jabber/im/transport/JabberPublisher/global.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/jabber/im/transport/JabberPublisher/global.jelly	(revision 28599)
++++ src/main/resources/hudson/plugins/jabber/im/transport/JabberPublisher/global.jelly	Mon Mar 22 11:40:30 MDT 2010
+@@ -32,6 +32,9 @@
+ 			<f:textbox name="${descriptor.PARAMETERNAME_DEFAULT_ID_SUFFIX}"
+ 				value="${descriptor.defaultIdSuffix}" />
+ 	  </f:entry>
++         <f:entry title="Enable SASL for connection" description="${base}/help-sasl.html">
++			  <f:checkbox name="${descriptor.PARAMETERNAME_SASL}" checked="${descriptor.enableSASL}"/>
++		</f:entry>
+       <f:entry title="Expose presence" help="${base}/help-presence.html">
+         <f:checkbox name="${descriptor.PARAMETERNAME_PRESENCE}" checked="${descriptor.exposePresence}"/>
+       </f:entry>
+Index: src/main/webapp/help-sasl.html
+===================================================================
+--- src/main/webapp/help-sasl.html	Mon Mar 22 11:41:05 MDT 2010
++++ src/main/webapp/help-sasl.html	Mon Mar 22 11:41:05 MDT 2010
+@@ -0,0 +1,8 @@
++<div>
++    SASL authentication is enabled by default. Some connections will fail if this is set.
++    <p>
++    If your connection doesn't work, and you see an error in the logs that reads:
++    <tt>WARNING: SASL authentication failed using mechanism PLAIN</tt>
++    you should disable SASL authentication.
++    </p>
++</div>
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/jabber/im/transport/JabberIMConnection.java
+===================================================================
+--- src/main/java/hudson/plugins/jabber/im/transport/JabberIMConnection.java	(revision 28598)
++++ src/main/java/hudson/plugins/jabber/im/transport/JabberIMConnection.java	Mon Mar 22 11:16:44 MDT 2010
+@@ -86,6 +86,7 @@
+ 	private IMPresence impresence;
+ 
+     private String imStatusMessage;
++    private boolean enableSASL;
+ 
+     private final JabberPublisherDescriptor desc;
+     private final Authentication authentication;
+@@ -101,6 +102,7 @@
+ 		this.port = desc.getPort();
+ 		this.nick = JabberUtil.getUserPart(desc.getJabberId());
+ 		this.passwd = desc.getPassword();
++        this.enableSASL = desc.isEnableSASL();
+ 		this.groupChatNick = desc.getGroupChatNickname() != null ?
+ 				desc.getGroupChatNickname() : this.nick;
+ 		this.botCommandPrefix = desc.getCommandPrefix();
+@@ -218,6 +220,8 @@
+ 		// not sure what Smack's reconnect feature really does.
+ 		cfg.setReconnectionAllowed(false);
+ 		
++        cfg.setSASLAuthenticationEnabled(this.enableSASL);
++
+ 		this.connection = new XMPPConnection(cfg);
+ 		this.connection.connect();
+ 

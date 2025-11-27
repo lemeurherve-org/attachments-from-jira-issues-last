@@ -1,0 +1,123 @@
+Index: src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java	(revision 35503)
++++ src/main/java/hudson/plugins/selenium/ComputerListenerImpl.java	(working copy)
+@@ -95,6 +95,11 @@
+             userArgs.add(p.getRcFirefoxProfileTemplate());
+         }
+ 
++        final String userExtensions = p.getRcUserExtensions();
++        if (hasText(userExtensions)) {
++            userArgs.add("-userExtensions");
++            userArgs.add("user-extensions.js");
++        }
+ 
+         // make sure that Selenium Hub is started before we start RCs.
+         try {
+@@ -115,7 +120,7 @@
+                         ss.close();
+ 
+                         String[] defaultArgs = new String[] {"-host",hostName,"-port",String.valueOf(port),"-env",labelList.toString(),"-hubURL","http://"+masterName+":"+masterPort+"/" };
+-                        PluginImpl.createSeleniumRCVM(f,listener).callAsync(
++                        PluginImpl.createSeleniumRCVM(f,listener, userExtensions).callAsync(
+                                 new RemoteControlLauncher((String[]) ArrayUtils.addAll(defaultArgs, userArgs.toArray(new String[0]))));
+                     }
+                 } catch (Exception t) {
+Index: src/main/java/hudson/plugins/selenium/PluginImpl.java
+===================================================================
+--- src/main/java/hudson/plugins/selenium/PluginImpl.java	(revision 35503)
++++ src/main/java/hudson/plugins/selenium/PluginImpl.java	(working copy)
+@@ -64,6 +64,7 @@
+     private boolean rcDebug;
+     private boolean rcTrustAllSSLCerts;
+     private String rcFirefoxProfileTemplate;
++    private String rcUserExtensions;
+     private String rcLog;
+     private String hubLogLevel = "INFO";
+ 
+@@ -98,6 +99,7 @@
+         rcBrowserSideLog = formData.getBoolean("rcBrowserSideLog");
+         rcTrustAllSSLCerts = formData.getBoolean("rcTrustAllSSLCerts");
+         rcFirefoxProfileTemplate = formData.getString("rcFirefoxProfileTemplate");
++        rcUserExtensions = formData.getString("rcUserExtensions");
+         hubLogLevel = formData.getString("hubLogLevel");
+         try {
+             save();
+@@ -162,6 +164,11 @@
+     }
+ 
+     @Exported
++    public String getRcUserExtensions() {
++        return rcUserExtensions;
++    }
++
++    @Exported
+     public String getHubLogLevel(){
+         return hubLogLevel != null ? hubLogLevel : "INFO";
+     }
+@@ -197,7 +204,7 @@
+      *      The slave/master root.
+      */
+     static /*package*/ Channel createSeleniumGridVM(File rootDir, TaskListener listener) throws IOException, InterruptedException {
+-        FilePath distDir = install(rootDir, listener);
++        FilePath distDir = install(rootDir, listener, null);
+         return Channels.newJVM("Selenium Grid",listener,distDir,
+                 new ClasspathBuilder().addAll(distDir,"lib/selenium-grid-hub-standalone-*.jar, lib/log4j-*.jar"),
+                 null);
+@@ -209,17 +216,22 @@
+      * @param rootDir
+      *      The slave/master root.
+      */
+-    static /*package*/ Channel createSeleniumRCVM(File rootDir, TaskListener listener) throws IOException, InterruptedException {
+-        FilePath distDir = install(rootDir, listener);
++    static /*package*/ Channel createSeleniumRCVM(File rootDir, TaskListener listener, String userExtensions) throws IOException, InterruptedException {
++        FilePath distDir = install(rootDir, listener, userExtensions);
+         return Channels.newJVM("Selenium RC",listener,distDir,
+                 new ClasspathBuilder()
+                         .addAll(distDir,"vendor/selenium-server-*.jar, lib/selenium-grid-remote-control-*.jar, lib/commons-httpclient-*.jar"),
+                 null);
+     }
+ 
+-    private static FilePath install(File rootDir, TaskListener listener) throws IOException, InterruptedException {
++    private static FilePath install(File rootDir, TaskListener listener, String userExtensions) throws IOException, InterruptedException {
+         FilePath distDir = new FilePath(new File(rootDir,"selenium-grid"));
+         distDir.installIfNecessaryFrom(PluginImpl.class.getResource("selenium-grid.tgz"),listener,"Installing Selenium Grid binaries");
++        if (userExtensions != null) {
++            // Write user-extensions.js to the distDir, so Selenium can find it
++            FilePath userExtensionsFilePath = new FilePath(distDir, "user-extensions.js");
++            userExtensionsFilePath.write(userExtensions, null);
++        }
+         return distDir;
+     }
+ 
+Index: src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly	(revision 35503)
++++ src/main/resources/hudson/plugins/selenium/PluginImpl/config.jelly	(working copy)
+@@ -22,6 +22,9 @@
+         <f:entry title="${%Set -firefoxProfileTemplate}" field="rcFirefoxProfileTemplate" help="/plugin/selenium/help/rcfirefoxtemplate.html">
+             <f:textbox name="rcFirefoxProfileTemplate" value="${it.rcFirefoxProfileTemplate}" />
+         </f:entry>
++        <f:entry title="${%Add user extensions}" field="rcUserExtensions" help="/plugin/selenium/help/rcuserextensions.html">
++            <f:textarea name="rcUserExtensions" value="${it.rcUserExtensions}" />
++        </f:entry>
+         <f:entry title="${%Set Hub Log Level}" field="hubLogLevel" help="/plugin/selenium/help/hubloglevel.html">
+              <select name="hubLogLevel" value="${it.hubLogLevel}">
+                  <j:forEach var="l" items="OFF,SEVERE,WARNING,CONFIG,INFO,FINE,FINER,FINEST,ALL">
+Index: src/main/webapp/help/rcuserextensions.html
+===================================================================
+--- src/main/webapp/help/rcuserextensions.html	(revision 0)
++++ src/main/webapp/help/rcuserextensions.html	(revision 0)
+@@ -0,0 +1,4 @@
++<div>
++    Additional javascript that adds your own actions, assertions and locator-strategies.
++    See also <a href="http://seleniumhq.org/docs/08_user_extensions.html#using-user-extensions-with-selenium-rc">http://seleniumhq.org/docs/08_user_extensions.html#using-user-extensions-with-selenium-rc</a>
++</div>
+
+Property changes on: src\main\webapp\help\rcuserextensions.html
+___________________________________________________________________
+Added: svn:mime-type
+   + text/html
+Added: svn:keywords
+   + Author Date Id Revision
+

@@ -1,0 +1,381 @@
+Index: m2release/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java
+===================================================================
+--- m2release/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java	(revision 33034)
++++ m2release/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java	(revision )
+@@ -66,15 +66,15 @@
+  * Wraps a {@link MavenBuild} to be able to run the <a
+  * href="http://maven.apache.org/plugins/maven-release-plugin/">maven release plugin</a> on demand, with the
+  * ability to auto close a Nexus Pro Staging Repo
+- * 
++ *
+  * @author James Nord
+  * @version 0.3
+  * @since 0.1
+  */
+ public class M2ReleaseBuildWrapper extends BuildWrapper {
+-	
++
+ 	private transient Logger log = LoggerFactory.getLogger(M2ReleaseBuildWrapper.class);
+-	
++
+ 	private transient boolean             doRelease           = false;
+ 	private transient boolean             closeNexusStage     = true;
+ 	private transient Map<String, String> versions;
+@@ -82,6 +82,7 @@
+ 	private transient String              repoDescription;
+ 	private transient String              scmUsername;
+ 	private transient String              scmPassword;
++	private transient String              tagName;
+ 	private transient String              scmCommentPrefix;
+ 	private transient boolean             appendHusonUserName;
+ 	private transient String              hudsonUserName;
+@@ -90,7 +91,7 @@
+ 	public String                         defaultVersioningMode        = DescriptorImpl.DEFAULT_VERSIONING;
+ 	public boolean                        selectCustomScmCommentPrefix = DescriptorImpl.DEFAULT_SELECT_CUSTOM_SCM_COMMENT_PREFIX;
+ 	public boolean                        selectAppendHudsonUsername   = DescriptorImpl.DEFAULT_SELECT_APPEND_HUDSON_USERNAME;
+-	
++
+ 	@DataBoundConstructor
+ 	public M2ReleaseBuildWrapper(String releaseGoals, String defaultVersioningMode, boolean selectCustomScmCommentPrefix, boolean selectAppendHudsonUsername) {
+ 		super();
+@@ -108,7 +109,7 @@
+ 		final String originalGoals;
+ 		MavenModuleSet mmSet;
+ 		final String mavenOpts;
+-		
++
+ 		synchronized (getModuleSet(build)) {
+ 			if (!doRelease) {
+ 				// we are not performing a release so don't need a custom tearDown.
+@@ -122,21 +123,24 @@
+ 			mmSet = getModuleSet(build);
+ 			if (mmSet != null) {
+ 				originalGoals = mmSet.getGoals();
+-				
++
+ 				String thisBuildGoals = releaseGoals;
+ 
+ 				if (versions != null) {
+ 					thisBuildGoals = generateVersionString(build.getNumber()) + thisBuildGoals;
+ 				}
+-				
++
+ 				if (scmUsername != null) {
+ 					thisBuildGoals = "-Dusername=" + scmUsername + " " + thisBuildGoals;
+ 				}
+-				
++
+ 				if (scmPassword != null) {
+ 					thisBuildGoals = "-Dpassword=" + scmPassword + " " + thisBuildGoals;
+ 				}
++				if (tagName != null) {
++					thisBuildGoals = "-Dtag=" + tagName + " " + thisBuildGoals;
++				}
+-				
++
+ 				if (scmCommentPrefix != null) {
+ 					final StringBuilder sb = new StringBuilder();
+ 					sb.append("\"-DscmCommentPrefix=");
+@@ -146,10 +150,10 @@
+ 					}
+ 					sb.append("\" ");
+ 					sb.append(thisBuildGoals);
+-					
++
+ 					thisBuildGoals = sb.toString();
+ 				}
+-				
++
+ 				mmSet.setGoals(thisBuildGoals);
+ 			}
+ 			else {
+@@ -157,13 +161,13 @@
+ 				originalGoals = null;
+ 			}
+ 			mavenOpts = mmSet.getMavenOpts();
+-			
++
+ 			// TODO: remove this and pull the release version out when creating the action.
+ 			M2ReleaseBadgeAction releaseBuildIcon = build.getAction(M2ReleaseBadgeAction.class);
+ 			releaseBuildIcon.setTooltipText("Release - " + getReleaseVersion(mmSet.getRootModule()));
+ 
+ 		}
+-		
++
+ 		return new Environment() {
+ 
+ 			@Override
+@@ -191,7 +195,7 @@
+ 				}
+ 
+ 				if (localcloseStage) {
+-					StageClient client = new StageClient(new URL(getDescriptor().getNexusURL()), getDescriptor().getNexusUser(), getDescriptor().getNexusPassword()); 
++					StageClient client = new StageClient(new URL(getDescriptor().getNexusURL()), getDescriptor().getNexusUser(), getDescriptor().getNexusPassword());
+ 					try {
+ 						MavenModule rootModule = mmSet.getRootModule();
+ 						// TODO grab the version that we have just released...
+@@ -239,11 +243,16 @@
+ 	public void setRepoDescription(String repoDescription) {
+ 		this.repoDescription = repoDescription;
+ 	}
+-	
++
+ 	public void setScmUsername(String scmUsername) {
+ 		this.scmUsername = scmUsername;
+ 	}
+-	
++
++	public void setTagName(String tagName) {
++		this.tagName = tagName;
++	}
++
++
+ 	public void setScmPassword(String scmPassword) {
+ 		this.scmPassword = scmPassword;
+ 	}
+@@ -251,12 +260,12 @@
+ 	public void setScmCommentPrefix(String scmCommentPrefix) {
+ 		this.scmCommentPrefix = scmCommentPrefix;
+ 	}
+-	
++
+ 	public void setAppendHusonUserName(boolean appendHusonUserName) {
+ 		this.appendHusonUserName = appendHusonUserName;
+ 	}
+ 
+-	
++
+   /**
+    * @return the defaultVersioningMode
+    */
+@@ -265,7 +274,7 @@
+   }
+ 
+ 
+-	
++
+   /**
+    * @param defaultVersioningMode the defaultVersioningMode to set
+    */
+@@ -360,7 +369,7 @@
+ 		}
+ 		return retVal;
+ 	}
+-	
++
+ 	/**
+ 	 * Hudson defines a method {@link Builder#getDescriptor()}, which returns the corresponding
+ 	 * {@link Descriptor} object. Since we know that it's actually {@link DescriptorImpl}, override the method
+@@ -381,21 +390,21 @@
+ 		public static final Permission CREATE_RELEASE        = new Permission(Item.PERMISSIONS,
+ 		                                                                      "Release", //$NON-NLS-1$
+ 		                                                                      Messages._CreateReleasePermission_Description(),
+-		                                                                      Hudson.ADMINISTER); 
++		                                                                      Hudson.ADMINISTER);
+ 
+ 		public static final String     VERSIONING_AUTO = "auto";                         //$NON-NLS-1$
+ 		public static final String     VERSIONING_SPECIFY_VERSIONS = "specify_versions"; //$NON-NLS-1$
+ 		public static final String     VERSIONING_SPECIFY_VERSION = "specify_version";   //$NON-NLS-1$
+ 		public static final String     DEFAULT_VERSIONING = VERSIONING_AUTO;             //$NON-NLS-1$
+-		
++
+ 		public static final boolean    DEFAULT_SELECT_CUSTOM_SCM_COMMENT_PREFIX = false;
+ 		public static final boolean    DEFAULT_SELECT_APPEND_HUDSON_USERNAME    = false;
+-		
++
+ 		private boolean nexusSupport  = false;
+ 		private String  nexusURL      = null;
+ 		private String  nexusUser     = "deployment";                                    //$NON-NLS-1$
+ 		private String  nexusPassword = "deployment123";                                 //$NON-NLS-1$
+-		
++
+ 
+ 
+ 		public DescriptorImpl() {
+@@ -453,7 +462,7 @@
+ 		/**
+ 		 * Checks if the Nexus URL exists and we can authenticate against it.
+ 		 */
+-		public FormValidation doUrlCheck(@QueryParameter String urlValue, 
++		public FormValidation doUrlCheck(@QueryParameter String urlValue,
+ 		                                 final @QueryParameter String usernameValue,
+ 		                                 final @QueryParameter String passwordValue) throws IOException,
+ 		                                                                      ServletException {
+@@ -462,7 +471,7 @@
+ 			if (!Hudson.getInstance().hasPermission(Hudson.ADMINISTER)) {
+ 				return FormValidation.ok();
+ 			}
+-			
++
+ 			urlValue = Util.fixEmptyAndTrim(urlValue);
+ 			if (urlValue == null) {
+ 				return FormValidation.ok();
+@@ -489,7 +498,7 @@
+ 			catch (StageException ex) {
+ 				FormValidation stageError = FormValidation.error(ex.getMessage());
+ 				stageError.initCause(ex);
+-				return stageError; 
++				return stageError;
+ 			}
+ 			return FormValidation.ok();
+ 		}
+Index: m2release/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java
+===================================================================
+--- m2release/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java	(revision 33038)
++++ m2release/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseAction.java	(revision )
+@@ -44,7 +44,7 @@
+ /**
+  * The action appears as the link in the side bar that users will click on in order to start the release
+  * process.
+- * 
++ *
+  * @author James Nord
+  * @version 0.3
+  */
+@@ -54,7 +54,7 @@
+ 	private String versioningMode;
+ 	private boolean selectCustomScmCommentPrefix;
+ 	private boolean selectAppendHudsonUsername;
+-	
++
+ 	public M2ReleaseAction(MavenModuleSet project, String versioningMode, boolean selectCustomScmCommentPrefix, boolean selectAppendHudsonUsername) {
+ 		this.project = project;
+ 		this.versioningMode = versioningMode;
+@@ -82,13 +82,13 @@
+ 	}
+ 
+ 	public String getVersioningMode() {
+-		return versioningMode; 
++		return versioningMode;
+ 	}
+-	
++
+ 	public void setVersioningMode(String versioningMode) {
+ 		this.versioningMode = versioningMode;
+ 	}
+-	
++
+ 	public boolean isSelectCustomScmCommentPrefix() {
+ 		return selectCustomScmCommentPrefix;
+ 	}
+@@ -108,15 +108,15 @@
+ 	public Collection<MavenModule> getModules() {
+ 		return project.getModules();
+ 	}
+-	
++
+ 	public MavenModule getRootModule() {
+ 		return project.getRootModule();
+ 	}
+-	
++
+ 	public String computeReleaseVersion(String version) {
+ 		return version.replace("-SNAPSHOT", ""); //$NON-NLS-1$ //$NON-NLS-2$
+ 	}
+-	
++
+ 	public String computeRepoDescription() {
+ 		return "Release " + computeReleaseVersion(project.getRootModule().getVersion()) + " of " + project.getRootModule().getName();
+ 	}
+@@ -152,11 +152,11 @@
+ 		}
+ 		return retVal + "-SNAPSHOT"; //$NON-NLS-1$
+ 	}
+-	
++
+ 	public boolean isNexusSupportEnabled() {
+ 		return project.getBuildWrappersList().get(M2ReleaseBuildWrapper.class).getDescriptor().isNexusSupport();
+ 	}
+-	
++
+ 	public void doSubmit(StaplerRequest req, StaplerResponse resp) throws IOException, ServletException {
+ 		M2ReleaseBuildWrapper.checkReleasePermission(project);
+ 		M2ReleaseBuildWrapper m2Wrapper = project.getBuildWrappersList().get(M2ReleaseBuildWrapper.class);
+@@ -166,19 +166,21 @@
+ 		Map<?,?> httpParams = req.getParameterMap();
+ 
+ 		Map<String,String> versions = null;
+-		
++
+ 		final boolean appendHudsonBuildNumber = httpParams.containsKey("appendHudsonBuildNumber"); //$NON-NLS-1$
+ 		final boolean closeNexusStage = httpParams.containsKey("closeNexusStage"); //$NON-NLS-1$
+ 		final String repoDescription = closeNexusStage ? getString("repoDescription", httpParams) : ""; //$NON-NLS-1$
+ 		final boolean specifyScmCredentials = httpParams.containsKey("specifyScmCredentials"); //$NON-NLS-1$
+ 		final String scmUsername = specifyScmCredentials ? getString("scmUsername", httpParams) : null; //$NON-NLS-1$
+ 		final String scmPassword = specifyScmCredentials ? getString("scmPassword", httpParams) : null; //$NON-NLS-1$
++		final boolean specifyTag = httpParams.containsKey("specifyTag"); //$NON-NLS-1$
++		final String tagName = specifyTag ? getString("tagName", httpParams) : null; //$NON-NLS-1$
+ 		final boolean specifyScmCommentPrefix = httpParams.containsKey("specifyScmCommentPrefix"); //$NON-NLS-1$
+ 		final String scmCommentPrefix = specifyScmCommentPrefix ? getString("scmCommentPrefix", httpParams) : null; //$NON-NLS-1$
+ 		final boolean appendHusonUserName = specifyScmCommentPrefix && httpParams.containsKey("appendHudsonUserName"); //$NON-NLS-1$
+-		
++
+ 		final String versioningMode = getString("versioningMode", httpParams);
+-		
++
+ 		if (DescriptorImpl.VERSIONING_SPECIFY_VERSIONS.equals(versioningMode)) {
+ 			versions = new HashMap<String,String>();
+ 			for (Object key : httpParams.keySet()) {
+@@ -187,7 +189,7 @@
+ 					versions.put(keyStr, getString(keyStr, httpParams));
+ 				}
+ 			}
+-		} 
++		}
+ 		else if (DescriptorImpl.VERSIONING_SPECIFY_VERSION.equals(versioningMode)) {
+ 			versions = new HashMap<String, String>();
+ 
+@@ -196,16 +198,16 @@
+ 
+ 			for(MavenModule mavenModule : getModules()) {
+ 				final String name = mavenModule.getModuleName().toString();
+-				
++
+ 				versions.put(String.format("-Dproject.dev.%s", name), developmentVersion); //$NON-NLS-1$
+ 				versions.put(String.format("-Dproject.rel.%s", name), releaseVersion); //$NON-NLS-1$
+ 			}
+ 		}
+-		
++
+ 		// TODO specify the badge tooltip text
+ 		M2ReleaseBadgeAction badge = new M2ReleaseBadgeAction();
+ 		// schedule release build
+-		synchronized (project) {			
++		synchronized (project) {
+ 			if (project.scheduleBuild(0, new ReleaseCause(), badge)) {
+ 				m2Wrapper.enableRelease();
+ 				m2Wrapper.setVersions(versions);
+@@ -213,6 +215,7 @@
+ 				m2Wrapper.setCloseNexusStage(closeNexusStage);
+ 				m2Wrapper.setRepoDescription(repoDescription);
+ 				m2Wrapper.setScmUsername(scmUsername);
++				m2Wrapper.setTagName(tagName);
+ 				m2Wrapper.setScmPassword(scmPassword);
+ 				m2Wrapper.setScmCommentPrefix(scmCommentPrefix);
+ 				m2Wrapper.setAppendHusonUserName(appendHusonUserName);
+Index: m2release/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseAction/index.jelly
+===================================================================
+--- m2release/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseAction/index.jelly	(revision 32289)
++++ m2release/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseAction/index.jelly	(revision )
+@@ -47,7 +47,7 @@
+ 							<f:password name="scmPassword" value="" />
+ 						</f:entry>
+ 					</f:optionalBlock>
+-					
++
+ 					<f:optionalBlock name="specifyScmCommentPrefix" title="Specify custom SCM comment prefix" checked="${it.selectCustomScmCommentPrefix}" help="/plugin/m2release/help-actionRelease-specifyCustomScmCommentPrefix.html">
+ 						<f:entry title="Comment Prefix">
+ 							<f:textbox name="scmCommentPrefix" value="[maven-release-plugin]" />
+@@ -57,6 +57,12 @@
+ 						</f:entry>
+ 					</f:optionalBlock>
+ 
++					<f:optionalBlock name="specifyTag" title="Specify Tag" checked="false">
++						<f:entry title="Tag Name">
++							<f:textbox name="tagName" value="${it.rootModule.name}/${it.computeReleaseVersion(it.rootModule.version)}" />
++						</f:entry>
++					</f:optionalBlock>
++
+ 					<j:if test="${it.nexusSupportEnabled}">
+ 						<f:section title="Nexus Pro Support">
+ 							<f:optionalBlock name="closeNexusStage" title="Close Nexus Staging Repository" checked="true">

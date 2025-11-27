@@ -1,0 +1,109 @@
+From eecf1fdec1b2aeb07468b94e28b34613c0a383e0 Mon Sep 17 00:00:00 2001
+From: Samuel Moritz <samme@timberline.se>
+Date: Tue, 15 Nov 2011 21:24:10 +0100
+Subject: [PATCH] Resolve macros in load rules when generating view paths.
+
+---
+ .../plugins/clearcase/AbstractClearCaseScm.java    |   14 ++++++--
+ .../clearcase/AbstractClearCaseScmTest.java        |   33 ++++++++++++++++++++
+ 2 files changed, 43 insertions(+), 4 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/clearcase/AbstractClearCaseScm.java b/src/main/java/hudson/plugins/clearcase/AbstractClearCaseScm.java
+index 04d2804..4c26586 100644
+--- a/src/main/java/hudson/plugins/clearcase/AbstractClearCaseScm.java
++++ b/src/main/java/hudson/plugins/clearcase/AbstractClearCaseScm.java
+@@ -273,7 +273,7 @@ public abstract class AbstractClearCaseScm extends SCM {
+      * @throws IOException 
+      */
+     public String[] getViewPaths(VariableResolver<String> variableResolver, AbstractBuild build, Launcher launcher) throws IOException, InterruptedException {
+-        String loadRules = getLoadRules();
++        String loadRules = getResolvedLoadRules(variableResolver);
+         if (StringUtils.isBlank(loadRules)) {
+             return null;
+         }
+@@ -316,7 +316,13 @@ public abstract class AbstractClearCaseScm extends SCM {
+         return loadRules;
+     }
+ 
+-    public boolean isCreateDynView() {
++    public String getResolvedLoadRules(VariableResolver<String> resolver) {
++    	String loadRules = getLoadRules();
++    	String resolvedRules = Util.replaceMacro(loadRules, resolver);
++    	return resolvedRules;
++	}
++
++	public boolean isCreateDynView() {
+         return createDynView;
+     }
+ 
+@@ -764,7 +770,7 @@ public abstract class AbstractClearCaseScm extends SCM {
+             }
+         } catch (Exception e) {
+             Logger.getLogger(AbstractClearCaseScm.class.getName()).log(Level.WARNING, "Exception when running 'cleartool pwv'", e);
+-        }
+-    }
++		}
++	}
+ 
+ }
+diff --git a/src/test/java/hudson/plugins/clearcase/AbstractClearCaseScmTest.java b/src/test/java/hudson/plugins/clearcase/AbstractClearCaseScmTest.java
+index ea4681b..d8997ae 100644
+--- a/src/test/java/hudson/plugins/clearcase/AbstractClearCaseScmTest.java
++++ b/src/test/java/hudson/plugins/clearcase/AbstractClearCaseScmTest.java
+@@ -42,6 +42,7 @@ import hudson.model.Node;
+ import hudson.plugins.clearcase.action.CheckOutAction;
+ import hudson.plugins.clearcase.action.SaveChangeLogAction;
+ import hudson.plugins.clearcase.history.HistoryAction;
++import hudson.plugins.clearcase.util.BuildVariableResolver;
+ import hudson.scm.ChangeLogParser;
+ import hudson.scm.ChangeLogSet;
+ import hudson.scm.ChangeLogSet.Entry;
+@@ -158,6 +159,22 @@ public class AbstractClearCaseScmTest extends AbstractWorkspaceTest {
+                 "viewpath");
+         assertEquals("The load rules arent correct", "load rules", scm.getLoadRules());
+     }
++    
++    @Test
++	public void testGetResolvedLoadRulesWithJobNameMacro() throws Exception {
++        when(build.getBuiltOn()).thenReturn(node);
++        when(build.getProject()).thenReturn(project);
++        when(project.getFullName()).thenReturn("Hudson");
++        when(node.toComputer()).thenReturn(computer);
++        when(node.getNodeName()).thenReturn("test-node");
++        when(computer.getSystemProperties()).thenReturn(System.getProperties());
++        when(build.getBuildVariables()).thenReturn(Collections.emptyMap());
++    	when(build.getEnvironment(any(LogTaskListener.class))).thenReturn(new EnvVars("JOB_NAME", "Hudson"));  	
++    	
++    	AbstractClearCaseScm scm = new AbstractClearCaseScmDummy("viewname", "viewparams", false, false, false, "", false, "", "loadrules-${JOB_NAME}", null, false,
++                "viewpath");
++        assertEquals("The macros in the the load rules were not resolved", "loadrules-Hudson", scm.getResolvedLoadRules(new BuildVariableResolver(build)));
++	}
+ 
+     @Test
+     public void testGetViewPaths() throws Exception {
+@@ -193,6 +210,22 @@ public class AbstractClearCaseScmTest extends AbstractWorkspaceTest {
+                 "viewpath");
+         assertEquals("The view paths aren't correct", "loadrules", scm.getViewPaths(null, null, launcher)[0]);
+     }
++    
++    @Test
++	public void testGetViewPathsWithJobNameMacro() throws Exception {
++        when(build.getBuiltOn()).thenReturn(node);
++        when(build.getProject()).thenReturn(project);
++        when(project.getFullName()).thenReturn("Hudson");
++        when(node.toComputer()).thenReturn(computer);
++        when(node.getNodeName()).thenReturn("test-node");
++        when(computer.getSystemProperties()).thenReturn(System.getProperties());
++        when(build.getBuildVariables()).thenReturn(Collections.emptyMap());
++    	when(build.getEnvironment(any(LogTaskListener.class))).thenReturn(new EnvVars("JOB_NAME", "Hudson"));  	
++    	
++    	AbstractClearCaseScm scm = new AbstractClearCaseScmDummy("viewname", "viewparams", false, false, false, "", false, "", "loadrules-${JOB_NAME}", null, false,
++                "viewpath");
++    	assertEquals("The view paths aren't correct", "loadrules-Hudson", scm.getViewPaths(new BuildVariableResolver(build), null, launcher)[0]);
++	}
+ 
+     @Test
+     public void testGetExcludedRegions() {
+-- 
+1.7.2.5
+

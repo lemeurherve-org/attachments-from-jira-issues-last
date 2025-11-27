@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<org.jenkinsci.plugins.emailext__template.ExtendedEmailTemplatePublisher_-DescriptorImpl plugin="emailext-template@0.4">
+  <templates>
+    <org.jenkinsci.plugins.emailext__template.ExtendedEmailPublisherTemplate>
+      <id>emailext-template-1459328026222</id>
+      <name>TestUpStreamCommiter</name>
+      <description></description>
+      <publisher plugin="email-ext@2.41.3">
+        <recipientList>$DEFAULT_RECIPIENTS</recipientList>
+        <configuredTriggers>
+          <hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+            <email>
+              <recipientList></recipientList>
+              <subject>$PROJECT_DEFAULT_SUBJECT</subject>
+              <body>$PROJECT_DEFAULT_CONTENT</body>
+              <recipientProviders>
+                <hudson.plugins.emailext.plugins.recipients.DevelopersRecipientProvider/>
+                <hudson.plugins.emailext.plugins.recipients.UpstreamComitterRecipientProvider/>
+              </recipientProviders>
+              <attachmentsPattern></attachmentsPattern>
+              <attachBuildLog>false</attachBuildLog>
+              <compressBuildLog>false</compressBuildLog>
+              <replyTo>$PROJECT_DEFAULT_REPLYTO</replyTo>
+              <contentType>project</contentType>
+            </email>
+          </hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+        </configuredTriggers>
+        <contentType>default</contentType>
+        <defaultSubject>$DEFAULT_SUBJECT</defaultSubject>
+        <defaultContent>$DEFAULT_CONTENT</defaultContent>
+        <attachmentsPattern></attachmentsPattern>
+        <presendScript>$DEFAULT_PRESEND_SCRIPT</presendScript>
+        <attachBuildLog>false</attachBuildLog>
+        <compressBuildLog>false</compressBuildLog>
+        <replyTo>$DEFAULT_REPLYTO</replyTo>
+        <saveOutput>false</saveOutput>
+        <disabled>false</disabled>
+      </publisher>
+    </org.jenkinsci.plugins.emailext__template.ExtendedEmailPublisherTemplate>
+  </templates>
+</org.jenkinsci.plugins.emailext__template.ExtendedEmailTemplatePublisher_-DescriptorImpl>

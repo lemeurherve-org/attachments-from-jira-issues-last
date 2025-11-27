@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh '''echo "Hello World"
+                exit 1
+                '''
+            }
+        }
+    }
+    post {
+        always {
+            step([$class: 'ClaimPublisher'])
+        }
+    }
+}

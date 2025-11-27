@@ -1,0 +1,4 @@
+customized pattern to match optional MSBuild "subcategory",too.
+	-> Note the additional ([A-z,-_ ]*\s? in front of (?:[Nn]ote|[Ii]nfo|[Ww]arning|(?:fatal\s*)?[Ee]rror))...
+
+	(?:\s*\d+>)?(?:(?:(?:(.*)\((\d*)(?:,(\d+))?.*\)|.*LINK)\s*:|(.*):)\s*([A-z,-_ ]*\s?(?:[Nn]ote|[Ii]nfo|[Ww]arning|(?:fatal\s*)?[Ee]rror))\s*:?\s*([A-Za-z0-9]+)\s*:\s(?:\s*([A-Za-z0-9.]+)\s*:)?\s*(.*)|(.*)\s*:.*error\s*(LNK[0-9]+):\s*(.*))$

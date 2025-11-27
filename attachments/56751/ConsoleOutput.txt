@@ -1,0 +1,131 @@
+10:28:56.223  Agent Test-devops-kubernetes-test-withcontainer-46-txfbs-hd97h-2m8hj is provisioned from template Test_DevOps_kubernetes_test-withContainer_46-txfbs-hd97h
+10:28:56.226  ---
+10:28:56.226  apiVersion: "v1"
+10:28:56.226  kind: "Pod"
+10:28:56.226  metadata:
+10:28:56.226    annotations:
+10:28:56.226      buildUrl: "http://jenkins.xxxx:31780/job/Test/job/DevOps/job/kubernetes/job/test-withContainer/46/"
+10:28:56.227      runUrl: "job/Test/job/DevOps/job/kubernetes/job/test-withContainer/46/"
+10:28:56.227    labels:
+10:28:56.227      jenkins: "slave"
+10:28:56.227      jenkins/label-digest: "94b0a78706139c497b509f9095a3f6a670bb50c9"
+10:28:56.227      jenkins/label: "Test_DevOps_kubernetes_test-withContainer_46-txfbs"
+10:28:56.227    name: "Test-devops-kubernetes-test-withcontainer-46-txfbs-hd97h-2m8hj"
+10:28:56.227  spec:
+10:28:56.227    containers:
+10:28:56.227    - image: "our-artifactory02.xxxx:8081/devopsyyyy_dockers/alpine_git_java:v3"
+10:28:56.227      imagePullPolicy: "IfNotPresent"
+10:28:56.227      name: "yfhrnohz1bhzju8fwsfywzsa8bp9g3"
+10:28:56.227      resources:
+10:28:56.227        limits: {}
+10:28:56.227        requests: {}
+10:28:56.227      tty: true
+10:28:56.227      volumeMounts:
+10:28:56.227      - mountPath: "/home/jenkins/agent"
+10:28:56.227        name: "workspace-volume"
+10:28:56.227        readOnly: false
+10:28:56.227    - env:
+10:28:56.227      - name: "JENKINS_SECRET"
+10:28:56.227        value: "********"
+10:28:56.227      - name: "JENKINS_AGENT_NAME"
+10:28:56.227        value: "Test-devops-kubernetes-test-withcontainer-46-txfbs-hd97h-2m8hj"
+10:28:56.227      - name: "JENKINS_NAME"
+10:28:56.227        value: "Test-devops-kubernetes-test-withcontainer-46-txfbs-hd97h-2m8hj"
+10:28:56.227      - name: "JENKINS_AGENT_WORKDIR"
+10:28:56.227        value: "/home/jenkins/agent"
+10:28:56.227      - name: "JENKINS_URL"
+10:28:56.227        value: "http://jenkins.xxxx:31780/"
+10:28:56.227      image: "our-artifactory02.xxxx:8081/devopsyyyy_dockers/jenkins/inbound-agent:jdk11"
+10:28:56.227      imagePullPolicy: "IfNotPresent"
+10:28:56.227      name: "jnlp"
+10:28:56.227      resources:
+10:28:56.227        limits: {}
+10:28:56.227        requests: {}
+10:28:56.227      tty: false
+10:28:56.227      volumeMounts:
+10:28:56.227      - mountPath: "/home/jenkins/agent"
+10:28:56.227        name: "workspace-volume"
+10:28:56.227        readOnly: false
+10:28:56.227    nodeSelector:
+10:28:56.227      kubernetes.io/os: "linux"
+10:28:56.227    restartPolicy: "Never"
+10:28:56.227    volumes:
+10:28:56.227    - emptyDir:
+10:28:56.227        medium: ""
+10:28:56.227      name: "workspace-volume"
+10:28:56.227  
+10:28:56.262  Running on Test-devops-kubernetes-test-withcontainer-46-txfbs-hd97h-2m8hj in /home/jenkins/agent/workspace/Test/DevOps/kubernetes/test-withContainer
+10:28:56.262  [Pipeline] {
+10:28:56.266  [Pipeline] container
+10:28:56.267  [Pipeline] {
+10:28:56.271  [Pipeline] tool
+10:28:56.280  [Pipeline] echo
+10:28:56.304  [Pipeline] checkout
+10:28:56.600  The recommended git tool is: NONE
+10:28:58.620  using credential devopsyyyy_ssh_id
+10:28:58.666  Warning: JENKINS-30600: special launcher org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator$1@484122fd; decorates RemoteLauncher[hudson.remoting.Channel@43245520:JNLP4-connect connection from 128.90.17.199/128.90.17.199:31257] will be ignored (a typical symptom is the Git executable not being run inside a designated container)
+10:28:58.666  Wiping out workspace first.
+10:28:58.691  Cloning the remote Git repository
+10:28:58.691  Using shallow clone with depth 1
+10:28:58.709  Cloning repository ssh://git@gitlab.xxxx:122/yyyy/devops/ac/testing/testingrepo.git
+10:28:59.274   > git init /home/jenkins/agent/workspace/Test/DevOps/kubernetes/test-withContainer # timeout=10
+10:28:59.293  Fetching upstream changes from ssh://git@gitlab.xxxx:122/yyyy/devops/ac/testing/testingrepo.git
+10:28:59.293   > git --version # timeout=10
+10:28:59.312   > git --version # 'git version 2.30.2'
+10:28:59.312  using GIT_SSH to set credentials devopsyyyy_ssh_desc
+10:28:59.339   > git fetch --tags --force --progress --depth=1 -- ssh://git@gitlab.xxxx:122/yyyy/devops/ac/testing/testingrepo.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+10:29:03.196  Avoid second fetch
+10:29:03.206  Checking out Revision 0ef4caabe7a85dd484ef9461dbabc34eec478a71 (origin/master)
+10:29:03.173   > git config remote.origin.url ssh://git@gitlab.xxxx:122/yyyy/devops/ac/testing/testingrepo.git # timeout=10
+10:29:03.177   > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+10:29:03.194   > git rev-parse origin/master^{commit} # timeout=10
+10:29:03.208   > git config core.sparsecheckout # timeout=10
+10:29:03.217   > git checkout -f 0ef4caabe7a85dd484ef9461dbabc34eec478a71 # timeout=10
+10:29:06.644  Commit message: "Update parallelTagTesting.groovy"
+10:29:06.642   > git rev-list --no-walk 0ef4caabe7a85dd484ef9461dbabc34eec478a71 # timeout=10
+10:29:06.676  Cleaning workspace
+10:29:06.702  [GitCheckoutListener] Skipping issues blame since Git has been configured with shallow clone
+10:29:06.709  [Pipeline] sshagent
+10:29:06.719  [ssh-agent] Using credentials devopsyyyy (devopsyyyy_ssh_desc)
+10:29:06.719  [ssh-agent] Looking for ssh-agent implementation...
+10:29:07.015  [ssh-agent]   Exec ssh-agent (binary ssh-agent on a remote machine)
+10:29:07.015  Executing sh script inside container yfhrnohz1bhzju8fwsfywzsa8bp9g3 of pod Test-devops-kubernetes-test-withcontainer-46-txfbs-hd97h-2m8hj
+10:29:07.315  Executing command: "ssh-agent" 
+10:29:07.315  exit
+10:29:07.328  SSH_AUTH_SOCK=/tmp/ssh-XXXXXXEMhiFe/agent.18; export SSH_AUTH_SOCK;
+10:29:07.328  SSH_AGENT_PID=19; export SSH_AGENT_PID;
+10:29:07.328  echo Agent pid 19;
+10:29:07.362  SSH_AUTH_SOCK=/tmp/ssh-XXXXXXEMhiFe/agent.18
+10:29:07.362  SSH_AGENT_PID=19
+10:29:07.370  Running ssh-add (command line suppressed)
+10:29:07.702  Identity added: /home/jenkins/agent/workspace/Test/DevOps/kubernetes/test-withContainer@tmp/private_key_15075390168017918824.key (/home/jenkins/agent/workspace/Test/DevOps/kubernetes/test-withContainer@tmp/private_key_15075390168017918824.key)
+10:29:07.740  [ssh-agent] Started.
+10:29:07.741  [Pipeline] {
+10:29:07.744  [Pipeline] isUnix
+10:29:07.745  [Pipeline] sh (git config user)
+10:29:06.674   > git rev-parse --verify HEAD # timeout=10
+10:29:06.682  Resetting working tree
+10:29:06.683   > git reset --hard # timeout=10
+10:29:06.689   > git clean -ffdx # timeout=10
+10:29:08.358  + git config user.name devopsyyyy_ssh_id
+10:29:08.441  [Pipeline] sh (git config email)
+10:29:08.995  + git config user.email devopsyyyy_ssh_id@devopsyyyy_ssh_id.devopsyyyy_ssh_id
+10:29:09.006  [Pipeline] sh (tag repo)
+10:29:09.555  + git tag --annotate dummyWhatever-46 '--message='
+10:29:09.563  [Pipeline] sh (push repo)
+10:29:10.115  + git push --tags
+10:29:10.679  Host key verification failed.
+10:29:10.679  fatal: Could not read from remote repository.
+10:29:10.679  
+10:29:10.679  Please make sure you have the correct access rights
+10:29:10.679  and the repository exists.
+10:29:10.686  [Pipeline] unstable
+10:29:10.687  WARNING: JenkinsPipelineSharedLibrary.gitUtils.tagRepository, failed pushing repository ssh://git@gitlab.xxxx:122/yyyy/devops/ac/testing/testingrepo.git using credentials "devopsyyyy_ssh_id".
+10:29:10.687  [Pipeline] }
+10:29:10.687  Executing sh script inside container yfhrnohz1bhzju8fwsfywzsa8bp9g3 of pod Test-devops-kubernetes-test-withcontainer-46-txfbs-hd97h-2m8hj
+10:29:10.965  Executing command: "ssh-agent" "-k" 
+10:29:10.965  exit
+10:29:11.025  unset SSH_AUTH_SOCK;
+10:29:11.025  unset SSH_AGENT_PID;
+10:29:11.025  echo Agent pid 19 killed;
+10:29:11.058  [ssh-agent] Stopped.

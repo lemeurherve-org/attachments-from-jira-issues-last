@@ -1,0 +1,116 @@
+A SCM change trigger started this job
+Updating http://gestalt/svn/BusinessExtensionsSystem/trunk
+U         ejb\pom.xml
+U         ear\pom.xml
+U         swing\pom.xml
+U         wsclient\pom.xml
+U         pom.xml
+At revision 3490
+Parsing POMs
+[trunk] $ C:/sdks/Java/jdk1.6.0_07/bin/java -cp C:\tools\.hudson\plugins\maven-plugin\WEB-INF\lib\maven-agent-1.326.jar;C:\tools\apache-maven-2.0.9\boot\classworlds-1.1.jar hudson.maven.agent.Main C:/tools/apache-maven-2.0.9 C:\tools\glassfish-v2ur2-b04\domains\domain1\applications\j2ee-modules\hudson\WEB-INF\lib\remoting-1.326.jar C:\tools\.hudson\plugins\maven-plugin\WEB-INF\lib\maven-interceptor-1.326.jar 1061
+<===[HUDSON REMOTING CAPACITY]===>???channel started
+Executing Maven:  -B -f C:\tools\.hudson\jobs\BusinessExtensionsSystem\workspace\trunk\pom.xml clean install site-deploy -P env-build
+[INFO] Scanning for projects...
+[INFO] Reactor build order: 
+[INFO]   Business Extensions System
+[INFO]   Business Extensions System::EJB
+[INFO]   Business Extensions System::EAR
+[INFO]   Business Extensions System::WS Client
+[INFO]   Business Extensions System::Swing
+WAGON_VERSION: 1.0-beta-2
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Business Extensions System
+[INFO]    task-segment: [clean, install, site-deploy]
+[INFO] ------------------------------------------------------------------------
+[INFO] artifact org.apache.maven.plugins:maven-surefire-report-plugin: checking for updates from internal
+[INFO] [clean:clean]
+[INFO] Deleting directory C:\tools\.hudson\jobs\BusinessExtensionsSystem\workspace\trunk\target
+[INFO] Preparing surefire-report:report-only
+[WARNING] Removing: report-only from forked lifecycle, to prevent recursive invocation.
+[INFO] No goals needed for project - skipping
+[INFO] [surefire-report:report-only {execution: default}]
+[WARNING] Unable to locate Test Source XRef to link to - DISABLED
+[INFO] [site:attach-descriptor]
+[INFO] [install:install]
+[INFO] Installing C:\tools\.hudson\jobs\BusinessExtensionsSystem\workspace\trunk\pom.xml to c:\tools\.m2\repository\org\myorg\bes\bes-build\1.1-SNAPSHOT\bes-build-1.1-SNAPSHOT.pom
+[INFO] artifact org.apache.maven.plugins:maven-checkstyle-plugin: checking for updates from internal
+[WARNING] DEPRECATED [aggregate]: As of version 2.5, use the goals <code>javadoc:aggregate</code> and
+<code>javadoc:test-aggregate</code> instead.
+[WARNING] DEPRECATED [aggregate]: As of version 2.5, use the goals <code>javadoc:aggregate</code> and
+<code>javadoc:test-aggregate</code> instead.
+[WARNING] DEPRECATED [aggregate]: As of version 2.5, use the goals <code>javadoc:aggregate</code> and
+<code>javadoc:test-aggregate</code> instead.
+[WARNING] DEPRECATED [aggregate]: As of version 2.5, use the goals <code>javadoc:aggregate</code> and
+<code>javadoc:test-aggregate</code> instead.
+[INFO] artifact org.apache.maven.plugins:maven-pmd-plugin: checking for updates from internal
+[INFO] artifact org.codehaus.mojo:cobertura-maven-plugin: checking for updates from internal
+[INFO] artifact org.codehaus.mojo:taglist-maven-plugin: checking for updates from internal
+[WARNING] DEPRECATED [tags]: No reason given
+[INFO] artifact org.apache.maven.plugins:maven-project-info-reports-plugin: checking for updates from internal
+[INFO] Preparing javadoc:javadoc
+[INFO] No goals needed for project - skipping
+[INFO] Preparing javadoc:test-aggregate
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Business Extensions System
+[INFO] ------------------------------------------------------------------------
+[INFO] No goals needed for project - skipping
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Business Extensions System::EJB
+[INFO] ------------------------------------------------------------------------
+[INFO] artifact org.codehaus.mojo:jaxws-maven-plugin: checking for updates from internal
+[HUDSON] Archiving C:\tools\.hudson\jobs\BusinessExtensionsSystem\workspace\trunk\pom.xml to C:\tools\.hudson\jobs\BusinessExtensionsSystem\modules\org.myorg.bes$bes-build\builds\2009-11-15_19-01-55\archive\org.myorg.bes\bes-build\1.1-SNAPSHOT\pom.xml
+[INFO] [resources:resources]
+[INFO] Using encoding: 'UTF-8' to copy filtered resources.
+[INFO] [compiler:compile]
+[INFO] Nothing to compile - all classes are up to date
+[INFO] artifact org.jvnet.staxex:stax-ex: checking for updates from internal
+[INFO] artifact org.jvnet.staxex:stax-ex: checking for updates from internal
+[INFO] [jaxws:wsgen {execution: default}]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Business Extensions System::EAR
+[INFO] ------------------------------------------------------------------------
+[INFO] snapshot org.myorg.bes:bes-service:1.1-SNAPSHOT: checking for updates from snapshots
+Downloading: http://localhost/archiva/repository/snapshots//org/myorg/bes/bes-service/1.1-SNAPSHOT/bes-service-1.1-SNAPSHOT.jar
+[HUDSON] Archiving C:\tools\.hudson\jobs\BusinessExtensionsSystem\workspace\trunk\ejb\pom.xml to C:\tools\.hudson\jobs\BusinessExtensionsSystem\modules\org.myorg.bes$bes-service\builds\2009-11-15_19-01-55\archive\org.myorg.bes\bes-service\1.1-SNAPSHOT\pom.xml
+[INFO] ------------------------------------------------------------------------
+[ERROR] BUILD ERROR
+[INFO] ------------------------------------------------------------------------
+[INFO] Failed to resolve artifact.
+
+Missing:
+----------
+1) org.myorg.bes:bes-service:ejb:1.1-SNAPSHOT
+
+  Try downloading the file manually from the project website.
+
+  Then, install it using the command: 
+      mvn install:install-file -DgroupId=org.myorg.bes -DartifactId=bes-service -Dversion=1.1-SNAPSHOT -Dpackaging=ejb -Dfile=/path/to/file
+
+  Alternatively, if you host your own repository you can deploy the file there: 
+      mvn deploy:deploy-file -DgroupId=org.myorg.bes -DartifactId=bes-service -Dversion=1.1-SNAPSHOT -Dpackaging=ejb -Dfile=/path/to/file -Durl=[url] -DrepositoryId=[id]
+
+  Path to dependency: 
+  	1) org.myorg.bes:bes-ear:ear:1.1-SNAPSHOT
+  	2) org.myorg.bes:bes-service:ejb:1.1-SNAPSHOT
+
+----------
+1 required artifact is missing.
+
+for artifact: 
+  org.myorg.bes:bes-ear:ear:1.1-SNAPSHOT
+
+from the specified remote repositories:
+  snapshots (http://localhost/archiva/repository/snapshots/),
+  internal (http://localhost/archiva/repository/internal/),
+  central (http://repo1.maven.org/maven2)
+
+
+[INFO] ------------------------------------------------------------------------
+[INFO] For more information, run Maven with the -e switch
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 32 seconds
+[INFO] Finished at: Sun Nov 15 19:02:29 CST 2009
+[INFO] Final Memory: 40M/63M
+[INFO] ------------------------------------------------------------------------
+channel stopped
+Finished: FAILURE

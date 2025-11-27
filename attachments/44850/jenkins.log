@@ -1,0 +1,112 @@
+WARNING: Some health checks are reporting as unhealthy: [thread-deadlock : [jenkins.util.Timer [#7] locked on java.util.concurrent.locks.ReentrantLock$NonfairSync@69c1168a (owned by jenkins.util.Timer [#10]):
+	 at sun.misc.Unsafe.park(Native Method)
+	 at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	 at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	 at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireQueued(AbstractQueuedSynchronizer.java:870)
+	 at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquire(AbstractQueuedSynchronizer.java:1199)
+	 at java.util.concurrent.locks.ReentrantLock$NonfairSync.lock(ReentrantLock.java:209)
+	 at java.util.concurrent.locks.ReentrantLock.lock(ReentrantLock.java:285)
+	 at hudson.model.Queue._withLock(Queue.java:1437)
+	 at hudson.model.Queue.withLock(Queue.java:1300)
+	 at jenkins.model.Nodes.updateNode(Nodes.java:193)
+	 at jenkins.model.Jenkins.updateNode(Jenkins.java:2080)
+	 at hudson.model.Node.save(Node.java:140)
+	 at hudson.util.PersistedList.onModified(PersistedList.java:173)
+	 at hudson.util.PersistedList.replaceBy(PersistedList.java:85)
+	 at hudson.model.Slave.<init>(Slave.java:198)
+	 at hudson.plugins.ec2.EC2AbstractSlave.<init>(EC2AbstractSlave.java:133)
+	 at hudson.plugins.ec2.EC2OndemandSlave.<init>(EC2OndemandSlave.java:49)
+	 at hudson.plugins.ec2.EC2OndemandSlave.<init>(EC2OndemandSlave.java:42)
+	 at hudson.plugins.ec2.SlaveTemplate.newOndemandSlave(SlaveTemplate.java:871)
+	 at hudson.plugins.ec2.SlaveTemplate.provisionOndemand(SlaveTemplate.java:613)
+	 at hudson.plugins.ec2.SlaveTemplate.provision(SlaveTemplate.java:398)
+	 at hudson.plugins.ec2.EC2Cloud.getNewOrExistingAvailableSlave(EC2Cloud.java:530)
+	 at hudson.plugins.ec2.EC2Cloud.provision(EC2Cloud.java:547)
+	 at hudson.slaves.NodeProvisioner$StandardStrategyImpl.apply(NodeProvisioner.java:715)
+	 at hudson.slaves.NodeProvisioner.update(NodeProvisioner.java:320)
+	 at hudson.slaves.NodeProvisioner.access$000(NodeProvisioner.java:61)
+	 at hudson.slaves.NodeProvisioner$NodeProvisionerInvoker.doRun(NodeProvisioner.java:809)
+	 at hudson.triggers.SafeTimerTask.run(SafeTimerTask.java:72)
+	 at jenkins.security.ImpersonatingScheduledExecutorService$1.run(ImpersonatingScheduledExecutorService.java:58)
+	 at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	 at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+	 at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+	 at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+	 at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	 at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	 at java.lang.Thread.run(Thread.java:745)
+, jenkins.util.Timer [#10] locked on hudson.plugins.ec2.AmazonEC2Cloud@7ca25daa (owned by jenkins.util.Timer [#7]):
+	 at hudson.plugins.ec2.EC2Cloud.connect(EC2Cloud.java:634)
+	 at hudson.plugins.ec2.EC2AbstractSlave.stop(EC2AbstractSlave.java:300)
+	 at hudson.plugins.ec2.EC2AbstractSlave.idleTimeout(EC2AbstractSlave.java:348)
+	 at hudson.plugins.ec2.EC2RetentionStrategy.internalCheck(EC2RetentionStrategy.java:126)
+	 at hudson.plugins.ec2.EC2RetentionStrategy.check(EC2RetentionStrategy.java:88)
+	 at hudson.plugins.ec2.EC2RetentionStrategy.check(EC2RetentionStrategy.java:46)
+	 at hudson.slaves.ComputerRetentionWork$1.run(ComputerRetentionWork.java:72)
+	 at hudson.model.Queue._withLock(Queue.java:1380)
+	 at hudson.model.Queue.withLock(Queue.java:1257)
+	 at hudson.slaves.ComputerRetentionWork.doRun(ComputerRetentionWork.java:63)
+	 at hudson.triggers.SafeTimerTask.run(SafeTimerTask.java:72)
+	 at jenkins.security.ImpersonatingScheduledExecutorService$1.run(ImpersonatingScheduledExecutorService.java:58)
+	 at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	 at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+	 at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+	 at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+	 at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	 at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	 at java.lang.Thread.run(Thread.java:745)
+]]
+Oct 22, 2018 9:14:05 PM hudson.model.AsyncPeriodicWork$1 run
+INFO: Started EC2 alive slaves monitor
+Oct 22, 2018 9:16:30 PM org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+INFO: abc123/PR-9281 #4 completed: SUCCESS
+Oct 22, 2018 9:16:30 PM com.squareup.okhttp.internal.Platform$JdkWithJettyBootPlatform getSelectedProtocol
+INFO: ALPN callback dropped: SPDY and HTTP/2 are disabled. Is alpn-boot on the boot class path?
+Oct 22, 2018 9:19:08 PM org.jenkinsci.plugins.github_branch_source.PullRequestGHEventSubscriber onEvent
+INFO: Received PULL_REQUEST for https://github.team.abc123.com/aaabbbccc/xxx_abc123 from 1.2.3.4 ⇒ https://jenkins.ci.abc123.com:8080/github-webhook/
+Oct 22, 2018 9:19:09 PM org.jenkinsci.plugins.github.webhook.subscriber.DefaultPushGHEventSubscriber onEvent
+INFO: Received PushEvent for https://github.team.abc123.com/aaabbbccc/xxx_abc123 from 1.2.3.4 ⇒ https://jenkins.ci.abc123.com:8080/github-webhook/
+Oct 22, 2018 9:19:13 PM com.squareup.okhttp.internal.Platform$JdkWithJettyBootPlatform getSelectedProtocol
+INFO: ALPN callback dropped: SPDY and HTTP/2 are disabled. Is alpn-boot on the boot class path?
+Oct 22, 2018 9:19:14 PM com.squareup.okhttp.internal.Platform$JdkWithJettyBootPlatform getSelectedProtocol
+INFO: ALPN callback dropped: SPDY and HTTP/2 are disabled. Is alpn-boot on the boot class path?
+Oct 22, 2018 9:19:14 PM org.jenkinsci.plugins.github.webhook.subscriber.DefaultPushGHEventSubscriber onEvent
+INFO: Received PushEvent for https://github.team.abc123.com/aaabbbccc/xxx_abc123 from 1.2.3.4 ⇒ https://jenkins.ci.abc123.com:8080/github-webhook/
+Oct 22, 2018 9:19:46 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 5 sec
+Oct 22, 2018 9:19:51 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 10 sec
+Oct 22, 2018 9:19:56 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 15 sec
+Oct 22, 2018 9:20:01 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 20 sec
+Oct 22, 2018 9:20:06 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 25 sec
+Oct 22, 2018 9:20:11 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 30 sec
+Oct 22, 2018 9:20:16 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 35 sec
+Oct 22, 2018 9:20:21 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 40 sec
+Oct 22, 2018 9:20:26 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 45 sec
+Oct 22, 2018 9:20:31 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 50 sec
+Oct 22, 2018 9:20:36 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 55 sec
+Oct 22, 2018 9:20:41 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 1 min 0 sec
+Oct 22, 2018 9:20:46 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 1 min 5 sec
+Oct 22, 2018 9:20:51 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 1 min 10 sec
+Oct 22, 2018 9:20:56 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 1 min 15 sec
+Oct 22, 2018 9:21:01 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 1 min 20 sec
+Oct 22, 2018 9:21:06 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 1 min 25 sec
+Oct 22, 2018 9:21:11 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 1 min 30 sec
+Oct 22, 2018 9:21:16 PM org.jenkinsci.plugins.workflow.support.concurrent.Timeout lambda$ping$0
+INFO: Running CpsFlowExecution[Owner[abc123/PR-9266/5:abc123/PR-9266 #5]] unresponsive for 1 min 35 sec

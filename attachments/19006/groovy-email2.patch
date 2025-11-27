@@ -1,0 +1,203 @@
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 25618)
++++ pom.xml	Sun Jan 10 22:38:31 CST 2010
+@@ -21,6 +21,14 @@
+ 
+   <dependencies>
+     <dependency>
++      <groupId>org.codehaus.groovy</groupId>
++      <artifactId>groovy-all</artifactId>
++      <version>1.5.6</version>
++      <scope>compile</scope>
++    </dependency>
++
++
++    <dependency>
+       <groupId>javax.servlet</groupId>
+       <artifactId>servlet-api</artifactId>
+       <version>2.4</version>
+Index: src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java	(revision 25662)
++++ src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java	Sun Jan 10 23:31:35 CST 2010
+@@ -127,8 +127,13 @@
+ 	 * The default body of the emails for this project.  ($PROJECT_DEFAULT_BODY)
+ 	 */
+ 	public String defaultContent;
+-	
+-	/**
++
++    /**
++     * Specifies if the default content of the email should be treated as a Groovy script.
++     */
++	public boolean defaultContentIsScript;
++	
++	/**
+ 	 * Get the list of configured email triggers for this project.
+ 	 */
+ 	public List<EmailTrigger> getConfiguredTriggers() {
+@@ -594,6 +599,7 @@
+             m.charset = formData.getString("project_charset");
+ 			m.defaultSubject = formData.getString("project_default_subject");
+ 			m.defaultContent = formData.getString("project_default_content");
++            m.defaultContentIsScript = formData.optBoolean("project_default_content_is_script");
+ 			m.configuredTriggers = new ArrayList<EmailTrigger>();
+ 			
+ 			// Create a new email trigger for each one that is configured
+@@ -617,6 +623,7 @@
+ 			m.setSendToRecipientList(formData.optBoolean(prefix + "sendToRecipientList"));
+ 			m.setSendToDevelopers(formData.optBoolean(prefix + "sendToDevelopers"));
+ 			m.setIncludeCulprits(formData.optBoolean(prefix + "includeCulprits"));
++            m.setScript(formData.optBoolean(prefix + "script"));
+ 			return m;
+ 		}
+ 		
+Index: src/main/resources/hudson/plugins/emailext/tags/mailtype.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/emailext/tags/mailtype.jelly	(revision 25428)
++++ src/main/resources/hudson/plugins/emailext/tags/mailtype.jelly	Sun Jan 10 23:19:30 CST 2010
+@@ -123,6 +123,11 @@
+ 						name="mailer_${mailType}_body"
+ 						value="${mailTypeObj.body}"/>
+ 				</f:entry>
++				<f:entry title="Content is Script"
++					help="${rootURL}/plugin/email-ext/help/projectConfig/mailType/script.html">
++					<f:checkbox name="mailer_${mailType}_script"
++						checked="${mailTypeObj.script}" />
++				</f:entry>
+ 			</table>
+ 		</td>
+ 	</tr>
+Index: src/main/java/hudson/plugins/emailext/plugins/ContentBuilder.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/plugins/ContentBuilder.java	(revision 15609)
++++ src/main/java/hudson/plugins/emailext/plugins/ContentBuilder.java	Sun Jan 10 22:36:54 CST 2010
+@@ -1,5 +1,7 @@
+ package hudson.plugins.emailext.plugins;
+ 
++import groovy.text.SimpleTemplateEngine;
++import groovy.text.Template;
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
+ import hudson.plugins.emailext.EmailExtException;
+@@ -66,8 +68,8 @@
+ 								 .replaceAll(DEFAULT_BODY, Matcher.quoteReplacement(ExtendedEmailPublisher.DESCRIPTOR.getDefaultBody()))
+ 								 .replaceAll(DEFAULT_SUBJECT, Matcher.quoteReplacement(ExtendedEmailPublisher.DESCRIPTOR.getDefaultSubject()));
+ 						
+-		newText = replaceTokensWithContent(newText, publisher, type, build);
+-		return newText;
++		return type.isScript() ? transformUsingScript(newText, publisher, type, build)
++		                       : replaceTokensWithContent(newText, publisher, type, build);
+ 	}
+ 	
+ 	private static <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>>
+@@ -193,4 +195,34 @@
+ 		
+ 	}
+ 
++	private <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>>
++	String transformUsingScript(String origText, ExtendedEmailPublisher publisher, EmailType type, B build) {
++		SimpleTemplateEngine engine = new SimpleTemplateEngine();
++		Template template = null;
++		try {
++			template = engine.createTemplate(origText);
++			Map binding = new HashMap();
++			Map<String,Object> args = new HashMap<String,Object>();
++			//Setting the AbstractBuild as a bind variable
++			binding.put("build", build);
++
++			//Set all the EmailContent as bind variables to be directly used in the script 
++			for(Map.Entry<String, EmailContent> contentEntry : EMAIL_CONTENT_TYPE_MAP.entrySet()){
++				EmailContent content = contentEntry.getValue();
++				String contentText = content.getContent(build, publisher, type, args);
++				if(content.hasNestedContent()){
++					contentText = replaceTokensWithContent(contentText, publisher, type, build);
+-}
++				}
++				binding.put(contentEntry.getKey(), contentText);
++			}
++
++			return template.make(binding).toString();
++		} catch (Exception e) {
++			LOGGER.log(Level.WARNING, "Error creating GroovyTemplate from text ["+origText+"]",e);
++			//Throwing the exception as Runtime as any exception here would mostly (?) be due to incorrect script
++			//and not an expected reason
++			throw new RuntimeException("Error using the template",e);
++		}
++	}
++
++}
+Index: src/main/java/hudson/plugins/emailext/EmailType.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/EmailType.java	(revision 15195)
++++ src/main/java/hudson/plugins/emailext/EmailType.java	Sun Jan 10 22:36:54 CST 2010
+@@ -40,6 +40,11 @@
+ 	 */
+ 	private boolean sendToRecipientList;
+ 	
++	/**
++	 * Specifies whether the mail's content should be interpreted as Groovy script
++	 */
++	private boolean script;
++
+ 	public EmailType(){
+ 		subject = "";
+ 		body = "";
+@@ -47,6 +52,7 @@
+ 		sendToDevelopers = false;
+ 		includeCulprits = false;
+ 		sendToRecipientList = false;
++		script = false;
+ 	}
+ 	
+ 	public String getSubject() {
+@@ -104,4 +110,11 @@
+ 		this.recipientList = recipientList;
+ 	}
+ 	
++	public boolean isScript() {
++		return script;
+-}
++	}
++	
++	public void setScript(boolean script) {
++		this.script = script;
++	}
++}
+Index: src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly	(revision 25662)
++++ src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/config.jelly	Sun Jan 10 22:50:12 CST 2010
+@@ -70,6 +70,20 @@
+         </j:choose>
+     </f:entry>
+ 
++    <!-- Treat content as a Groovy script or not -->
++    <f:entry title="Default Content is Script"
++	     help="${rootURL}/plugin/email-ext/help/projectConfig/mailType/script.html">
++	<j:choose>
++	    <j:when test="${instance.configured}">
++		<f:checkbox name="project_default_content_is_script"
++			    checked="${instance.defaultContentIsScript}" />
++	    </j:when>
++	    <j:otherwise>
++		<f:checkbox name="project_default_content_is_script" checked="false" />
++	    </j:otherwise>
++	</j:choose>
++    </f:entry>
++
+ 	<!-- This is the default content for the project. -->
+     <f:entry title="Default Content"
+              help="/plugin/email-ext/help/projectConfig/defaultBody.html">
+Index: src/main/webapp/help/projectConfig/mailType/script.html
+===================================================================
+--- src/main/webapp/help/projectConfig/mailType/script.html	Sun Jan 10 22:36:54 CST 2010
++++ src/main/webapp/help/projectConfig/mailType/script.html	Sun Jan 10 22:36:54 CST 2010
+@@ -0,0 +1,6 @@
++<div>
++	Specifies whether the mail's content should be interpreted as a Groovy
++	<a href="http://groovy.codehaus.org/Groovy+Templates">SimpleTemplate</a> script.
++	If so, the script can access the <code>AbstractBuild</code> object using the
++	<code>build</code> bind variable.
++</div>

@@ -1,0 +1,93 @@
+diff --git a/src/main/java/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate.java b/src/main/java/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate.java
+index 2d32108..0de7859 100644
+--- a/src/main/java/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate.java
++++ b/src/main/java/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate.java
+@@ -71,6 +71,8 @@ public class JCloudsSlaveTemplate implements Describable<JCloudsSlaveTemplate>,
+    private final String fsRoot;
+    public final boolean allowSudo;
+    public final int overrideRetentionTime;
++   public final int spoolDelayMs;
++   private final Object delayLockObject = new Object();
+    
+    private transient Set<LabelAtom> labelSet;
+ 
+@@ -97,7 +99,9 @@ public class JCloudsSlaveTemplate implements Describable<JCloudsSlaveTemplate>,
+                                final boolean preExistingJenkinsUser,
+                                final String fsRoot,
+                                final boolean allowSudo,
+-                               final int overrideRetentionTime) {
++                               final int overrideRetentionTime,
++                               final int spoolDelayMs
++                               ) {
+ 
+        this.name = Util.fixEmptyAndTrim(name);
+        this.imageId = Util.fixEmptyAndTrim(imageId);
+@@ -119,6 +123,7 @@ public class JCloudsSlaveTemplate implements Describable<JCloudsSlaveTemplate>,
+        this.fsRoot = Util.fixEmptyAndTrim(fsRoot);
+        this.allowSudo = allowSudo;
+        this.overrideRetentionTime = overrideRetentionTime;
++       this.spoolDelayMs = spoolDelayMs;
+        readResolve();
+    }
+ 
+@@ -200,6 +205,21 @@ public class JCloudsSlaveTemplate implements Describable<JCloudsSlaveTemplate>,
+           template.getOptions().overrideLoginCredentials(lc);
+       }
+ 
++      if (spoolDelayMs > 0)
++      {
++          // (JENKINS-15970) Add optional delay before spooling. Author: Adam Rofer
++          synchronized(delayLockObject)
++          {
++              LOGGER.info("Delaying " + spoolDelayMs + " milliseconds. Current ms -> " + System.currentTimeMillis());
++              try
++              {
++                  Thread.sleep(spoolDelayMs);
++              }
++              catch (InterruptedException e)
++              {
++              }
++          }
++      }
+ 
+       Statement initStatement = null;
+       Statement bootstrap = null;
+diff --git a/src/main/resources/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate/config.jelly b/src/main/resources/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate/config.jelly
+index d751b31..9ece377 100644
+--- a/src/main/resources/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate/config.jelly
++++ b/src/main/resources/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate/config.jelly
+@@ -65,6 +65,11 @@
+       <f:entry title="Override Retention Time" field="overrideRetentionTime">
+         <f:textbox />
+       </f:entry>
++      
++      <f:entry title="Delay before spooling up (ms)" field="spoolDelayMs">
++        <f:textbox />
++      </f:entry>
++      
+       <f:entry title="Init Script" field="initScript">
+         <f:textarea />
+       </f:entry>
+diff --git a/src/main/resources/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate/help-spoolDelayMs.html b/src/main/resources/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate/help-spoolDelayMs.html
+new file mode 100644
+index 0000000..571480d
+--- /dev/null
++++ b/src/main/resources/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplate/help-spoolDelayMs.html
+@@ -0,0 +1,3 @@
++<div>
++  Optional delay before spooling up a VM instance (in milliseconds).
++</div>
+\ No newline at end of file
+diff --git a/src/test/java/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplateTest.java b/src/test/java/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplateTest.java
+index 159c1d4..c7c2e5c 100644
+--- a/src/test/java/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplateTest.java
++++ b/src/test/java/jenkins/plugins/jclouds/compute/JCloudsSlaveTemplateTest.java
+@@ -14,7 +14,7 @@ public class JCloudsSlaveTemplateTest extends HudsonTestCase {
+       String name = "testSlave";
+       JCloudsSlaveTemplate originalTemplate = new JCloudsSlaveTemplate(name, "imageId", "hardwareId", 1, 512, "osFamily",
+                                                                        "osVersion", "jclouds-slave-type1 jclouds-type2", "Description",
+-                                                                       "initScript", "1", false, null, null, true, "jenkins", false, null, false, 5);
++                                                                       "initScript", "1", false, null, null, true, "jenkins", false, null, false, 5, 0);
+ 
+       List<JCloudsSlaveTemplate> templates = new ArrayList<JCloudsSlaveTemplate>();
+       templates.add(originalTemplate);

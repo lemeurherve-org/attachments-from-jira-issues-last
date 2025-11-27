@@ -1,0 +1,31 @@
+Index: src/main/java/hudson/plugins/bazaar/BazaarChangeLogParser.java
+===================================================================
+--- src/main/java/hudson/plugins/bazaar/BazaarChangeLogParser.java	(révision 27838)
++++ src/main/java/hudson/plugins/bazaar/BazaarChangeLogParser.java	(copie de travail)
+@@ -8,6 +8,7 @@
+ import java.io.FileReader;
+ import java.io.IOException;
+ import java.util.ArrayList;
++import java.util.List;
+ import java.util.logging.Logger;
+ 
+ /**
+@@ -18,7 +19,7 @@
+ public class BazaarChangeLogParser extends ChangeLogParser {
+ 
+     public BazaarChangeSetList parse(AbstractBuild build, File changelogFile) throws IOException {
+-        ArrayList<BazaarChangeSet> entries = new ArrayList<BazaarChangeSet>();
++        List<BazaarChangeSet> entries = new ArrayList<BazaarChangeSet>();
+ 
+         BufferedReader in = new BufferedReader(new FileReader(changelogFile));
+         StringBuilder message = new StringBuilder();
+@@ -167,6 +168,9 @@
+             entries.add(entry);
+         }
+ 
++        // Remove current revision entry
++        entries = entries.subList(0, Math.max(0 ,entries.size() -1));
++
+         return new BazaarChangeSetList(build, entries);
+     }
+ }

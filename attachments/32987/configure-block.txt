@@ -1,0 +1,85 @@
+def publisher_defaultExtendedEmail( ctx ){
+	
+	def upstreamCommitters = '${SCRIPT, script="committers.goovy"}'
+	
+	...
+
+	ctx.configure { project ->
+		project / publishers << 'hudson.plugins.emailext.ExtendedEmailPublisher'(plugin:"email-ext@2.40.5"){
+			recipientList('$DEFAULT_RECIPIENTS')
+			contentType('default')
+			defaultSubject('$DEFAULT_SUBJECT')
+			defaultContent('$DEFAULT_CONTENT')
+			attachmentsPattern
+			presendScript('$DEFAULT_PRESEND_SCRIPT')
+			attachBuildLog(false)
+			compressBuildLog(false)
+			replyTo('$DEFAULT_REPLYTO')
+			saveOutput(false)
+			disabled(false)
+		 
+			configuredTriggers {
+				'hudson.plugins.emailext.plugins.trigger.FirstFailureTrigger' {
+					email {
+						recipientList(upstreamCommitters)
+						subject(firstFailureSubject)
+						body(firstFailureContent)
+						recipientProviders
+						attachmentsPattern
+						attachBuildLog(false)
+						compressBuildLog(false)
+						replyTo('$PROJECT_DEFAULT_REPLYTO')
+						contentType('project')
+					}
+					failureCount(1)
+				}
+				
+				'hudson.plugins.emailext.plugins.trigger.StillFailingTrigger' {
+					email {
+						recipientList
+						subject('$PROJECT_DEFAULT_SUBJECT')
+						body('$PROJECT_DEFAULT_CONTENT')
+						recipientProviders {
+							'hudson.plugins.emailext.plugins.recipients.ListRecipientProvider'()
+						}
+						attachmentsPattern
+						attachBuildLog(false)
+						compressBuildLog(false)
+						replyTo('$PROJECT_DEFAULT_REPLYTO')
+						contentType('project')
+					}
+				}
+				
+				'hudson.plugins.emailext.plugins.trigger.FirstUnstableTrigger' {
+					email {
+						recipientList(upstreamCommitters)
+						subject(firstFailureSubject)
+						body(firstFailureContent)
+						recipientProviders
+						attachmentsPattern
+						attachBuildLog(false)
+						compressBuildLog(false)
+						replyTo('$PROJECT_DEFAULT_REPLYTO')
+						contentType('project')
+					}
+				}
+				
+				'hudson.plugins.emailext.plugins.trigger.StillUnstableTrigger' {
+					email {
+						recipientList
+						subject('$PROJECT_DEFAULT_SUBJECT')
+						body('$PROJECT_DEFAULT_CONTENT')
+						recipientProviders {
+							'hudson.plugins.emailext.plugins.recipients.ListRecipientProvider'()
+						}
+						attachmentsPattern
+						attachBuildLog(false)
+						compressBuildLog(false)
+						replyTo('$PROJECT_DEFAULT_REPLYTO')
+						contentType('project')
+					}
+				}
+			}
+		}
+	}
+}

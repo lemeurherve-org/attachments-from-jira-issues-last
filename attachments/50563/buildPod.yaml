@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+spec:
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 1000
+    fsGroup: 0
+  containers:
+  - name: node
+    image: fsnexus.evry.com:8085/evryfs/node-dev-docker:node12
+    imagePullPolicy: Always
+    command:
+    - cat
+    tty: true
+    env:
+    - name: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+      value: "true"
+    #securityContext:
+    #  readOnlyRootFilesystem: true
+  - name: mysql
+    image: fsnexus.evry.com:8085/mysql/mysql-server:8.0.0
+    volumeMounts:
+    - name: workspace-volume
+      mountPropagation: HostToContainer
+      mountPath: /docker-entrypoint-initdb.d
+      subPath: workspace/Folder_ccm-be_feature_buildInK8s/schemas
+    securityContext:
+      runAsUser: 27
+    args:
+    - --default-authentication-plugin=mysql_native_password
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: "password"
+    - name: MYSQL_DATABASE
+      value: "rcsa"
+    - name: MYSQL_USER
+      value: "rcsa"
+    - name: MYSQL_PASSWORD
+      value: "rcsa"

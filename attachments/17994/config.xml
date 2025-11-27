@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.maven.MavenModuleSet>
+  <rootModule>
+    <groupId>com.nds.tvp.scg</groupId>
+    <artifactId>ECM-Recorder</artifactId>
+  </rootModule>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <reporters>
+    <hudson.maven.reporters.MavenMailer>
+      <recipients>jnord@ndsuk.com tswindells@ndsuk.com smiah@ndsuk.com</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>true</sendToIndividuals>
+    </hudson.maven.reporters.MavenMailer>
+  </reporters>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>svn://liger.uk.nds.com/maven/ECM-Recorder/trunk</remote>
+        <local>trunk</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <useUpdate>false</useUpdate>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <jdk>JDK 1.6</jdk>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>* * * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <description>The ECM-Recorder project.</description>
+  <actions class="vector"/>
+</hudson.maven.MavenModuleSet>

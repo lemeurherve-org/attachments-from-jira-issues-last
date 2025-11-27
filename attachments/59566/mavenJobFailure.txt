@@ -1,0 +1,47 @@
+Started by an SCM change
+[EnvInject] - Loading node environment variables.
+Building remotely on EC2 .. in workspace /srv/jenkins-home/workspace/xxx
+The recommended git tool is: git
+using credential xxxx
+...
+Parsing POMs
+using global settings config with name global_settings
+Replacing all maven server entries not found in credentials list is true
+Failed to transfer Could not transfer metadata com.abc.def:myproject-parent:1.0.1-SNAPSHOT/maven-metadata.xml from/to nexus (http://xxxxxx:8081/repository/maven-public/): transfer failed for http://xxxxxx:8081/repository/maven-public/com/abc/def/myproject-parent/1.0.1-SNAPSHOT/maven-metadata.xml
+Failed to transfer Could not transfer artifact com.abc.def:myproject-parent:pom:1.0.1-SNAPSHOT from/to nexus (http://xxxxxx:8081/repository/maven-public/): transfer failed for http://xxxxxx:8081/repository/maven-public/com/abc/def/myproject-parent/1.0.1-SNAPSHOT/myproject-parent-1.0.1-SNAPSHOT.pom
+ERROR: Failed to parse POMs
+hudson.remoting.ProxyException: hudson.maven.MavenModuleSetBuild$MavenExecutionException: org.apache.maven.project.ProjectBuildingException: Some problems were encountered while processing the POMs:
+[FATAL] Non-resolvable parent POM for com.abc.def:myproject:1.0.1-SNAPSHOT: Could not transfer artifact com.abc.def:myproject-parent:pom:1.0.1-SNAPSHOT from/to nexus (http://xxxxxx:8081/repository/maven-public/): transfer failed for http://10.99.21.6:8081/repository/maven-public/com/abc/def/myproject-parent/1.0.1-SNAPSHOT/myproject-parent-1.0.1-SNAPSHOT.pom and 'parent.relativePath' points at wrong local POM @ line 6, column 10
+
+	at hudson.maven.MavenModuleSetBuild$PomParser.invoke(MavenModuleSetBuild.java:1391)
+	at hudson.maven.MavenModuleSetBuild$PomParser.invoke(MavenModuleSetBuild.java:1124)
+	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:3492)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:211)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:54)
+	at hudson.remoting.Request$2.run(Request.java:376)
+	at hudson.remoting.InterceptingExecutorService.lambda$wrap$0(InterceptingExecutorService.java:78)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+	Suppressed: hudson.remoting.Channel$CallSiteStackTrace: Remote call to EC2 (....)
+		at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1784)
+		at hudson.remoting.UserRequest$ExceptionResponse.retrieve(UserRequest.java:356)
+		at hudson.remoting.Channel.call(Channel.java:1000)
+		at hudson.FilePath.act(FilePath.java:1186)
+		at hudson.FilePath.act(FilePath.java:1175)
+		at hudson.maven.MavenModuleSetBuild$MavenModuleSetBuildExecution.parsePoms(MavenModuleSetBuild.java:985)
+		at hudson.maven.MavenModuleSetBuild$MavenModuleSetBuildExecution.doRun(MavenModuleSetBuild.java:689)
+		at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:524)
+		at hudson.model.Run.execute(Run.java:1899)
+		at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:543)
+		at hudson.model.ResourceController.execute(ResourceController.java:107)
+		at hudson.model.Executor.run(Executor.java:449)
+Caused by: hudson.remoting.ProxyException: org.apache.maven.project.ProjectBuildingException: Some problems were encountered while processing the POMs:
+[FATAL] Non-resolvable parent POM for com.abc.arc:myproject:1.0.1-SNAPSHOT: Could not transfer artifact com.abc.def:myproject-parent:pom:1.0.1-SNAPSHOT from/to nexus (http://10.99.21.6:8081/repository/maven-public/): transfer failed for http://10.99.21.6:8081/repository/maven-public/com/abc/def/myproject-parent/1.0.1-SNAPSHOT/myproject-parent-1.0.1-SNAPSHOT.pom and 'parent.relativePath' points at wrong local POM @ line 6, column 10
+
+	at org.apache.maven.project.DefaultProjectBuilder.build(DefaultProjectBuilder.java:397)
+	at hudson.maven.MavenEmbedder.buildProjects(MavenEmbedder.java:370)
+	at hudson.maven.MavenEmbedder.readProjects(MavenEmbedder.java:340)
+	at hudson.maven.MavenModuleSetBuild$PomParser.invoke(MavenModuleSetBuild.java:1330)
+	... 10 more

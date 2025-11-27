@@ -1,0 +1,13 @@
+Index: src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java
+===================================================================
+--- src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java	(revision 15928)
++++ src/main/java/hudson/plugins/active_directory/ActiveDirectoryUnixAuthenticationProvider.java	(working copy)
+@@ -97,7 +97,7 @@
+             Attribute memberOf = result.getAttributes().get("memberOf");
+             if(memberOf!=null) {// null if this user belongs to no group at all
+                 for(int i=0; i<memberOf.size(); i++) {
+-                    Attributes atts = context.getAttributes(memberOf.get(i).toString(), new String[]{"CN"});
++                    Attributes atts = context.getAttributes("\"" + memberOf.get(i).toString() + '"', new String[]{"CN"});
+                     Attribute att = atts.get("CN");
+                     groups.add(new GrantedAuthorityImpl(att.get().toString()));
+                 }

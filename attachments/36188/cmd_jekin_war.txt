@@ -1,0 +1,291 @@
+?[0mFeb 28, 2017 11:01:37 PM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: Stopped ServerConnector@c5a2ff{HTTP/1.1}{0.0.0.0:8080}
+Feb 28, 2017 11:01:37 PM jenkins.model.Jenkins cleanUp
+INFO: Stopping Jenkins
+Feb 28, 2017 11:01:37 PM jenkins.model.Jenkins$21 onAttained
+INFO: Started termination
+?[31mFeb 28, 2017 11:01:58 PM jenkins.slaves.IOHubProvider <init>
+SEVERE: Failed to launch IOHub
+java.io.IOException: Unable to establish loopback connection
+        at sun.nio.ch.PipeImpl$Initializer.run(Unknown Source)
+        at sun.nio.ch.PipeImpl$Initializer.run(Unknown Source)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at sun.nio.ch.PipeImpl.<init>(Unknown Source)
+        at sun.nio.ch.SelectorProviderImpl.openPipe(Unknown Source)
+        at java.nio.channels.Pipe.open(Unknown Source)
+        at sun.nio.ch.WindowsSelectorImpl.<init>(Unknown Source)
+        at sun.nio.ch.WindowsSelectorProvider.openSelector(Unknown Source)
+        at java.nio.channels.Selector.open(Unknown Source)
+        at org.jenkinsci.remoting.protocol.IOHub.<init>(IOHub.java:128)
+        at org.jenkinsci.remoting.protocol.IOHub.create(IOHub.java:141)
+        at jenkins.slaves.IOHubProvider.<init>(IOHubProvider.java:52)
+        at jenkins.slaves.IOHubProvider$$FastClassByGuice$$2ffec646.newInstance(
+<generated>)
+        at com.google.inject.internal.cglib.reflect.$FastConstructor.newInstance
+(FastConstructor.java:40)
+        at com.google.inject.internal.DefaultConstructionProxyFactory$1.newInsta
+nce(DefaultConstructionProxyFactory.java:61)
+        at com.google.inject.internal.ConstructorInjector.provision(ConstructorI
+njector.java:105)
+        at com.google.inject.internal.ConstructorInjector.construct(ConstructorI
+njector.java:85)
+        at com.google.inject.internal.ConstructorBindingImpl$Factory.get(Constru
+ctorBindingImpl.java:267)
+        at com.google.inject.internal.ProviderToInternalFactoryAdapter$1.call(Pr
+oviderToInternalFactoryAdapter.java:46)
+        at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.ja
+va:1103)
+        at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(Provi
+derToInternalFactoryAdapter.java:40)
+        at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:1
+45)
+        at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(Extension
+Finder.java:424)
+        at com.google.inject.internal.InternalFactoryToProviderAdapter.get(Inter
+nalFactoryToProviderAdapter.java:41)
+        at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:10
+16)
+        at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.ja
+va:1092)
+        at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+
+        at com.google.inject.internal.InjectorImpl.getInstance(InjectorImpl.java
+:1051)
+        at jenkins.ProxyInjector.getInstance(ProxyInjector.java:98)
+        at hudson.init.TaskMethodFinder.lookUp(TaskMethodFinder.java:124)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:104)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:282)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:210)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at jenkins.model.Jenkins$20.execute(Jenkins.java:3240)
+        at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:128)
+        at jenkins.model.Jenkins$20.execute(Jenkins.java:3240)
+        at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+
+        at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:263)
+        at jenkins.model.Jenkins._cleanUpRunTerminators(Jenkins.java:3237)
+        at jenkins.model.Jenkins.cleanUp(Jenkins.java:3159)
+        at hudson.WebAppMain.contextDestroyed(WebAppMain.java:381)
+        at org.eclipse.jetty.server.handler.ContextHandler.callContextDestroyed(
+ContextHandler.java:808)
+        at org.eclipse.jetty.servlet.ServletContextHandler.callContextDestroyed(
+ServletContextHandler.java:457)
+        at org.eclipse.jetty.server.handler.ContextHandler.doStop(ContextHandler
+.java:842)
+        at org.eclipse.jetty.servlet.ServletContextHandler.doStop(ServletContext
+Handler.java:215)
+        at org.eclipse.jetty.webapp.WebAppContext.doStop(WebAppContext.java:529)
+
+        at org.eclipse.jetty.util.component.AbstractLifeCycle.stop(AbstractLifeC
+ycle.java:89)
+        at org.eclipse.jetty.util.component.ContainerLifeCycle.stop(ContainerLif
+eCycle.java:143)
+        at org.eclipse.jetty.util.component.ContainerLifeCycle.doStop(ContainerL
+ifeCycle.java:162)
+        at org.eclipse.jetty.server.handler.AbstractHandler.doStop(AbstractHandl
+er.java:73)
+        at org.eclipse.jetty.server.Server.doStop(Server.java:456)
+        at org.eclipse.jetty.util.component.AbstractLifeCycle.stop(AbstractLifeC
+ycle.java:89)
+        at winstone.Launcher.shutdown(Launcher.java:305)
+        at winstone.Launcher.<init>(Launcher.java:165)
+        at winstone.Launcher.main(Launcher.java:352)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at Main._main(Main.java:264)
+        at Main.main(Main.java:112)
+Caused by: java.net.ConnectException: Connection timed out: connect
+        at sun.nio.ch.Net.connect0(Native Method)
+        at sun.nio.ch.Net.connect(Unknown Source)
+        at sun.nio.ch.Net.connect(Unknown Source)
+        at sun.nio.ch.SocketChannelImpl.connect(Unknown Source)
+        at java.nio.channels.SocketChannel.open(Unknown Source)
+        at sun.nio.ch.PipeImpl$Initializer$LoopbackConnector.run(Unknown Source)
+
+        ... 64 more
+
+?[0m?[31mFeb 28, 2017 11:02:19 PM jenkins.slaves.NioChannelSelector <init>
+SEVERE: Failed to launch NIO hub
+java.io.IOException: Unable to establish loopback connection
+        at sun.nio.ch.PipeImpl$Initializer.run(Unknown Source)
+        at sun.nio.ch.PipeImpl$Initializer.run(Unknown Source)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at sun.nio.ch.PipeImpl.<init>(Unknown Source)
+        at sun.nio.ch.SelectorProviderImpl.openPipe(Unknown Source)
+        at java.nio.channels.Pipe.open(Unknown Source)
+        at sun.nio.ch.WindowsSelectorImpl.<init>(Unknown Source)
+        at sun.nio.ch.WindowsSelectorProvider.openSelector(Unknown Source)
+        at java.nio.channels.Selector.open(Unknown Source)
+        at org.jenkinsci.remoting.nio.NioChannelHub.<init>(NioChannelHub.java:45
+3)
+        at jenkins.slaves.NioChannelSelector.<init>(NioChannelSelector.java:25)
+        at jenkins.slaves.NioChannelSelector$$FastClassByGuice$$55ecdbe8.newInst
+ance(<generated>)
+        at com.google.inject.internal.cglib.reflect.$FastConstructor.newInstance
+(FastConstructor.java:40)
+        at com.google.inject.internal.DefaultConstructionProxyFactory$1.newInsta
+nce(DefaultConstructionProxyFactory.java:61)
+        at com.google.inject.internal.ConstructorInjector.provision(ConstructorI
+njector.java:105)
+        at com.google.inject.internal.ConstructorInjector.construct(ConstructorI
+njector.java:85)
+        at com.google.inject.internal.ConstructorBindingImpl$Factory.get(Constru
+ctorBindingImpl.java:267)
+        at com.google.inject.internal.ProviderToInternalFactoryAdapter$1.call(Pr
+oviderToInternalFactoryAdapter.java:46)
+        at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.ja
+va:1103)
+        at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(Provi
+derToInternalFactoryAdapter.java:40)
+        at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:1
+45)
+        at hudson.ExtensionFinder$GuiceFinder$FaultTolerantScope$1.get(Extension
+Finder.java:424)
+        at com.google.inject.internal.InternalFactoryToProviderAdapter.get(Inter
+nalFactoryToProviderAdapter.java:41)
+        at com.google.inject.internal.InjectorImpl$2$1.call(InjectorImpl.java:10
+16)
+        at com.google.inject.internal.InjectorImpl.callInContext(InjectorImpl.ja
+va:1092)
+        at com.google.inject.internal.InjectorImpl$2.get(InjectorImpl.java:1012)
+
+        at com.google.inject.internal.InjectorImpl.getInstance(InjectorImpl.java
+:1051)
+        at jenkins.ProxyInjector.getInstance(ProxyInjector.java:98)
+        at hudson.init.TaskMethodFinder.lookUp(TaskMethodFinder.java:124)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:104)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:282)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:210)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at jenkins.model.Jenkins$20.execute(Jenkins.java:3240)
+        at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:128)
+        at jenkins.model.Jenkins$20.execute(Jenkins.java:3240)
+        at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+
+        at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:263)
+        at jenkins.model.Jenkins._cleanUpRunTerminators(Jenkins.java:3237)
+        at jenkins.model.Jenkins.cleanUp(Jenkins.java:3159)
+        at hudson.WebAppMain.contextDestroyed(WebAppMain.java:381)
+        at org.eclipse.jetty.server.handler.ContextHandler.callContextDestroyed(
+ContextHandler.java:808)
+        at org.eclipse.jetty.servlet.ServletContextHandler.callContextDestroyed(
+ServletContextHandler.java:457)
+        at org.eclipse.jetty.server.handler.ContextHandler.doStop(ContextHandler
+.java:842)
+        at org.eclipse.jetty.servlet.ServletContextHandler.doStop(ServletContext
+Handler.java:215)
+        at org.eclipse.jetty.webapp.WebAppContext.doStop(WebAppContext.java:529)
+
+        at org.eclipse.jetty.util.component.AbstractLifeCycle.stop(AbstractLifeC
+ycle.java:89)
+        at org.eclipse.jetty.util.component.ContainerLifeCycle.stop(ContainerLif
+eCycle.java:143)
+        at org.eclipse.jetty.util.component.ContainerLifeCycle.doStop(ContainerL
+ifeCycle.java:162)
+        at org.eclipse.jetty.server.handler.AbstractHandler.doStop(AbstractHandl
+er.java:73)
+        at org.eclipse.jetty.server.Server.doStop(Server.java:456)
+        at org.eclipse.jetty.util.component.AbstractLifeCycle.stop(AbstractLifeC
+ycle.java:89)
+        at winstone.Launcher.shutdown(Launcher.java:305)
+        at winstone.Launcher.<init>(Launcher.java:165)
+        at winstone.Launcher.main(Launcher.java:352)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at Main._main(Main.java:264)
+        at Main.main(Main.java:112)
+Caused by: java.net.ConnectException: Connection timed out: connect
+        at sun.nio.ch.Net.connect0(Native Method)
+        at sun.nio.ch.Net.connect(Unknown Source)
+        at sun.nio.ch.Net.connect(Unknown Source)
+        at sun.nio.ch.SocketChannelImpl.connect(Unknown Source)
+        at java.nio.channels.SocketChannel.open(Unknown Source)
+        at sun.nio.ch.PipeImpl$Initializer$LoopbackConnector.run(Unknown Source)
+
+        ... 63 more
+
+?[0mFeb 28, 2017 11:02:19 PM jenkins.model.Jenkins$21 onAttained
+INFO: Completed termination
+Feb 28, 2017 11:02:19 PM jenkins.model.Jenkins _cleanUpDisconnectComputers
+INFO: Starting node disconnection
+Feb 28, 2017 11:02:19 PM jenkins.model.Jenkins _cleanUpShutdownPluginManager
+INFO: Stopping plugin manager
+Feb 28, 2017 11:02:19 PM jenkins.model.Jenkins _cleanUpPersistQueue
+INFO: Persisting build queue
+Feb 28, 2017 11:02:19 PM jenkins.model.Jenkins _cleanUpAwaitDisconnects
+INFO: Waiting for node disconnection completion
+Feb 28, 2017 11:02:19 PM jenkins.model.Jenkins cleanUp
+INFO: Jenkins stopped
+Feb 28, 2017 11:02:19 PM org.eclipse.jetty.util.log.JavaUtilLog info
+INFO: Stopped w.@138dc9b{/jenkins,file:/C:/Users/Indian/.jenkins/war/,UNAVAILABL
+E}{C:\Users\Indian\.jenkins\war}
+Feb 28, 2017 11:02:19 PM winstone.Logger logInternal
+INFO: Winstone shutdown successfully
+?[31mFeb 28, 2017 11:02:19 PM winstone.Logger logInternal
+SEVERE: Container startup failed
+java.io.IOException: Failed to start Jetty
+        at winstone.Launcher.<init>(Launcher.java:154)
+        at winstone.Launcher.main(Launcher.java:352)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at Main._main(Main.java:264)
+        at Main.main(Main.java:112)
+Caused by: java.io.IOException: Unable to establish loopback connection
+        at sun.nio.ch.PipeImpl$Initializer.run(Unknown Source)
+        at sun.nio.ch.PipeImpl$Initializer.run(Unknown Source)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at sun.nio.ch.PipeImpl.<init>(Unknown Source)
+        at sun.nio.ch.SelectorProviderImpl.openPipe(Unknown Source)
+        at java.nio.channels.Pipe.open(Unknown Source)
+        at sun.nio.ch.WindowsSelectorImpl.<init>(Unknown Source)
+        at sun.nio.ch.WindowsSelectorProvider.openSelector(Unknown Source)
+        at java.nio.channels.Selector.open(Unknown Source)
+        at org.eclipse.jetty.io.SelectorManager$ManagedSelector.doStart(Selector
+Manager.java:424)
+        at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLife
+Cycle.java:68)
+        at org.eclipse.jetty.io.SelectorManager.doStart(SelectorManager.java:257
+)
+        at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLife
+Cycle.java:68)
+        at org.eclipse.jetty.util.component.ContainerLifeCycle.start(ContainerLi
+feCycle.java:132)
+        at org.eclipse.jetty.util.component.ContainerLifeCycle.doStart(Container
+LifeCycle.java:106)
+        at org.eclipse.jetty.server.AbstractConnector.doStart(AbstractConnector.
+java:256)
+        at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNet
+workConnector.java:81)
+        at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java
+:236)
+        at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLife
+Cycle.java:68)
+        at org.eclipse.jetty.server.Server.doStart(Server.java:366)
+        at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLife
+Cycle.java:68)
+        at winstone.Launcher.<init>(Launcher.java:152)
+        ... 7 more
+Caused by: java.net.ConnectException: Connection timed out: connect
+        at sun.nio.ch.Net.connect0(Native Method)
+        at sun.nio.ch.Net.connect(Unknown Source)
+        at sun.nio.ch.Net.connect(Unknown Source)
+        at sun.nio.ch.SocketChannelImpl.connect(Unknown Source)
+        at java.nio.channels.SocketChannel.open(Unknown Source)
+        at sun.nio.ch.PipeImpl$Initializer$LoopbackConnector.run(Unknown Source)
+
+        ... 29 more
+
+?[0m
+G:\jenkin>

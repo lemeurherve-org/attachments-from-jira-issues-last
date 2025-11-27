@@ -1,0 +1,149 @@
+2-Nov-2024 12:18:15.263 GRAVE [pool-7-thread-4] jenkins.InitReactorRunner$1.onTaskFailed Failed Loading plugin Jenkins Reverse Proxy Auth Plugin v1.8.0 (reverse-proxy-auth-plugin)
+	java.io.IOException: Échec du chargement de : Jenkins Reverse Proxy Auth Plugin (reverse-proxy-auth-plugin 1.8.0)
+ - Mise à jour nécessaire : Jenkins Mailer Plugin (mailer 488.v0c9639c1a_eb_3) doit être mis à jour en 489.vd4b_25144138f ou plus
+		at hudson.PluginWrapper.resolvePluginDependencies(PluginWrapper.java:992)
+		at hudson.PluginManager$2$1$1.run(PluginManager.java:581)
+		at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:177)
+		at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:305)
+		at jenkins.model.Jenkins$5.runTask(Jenkins.java:1195)
+		at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:221)
+		at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:120)
+		at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:68)
+		at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+		at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+		at java.base/java.lang.Thread.run(Thread.java:1583)
+12-Nov-2024 12:18:20.079 INFOS [pool-7-thread-4] jenkins.InitReactorRunner$1.onAttained Prepared all plugins
+12-Nov-2024 12:18:20.172 INFOS [pool-7-thread-2] jenkins.InitReactorRunner$1.onAttained Started all plugins
+12-Nov-2024 12:18:20.825 INFOS [Handling POST /outils/jenkinsdgnsi/view/PTEP/widget/ExecutorsWidget/ajax from 10.120.195.31 : http-nio-10000-exec-4] hudson.plugins.build_timeout.global.GlobalTimeOutConfiguration.load global timeout not set
+12-Nov-2024 12:18:21.388 INFOS [pool-7-thread-1] jenkins.InitReactorRunner$1.onAttained Augmented all extensions
+12-Nov-2024 12:18:21.988 GRAVE [pool-7-thread-1] jenkins.InitReactorRunner$1.onTaskFailed Failed Loading global config
+	java.io.IOException: Unable to read /ccv/data/webdep/jenkinsdgnsiIN/data/jenkinshome/config.xml
+		at hudson.XmlFile.unmarshal(XmlFile.java:199)
+		at hudson.XmlFile.unmarshal(XmlFile.java:179)
+		at jenkins.model.Jenkins.load(Jenkins.java:3416)
+		at jenkins.model.Jenkins$12.run(Jenkins.java:3528)
+		at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:177)
+		at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:305)
+		at jenkins.model.Jenkins$5.runTask(Jenkins.java:1195)
+		at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:221)
+		at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:120)
+		at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:68)
+		at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+		at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+		at java.base/java.lang.Thread.run(Thread.java:1583)
+	Caused by: jenkins.util.xstream.CriticalXStreamException: 
+---- Debugging information ----
+cause-exception     : com.thoughtworks.xstream.mapper.CannotResolveClassException
+cause-message       : org.jenkinsci.plugins.reverse_proxy_auth.ReverseProxySecurityRealm
+class               : hudson.model.Hudson
+required-type       : hudson.model.Hudson
+converter-type      : hudson.util.RobustReflectionConverter
+path                : /hudson/securityRealm
+line number         : 24
+version             : 2.479.1
+-------------------------------
+		at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:381)
+		at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:289)
+		at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:74)
+		at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:72)
+		at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:68)
+		at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:52)
+		at com.thoughtworks.xstream.core.TreeUnmarshaller.start(TreeUnmarshaller.java:136)
+		at com.thoughtworks.xstream.core.AbstractTreeMarshallingStrategy.unmarshal(AbstractTreeMarshallingStrategy.java:32)
+		at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:1464)
+		at hudson.util.XStream2.unmarshal(XStream2.java:230)
+		at hudson.util.XStream2.unmarshal(XStream2.java:201)
+		at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:1441)
+		at hudson.XmlFile.unmarshal(XmlFile.java:196)
+		... 12 more
+	Caused by: com.thoughtworks.xstream.mapper.CannotResolveClassException: org.jenkinsci.plugins.reverse_proxy_auth.ReverseProxySecurityRealm
+		at com.thoughtworks.xstream.mapper.DefaultMapper.realClass(DefaultMapper.java:81)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.DynamicProxyMapper.realClass(DynamicProxyMapper.java:55)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.PackageAliasingMapper.realClass(PackageAliasingMapper.java:88)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.ClassAliasingMapper.realClass(ClassAliasingMapper.java:79)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.ArrayMapper.realClass(ArrayMapper.java:74)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.SecurityMapper.realClass(SecurityMapper.java:71)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at hudson.util.XStream2$CompatibilityMapper.realClass(XStream2.java:452)
+		at hudson.util.xstream.MapperDelegate.realClass(MapperDelegate.java:46)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.CachingMapper.realClass(CachingMapper.java:47)
+		at hudson.util.RobustReflectionConverter.determineType(RobustReflectionConverter.java:521)
+		at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:346)
+		... 24 more
+12-Nov-2024 12:18:21.995 GRAVE [Jenkins initialization thread] hudson.util.BootFailure.publish Failed to initialize Jenkins
+	hudson.util.HudsonFailedToLoad: org.jvnet.hudson.reactor.ReactorException: java.io.IOException: Unable to read /ccv/data/webdep/jenkinsdgnsiIN/data/jenkinshome/config.xml
+		at hudson.WebAppMain$3.run(WebAppMain.java:277)
+	Caused by: org.jvnet.hudson.reactor.ReactorException: java.io.IOException: Unable to read /ccv/data/webdep/jenkinsdgnsiIN/data/jenkinshome/config.xml
+		at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:290)
+		at jenkins.InitReactorRunner.run(InitReactorRunner.java:49)
+		at jenkins.model.Jenkins.executeReactor(Jenkins.java:1230)
+		at jenkins.model.Jenkins.<init>(Jenkins.java:1017)
+		at hudson.model.Hudson.<init>(Hudson.java:102)
+		at hudson.model.Hudson.<init>(Hudson.java:87)
+		at hudson.WebAppMain$3.run(WebAppMain.java:249)
+	Caused by: java.io.IOException: Unable to read /ccv/data/webdep/jenkinsdgnsiIN/data/jenkinshome/config.xml
+		at hudson.XmlFile.unmarshal(XmlFile.java:199)
+		at hudson.XmlFile.unmarshal(XmlFile.java:179)
+		at jenkins.model.Jenkins.load(Jenkins.java:3416)
+		at jenkins.model.Jenkins$12.run(Jenkins.java:3528)
+		at org.jvnet.hudson.reactor.TaskGraphBuilder$TaskImpl.run(TaskGraphBuilder.java:177)
+		at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:305)
+		at jenkins.model.Jenkins$5.runTask(Jenkins.java:1195)
+		at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:221)
+		at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:120)
+		at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:68)
+		at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+		at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+		at java.base/java.lang.Thread.run(Thread.java:1583)
+	Caused by: jenkins.util.xstream.CriticalXStreamException: 
+---- Debugging information ----
+cause-exception     : com.thoughtworks.xstream.mapper.CannotResolveClassException
+cause-message       : org.jenkinsci.plugins.reverse_proxy_auth.ReverseProxySecurityRealm
+class               : hudson.model.Hudson
+required-type       : hudson.model.Hudson
+converter-type      : hudson.util.RobustReflectionConverter
+path                : /hudson/securityRealm
+line number         : 24
+version             : 2.479.1
+-------------------------------
+		at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:381)
+		at hudson.util.RobustReflectionConverter.unmarshal(RobustReflectionConverter.java:289)
+		at com.thoughtworks.xstream.core.TreeUnmarshaller.convert(TreeUnmarshaller.java:74)
+		at com.thoughtworks.xstream.core.AbstractReferenceUnmarshaller.convert(AbstractReferenceUnmarshaller.java:72)
+		at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:68)
+		at com.thoughtworks.xstream.core.TreeUnmarshaller.convertAnother(TreeUnmarshaller.java:52)
+		at com.thoughtworks.xstream.core.TreeUnmarshaller.start(TreeUnmarshaller.java:136)
+		at com.thoughtworks.xstream.core.AbstractTreeMarshallingStrategy.unmarshal(AbstractTreeMarshallingStrategy.java:32)
+		at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:1464)
+		at hudson.util.XStream2.unmarshal(XStream2.java:230)
+		at hudson.util.XStream2.unmarshal(XStream2.java:201)
+		at com.thoughtworks.xstream.XStream.unmarshal(XStream.java:1441)
+		at hudson.XmlFile.unmarshal(XmlFile.java:196)
+		... 12 more
+	Caused by: com.thoughtworks.xstream.mapper.CannotResolveClassException: org.jenkinsci.plugins.reverse_proxy_auth.ReverseProxySecurityRealm
+		at com.thoughtworks.xstream.mapper.DefaultMapper.realClass(DefaultMapper.java:81)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.DynamicProxyMapper.realClass(DynamicProxyMapper.java:55)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.PackageAliasingMapper.realClass(PackageAliasingMapper.java:88)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.ClassAliasingMapper.realClass(ClassAliasingMapper.java:79)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.ArrayMapper.realClass(ArrayMapper.java:74)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.SecurityMapper.realClass(SecurityMapper.java:71)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at hudson.util.XStream2$CompatibilityMapper.realClass(XStream2.java:452)
+		at hudson.util.xstream.MapperDelegate.realClass(MapperDelegate.java:46)
+		at com.thoughtworks.xstream.mapper.MapperWrapper.realClass(MapperWrapper.java:125)
+		at com.thoughtworks.xstream.mapper.CachingMapper.realClass(CachingMapper.java:47)
+		at hudson.util.RobustReflectionConverter.determineType(RobustReflectionConverter.java:521)
+		at hudson.util.RobustReflectionConverter.doUnmarshal(RobustReflectionConverter.java:346)
+		... 24 more
+

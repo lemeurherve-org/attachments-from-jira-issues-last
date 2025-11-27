@@ -1,0 +1,782 @@
+# Three different line formats are valid:
+#	key	-a    aliases...
+#	key [options] directory
+#	key [options] directory files...
+#
+# Where "options" are composed of:
+#	-i prog		Run "prog" on "cvs commit" from top-level of module.
+#	-o prog		Run "prog" on "cvs checkout" of module.
+#	-e prog		Run "prog" on "cvs export" of module.
+#	-t prog		Run "prog" on "cvs rtag" of module.
+#	-u prog		Run "prog" on "cvs update" of module.
+#	-d dir		Place module in directory "dir" instead of module name.
+#	-l		Top-level directory only -- do not recurse.
+#
+# NOTE:  If you change any of the "Run" options above, you'll have to
+# release and re-checkout any working directories of these modules.
+#
+# And "directory" is a path to a directory relative to $CVSROOT.
+#
+# The "-a" option specifies an alias.  An alias is interpreted as if
+# everything on the right of the "-a" had been typed on the command line.
+#
+# You can encode a module within a module by using the special '&'
+# character to interpose another module into the current module.  This
+# can be useful for creating a module that consists of many directories
+# spread out over the entire source repository.
+
+mib	embedded/mib
+ndmm embedded/nDMM
+mocana embedded/mocana_releases
+9145 embedded/9145
+L357 embedded/L357
+L351 embedded/L351
+
+l35x_nDmm_9145  &embedded/9145 \
+                &embedded/L357 \
+                &embedded/L351 \
+                &embedded/nDMM
+
+### CSEM aliases
+csem-docs management/canogaview/docs
+csem-specs management/danogaview/docs/specs
+csem management/canogaview/src/csem
+csem-setup-pkg9145e management/canogaview/src/csem/csem-setup-pkg9145e
+csem-args4j management/canogaview/3rdparty/args4j
+csem-base64 management/canogaview/3rdparty/base64
+csem-drcomp management/canogaview/3rdparty/drcomp
+csem-ireasoning management/canogaview/3rdparty/ireasoning
+csem-ireasoningsnmp-extensions management/canogaview/3rdparty/ireasoningsnmp-extensions
+csem-java-diff management/canogaview/3rdparty/java-diff
+csem-jbossrules-src management/canogaview/3rdparty/jbossrules-src
+csem-jsfsecurity management/canogaview/3rdparty/jsfsecurity
+csem-loggerextensionlibrary management/canogaview/3rdparty/loggerextensionlibrary
+csem-quartext management/canogaview/3rdparty/quartext
+csem-quartzext management/canogaview/3rdparty/quartzext
+csem-reports management/canogaview/src/csem-reports
+csem-install management/canogaview/src/csem-install
+csem-test management/canogaview/src/csem-test
+csem-core-test management/canogaview/src/csem-test/csem-core-test
+csem-pkg9145e-test management/canogaview/src/csem-test/csem-pkg9145e-test
+
+jasperserver management/jasperserver
+csem-login-audit management/canogaview/3rdparty/LoginAuditModule
+WebFilters management/canogaview/3rdparty/WebFilters
+JpaPreferences management/canogaview/3rdparty/JpaPreferences
+izregistry management/canogaview/3rdparty/izregistry
+reportservertool management/canogaview/3rdparty/reportservertool
+jsfsecurity management/canogaview/3rdparty/jsfsecurity
+verizonInterfaceTester management/canogaview/3rdparty/verizonInterfaceTester
+SATReporter management/canogaview/3rdparty/SATReporter
+
+canoga-java management/canogaview/src/csem/canoga-java
+csem-config management/canogaview/src/csem/csem-config
+csem-core-api management/canogaview/src/csem/csem-core-api
+csem-core-config management/canogaview/src/csem/csem-core-config
+csem-core-data management/canogaview/src/csem/csem-core-data
+csem-core-database management/canogaview/src/csem/csem-core-database
+csem-core-database-only management/canogaview/src/csem/csem-core-database-only
+csem-core-ear management/canogaview/src/csem/csem-core-ear
+csem-core-ear-only management/canogaview/src/csem/csem-core-ear-only
+csem-core-ejb management/canogaview/src/csem/csem-core-ejb
+csem-core-rules management/canogaview/src/csem/csem-core-rules
+csem-core-war management/canogaview/src/csem/csem-core-war
+csem-drools management/canogaview/src/csem/csem-drools
+csem-lib management/canogaview/src/csem/csem-lib
+csem-log management/canogaview/src/csem/csem-log
+csem-sftp management/canogaview/src/csem/csem-sftp
+csem-snmp management/canogaview/src/csem/csem-snmp
+csem-pmra management/canogaview/src/csem/csem-pmra
+csem-war management/canogaview/src/csem/csem-war
+csem-war-filter management/canogaview/src/csem/csem-war-filter
+csem-tools -d tools management/canogaview/src/csem/tools
+
+csem-core 	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools
+
+csem-install-csem-core -d csem-core management/canogaview/src/csem-install/csem-core
+csem-install-tools -d tools management/canogaview/src/csem-install/tools
+
+csem-core-install	&csem-install-csem-core \
+			&csem-install-tools
+
+csem-core-pkg	&csem-core \
+                &csem-reports \
+		&csem-core-install
+
+
+csem-pkg9145e-config management/canogaview/src/csem/csem-pkg9145e-config
+csem-pkg9145e-api management/canogaview/src/csem/csem-pkg9145e-api 
+csem-pkg9145e-data management/canogaview/src/csem/csem-pkg9145e-data 
+csem-pkg9145e-database management/canogaview/src/csem/csem-pkg9145e-database 
+csem-pkg9145e-database-only management/canogaview/src/csem/csem-pkg9145e-database-only 
+csem-pkg9145e-ear management/canogaview/src/csem/csem-pkg9145e-ear 
+csem-pkg9145e-ear-only  management/canogaview/src/csem/csem-pkg9145e-ear-only  
+csem-pkg9145e-ejb management/canogaview/src/csem/csem-pkg9145e-ejb 
+csem-pkg9145e-rules management/canogaview/src/csem/csem-pkg9145e-rules 
+csem-pkg9145e-war management/canogaview/src/csem/csem-pkg9145e-war 
+
+csem-pkg9145e	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools \
+		&csem-pkg9145e-api \
+		&csem-pkg9145e-config \
+		&csem-pkg9145e-data \
+		&csem-pkg9145e-database \
+		&csem-pkg9145e-database-only \
+		&csem-pkg9145e-ear \
+		&csem-pkg9145e-ear-only \
+		&csem-pkg9145e-ejb \
+		&csem-pkg9145e-rules \
+		&csem-pkg9145e-war
+
+csem-install-csem-pkg9145e -d csem-pkg9145e management/canogaview/src/csem-install/csem-pkg9145e
+
+csem-pkg9145e-install	&csem-install-csem-pkg9145e \
+			&csem-install-tools
+
+csem-pkg9145e-pkg	&csem-pkg9145e \
+			&csem-pkg9145e-install
+
+csem-pcs-pkg9145e-plugin-config management/canogaview/src/csem/csem-pcs-pkg9145e-plugin-config
+csem-pcs-pkg9145e-plugin-data management/canogaview/src/csem/csem-pcs-pkg9145e-plugin-data
+csem-pcs-pkg9145e-plugin-database management/canogaview/src/csem/csem-pcs-pkg9145e-plugin-database
+csem-pcs-pkg9145e-plugin-ear management/canogaview/src/csem/csem-pcs-pkg9145e-plugin-ear
+csem-pcs-pkg9145e-plugin-ejb management/canogaview/src/csem/csem-pcs-pkg9145e-plugin-ejb
+csem-pcs-pkg9145e-plugin-war management/canogaview/src/csem/csem-pcs-pkg9145e-plugin-war
+
+csem-pcs-pkg9145e-plugin    &canoga-java \
+		&csem-core-api \
+		&csem-core-ejb \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-pmra \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-tools \
+                &csem-pcs-api \
+                &csem-pcs-ejb \
+		&csem-pkg9145e-api \
+                &csem-pkg9145e-ejb \
+                &csem-war \
+                &csem-pcs-pkg9145e-plugin-config \
+                &csem-pcs-pkg9145e-plugin-data \
+                &csem-pcs-pkg9145e-plugin-database \
+                &csem-pcs-pkg9145e-plugin-ear \
+                &csem-pcs-pkg9145e-plugin-ejb \
+                &csem-pcs-pkg9145e-plugin-war
+
+csem-install-csem-pcs-pkg9145e-plugin -d csem-pcs-pkg9145e-plugin management/canogaview/src/csem-install/csem-pcs-pkg9145e-plugin
+
+csem-pcs-pkg9145e-plugin-install   &csem-install-csem-pcs-pkg9145e-plugin \
+                            &csem-install-tools
+
+csem-pcs-pkg9145e-plugin-pkg    &csem-pcs-pkg9145e-plugin \
+                                &csem-pcs-pkg9145e-plugin-install
+
+csem-pkg9145e10G-config management/canogaview/src/csem/csem-pkg9145e10G-config
+csem-pkg9145e10G-api management/canogaview/src/csem/csem-pkg9145e10G-api 
+csem-pkg9145e10G-data management/canogaview/src/csem/csem-pkg9145e10G-data 
+csem-pkg9145e10G-database management/canogaview/src/csem/csem-pkg9145e10G-database 
+csem-pkg9145e10G-database-only management/canogaview/src/csem/csem-pkg9145e10G-database-only 
+csem-pkg9145e10G-ear management/canogaview/src/csem/csem-pkg9145e10G-ear 
+csem-pkg9145e10G-ear-only  management/canogaview/src/csem/csem-pkg9145e10G-ear-only  
+csem-pkg9145e10G-ejb management/canogaview/src/csem/csem-pkg9145e10G-ejb 
+csem-pkg9145e10G-rules management/canogaview/src/csem/csem-pkg9145e10G-rules 
+csem-pkg9145e10G-war management/canogaview/src/csem/csem-pkg9145e10G-war 
+
+csem-pkg9145e10G	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools \
+		&csem-pkg9145e10G-api \
+		&csem-pkg9145e10G-config \
+		&csem-pkg9145e10G-data \
+		&csem-pkg9145e10G-database \
+		&csem-pkg9145e10G-database-only \
+		&csem-pkg9145e10G-ear \
+		&csem-pkg9145e10G-ear-only \
+		&csem-pkg9145e10G-ejb \
+		&csem-pkg9145e10G-rules \
+		&csem-pkg9145e10G-war
+
+csem-install-csem-pkg9145e10G -d csem-pkg9145e10G management/canogaview/src/csem-install/csem-pkg9145e10G
+
+csem-pkg9145e10G-install	&csem-install-csem-pkg9145e10G \
+			&csem-install-tools
+
+csem-pkg9145e10G-pkg	&csem-pkg9145e10G \
+			&csem-pkg9145e10G-install
+
+csem-pcs-pkg9145e10G-plugin-config management/canogaview/src/csem/csem-pcs-pkg9145e10G-plugin-config
+csem-pcs-pkg9145e10G-plugin-data management/canogaview/src/csem/csem-pcs-pkg9145e10G-plugin-data
+csem-pcs-pkg9145e10G-plugin-database management/canogaview/src/csem/csem-pcs-pkg9145e10G-plugin-database
+csem-pcs-pkg9145e10G-plugin-ear management/canogaview/src/csem/csem-pcs-pkg9145e10G-plugin-ear
+csem-pcs-pkg9145e10G-plugin-ejb management/canogaview/src/csem/csem-pcs-pkg9145e10G-plugin-ejb
+csem-pcs-pkg9145e10G-plugin-war management/canogaview/src/csem/csem-pcs-pkg9145e10G-plugin-war
+
+csem-pcs-pkg9145e10G-plugin    &canoga-java \
+		&csem-core-api \
+		&csem-core-ejb \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-pmra \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-tools \
+                &csem-pcs-api \
+                &csem-pcs-ejb \
+		&csem-pkg9145e10G-api \
+                &csem-pkg9145e10G-ejb \
+                &csem-war \
+                &csem-pcs-pkg9145e10G-plugin-config \
+                &csem-pcs-pkg9145e10G-plugin-data \
+                &csem-pcs-pkg9145e10G-plugin-database \
+                &csem-pcs-pkg9145e10G-plugin-ear \
+                &csem-pcs-pkg9145e10G-plugin-ejb \
+                &csem-pcs-pkg9145e10G-plugin-war
+
+csem-install-csem-pcs-pkg9145e10G-plugin -d csem-pcs-pkg9145e10G-plugin management/canogaview/src/csem-install/csem-pcs-pkg9145e10G-plugin
+
+csem-pcs-pkg9145e10G-plugin-install   &csem-install-csem-pcs-pkg9145e10G-plugin \
+                            &csem-install-tools
+
+csem-pcs-pkg9145e10G-plugin-pkg    &csem-pcs-pkg9145e10G-plugin \
+                                &csem-pcs-pkg9145e10G-plugin-install
+
+
+csem-derby-upgrade-installer	management/canogaview/src/csem-install/derby-upgrade
+
+
+csem-pkg9145eMP-config management/canogaview/src/csem/csem-pkg9145eMP-config
+csem-pkg9145eMP-api management/canogaview/src/csem/csem-pkg9145eMP-api 
+csem-pkg9145eMP-data management/canogaview/src/csem/csem-pkg9145eMP-data 
+csem-pkg9145eMP-database management/canogaview/src/csem/csem-pkg9145eMP-database 
+csem-pkg9145eMP-database-only management/canogaview/src/csem/csem-pkg9145eMP-database-only 
+csem-pkg9145eMP-ear management/canogaview/src/csem/csem-pkg9145eMP-ear 
+csem-pkg9145eMP-ear-only  management/canogaview/src/csem/csem-pkg9145eMP-ear-only  
+csem-pkg9145eMP-ejb management/canogaview/src/csem/csem-pkg9145eMP-ejb 
+csem-pkg9145eMP-rules management/canogaview/src/csem/csem-pkg9145eMP-rules 
+csem-pkg9145eMP-war management/canogaview/src/csem/csem-pkg9145eMP-war 
+
+csem-pkg9145eMP	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools \
+		&csem-pkg9145eMP-api \
+		&csem-pkg9145eMP-config \
+		&csem-pkg9145eMP-data \
+		&csem-pkg9145eMP-database \
+		&csem-pkg9145eMP-database-only \
+		&csem-pkg9145eMP-ear \
+		&csem-pkg9145eMP-ear-only \
+		&csem-pkg9145eMP-ejb \
+		&csem-pkg9145eMP-rules \
+		&csem-pkg9145eMP-war
+
+csem-install-csem-pkg9145eMP -d csem-pkg9145eMP management/canogaview/src/csem-install/csem-pkg9145eMP
+
+csem-pkg9145eMP-install	&csem-install-csem-pkg9145eMP \
+			&csem-install-tools
+
+csem-pkg9145eMP-pkg	&csem-pkg9145eMP \
+			&csem-pkg9145eMP-install
+
+csem-pcs-pkg9145eMP-plugin-config management/canogaview/src/csem/csem-pcs-pkg9145eMP-plugin-config
+csem-pcs-pkg9145eMP-plugin-data management/canogaview/src/csem/csem-pcs-pkg9145eMP-plugin-data
+csem-pcs-pkg9145eMP-plugin-database management/canogaview/src/csem/csem-pcs-pkg9145eMP-plugin-database
+csem-pcs-pkg9145eMP-plugin-ear management/canogaview/src/csem/csem-pcs-pkg9145eMP-plugin-ear
+csem-pcs-pkg9145eMP-plugin-ejb management/canogaview/src/csem/csem-pcs-pkg9145eMP-plugin-ejb
+csem-pcs-pkg9145eMP-plugin-war management/canogaview/src/csem/csem-pcs-pkg9145eMP-plugin-war
+
+csem-pcs-pkg9145eMP-plugin    &canoga-java \
+		&csem-core-api \
+		&csem-core-ejb \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-pmra \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-tools \
+                &csem-pcs-api \
+                &csem-pcs-ejb \
+		&csem-pkg9145eMP-api \
+                &csem-pkg9145eMP-ejb \
+                &csem-war \
+                &csem-pcs-pkg9145eMP-plugin-config \
+                &csem-pcs-pkg9145eMP-plugin-data \
+                &csem-pcs-pkg9145eMP-plugin-database \
+                &csem-pcs-pkg9145eMP-plugin-ear \
+                &csem-pcs-pkg9145eMP-plugin-ejb \
+                &csem-pcs-pkg9145eMP-plugin-war
+
+csem-install-csem-pcs-pkg9145eMP-plugin -d csem-pcs-pkg9145eMP-plugin management/canogaview/src/csem-install/csem-pcs-pkg9145eMP-plugin
+
+csem-pcs-pkg9145eMP-plugin-install   &csem-install-csem-pcs-pkg9145eMP-plugin \
+                            &csem-install-tools
+
+csem-pcs-pkg9145eMP-plugin-pkg    &csem-pcs-pkg9145eMP-plugin \
+                                &csem-pcs-pkg9145eMP-plugin-install
+
+
+csem-pkg9145eLB-config management/canogaview/src/csem/csem-pkg9145eLB-config
+csem-pkg9145eLB-api management/canogaview/src/csem/csem-pkg9145eLB-api 
+csem-pkg9145eLB-data management/canogaview/src/csem/csem-pkg9145eLB-data 
+csem-pkg9145eLB-database management/canogaview/src/csem/csem-pkg9145eLB-database 
+csem-pkg9145eLB-database-only management/canogaview/src/csem/csem-pkg9145eLB-database-only 
+csem-pkg9145eLB-ear management/canogaview/src/csem/csem-pkg9145eLB-ear 
+csem-pkg9145eLB-ear-only  management/canogaview/src/csem/csem-pkg9145eLB-ear-only  
+csem-pkg9145eLB-ejb management/canogaview/src/csem/csem-pkg9145eLB-ejb 
+csem-pkg9145eLB-rules management/canogaview/src/csem/csem-pkg9145eLB-rules 
+csem-pkg9145eLB-war management/canogaview/src/csem/csem-pkg9145eLB-war 
+
+csem-pkg9145eLB	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools \
+		&csem-pkg9145eLB-api \
+		&csem-pkg9145eLB-config \
+		&csem-pkg9145eLB-data \
+		&csem-pkg9145eLB-database \
+		&csem-pkg9145eLB-database-only \
+		&csem-pkg9145eLB-ear \
+		&csem-pkg9145eLB-ear-only \
+		&csem-pkg9145eLB-ejb \
+		&csem-pkg9145eLB-rules \
+		&csem-pkg9145eLB-war
+
+csem-install-csem-pkg9145eLB -d csem-pkg9145eLB management/canogaview/src/csem-install/csem-pkg9145eLB
+
+csem-pkg9145eLB-install	&csem-install-csem-pkg9145eLB \
+			&csem-install-tools
+
+csem-pkg9145eLB-pkg	&csem-pkg9145eLB \
+			&csem-pkg9145eLB-install
+
+csem-pcs-pkg9145eLB-plugin-config management/canogaview/src/csem/csem-pcs-pkg9145eLB-plugin-config
+csem-pcs-pkg9145eLB-plugin-data management/canogaview/src/csem/csem-pcs-pkg9145eLB-plugin-data
+csem-pcs-pkg9145eLB-plugin-database management/canogaview/src/csem/csem-pcs-pkg9145eLB-plugin-database
+csem-pcs-pkg9145eLB-plugin-ear management/canogaview/src/csem/csem-pcs-pkg9145eLB-plugin-ear
+csem-pcs-pkg9145eLB-plugin-ejb management/canogaview/src/csem/csem-pcs-pkg9145eLB-plugin-ejb
+csem-pcs-pkg9145eLB-plugin-war management/canogaview/src/csem/csem-pcs-pkg9145eLB-plugin-war
+
+csem-pcs-pkg9145eLB-plugin    &canoga-java \
+		&csem-core-api \
+		&csem-core-ejb \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-pmra \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-tools \
+                &csem-pcs-api \
+                &csem-pcs-ejb \
+		&csem-pkg9145eLB-api \
+                &csem-pkg9145eLB-ejb \
+                &csem-war \
+                &csem-pcs-pkg9145eLB-plugin-config \
+                &csem-pcs-pkg9145eLB-plugin-data \
+                &csem-pcs-pkg9145eLB-plugin-database \
+                &csem-pcs-pkg9145eLB-plugin-ear \
+                &csem-pcs-pkg9145eLB-plugin-ejb \
+                &csem-pcs-pkg9145eLB-plugin-war
+
+csem-install-csem-pcs-pkg9145eLB-plugin -d csem-pcs-pkg9145eLB-plugin management/canogaview/src/csem-install/csem-pcs-pkg9145eLB-plugin
+
+csem-pcs-pkg9145eLB-plugin-install   &csem-install-csem-pcs-pkg9145eLB-plugin \
+                            &csem-install-tools
+
+csem-pcs-pkg9145eLB-plugin-pkg    &csem-pcs-pkg9145eLB-plugin \
+                                &csem-pcs-pkg9145eLB-plugin-install
+
+
+csem-pcs-config management/canogaview/src/csem/csem-pcs-config
+csem-pcs-api management/canogaview/src/csem/csem-pcs-api 
+csem-pcs-data management/canogaview/src/csem/csem-pcs-data 
+csem-pcs-database management/canogaview/src/csem/csem-pcs-database 
+csem-pcs-database-only management/canogaview/src/csem/csem-pcs-database-only
+csem-pcs-ear management/canogaview/src/csem/csem-pcs-ear 
+csem-pcs-ear-only management/canogaview/src/csem/csem-pcs-ear-only
+csem-pcs-ejb management/canogaview/src/csem/csem-pcs-ejb 
+csem-pcs-war management/canogaview/src/csem/csem-pcs-war 
+
+csem-pcs	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools \
+                &csem-pmra \
+		&csem-pcs-api \
+		&csem-pcs-config \
+		&csem-pcs-data \
+		&csem-pcs-database \
+		&csem-pcs-database-only \
+		&csem-pcs-ear \
+		&csem-pcs-ear-only \
+		&csem-pcs-ejb \
+		&csem-pcs-war
+
+csem-install-csem-pcs -d csem-pcs management/canogaview/src/csem-install/csem-pcs
+
+csem-pcs-install	&csem-install-csem-pcs \
+			&csem-install-tools
+
+csem-pcs-pkg	&csem-pcs \
+			&csem-pcs-install
+
+
+csem-pkg9145-config management/canogaview/src/csem/csem-pkg9145-config
+csem-pkg9145-api management/canogaview/src/csem/csem-pkg9145-api 
+csem-pkg9145-data management/canogaview/src/csem/csem-pkg9145-data 
+csem-pkg9145-database management/canogaview/src/csem/csem-pkg9145-database 
+csem-pkg9145-database-only management/canogaview/src/csem/csem-pkg9145-database-only 
+csem-pkg9145-ear management/canogaview/src/csem/csem-pkg9145-ear 
+csem-pkg9145-ear-only  management/canogaview/src/csem/csem-pkg9145-ear-only  
+csem-pkg9145-ejb management/canogaview/src/csem/csem-pkg9145-ejb 
+csem-pkg9145-rules management/canogaview/src/csem/csem-pkg9145-rules 
+csem-pkg9145-war management/canogaview/src/csem/csem-pkg9145-war 
+
+csem-pkg9145	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools \
+		&csem-pkg9145-api \
+		&csem-pkg9145-config \
+		&csem-pkg9145-data \
+		&csem-pkg9145-database \
+		&csem-pkg9145-database-only \
+		&csem-pkg9145-ear \
+		&csem-pkg9145-ear-only \
+		&csem-pkg9145-ejb \
+		&csem-pkg9145-rules \
+		&csem-pkg9145-war
+
+csem-install-csem-pkg9145 -d csem-pkg9145 management/canogaview/src/csem-install/csem-pkg9145
+
+csem-pkg9145-install	&csem-install-csem-pkg9145 \
+			&csem-install-tools
+
+csem-pkg9145-pkg	&csem-pkg9145 \
+			&csem-pkg9145-install
+
+csem-pcs-pkg9145-plugin-config management/canogaview/src/csem/csem-pcs-pkg9145-plugin-config
+csem-pcs-pkg9145-plugin-data management/canogaview/src/csem/csem-pcs-pkg9145-plugin-data
+csem-pcs-pkg9145-plugin-database management/canogaview/src/csem/csem-pcs-pkg9145-plugin-database
+csem-pcs-pkg9145-plugin-ear management/canogaview/src/csem/csem-pcs-pkg9145-plugin-ear
+csem-pcs-pkg9145-plugin-ejb management/canogaview/src/csem/csem-pcs-pkg9145-plugin-ejb
+csem-pcs-pkg9145-plugin-war management/canogaview/src/csem/csem-pcs-pkg9145-plugin-war
+
+csem-pcs-pkg9145-plugin    &canoga-java \
+		&csem-core-api \
+		&csem-core-ejb \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-pmra \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-tools \
+                &csem-pcs-api \
+                &csem-pcs-ejb \
+		&csem-pkg9145-api \
+                &csem-pkg9145-ejb \
+                &csem-war \
+                &csem-pcs-pkg9145-plugin-config \
+                &csem-pcs-pkg9145-plugin-data \
+                &csem-pcs-pkg9145-plugin-database \
+                &csem-pcs-pkg9145-plugin-ear \
+                &csem-pcs-pkg9145-plugin-ejb \
+                &csem-pcs-pkg9145-plugin-war
+
+csem-install-csem-pcs-pkg9145-plugin -d csem-pcs-pkg9145-plugin management/canogaview/src/csem-install/csem-pcs-pkg9145-plugin
+
+csem-pcs-pkg9145-plugin-install   &csem-install-csem-pcs-pkg9145-plugin \
+                            &csem-install-tools
+
+csem-pcs-pkg9145-plugin-pkg    &csem-pcs-pkg9145-plugin \
+                                &csem-pcs-pkg9145-plugin-install
+
+
+csem-pkg9161-config management/canogaview/src/csem/csem-pkg9161-config
+csem-pkg9161-api management/canogaview/src/csem/csem-pkg9161-api 
+csem-pkg9161-data management/canogaview/src/csem/csem-pkg9161-data 
+csem-pkg9161-database management/canogaview/src/csem/csem-pkg9161-database 
+csem-pkg9161-database-only management/canogaview/src/csem/csem-pkg9161-database-only 
+csem-pkg9161-ear management/canogaview/src/csem/csem-pkg9161-ear 
+csem-pkg9161-ear-only  management/canogaview/src/csem/csem-pkg9161-ear-only  
+csem-pkg9161-ejb management/canogaview/src/csem/csem-pkg9161-ejb 
+csem-pkg9161-rules management/canogaview/src/csem/csem-pkg9161-rules 
+csem-pkg9161-war management/canogaview/src/csem/csem-pkg9161-war 
+
+csem-pkg9161	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools \
+		&csem-pkg9161-api \
+		&csem-pkg9161-config \
+		&csem-pkg9161-data \
+		&csem-pkg9161-database \
+		&csem-pkg9161-database-only \
+		&csem-pkg9161-ear \
+		&csem-pkg9161-ear-only \
+		&csem-pkg9161-ejb \
+		&csem-pkg9161-rules \
+		&csem-pkg9161-war
+
+csem-install-csem-pkg9161 -d csem-pkg9161 management/canogaview/src/csem-install/csem-pkg9161
+
+csem-pkg9161-install	&csem-install-csem-pkg9161 \
+			&csem-install-tools
+
+csem-pkg9161-pkg	&csem-pkg9161 \
+			&csem-pkg9161-install
+
+csem-pcs-pkg9161-plugin-config management/canogaview/src/csem/csem-pcs-pkg9161-plugin-config
+csem-pcs-pkg9161-plugin-data management/canogaview/src/csem/csem-pcs-pkg9161-plugin-data
+csem-pcs-pkg9161-plugin-database management/canogaview/src/csem/csem-pcs-pkg9161-plugin-database
+csem-pcs-pkg9161-plugin-ear management/canogaview/src/csem/csem-pcs-pkg9161-plugin-ear
+csem-pcs-pkg9161-plugin-ejb management/canogaview/src/csem/csem-pcs-pkg9161-plugin-ejb
+csem-pcs-pkg9161-plugin-war management/canogaview/src/csem/csem-pcs-pkg9161-plugin-war
+
+csem-pcs-pkg9161-plugin    &canoga-java \
+		&csem-core-api \
+		&csem-core-ejb \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-pmra \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-tools \
+                &csem-pcs-api \
+                &csem-pcs-ejb \
+		&csem-pkg9161-api \
+                &csem-pkg9161-ejb \
+                &csem-war \
+                &csem-pcs-pkg9161-plugin-config \
+                &csem-pcs-pkg9161-plugin-data \
+                &csem-pcs-pkg9161-plugin-database \
+                &csem-pcs-pkg9161-plugin-ear \
+                &csem-pcs-pkg9161-plugin-ejb \
+                &csem-pcs-pkg9161-plugin-war
+
+csem-install-csem-pcs-pkg9161-plugin -d csem-pcs-pkg9161-plugin management/canogaview/src/csem-install/csem-pcs-pkg9161-plugin
+
+csem-pcs-pkg9161-plugin-install   &csem-install-csem-pcs-pkg9161-plugin \
+                            &csem-install-tools
+
+csem-pcs-pkg9161-plugin-pkg    &csem-pcs-pkg9161-plugin \
+                                &csem-pcs-pkg9161-plugin-install
+
+
+
+csem-verizon-config management/canogaview/src/csem/csem-verizon-config
+csem-verizon-api management/canogaview/src/csem/csem-verizon-api 
+csem-verizon-ear management/canogaview/src/csem/csem-verizon-ear 
+csem-verizon-ejb management/canogaview/src/csem/csem-verizon-ejb 
+csem-verizon-war management/canogaview/src/csem/csem-verizon-war 
+
+csem-verizon	&canoga-java \
+		&csem-config \
+		&csem-core-api \
+		&csem-core-config \
+		&csem-core-data \
+		&csem-core-database \
+		&csem-core-database-only \
+		&csem-core-ear \
+		&csem-core-ear-only \
+		&csem-core-ejb \
+		&csem-core-rules \
+		&csem-core-war \
+		&csem-drools \
+		&csem-lib \
+		&csem-log \
+		&csem-sftp \
+		&csem-snmp \
+		&csem-war \
+		&csem-war-filter \
+		&csem-tools \
+		&csem-verizon-api \
+		&csem-verizon-config \
+		&csem-verizon-ear \
+		&csem-verizon-ejb \
+		&csem-verizon-war \
+                &csem-pkg9145-api \
+                &csem-pkg9145e-api \
+                &csem-pkg9145e-ejb \
+                &csem-pkg9145e10G-api \
+                &csem-pkg9145e10G-ejb \
+                &csem-pkg9161-api \
+                &csem-pcs-api \
+		&csem-pmra
+
+
+csem-install-csem-verizon -d csem-verizon management/canogaview/src/csem-install/csem-verizon
+
+csem-verizon-install	&csem-install-csem-verizon \
+			&csem-install-tools
+
+csem-verizon-pkg	&csem-verizon \
+			&csem-verizon-install
+
+
+
+
+###
+
+
+9145E     &embedded/9145bsps/BSP_9145E  &embedded/BootLoader9145E_1 \
+          &embedded/9145E_FPGA_LOADER   &embedded/9145E_tmp    \
+          &embedded/9145E_WRN    \
+          &embedded/vxWorks6.4_h_wrn    &embedded/9145EvxWorks \
+          &embedded/9145Evxfpga         \
+          &embedded/9145E_ENVOY         &embedded/9145E_AGENT  \
+          &embedded/9145E_MOCANA        &embedded/mib\9145E \
+          &embedded/9145EvxBist
+
+9145Ex    &embedded/9145E_CP/9145E_CP_AGENT \
+          &embedded/9145E_CP/9145E_CP_DKM \
+          &embedded/9145E_CP/9145E_CP_MOCANA \
+          &embedded/9145E_CP/9145E_Galazar
+
+
+
+
+FastPath  &embedded/Tornado2.2.1/target &embedded/FastPath
+
+
+

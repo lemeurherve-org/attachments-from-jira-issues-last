@@ -1,0 +1,20 @@
+Index: src/main/java/hudson/plugins/promoted_builds/Promotion.java
+===================================================================
+--- src/main/java/hudson/plugins/promoted_builds/Promotion.java	(revision 30880)
++++ src/main/java/hudson/plugins/promoted_builds/Promotion.java	(working copy)
+@@ -61,10 +61,14 @@
+     public Status getStatus() {
+         return getTarget().getAction(PromotedBuildAction.class).getPromotion(getParent().getName());
+     }
+-
++    
+     @Override
+     public EnvVars getEnvironment(TaskListener listener) throws IOException, InterruptedException {
+         EnvVars e = super.getEnvironment(listener);
++        EnvVars parentEnv = this.getTarget().getEnvironment(listener);
++        for (String key : parentEnv.keySet()) { // append promoted build's env
++          e.put("PROMOTED_" + key, parentEnv.get(key));
++        }
+         String rootUrl = Hudson.getInstance().getRootUrl();
+         if(rootUrl!=null)
+             e.put("PROMOTED_URL",rootUrl+getTarget().getUrl());

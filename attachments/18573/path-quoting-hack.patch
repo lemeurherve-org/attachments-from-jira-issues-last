@@ -1,0 +1,14 @@
+--- ./core/src/main/java/hudson/EnvVars.java.orig	2009-04-03 10:46:39.986000000 +1100
++++ ./core/src/main/java/hudson/EnvVars.java	2009-04-03 13:35:42.233000000 +1100
+@@ -201,6 +201,11 @@
+ 
+     private static EnvVars initMaster() {
+         EnvVars vars = new EnvVars(System.getenv());
++        
++        // Works around bug in Java or JNLP which makes double quotes appear in the PATH on slaves.
++        String path = vars.get("PATH");
++        vars.override("PATH", path.replaceAll("\"", ""));
++        
+         vars.platform = Platform.current();
+         if(Functions.isUnitTest)
+             // if unit test is launched with maven debug switch,

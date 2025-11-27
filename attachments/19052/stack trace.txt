@@ -1,0 +1,25 @@
+Started by user anonymous
+$ hg clone --rev default ssh://hg@bitbucket.org/bhiles/toyfiles/ C:\.hudson\jobs\toyfiles\workspace
+ERROR: Failed to clone ssh://hg@bitbucket.org/bhiles/toyfiles/
+java.io.IOException: Cannot run program "hg": CreateProcess error=2, The system cannot find the file specified
+	at java.lang.ProcessBuilder.start(Unknown Source)
+	at hudson.Proc$LocalProc.<init>(Proc.java:149)
+	at hudson.Proc$LocalProc.<init>(Proc.java:121)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:633)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:268)
+	at hudson.Launcher$ProcStarter.join(Launcher.java:275)
+	at hudson.plugins.mercurial.MercurialSCM.clone(MercurialSCM.java:519)
+	at hudson.plugins.mercurial.MercurialSCM.checkout(MercurialSCM.java:363)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1011)
+	at hudson.model.AbstractBuild$AbstractRunner.checkout(AbstractBuild.java:485)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:411)
+	at hudson.model.Run.run(Run.java:1193)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:304)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:122)
+Caused by: java.io.IOException: CreateProcess error=2, The system cannot find the file specified
+	at java.lang.ProcessImpl.create(Native Method)
+	at java.lang.ProcessImpl.<init>(Unknown Source)
+	at java.lang.ProcessImpl.start(Unknown Source)
+	... 15 more
+Finished: FAILURE

@@ -1,0 +1,37 @@
+07:55:44 [xUnit] [INFO] - Starting to record.
+07:55:44 [xUnit] [INFO] - Processing JUnit
+07:55:44 [xUnit] [INFO] - [JUnit] - 377 test report file(s) were found with the pattern '**/surefire-reports/*.xml' relative to '/home/jenkins-slave/slave/workspace/RequesteX_Tests' for the testing framework 'JUnit'.
+07:55:45 ERROR: Publisher org.jenkinsci.plugins.xunit.XUnitPublisher aborted due to exception
+07:55:45 hudson.remoting.RequestAbortedException: hudson.remoting.RequestAbortedException: java.io.IOException: Unexpected termination of the channel
+07:55:45 	at hudson.remoting.RequestAbortedException.wrapForRethrow(RequestAbortedException.java:41)
+07:55:45 	at hudson.remoting.RequestAbortedException.wrapForRethrow(RequestAbortedException.java:34)
+07:55:45 	at hudson.remoting.Request.call(Request.java:174)
+07:55:45 	at hudson.remoting.Channel.call(Channel.java:714)
+07:55:45 	at hudson.FilePath.act(FilePath.java:898)
+07:55:45 	at hudson.FilePath.act(FilePath.java:882)
+07:55:45 	at org.jenkinsci.plugins.xunit.XUnitPublisher.performTests(XUnitPublisher.java:189)
+07:55:45 	at org.jenkinsci.plugins.xunit.XUnitPublisher.performXUnit(XUnitPublisher.java:118)
+07:55:45 	at org.jenkinsci.plugins.xunit.XUnitPublisher.perform(XUnitPublisher.java:93)
+07:55:45 	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+07:55:45 	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:804)
+07:55:45 	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:776)
+07:55:45 	at hudson.model.Build$BuildExecution.post2(Build.java:183)
+07:55:45 	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:726)
+07:55:45 	at hudson.model.Run.execute(Run.java:1628)
+07:55:45 	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+07:55:45 	at hudson.model.ResourceController.execute(ResourceController.java:88)
+07:55:45 	at hudson.model.Executor.run(Executor.java:247)
+07:55:45 Caused by: hudson.remoting.RequestAbortedException: java.io.IOException: Unexpected termination of the channel
+07:55:45 	at hudson.remoting.Request.abort(Request.java:299)
+07:55:45 	at hudson.remoting.Channel.terminate(Channel.java:774)
+07:55:45 	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:69)
+07:55:45 Caused by: java.io.IOException: Unexpected termination of the channel
+07:55:45 	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:50)
+07:55:45 Caused by: java.io.EOFException
+07:55:45 	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2596)
+07:55:45 	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1316)
+07:55:45 	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:370)
+07:55:45 	at hudson.remoting.Command.readFrom(Command.java:92)
+07:55:45 	at hudson.remoting.ClassicCommandTransport.read(ClassicCommandTransport.java:71)
+07:55:45 	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:48)
+07:55:47 Finished: FAILURE

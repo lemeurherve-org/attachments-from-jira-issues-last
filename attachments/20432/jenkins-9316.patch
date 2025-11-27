@@ -1,0 +1,25 @@
+diff --git a/src/main/java/hudson/plugins/logparser/CompiledPatterns.java b/src/main/java/hudson/plugins/logparser/CompiledPatterns.java
+index dd2d097..0ad53f4 100644
+--- a/src/main/java/hudson/plugins/logparser/CompiledPatterns.java
++++ b/src/main/java/hudson/plugins/logparser/CompiledPatterns.java
+@@ -1,5 +1,7 @@
+ package hudson.plugins.logparser;
+ 
++import hudson.Util;
++
+ import java.util.regex.Pattern;
+ 
+ public class CompiledPatterns {
+@@ -15,11 +17,7 @@ public class CompiledPatterns {
+   }
+ 
+   public void setError(final String errorMsg) {
+-	  if (errorMsg != null && errorMsg.isEmpty()) {
+-		  this.errorMsg = null;
+-	  } else {
+-		  this.errorMsg = errorMsg;
+-	  }
++      this.errorMsg = Util.fixEmpty(errorMsg);
+   }
+ 
+   public Pattern[] getCompiledPatterns() {

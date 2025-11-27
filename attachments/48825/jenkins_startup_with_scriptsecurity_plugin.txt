@@ -1,0 +1,384 @@
+$ java -jar jenkins.war
+Running from: C:\jenkins.war
+webroot: $user.home/.jenkins
+Sep 20, 2019 10:41:41 AM org.eclipse.jetty.util.log.Log initialized
+INFO: Logging initialized @1210ms to org.eclipse.jetty.util.log.JavaUtilLog
+Sep 20, 2019 10:41:41 AM winstone.Logger logInternal
+INFO: Beginning extraction from war file
+Sep 20, 2019 10:41:41 AM org.eclipse.jetty.server.handler.ContextHandler setContextPath
+WARNING: Empty contextPath
+Sep 20, 2019 10:41:41 AM org.eclipse.jetty.server.Server doStart
+INFO: jetty-9.4.z-SNAPSHOT; built: 2019-02-15T16:53:49.381Z; git: eb70b240169fcf1abbd86af36482d1c49826fa0b; jvm 1.8.0_221-b11
+Sep 20, 2019 10:41:42 AM org.eclipse.jetty.webapp.StandardDescriptorProcessor visitServlet
+INFO: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
+Sep 20, 2019 10:41:42 AM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+INFO: DefaultSessionIdManager workerName=node0
+Sep 20, 2019 10:41:42 AM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+INFO: No SessionScavenger set, using defaults
+Sep 20, 2019 10:41:43 AM org.eclipse.jetty.server.session.HouseKeeper startScavenging
+INFO: node0 Scavenging every 660000ms
+Jenkins home directory: C:\Users\autolab\.jenkins found at: $user.home/.jenkins
+Sep 20, 2019 10:41:44 AM org.eclipse.jetty.server.handler.ContextHandler doStart
+INFO: Started w.@660acfb{Jenkins v2.176.3,/,file:///C:/Users/autolab/.jenkins/war/,AVAILABLE}{C:\Users\autolab\.jenkins\war}
+Sep 20, 2019 10:41:44 AM org.eclipse.jetty.server.AbstractConnector doStart
+INFO: Started ServerConnector@7098b907{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+Sep 20, 2019 10:41:44 AM org.eclipse.jetty.server.Server doStart
+INFO: Started @4042ms
+Sep 20, 2019 10:41:44 AM winstone.Logger logInternal
+INFO: Winstone Servlet Engine v4.0 running: controlPort=disabled
+Sep 20, 2019 10:41:47 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Started initialization
+Sep 20, 2019 10:41:49 AM hudson.ClassicPluginStrategy createPluginWrapper
+INFO: Plugin simple-theme-plugin.jpi is disabled
+Sep 20, 2019 10:41:49 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Listed all plugins
+Sep 20, 2019 10:42:12 AM hudson.ExtensionFinder$GuiceFinder <init>
+SEVERE: Failed to create Guice container from all the plugins
+com.google.common.util.concurrent.ExecutionError: com.google.common.util.concurrent.ExecutionError: java.lang.NoClassDefFoundError: org/jenkinsci/plugins/scriptler/config/ScriptlerConfiguration
+        at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2232)
+        at com.google.common.cache.LocalCache.get(LocalCache.java:3965)
+        at com.google.common.cache.LocalCache.getOrLoad(LocalCache.java:3969)
+        at com.google.common.cache.LocalCache$LocalManualCache.get(LocalCache.java:4829)
+        at com.google.common.cache.LocalCache$LocalManualCache.getUnchecked(LocalCache.java:4834)
+        at com.google.inject.internal.FailableCache.get(FailableCache.java:48)
+        at com.google.inject.internal.ConstructorInjectorStore.get(ConstructorInjectorStore.java:50)
+        at com.google.inject.internal.ConstructorBindingImpl.initialize(ConstructorBindingImpl.java:136)
+        at com.google.inject.internal.InjectorImpl.initializeBinding(InjectorImpl.java:533)
+        at com.google.inject.internal.AbstractBindingProcessor$Processor$1.run(AbstractBindingProcessor.java:160)
+        at com.google.inject.internal.ProcessedBindingData.initializeBindings(ProcessedBindingData.java:44)
+        at com.google.inject.internal.InternalInjectorCreator.initializeStatically(InternalInjectorCreator.java:123)
+        at com.google.inject.internal.InternalInjectorCreator.build(InternalInjectorCreator.java:107)
+        at com.google.inject.Guice.createInjector(Guice.java:96)
+        at com.google.inject.Guice.createInjector(Guice.java:73)
+        at hudson.ExtensionFinder$GuiceFinder.<init>(ExtensionFinder.java:284)
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+        at java.lang.reflect.Constructor.newInstance(Unknown Source)
+        at java.lang.Class.newInstance(Unknown Source)
+        at net.java.sezpoz.IndexItem.instance(IndexItem.java:181)
+        at hudson.ExtensionFinder$Sezpoz._find(ExtensionFinder.java:714)
+        at hudson.ExtensionFinder$Sezpoz.find(ExtensionFinder.java:689)
+        at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:339)
+        at hudson.ExtensionList.load(ExtensionList.java:381)
+        at hudson.ExtensionList.ensureLoaded(ExtensionList.java:317)
+        at hudson.ExtensionList.getComponents(ExtensionList.java:183)
+        at jenkins.model.Jenkins$6.onInitMilestoneAttained(Jenkins.java:1126)
+        at jenkins.InitReactorRunner$1.onAttained(InitReactorRunner.java:83)
+        at org.jvnet.hudson.reactor.ReactorListener$Aggregator.lambda$onAttained$3(ReactorListener.java:102)
+        at org.jvnet.hudson.reactor.ReactorListener$Aggregator.run(ReactorListener.java:109)
+        at org.jvnet.hudson.reactor.ReactorListener$Aggregator.onAttained(ReactorListener.java:102)
+        at org.jvnet.hudson.reactor.Reactor$1.run(Reactor.java:177)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+Caused by: com.google.common.util.concurrent.ExecutionError: java.lang.NoClassDefFoundError: org/jenkinsci/plugins/scriptler/config/ScriptlerConfiguration
+        at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2232)
+        at com.google.common.cache.LocalCache.get(LocalCache.java:3965)
+        at com.google.common.cache.LocalCache.getOrLoad(LocalCache.java:3969)
+        at com.google.common.cache.LocalCache$LocalManualCache.get(LocalCache.java:4829)
+        at com.google.common.cache.LocalCache$LocalManualCache.getUnchecked(LocalCache.java:4834)
+        at com.google.inject.internal.FailableCache.get(FailableCache.java:48)
+        at com.google.inject.internal.MembersInjectorStore.get(MembersInjectorStore.java:68)
+        at com.google.inject.internal.ConstructorInjectorStore.createConstructor(ConstructorInjectorStore.java:74)
+        at com.google.inject.internal.ConstructorInjectorStore.access$000(ConstructorInjectorStore.java:29)
+        at com.google.inject.internal.ConstructorInjectorStore$1.create(ConstructorInjectorStore.java:37)
+        at com.google.inject.internal.ConstructorInjectorStore$1.create(ConstructorInjectorStore.java:33)
+        at com.google.inject.internal.FailableCache$1.load(FailableCache.java:37)
+        at com.google.common.cache.LocalCache$LoadingValueReference.loadFuture(LocalCache.java:3568)
+        at com.google.common.cache.LocalCache$Segment.loadSync(LocalCache.java:2350)
+        at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2313)
+        at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2228)
+        ... 37 more
+Caused by: java.lang.NoClassDefFoundError: org/jenkinsci/plugins/scriptler/config/ScriptlerConfiguration
+        at java.lang.Class.getDeclaredMethods0(Native Method)
+        at java.lang.Class.privateGetDeclaredMethods(Unknown Source)
+        at java.lang.Class.getDeclaredMethods(Unknown Source)
+        at com.google.inject.spi.InjectionPoint.getInjectionPoints(InjectionPoint.java:688)
+        at com.google.inject.spi.InjectionPoint.forInstanceMethodsAndFields(InjectionPoint.java:380)
+        at com.google.inject.internal.MembersInjectorStore.createWithListeners(MembersInjectorStore.java:93)
+        at com.google.inject.internal.MembersInjectorStore.access$000(MembersInjectorStore.java:37)
+        at com.google.inject.internal.MembersInjectorStore$1.create(MembersInjectorStore.java:45)
+        at com.google.inject.internal.MembersInjectorStore$1.create(MembersInjectorStore.java:42)
+        at com.google.inject.internal.FailableCache$1.load(FailableCache.java:37)
+        at com.google.common.cache.LocalCache$LoadingValueReference.loadFuture(LocalCache.java:3568)
+        at com.google.common.cache.LocalCache$Segment.loadSync(LocalCache.java:2350)
+        at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2313)
+        at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2228)
+        ... 52 more
+Caused by: java.lang.ClassNotFoundException: org.jenkinsci.plugins.scriptler.config.ScriptlerConfiguration
+        at jenkins.util.AntClassLoader.findClassInComponents(AntClassLoader.java:1373)
+        at jenkins.util.AntClassLoader.findClass(AntClassLoader.java:1326)
+        at jenkins.util.AntClassLoader.loadClass(AntClassLoader.java:1079)
+        at java.lang.ClassLoader.loadClass(Unknown Source)
+        ... 66 more
+
+Sep 20, 2019 10:42:13 AM hudson.ExtensionFinder$Sezpoz _find
+WARNING: Failed to load hudson.ExtensionFinder$GuiceFinder
+java.lang.InstantiationException: com.google.inject.CreationException: Unable to create injector, see the following errors:
+
+1) Could not find a suitable constructor in jenkins.model.Jenkins. Classes must have either one (and only one) constructor annotated with @Inject or a zero-argument constructor that is not private.
+  at jenkins.model.Jenkins.class(Jenkins.java:309)
+  while locating jenkins.model.Jenkins
+    for field at jenkins.model.Jenkins$EnforceSlaveAgentPortAdministrativeMonitor.j(Jenkins.java:1286)
+  at hudson.ExtensionFinder$GuiceFinder$SezpozModule.configure(ExtensionFinder.java:528)
+
+2) Could not find a suitable constructor in jenkins.model.Jenkins. Classes must have either one (and only one) constructor annotated with @Inject or a zero-argument constructor that is not private.
+  at jenkins.model.Jenkins.class(Jenkins.java:309)
+  while locating jenkins.model.Jenkins
+    for field at jenkins.security.s2m.AdminCallableMonitor.jenkins(AdminCallableMonitor.java:33)
+  at hudson.ExtensionFinder$GuiceFinder$SezpozModule.configure(ExtensionFinder.java:528)
+
+3) Could not find a suitable constructor in jenkins.model.Jenkins. Classes must have either one (and only one) constructor annotated with @Inject or a zero-argument constructor that is not private.
+  at jenkins.model.Jenkins.class(Jenkins.java:309)
+  while locating jenkins.model.Jenkins
+    for field at jenkins.security.s2m.MasterKillSwitchConfiguration.jenkins(MasterKillSwitchConfiguration.java:20)
+  at hudson.ExtensionFinder$GuiceFinder$SezpozModule.configure(ExtensionFinder.java:528)
+
+3 errors
+        at net.java.sezpoz.IndexItem.instance(IndexItem.java:191)
+        at hudson.ExtensionFinder$Sezpoz._find(ExtensionFinder.java:714)
+        at hudson.ExtensionFinder$Sezpoz.find(ExtensionFinder.java:689)
+        at hudson.ClassicPluginStrategy.findComponents(ClassicPluginStrategy.java:339)
+        at hudson.ExtensionList.load(ExtensionList.java:381)
+        at hudson.ExtensionList.ensureLoaded(ExtensionList.java:317)
+        at hudson.ExtensionList.getComponents(ExtensionList.java:183)
+        at jenkins.model.Jenkins$6.onInitMilestoneAttained(Jenkins.java:1126)
+        at jenkins.InitReactorRunner$1.onAttained(InitReactorRunner.java:83)
+        at org.jvnet.hudson.reactor.ReactorListener$Aggregator.lambda$onAttained$3(ReactorListener.java:102)
+        at org.jvnet.hudson.reactor.ReactorListener$Aggregator.run(ReactorListener.java:109)
+        at org.jvnet.hudson.reactor.ReactorListener$Aggregator.onAttained(ReactorListener.java:102)
+        at org.jvnet.hudson.reactor.Reactor$1.run(Reactor.java:177)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+Caused by: com.google.inject.CreationException: Unable to create injector, see the following errors:
+
+1) Could not find a suitable constructor in jenkins.model.Jenkins. Classes must have either one (and only one) constructor annotated with @Inject or a zero-argument constructor that is not private.
+  at jenkins.model.Jenkins.class(Jenkins.java:309)
+  while locating jenkins.model.Jenkins
+    for field at jenkins.model.Jenkins$EnforceSlaveAgentPortAdministrativeMonitor.j(Jenkins.java:1286)
+  at hudson.ExtensionFinder$GuiceFinder$SezpozModule.configure(ExtensionFinder.java:528)
+
+2) Could not find a suitable constructor in jenkins.model.Jenkins. Classes must have either one (and only one) constructor annotated with @Inject or a zero-argument constructor that is not private.
+  at jenkins.model.Jenkins.class(Jenkins.java:309)
+  while locating jenkins.model.Jenkins
+    for field at jenkins.security.s2m.AdminCallableMonitor.jenkins(AdminCallableMonitor.java:33)
+  at hudson.ExtensionFinder$GuiceFinder$SezpozModule.configure(ExtensionFinder.java:528)
+
+3) Could not find a suitable constructor in jenkins.model.Jenkins. Classes must have either one (and only one) constructor annotated with @Inject or a zero-argument constructor that is not private.
+  at jenkins.model.Jenkins.class(Jenkins.java:309)
+  while locating jenkins.model.Jenkins
+    for field at jenkins.security.s2m.MasterKillSwitchConfiguration.jenkins(MasterKillSwitchConfiguration.java:20)
+  at hudson.ExtensionFinder$GuiceFinder$SezpozModule.configure(ExtensionFinder.java:528)
+
+3 errors
+        at com.google.inject.internal.Errors.throwCreationExceptionIfErrorsExist(Errors.java:466)
+        at com.google.inject.internal.InternalInjectorCreator.initializeStatically(InternalInjectorCreator.java:155)
+        at com.google.inject.internal.InternalInjectorCreator.build(InternalInjectorCreator.java:107)
+        at com.google.inject.Guice.createInjector(Guice.java:96)
+        at com.google.inject.Guice.createInjector(Guice.java:73)
+        at com.google.inject.Guice.createInjector(Guice.java:62)
+        at hudson.ExtensionFinder$GuiceFinder.<init>(ExtensionFinder.java:290)
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+        at java.lang.reflect.Constructor.newInstance(Unknown Source)
+        at java.lang.Class.newInstance(Unknown Source)
+        at net.java.sezpoz.IndexItem.instance(IndexItem.java:181)
+        ... 16 more
+
+Sep 20, 2019 10:42:13 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Prepared all plugins
+Sep 20, 2019 10:42:13 AM jenkins.InitReactorRunner$1 onTaskFailed
+SEVERE: Failed Contributed.load
+java.lang.Error: java.lang.reflect.InvocationTargetException
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:110)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:296)
+        at jenkins.model.Jenkins$5.runTask(Jenkins.java:1095)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:214)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:104)
+        ... 8 more
+Caused by: java.lang.NullPointerException
+        at jenkins.security.CustomClassFilter$Contributed.load(CustomClassFilter.java:155)
+        ... 13 more
+
+Sep 20, 2019 10:42:13 AM jenkins.InitReactorRunner$1 onAttained
+INFO: Started all plugins
+Sep 20, 2019 10:42:13 AM jenkins.InitReactorRunner$1 onTaskFailed
+SEVERE: Failed PluginImpl.init
+java.lang.Error: java.lang.reflect.InvocationTargetException
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:110)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:296)
+        at jenkins.model.Jenkins$5.runTask(Jenkins.java:1095)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:214)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:104)
+        ... 8 more
+Caused by: java.lang.IllegalStateException: Expected 1 instance of hudson.PluginManager$PluginUpdateMonitor but got 0
+        at hudson.ExtensionList.lookupSingleton(ExtensionList.java:451)
+        at hudson.PluginManager$PluginUpdateMonitor.getInstance(PluginManager.java:2188)
+        at hudson.maven.PluginImpl.init(PluginImpl.java:58)
+        ... 13 more
+
+Sep 20, 2019 10:42:13 AM jenkins.InitReactorRunner$1 onTaskFailed
+SEVERE: Failed UserIdMapper.init
+java.lang.IllegalArgumentException: Unable to inject class hudson.model.UserIdMapper
+        at hudson.init.TaskMethodFinder.lookUp(TaskMethodFinder.java:125)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:105)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:296)
+        at jenkins.model.Jenkins$5.runTask(Jenkins.java:1095)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:214)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+Sep 20, 2019 10:42:13 AM jenkins.InitReactorRunner$1 onTaskFailed
+SEVERE: Failed RekeySecretAdminMonitor.scanOnReboot
+java.lang.IllegalArgumentException: Unable to inject class jenkins.security.RekeySecretAdminMonitor
+        at hudson.init.TaskMethodFinder.lookUp(TaskMethodFinder.java:125)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:105)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:296)
+        at jenkins.model.Jenkins$5.runTask(Jenkins.java:1095)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:214)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+Sep 20, 2019 10:42:13 AM jenkins.InitReactorRunner$1 onTaskFailed
+SEVERE: Failed GitSCM.onLoaded
+java.lang.Error: java.lang.reflect.InvocationTargetException
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:110)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:296)
+        at jenkins.model.Jenkins$5.runTask(Jenkins.java:1095)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:214)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:104)
+        ... 8 more
+Caused by: java.lang.NullPointerException
+        at hudson.plugins.git.GitSCM.onLoaded(GitSCM.java:1998)
+        ... 13 more
+
+Sep 20, 2019 10:42:13 AM hudson.util.BootFailure publish
+SEVERE: Failed to initialize Jenkins
+hudson.util.HudsonFailedToLoad: org.jvnet.hudson.reactor.ReactorException: java.lang.Error: java.lang.reflect.InvocationTargetException
+        at hudson.WebAppMain$3.run(WebAppMain.java:250)
+Caused by: org.jvnet.hudson.reactor.ReactorException: java.lang.Error: java.lang.reflect.InvocationTargetException
+        at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:282)
+        at jenkins.InitReactorRunner.run(InitReactorRunner.java:48)
+        at jenkins.model.Jenkins.executeReactor(Jenkins.java:1129)
+        at jenkins.model.Jenkins.<init>(Jenkins.java:936)
+        at hudson.model.Hudson.<init>(Hudson.java:85)
+        at hudson.model.Hudson.<init>(Hudson.java:81)
+        at hudson.WebAppMain$3.run(WebAppMain.java:233)
+Caused by: java.lang.Error: java.lang.reflect.InvocationTargetException
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:110)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:296)
+        at jenkins.model.Jenkins$5.runTask(Jenkins.java:1095)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:214)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.reflect.InvocationTargetException
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:104)
+        ... 8 more
+Caused by: java.lang.NullPointerException
+        at hudson.plugins.git.GitSCM.onLoaded(GitSCM.java:1998)
+        ... 13 more
+
+Sep 20, 2019 10:42:13 AM jenkins.model.Jenkins cleanUp
+INFO: Stopping Jenkins
+Sep 20, 2019 10:42:14 AM jenkins.model.Jenkins$18 onAttained
+INFO: Started termination
+Sep 20, 2019 10:42:14 AM com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClient sendEvent
+WARNING: Fail to send trace to App Insights due to:null
+Sep 20, 2019 10:42:14 AM com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClient sendEvent
+WARNING: Fail to send trace to App Insights due to:null
+Sep 20, 2019 10:42:14 AM jenkins.model.Jenkins$18 onTaskFailed
+SEVERE: Failed IOHubProvider.cleanUp
+java.lang.IllegalArgumentException: Unable to inject class jenkins.slaves.IOHubProvider
+        at hudson.init.TaskMethodFinder.lookUp(TaskMethodFinder.java:125)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:105)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:296)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:214)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at jenkins.model.Jenkins$17.execute(Jenkins.java:3379)
+        at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:128)
+        at jenkins.model.Jenkins$17.execute(Jenkins.java:3379)
+        at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+        at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:276)
+        at jenkins.model.Jenkins._cleanUpRunTerminators(Jenkins.java:3376)
+        at jenkins.model.Jenkins.cleanUp(Jenkins.java:3297)
+        at hudson.WebAppMain$3.run(WebAppMain.java:254)
+
+Sep 20, 2019 10:42:14 AM jenkins.model.Jenkins$18 onTaskFailed
+SEVERE: Failed NioChannelSelector.cleanUp
+java.lang.IllegalArgumentException: Unable to inject class jenkins.slaves.NioChannelSelector
+        at hudson.init.TaskMethodFinder.lookUp(TaskMethodFinder.java:125)
+        at hudson.init.TaskMethodFinder.invoke(TaskMethodFinder.java:105)
+        at hudson.init.TaskMethodFinder$TaskImpl.run(TaskMethodFinder.java:175)
+        at org.jvnet.hudson.reactor.Reactor.runTask(Reactor.java:296)
+        at org.jvnet.hudson.reactor.Reactor$2.run(Reactor.java:214)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:117)
+        at jenkins.model.Jenkins$17.execute(Jenkins.java:3379)
+        at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+        at org.jvnet.hudson.reactor.Reactor$Node.run(Reactor.java:128)
+        at jenkins.model.Jenkins$17.execute(Jenkins.java:3379)
+        at org.jvnet.hudson.reactor.Reactor$Node.runIfPossible(Reactor.java:139)
+        at org.jvnet.hudson.reactor.Reactor.execute(Reactor.java:276)
+        at jenkins.model.Jenkins._cleanUpRunTerminators(Jenkins.java:3376)
+        at jenkins.model.Jenkins.cleanUp(Jenkins.java:3297)
+        at hudson.WebAppMain$3.run(WebAppMain.java:254)
+
+Sep 20, 2019 10:42:14 AM jenkins.model.Jenkins$18 onAttained
+INFO: Completed termination
+Sep 20, 2019 10:42:14 AM jenkins.model.Jenkins _cleanUpDisconnectComputers
+INFO: Starting node disconnection
+Sep 20, 2019 10:42:14 AM jenkins.model.Jenkins _cleanUpShutdownPluginManager
+INFO: Stopping plugin manager
+Sep 20, 2019 10:42:14 AM jenkins.model.Jenkins _cleanUpPersistQueue
+INFO: Persisting build queue
+Sep 20, 2019 10:42:15 AM jenkins.model.Jenkins cleanUp
+INFO: Jenkins stopped

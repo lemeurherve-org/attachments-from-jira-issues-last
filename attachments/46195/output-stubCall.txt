@@ -1,0 +1,71 @@
+CODE MODIFIED (stub call and replace with an 'echo' flavor of it)
+:
+				echo "STUB call to jiraAddComment: "+  
+				"[JENKINS-PIPELINE]\n"+
+	            				"Current Build:  "+ currentBuild.absoluteUrl+"\n"+
+	            				"Git Commit ID:  ${env.GITREPO_HOST_URL}/scm/#changesetPanel;${env.GITREPO_BRANCH};"+commitId+"\n"+
+	            				"Commit Message: "+msg+"\n"+
+	            		  		"Author:         "+commit.getAuthor().getFullName()+"\n"+
+	            		  		"Timestamp:      "+ts.format("yyyyMMdd.HHmmss", TimeZone.getTimeZone('UTC'))+" UTC\n"+
+	            		  		"Files:          "+commit.getAffectedPaths()
+
+			            // post the comment
+//			            def response = jiraAddComment( 
+//			            		idOrKey: id,
+//			            		site: "iwjira",
+//			            		comment: "[JENKINS-PIPELINE]\n"+
+//			            				"Current Build:  "+ currentBuild.absoluteUrl+"\n"+
+//			            				"Git Commit ID:  ${env.GITREPO_HOST_URL}/scm/#changesetPanel;${env.GITREPO_BRANCH};"+commitId+"\n"+
+//			            				"Commit Message: "+msg+"\n"+
+//			            		  		"Author:         "+commit.getAuthor().getFullName()+"\n"+
+//			            		  		"Timestamp:      "+ts.format("yyyyMMdd.HHmmss", TimeZone.getTimeZone('UTC'))+" UTC\n"+
+//			            		  		"Files:          "+commit.getAffectedPaths(),
+//			            		  failOnError: false,
+//			            		  auditLog: false		            		  
+//			            )
+
+
+
+OUTPUT:
+[2019-02-27T15:49:03.196Z] Update Jira
+[2019-02-27T15:49:03.201Z] commentJiraIssues
+[2019-02-27T15:49:03.210Z] ... ping
+[2019-02-27T15:49:03.215Z] ... commit: hudson.plugins.git.GitChangeSet@98aba288
+[2019-02-27T15:49:03.220Z] testing commit: OG-4708: Restore @NonCPS and stub out jiraAddComment
+[2019-02-27T15:49:03.227Z] issue: OG-4708
+[2019-02-27T15:49:03.241Z] STUB call to jiraAddComment: [JENKINS-PIPELINE]
+[2019-02-27T15:49:03.242Z] Current Build:  http://omnibld0.ibi.com:8080/job/omni-pipeline/job/develop/106/
+[2019-02-27T15:49:03.242Z] Git Commit ID:  http://omnibld0.ibi.com:8082/scm/#changesetPanel;E0RIJG2bEe;23483bcda0e0f315e8c18a72d2882f1b49765b76
+[2019-02-27T15:49:03.242Z] Commit Message: OG-4708: Restore @NonCPS and stub out jiraAddComment
+[2019-02-27T15:49:03.242Z] Author:         Jeffrey Bennett
+[2019-02-27T15:49:03.242Z] Timestamp:      20190227.144207 UTC
+[2019-02-27T15:49:03.242Z] Files:          [Jenkinsfile]
+[2019-02-27T15:49:03.246Z] ... after add
+[2019-02-27T15:49:03.250Z] ... after findAll
+[2019-02-27T15:49:03.253Z] testing previous builds
+[2019-02-27T15:49:03.259Z] currentBuild is: org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper@3d2f5765
+[2019-02-27T15:49:03.264Z] run is: org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper@770a8c46
+[2019-02-27T15:49:03.271Z] evaluating run: 105, ABORTED
+[2019-02-27T15:49:03.276Z] worse than success
+[2019-02-27T15:49:03.286Z] end of commits for run
+[2019-02-27T15:49:03.292Z] run is now: org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper@1064eced
+[2019-02-27T15:49:03.297Z] evaluating run: 104, FAILURE
+[2019-02-27T15:49:03.302Z] worse than success
+[2019-02-27T15:49:03.309Z] ... ping
+[2019-02-27T15:49:03.314Z] ... commit: hudson.plugins.git.GitChangeSet@da49420d
+[2019-02-27T15:49:03.319Z] ...testing commit: OG-4708: Removing @NonCPS as an experiment
+[2019-02-27T15:49:03.326Z] issue: OG-4708
+[2019-02-27T15:49:03.339Z] STUB call to jiraAddComment: [JENKINS-PIPELINE]
+[2019-02-27T15:49:03.339Z] Current Build:  http://omnibld0.ibi.com:8080/job/omni-pipeline/job/develop/106/
+[2019-02-27T15:49:03.339Z] Git Commit ID:  http://omnibld0.ibi.com:8082/scm/#changesetPanel;E0RIJG2bEe;3529a35c44ece8cd5947703e7b51acc4bf2a2d67
+[2019-02-27T15:49:03.339Z] Commit Message: OG-4708: Removing @NonCPS as an experiment
+[2019-02-27T15:49:03.339Z] Author:         Jeffrey Bennett
+[2019-02-27T15:49:03.339Z] Timestamp:      20190227.132511 UTC
+[2019-02-27T15:49:03.339Z] Files:          [Jenkinsfile]
+[2019-02-27T15:49:03.343Z] ... after add
+[2019-02-27T15:49:03.347Z] ... after findAll
+[2019-02-27T15:49:03.351Z] end of commits for run
+[2019-02-27T15:49:03.355Z] run is now: org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper@323d4270
+[2019-02-27T15:49:03.360Z] evaluating run: 103, SUCCESS
+[2019-02-27T15:49:03.367Z] was successful - ending loop
+[2019-02-27T15:49:03.373Z] done with previous builds

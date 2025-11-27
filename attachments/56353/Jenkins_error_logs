@@ -1,0 +1,50 @@
+10:12:10  Started by user xyz
+10:12:14  ERROR: Could not do lightweight checkout, falling back to heavyweight
+10:12:14  java.io.FileNotFoundException: URL: /rest/api/1.0/projects/xxx/repos/XXXX/browse/PR_Jenkinsfile?at=pull-requests%2F28%2Ffrom&start=0&limit=500
+10:12:14  	at com.cloudbees.jenkins.plugins.bitbucket.server.client.BitbucketServerAPIClient.getRequest(BitbucketServerAPIClient.java:866)
+10:12:14  	at com.cloudbees.jenkins.plugins.bitbucket.server.client.BitbucketServerAPIClient.getFileContent(BitbucketServerAPIClient.java:1162)
+10:12:14  	at com.cloudbees.jenkins.plugins.bitbucket.filesystem.BitbucketSCMFile.content(BitbucketSCMFile.java:98)
+10:12:14  	at jenkins.scm.api.SCMFile.contentAsString(SCMFile.java:335)
+10:12:14  	at org.jenkinsci.plugins.workflow.multibranch.SCMBinder.create(SCMBinder.java:109)
+10:12:14  	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:309)
+10:12:14  	at hudson.model.ResourceController.execute(ResourceController.java:97)
+10:12:14  	at hudson.model.Executor.run(Executor.java:429)
+10:12:14  Checking out git https://bitbucket.xxxxx.com/scm/xxx/XXX.git into /mnt/JENKINS_HOME/workspace/XXX_PR_IncrementalAnalysis_PR-28@script to read PR_Jenkinsfile
+10:12:14  The recommended git tool is: NONE
+10:12:14  using credential builduser
+10:12:14   > git rev-parse --resolve-git-dir /mnt/JENKINS_HOME/workspace/XXX_PR_IncrementalAnalysis_PR-28@script/.git # timeout=60
+10:12:14  Fetching changes from the remote Git repository
+10:12:14   > git config remote.origin.url https://bitbucket.XXX/scm/X/XXX.git # timeout=60
+10:12:14  Fetching without tags
+10:12:14  Fetching upstream changes from https://bitbucket.XX/scm/XX/XXx.git
+10:12:14   > git --version # timeout=60
+10:12:14   > git --version # 'git version 2.16.5'
+10:12:14  using GIT_ASKPASS to set credentials Bitbucket
+10:12:14   > git fetch --no-tags --progress -- https://bitbucket.XX/scm/xxx/xxx.git +refs/pull-requests/28/from:refs/remotes/origin/PR-28 # timeout=60
+10:12:16  ERROR: Error fetching remote repo 'origin'
+10:12:16  hudson.plugins.git.GitException: Failed to fetch from https://bitbucket.Xxxxxx/scm/xxx/xxxx.git
+10:12:16  	at hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:1000)
+10:12:16  	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1241)
+10:12:16  	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1301)
+10:12:16  	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:129)
+10:12:16  	at org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition.create(CpsScmFlowDefinition.java:154)
+10:12:16  	at org.jenkinsci.plugins.workflow.multibranch.SCMBinder.create(SCMBinder.java:144)
+10:12:16  	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:309)
+10:12:16  	at hudson.model.ResourceController.execute(ResourceController.java:97)
+10:12:16  	at hudson.model.Executor.run(Executor.java:429)
+10:12:16  Caused by: hudson.plugins.git.GitException: Command "git fetch --no-tags --progress -- https://bitbucket.xxxxx.com/scm/xxx/xxxxx.git +refs/pull-requests/28/from:refs/remotes/origin/PR-28" returned status code 128:
+10:12:16  stdout: 
+10:12:16  stderr: fatal: Couldn't find remote ref refs/pull-requests/28/from
+10:12:16  
+10:12:16  	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2661)
+10:12:16  	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:2086)
+10:12:16  	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.access$500(CliGitAPIImpl.java:86)
+10:12:16  	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$1.execute(CliGitAPIImpl.java:608)
+10:12:16  	at hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:998)
+10:12:16  	... 8 more
+10:12:16  ERROR: Error fetching remote repo 'origin'
+10:12:16  ERROR: Maximum checkout retry attempts reached, aborting
+10:12:16  [Bitbucket] Notifying pull request build result
+10:12:16  [Bitbucket] Build result notified
+10:12:18  Notified JIRA that a build has completed.
+10:12:18  Finished: FAILURE

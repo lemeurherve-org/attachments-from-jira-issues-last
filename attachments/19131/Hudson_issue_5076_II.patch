@@ -1,0 +1,61 @@
+Index: core/src/main/java/hudson/model/Node.java
+===================================================================
+--- core/src/main/java/hudson/model/Node.java	(revision 6100)
++++ core/src/main/java/hudson/model/Node.java	(working copy)
+@@ -27,6 +27,7 @@
+ import hudson.FilePath;
+ import hudson.FileSystemProvisioner;
+ import hudson.Launcher;
++import hudson.model.Queue.Task;
+ import hudson.node_monitors.NodeMonitor;
+ import hudson.remoting.VirtualChannel;
+ import hudson.security.ACL;
+@@ -262,6 +263,19 @@
+     }
+ 
+     /**
++     * Verifies that the {@link Node} capable of executing the given task.
++     */
++    public boolean canTakeTask(Task task){
++    	Label l = task.getAssignedLabel();
++        if(l!=null && !l.contains(this))
++            return false;   // the task needs to be executed on label that this node doesn't have.
++
++        if(l==null && this.getMode()== Mode.EXCLUSIVE)
++            return false;   // this node is reserved for tasks that are tied to it
++        return true;
++    }
++    
++    /**
+      * Gets the {@link NodeProperty} instances configured for this {@link Node}.
+      */
+     public abstract DescribableList<NodeProperty<?>, NodePropertyDescriptor> getNodeProperties();
+Index: core/src/main/java/hudson/model/Queue.java
+===================================================================
+--- core/src/main/java/hudson/model/Queue.java	(revision 6129)
++++ core/src/main/java/hudson/model/Queue.java	(working copy)
+@@ -179,14 +179,7 @@
+         public boolean canTake(Task task) {
+             Node node = getNode();
+             if (node==null)     return false;   // this executor is about to die
+-
+-            Label l = task.getAssignedLabel();
+-            if(l!=null && !l.contains(node))
+-                return false;   // the task needs to be executed on label that this node doesn't have.
+-
+-            if(l==null && node.getMode()== Mode.EXCLUSIVE)
+-                return false;   // this node is reserved for tasks that are tied to it
+-
++            if(!node.canTakeTask(task)) return false;  // node cann't execute this task
+             return isAvailable();
+         }
+ 
+@@ -928,7 +921,7 @@
+             
+             for (Node n : hash.list(p.task.getFullDisplayName())) {
+                 Computer c = n.toComputer();
+-                if (c==null || c.isOffline())    continue;
++                if (c==null || c.isOffline() || !n.canTakeTask(p.task))    continue;
+                 c.startFlyWeightTask(p);
+                 return;
+             }

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="Linux-g++"
+	BuildStamp="20160831-0751-Experimental"
+	Name="gentoo-lime2.transmode.se"
+	Generator="ctest-3.5.2"
+	CompilerName="/usr/bin/g++"
+	CompilerVersion="4.9.3"
+	OSName="Linux"
+	Hostname="gentoo-lime2.transmode.se"
+	OSRelease="4.4.19"
+	OSVersion="#1 SMP PREEMPT Sun Aug 21 15:47:01 CEST 2016"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="61"
+	ProcessorCacheSize="4096"
+	NumberOfLogicalCPU="4"
+	NumberOfPhysicalCPU="1"
+	TotalVirtualMemory="4095"
+	TotalPhysicalMemory="15902"
+	LogicalProcessorsPerPhysical="4"
+	ProcessorClockFrequency="2401"
+	>
+	<DynamicAnalysis Checker="Valgrind">
+		<StartDateTime>Aug 31 10:58 CEST</StartDateTime>
+		<StartTestTime>1472633899</StartTestTime>
+		<TestList>
+			<Test>./ne/eq_ss/eq_mxp100gotn_bl/eqMxp100GOtnIntegrationAdminSignal</Test>
+		</TestList>
+		<Test Status="failed">
+			<Name>eqMxp100GOtnIntegrationAdminSignal</Name>
+			<Path>./ne/eq_ss/eq_mxp100gotn_bl</Path>
+			<FullName>./ne/eq_ss/eq_mxp100gotn_bl/eqMxp100GOtnIntegrationAdminSignal</FullName>
+			<FullCommandLine>/usr/bin/valgrind "--log-file=/usr/local/src/tm/ninja-build/Testing/Temporary/MemoryChecker.102.log" "--error-exitcode=1" "--show-leak-kinds=all" "--leak-check=full" "--errors-for-leak-kinds=all" "-q" "--free-fill=0" "--malloc-fill=0" "--suppressions=/usr/local/src/tm/tm3000/tm3000-valgrind.supp" "/usr/local/src/tm/ninja-build/ne/eq_ss/eq_mxp100gotn_bl/eqMxp100GOtnIntegrationAdminSignal"</FullCommandLine>
+			<Results>
+				<Defect type="Potential Memory Leak">195</Defect>
+			</Results>
+			<Log>&lt;b&gt;MPK&lt;/b&gt; ==28016== 16 bytes in 4 blocks are still reachable in loss record 1 of 195
+                ==28016==    at 0x402E50C: malloc (in /usr/lib64/valgrind/vgpreload_memcheck-x86-linux.so)
+
+
+                *Removed a lot of valgrind output that was here.*
+
+
+
+</Log>
+			<Labels>
+				<Label>MEMCHECK</Label>
+			</Labels>
+		</Test>
+		<DefectList>
+			<Defect Type="Potential Memory Leak"/>
+		</DefectList>
+		<EndDateTime>Aug 31 10:58 CEST</EndDateTime>
+		<EndTestTime>1472633906</EndTestTime>
+		<ElapsedMinutes>0.1</ElapsedMinutes>
+	</DynamicAnalysis>
+</Site>

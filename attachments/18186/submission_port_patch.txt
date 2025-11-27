@@ -1,0 +1,148 @@
+Index: plugins/email-ext/src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java
+===================================================================
+--- plugins/email-ext/src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java	(revision 9664)
++++ plugins/email-ext/src/main/java/hudson/plugins/emailext/ExtendedEmailPublisher.java	(working copy)
+@@ -416,6 +416,11 @@
+         private boolean useSsl;
+         
+         /**
++         * If true use Submission port 587.
++         */
++        private boolean useSubmissionPort;
++        
++        /**
+          * This is a global default subject line for sending emails.
+          */
+         private String defaultSubject;
+@@ -445,6 +450,9 @@
+             Properties props = new Properties(System.getProperties());
+             if(smtpHost!=null)
+                 props.put("mail.smtp.host",smtpHost);
++            if (useSubmissionPort) {
++                props.put("mail.smtp.port", "587");
++            }
+             if (useSsl) {
+             	/* This allows the user to override settings by setting system properties but
+             	 * also allows us to use the default SMTPs port of 465 if no port is already set.
+@@ -495,6 +503,10 @@
+ 			return useSsl;
+ 		}
+ 		
++		public boolean getUseSubmissionPort() {
++			return useSubmissionPort;
++		}
++		
+ 		public String getDefaultBody() {
+ 			return defaultBody;
+ 		}
+@@ -578,6 +590,9 @@
+             //specify if the mail server uses ssl for authentication
+             useSsl = req.getParameter("ext_mailer_smtp_use_ssl")!=null;
+             
++            //specify if the mail server uses the submission port
++            useSubmissionPort = req.getParameter("ext_mailer_smtp_use_submission_port")!=null;
++            
+             //Allow global defaults to be set for the subject and body of the email
+             defaultSubject = nullify(req.getParameter("ext_mailer_default_subject"));
+             defaultBody = nullify(req.getParameter("ext_mailer_default_body"));
+Index: plugins/email-ext/src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/global.jelly
+===================================================================
+--- plugins/email-ext/src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/global.jelly	(revision 9664)
++++ plugins/email-ext/src/main/resources/hudson/plugins/emailext/ExtendedEmailPublisher/global.jelly	(working copy)
+@@ -36,6 +36,10 @@
+                help="/help/tasks/mailer/smtp-use-ssl.html">
+         <f:checkbox name="ext_mailer_smtp_use_ssl" checked="${descriptor.useSsl}" />
+       </f:entry>
++      <f:entry title="Use Submission Port"
++               help="/help/tasks/mailer/smtp-use-submission-port.html">
++        <f:checkbox name="ext_mailer_smtp_use_submission_port" checked="${descriptor.useSubmissionPort}" />
++      </f:entry>
+ 		<f:entry title="Default Subject"
+ 				 help="${rootURL}/plugin/email-ext/content-help">
+ 			<input class="setting-input" name="ext_mailer_default_subject"
+Index: plugins/javancss/work/hudson.tasks.Mailer.xml
+===================================================================
+--- plugins/javancss/work/hudson.tasks.Mailer.xml	(revision 9664)
++++ plugins/javancss/work/hudson.tasks.Mailer.xml	(working copy)
+@@ -3,4 +3,5 @@
+   <hudsonUrl>http://localhost:8080/</hudsonUrl>
+   <adminAddress>address not configured yet &lt;nobody&gt;</adminAddress>
+   <useSsl>false</useSsl>
++  <useSubmissionPort>false</useSubmissionPort>
+ </hudson.tasks.Mailer_-DescriptorImpl>
+\ No newline at end of file
+Index: main/core/src/main/java/hudson/tasks/Mailer.java
+===================================================================
+--- main/core/src/main/java/hudson/tasks/Mailer.java	(revision 9664)
++++ main/core/src/main/java/hudson/tasks/Mailer.java	(working copy)
+@@ -139,6 +139,11 @@
+         private boolean useSsl;
+ 
+         /**
++         * If true use submission port 587.
++         */
++        private boolean useSubmissionPort;
++
++        /**
+          * Used to keep track of number test e-mails.
+          */
+         private static transient int testEmailCount = 0;
+@@ -178,6 +183,9 @@
+             Properties props = new Properties(System.getProperties());
+             if(smtpHost!=null)
+                 props.put("mail.smtp.host",smtpHost);
++            if (useSubmissionPort) {
++                props.put("mail.smtp.port", "587");
++            }
+             if (useSsl) {
+             	/* This allows the user to override settings by setting system properties but
+             	 * also allows us to use the default SMTPs port of 465 if no port is already set.
+@@ -231,6 +239,7 @@
+             } else {
+                 smtpAuthUsername = smtpAuthPassword = null;
+             }
++            useSubmissionPort = req.getParameter("mailer_smtp_use_submission_port")!=null;
+             useSsl = req.getParameter("mailer_smtp_use_ssl")!=null;
+             save();
+             return super.configure(req);
+@@ -267,6 +276,10 @@
+         	return useSsl;
+         }
+ 
++        public boolean getUseSubmissionPort() {
++        	return useSubmissionPort;
++        }
++
+         public Publisher newInstance(StaplerRequest req) {
+             Mailer m = new Mailer();
+             req.bindParameters(m,"mailer_");
+Index: main/core/src/main/resources/hudson/tasks/Mailer/global.jelly
+===================================================================
+--- main/core/src/main/resources/hudson/tasks/Mailer/global.jelly	(revision 9664)
++++ main/core/src/main/resources/hudson/tasks/Mailer/global.jelly	(working copy)
+@@ -43,6 +43,10 @@
+                help="/help/tasks/mailer/smtp-use-ssl.html">
+         <f:checkbox name="mailer_smtp_use_ssl" checked="${descriptor.useSsl}" />
+       </f:entry>
++      <f:entry title="${%Use Submission Port}"
++               help="/help/tasks/mailer/smtp-use-submission-port.html">
++        <f:checkbox name="mailer_smtp_use_submission_port" checked="${descriptor.useSubmissionPort}" />
++      </f:entry>
+     </f:advanced>
+   </f:section>
+ </j:jelly>
+\ No newline at end of file
+Index: main/war/resources/help/tasks/mailer/smtp-use-submission-port.html
+===================================================================
+--- main/war/resources/help/tasks/mailer/smtp-use-submission-port.html	(revision 0)
++++ main/war/resources/help/tasks/mailer/smtp-use-submission-port.html	(revision 0)
+@@ -0,0 +1,8 @@
++<div>
++  Whether or not to use the submission port (587) for connecting to the SMTP server.
++
++  <p>
++  Other advanced configurations can be done by setting system properties.
++  See <a href="http://java.sun.com/products/javamail/javadocs/overview-summary.html#overview_description">
++  this document</a> for possible values and effects.
++</div>
+\ No newline at end of file

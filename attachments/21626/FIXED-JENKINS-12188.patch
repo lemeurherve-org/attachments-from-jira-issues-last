@@ -1,0 +1,221 @@
+commit bd6d26b6ef83e98cd6c332241a03a5e90f340d8c
+Author: Wannes Sels <wannes.sels@gmail.com>
+Date:   Fri Feb 3 17:07:36 2012 +0100
+
+    Close jgit repository after use to clean up file handles
+    
+    [FIXED JENKINS-12188]
+
+diff --git a/src/main/java/hudson/plugins/git/GitAPI.java b/src/main/java/hudson/plugins/git/GitAPI.java
+index 16d68da..d745d4d 100644
+--- a/src/main/java/hudson/plugins/git/GitAPI.java
++++ b/src/main/java/hudson/plugins/git/GitAPI.java
+@@ -96,12 +96,17 @@ public class GitAPI implements IGitAPI {
+         if (hasGitRepo()) {
+             throw new GitException(".git directory already exists! Has it already been initialised?");
+         }
++        Repository repo = null;
+         try {
+-			final Repository repo = new FileRepository(new File(workspace
++			repo = new FileRepository(new File(workspace
+ 					.child(Constants.DOT_GIT).getRemote()));
+             repo.create();
+         } catch (IOException ioe) {
+             throw new GitException("Error initiating git repo.", ioe);
++        } finally {
++        	if (repo != null) {
++        		repo.close();
++        	}
+         }
+     }
+ 
+@@ -820,19 +825,26 @@ public class GitAPI implements IGitAPI {
+     }
+ 
+     public List<Branch> getRemoteBranches() throws GitException, IOException {
+-        Repository db = getRepository();
+-        Map<String, Ref> refs = db.getAllRefs();
+-        List<Branch> branches = new ArrayList<Branch>();
+-
+-        for(Ref candidate : refs.values()) {
+-            if(candidate.getName().startsWith(Constants.R_REMOTES)) {
+-                Branch buildBranch = new Branch(candidate);
+-                listener.getLogger().println("Seen branch in repository " + buildBranch.getName());
+-                branches.add(buildBranch);
+-            }
++        Repository db = null;
++        try {
++        	db = getRepository();
++	        Map<String, Ref> refs = db.getAllRefs();
++	        List<Branch> branches = new ArrayList<Branch>();
++	
++	        for(Ref candidate : refs.values()) {
++	            if(candidate.getName().startsWith(Constants.R_REMOTES)) {
++	                Branch buildBranch = new Branch(candidate);
++	                listener.getLogger().println("Seen branch in repository " + buildBranch.getName());
++	                branches.add(buildBranch);
++	            }
++	        }
++	
++	        return branches;
++        } finally {
++        	if (db!= null) {
++        		db.close();
++        	}
+         }
+-
+-        return branches;
+     }
+ 
+     public List<Branch> getBranchesContaining(String revspec)
+@@ -1013,16 +1025,23 @@ public class GitAPI implements IGitAPI {
+ 
+     public List<Tag> getTagsOnCommit(final String revName) throws GitException,
+             IOException {
+-        final Repository db = getRepository();
+-        final ObjectId commit = db.resolve(revName);
+-        final List<Tag> ret = new ArrayList<Tag>();
+-
+-        for (final Map.Entry<String, Ref> tag : db.getTags().entrySet()) {
+-            final ObjectId tagId = tag.getValue().getObjectId();
+-            if (commit.equals(tagId))
+-                ret.add(new Tag(tag.getKey(), tagId));
++        Repository db = null;
++        try {
++			db = getRepository();
++	        final ObjectId commit = db.resolve(revName);
++	        final List<Tag> ret = new ArrayList<Tag>();
++	
++	        for (final Map.Entry<String, Ref> tag : db.getTags().entrySet()) {
++	            final ObjectId tagId = tag.getValue().getObjectId();
++	            if (commit.equals(tagId))
++	                ret.add(new Tag(tag.getKey(), tagId));
++	        }
++	        return ret;
++        } finally {
++        	if (db != null) {
++        		db.close();
++        	}
+         }
+-        return ret;
+     }
+ 
+     public Set<String> getTagNames(String tagPattern) throws GitException {
+diff --git a/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java b/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java
+index 19b314c..37eb79f 100644
+--- a/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java
++++ b/src/main/java/hudson/plugins/git/util/DefaultBuildChooser.java
+@@ -11,6 +11,7 @@ import hudson.plugins.git.Messages;
+ import hudson.plugins.git.Revision;
+ import org.kohsuke.stapler.DataBoundConstructor;
+ import org.eclipse.jgit.lib.ObjectId;
++import org.eclipse.jgit.lib.Repository;
+ 
+ import java.io.IOException;
+ import java.text.MessageFormat;
+@@ -211,7 +212,12 @@ public class DefaultBuildChooser extends BuildChooser {
+ 
+         // 5. sort them by the date of commit, old to new
+         // this ensures the fairness in scheduling.
+-        Collections.sort(revs,new CommitTimeComparator(utils.git.getRepository()));
++        Repository repository = utils.git.getRepository();
++        try {
++        	Collections.sort(revs,new CommitTimeComparator(repository));
++        } finally {
++        	repository.close();
++        }
+ 
+         return revs;
+     }
+diff --git a/src/main/java/hudson/plugins/git/util/GitUtils.java b/src/main/java/hudson/plugins/git/util/GitUtils.java
+index 43d4f47..eb656cb 100644
+--- a/src/main/java/hudson/plugins/git/util/GitUtils.java
++++ b/src/main/java/hudson/plugins/git/util/GitUtils.java
+@@ -32,6 +32,7 @@ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
+ import org.eclipse.jgit.lib.ObjectId;
++import org.eclipse.jgit.lib.Repository;
+ import org.eclipse.jgit.revwalk.RevWalk;
+ import org.eclipse.jgit.revwalk.filter.RevFilter;
+ 
+@@ -117,13 +118,15 @@ public class GitUtils {
+         ObjectId shaJ;
+         ObjectId commonAncestor;
+         RevWalk walk = null;
++        Repository repository = null;
+         final long start = System.currentTimeMillis();
+         long calls = 0;
+         if (log)
+             LOGGER.fine(MessageFormat.format(
+                     "Computing merge base of {0}  branches", l.size()));
+         try {
+-            walk = new RevWalk(git.getRepository());
++			repository = git.getRepository();
++			walk = new RevWalk(repository);
+             walk.setRetainBody(false);
+             walk.setRevFilter(RevFilter.MERGE_BASE);
+             for (int i = 0; i < l.size(); i++)
+@@ -162,6 +165,9 @@ public class GitUtils {
+         } finally {
+             if (walk != null)
+                 walk.release();
++            if (repository != null) {
++            	repository.close();
++            }
+         }
+         if (log)
+             LOGGER.fine(MessageFormat.format(
+diff --git a/src/main/java/hudson/plugins/git/util/InverseBuildChooser.java b/src/main/java/hudson/plugins/git/util/InverseBuildChooser.java
+index 4ea2c25..1a21e0c 100644
+--- a/src/main/java/hudson/plugins/git/util/InverseBuildChooser.java
++++ b/src/main/java/hudson/plugins/git/util/InverseBuildChooser.java
+@@ -16,6 +16,7 @@ import java.util.Collections;
+ import java.util.Iterator;
+ import java.util.List;
+ 
++import org.eclipse.jgit.lib.Repository;
+ import org.kohsuke.stapler.DataBoundConstructor;
+ 
+ /**
+@@ -98,7 +99,12 @@ public class InverseBuildChooser extends BuildChooser {
+         }
+ 
+         // Sort revisions by the date of commit, old to new, to ensure fairness in scheduling
+-        Collections.sort(branchRevs, new CommitTimeComparator(utils.git.getRepository()));
++        Repository repository = utils.git.getRepository();
++        try {
++        	Collections.sort(branchRevs, new CommitTimeComparator(repository));
++        } finally {
++        	repository.close();
++        }
+         return branchRevs;
+     }
+ 
+diff --git a/src/test/java/hudson/plugins/git/util/CommitTimeComparatorTest.java b/src/test/java/hudson/plugins/git/util/CommitTimeComparatorTest.java
+index 2d03a49..f04190d 100644
+--- a/src/test/java/hudson/plugins/git/util/CommitTimeComparatorTest.java
++++ b/src/test/java/hudson/plugins/git/util/CommitTimeComparatorTest.java
+@@ -10,6 +10,8 @@ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+ 
++import org.eclipse.jgit.lib.Repository;
++
+ /**
+  * @author Kohsuke Kawaguchi
+  */
+@@ -42,7 +44,12 @@ public class CommitTimeComparatorTest extends AbstractGitTestCase {
+         for (int i=0; i<16; i++) {
+             // shuffle, then sort.
+             Collections.shuffle(revs);
+-            Collections.sort(revs, new CommitTimeComparator(git.getRepository()));
++            Repository repository = git.getRepository();
++            try {
++            	Collections.sort(revs, new CommitTimeComparator(repository));
++            } finally {
++            	repository.close();
++            }
+ 
+             // it should be always branch1, branch2, branch3
+             for (int j=0; j<3; j++)

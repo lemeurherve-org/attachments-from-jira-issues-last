@@ -1,0 +1,513 @@
+Index: html.jelly
+===================================================================
+--- html.jelly	(revision 0)
++++ html.jelly	(revision 0)
+@@ -0,0 +1,248 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define">
++
++<STYLE>
++BODY, TABLE, TD, TH, P {
++  font-family:Verdana,Helvetica,sans serif;
++  font-size:11px;
++  color:black;
++}
++h1 { color:black; }
++h2 { color:black; }
++h3 { color:black; }
++TD.bg1 { color:white; background-color:#0000C0; font-size:120% }
++TD.bg2 { color:white; background-color:#4040FF; font-size:110% }
++TD.bg3 { color:white; background-color:#8080FF; }
++TD.test_passed { color:blue; }
++TD.test_failed { color:red; }
++TD.console { font-family:Courier New; }
++</STYLE>
++<BODY>
++<j:set var="spc" value="&amp;nbsp;&amp;nbsp;" />
++
++
++<!-- GENERAL INFO -->
++
++<TABLE>
++  <TR><TD align="right">
++    <j:choose>
++      <j:when test="${build.result=='SUCCESS'}">
++        <IMG SRC="${rooturl}static/e59dfe28/images/32x32/blue.gif" />
++      </j:when>
++	  <j:when test="${build.result=='FAILURE'}">
++        <IMG SRC="${rooturl}static/e59dfe28/images/32x32/red.gif" />
++      </j:when>
++      <j:otherwise>
++        <IMG SRC="${rooturl}static/e59dfe28/images/32x32/yellow.gif" />
++      </j:otherwise>
++    </j:choose>
++  </TD><TD valign="center"><B style="font-size: 200%;">BUILD ${build.result}</B></TD></TR>
++  <TR><TD>Build URL</TD><TD><A href="${rooturl}${build.url}">${rooturl}${build.url}</A></TD></TR>
++  <TR><TD>Project:</TD><TD>${project.name}</TD></TR>
++  <TR><TD>Date of build:</TD><TD>${it.timestampString}</TD></TR>
++  <TR><TD>Build duration:</TD><TD>${build.durationString}</TD></TR>
++</TABLE>
++<BR/>
++
++
++<!-- CHANGE SET -->
++
++<j:set var="changeSet" value="${build.changeSet}" />
++<j:if test="${changeSet!=null}">
++  <j:set var="hadChanges" value="false" />
++  <TABLE width="100%">
++    <TR><TD class="bg1" colspan="2"><B>CHANGES</B></TD></TR>
++    <j:forEach var="cs" items="${changeSet.logs}" varStatus="loop">
++      <j:set var="hadChanges" value="true" />
++      <j:set var="aUser" value="${cs.hudsonUser}"/>
++      <TR>
++        <TD colspan="2" class="bg2">${spc}Revision <B>${cs.revision}</B> by
++          <B><j:choose>
++            <j:when test="${aUser!=null}">${aUser.displayName}: </j:when>
++            <j:otherwise>${cs.user}: </j:otherwise>
++          </j:choose></B>
++          <B>(${cs.msgAnnotated})</B>
++         </TD>
++      </TR>
++      <j:forEach var="p" items="${cs.paths}">
++        <TR>
++          <TD width="10%">${spc}${p.editType.name}</TD>
++          <TD>${p.value}</TD>
++        </TR>
++      </j:forEach>
++    </j:forEach>
++    <j:if test="${!hadChanges}">
++      <TR><TD colspan="2">No Changes</TD></TR>
++    </j:if>
++  </TABLE>
++<BR/>
++</j:if>
++
++
++<!-- ARTIFACTS -->
++
++<j:set var="artifacts" value="${build.artifacts}" />
++<j:if test="${artifacts!=null and artifacts.size()&gt;0}">
++  <TABLE width="100%">
++    <TR><TD class="bg1"><B>BUILD ATRIFACTS</B></TD></TR>
++    <TR>
++      <TD>
++        <j:forEach var="f" items="${artifacts}">
++      	  <li>
++      	    <a href="${rooturl}${build.url}artifact/${f}">${f}</a>
++      	  </li>
++      	</j:forEach>
++      </TD>
++    </TR>
++  </TABLE>
++<BR/>  
++</j:if>
++
++
++<!-- MAVEN ARTIFACTS -->
++
++<j:set var="mbuilds" value="${build.moduleBuilds}" />
++<j:if test="${mbuilds!=null}">
++  <TABLE width="100%">
++      <TR><TD class="bg1"><B>BUILD ATRIFACTS</B></TD></TR>
++      <j:forEach var="m" items="${mbuilds}">
++        <TR><TD class="bg2"><B>${m.key.displayName}</B></TD></TR>
++        <j:forEach var="mvnbld" items="${m.value}">
++        <j:set var="artifacts" value="${mvnbld.artifacts}" />
++        <j:if test="${artifacts!=null and artifacts.size()&gt;0}">
++      <TR>
++        <TD>
++      	  <j:forEach var="f" items="${artifacts}">
++      	    <li>
++      	      <a href="${rooturl}${mvnbld.url}artifact/${f}">${f}</a>
++      	    </li>
++      	  </j:forEach>
++      	</TD>
++      </TR>
++        </j:if>
++        </j:forEach>
++      </j:forEach>
++  </TABLE>
++<BR/>  
++</j:if>
++
++
++<!-- JUnit TEMPLATE -->
++
++<j:set var="junitResultList" value="${it.JUnitTestResult}" />
++<j:if test="${junitResultList.isEmpty()!=true}">
++  <TABLE width="100%">
++    <TR><TD class="bg1" colspan="2"><B>JUnit Tests</B></TD></TR>
++    <j:forEach var="junitResult" items="${it.JUnitTestResult}">
++      <j:forEach var="packageResult" items="${junitResult.getChildren()}">
++        <TR><TD class="bg2" colspan="2"> Name: ${packageResult.getName()} Failed: ${packageResult.getFailCount()} test(s), Passed: ${packageResult.getPassCount()} test(s), Skipped: ${packageResult.getSkipCount()} test(s), Total: ${packageResult.getPassCount()+packageResult.getFailCount()+packageResult.getSkipCount()} test(s)</TD></TR>
++        <j:forEach var="failed_test" items="${packageResult.getFailedTests()}">
++          <TR bgcolor="white"><TD class="test_failed" colspan="2"><B><li>Failed: ${failed_test.getFullName()} </li></B></TD></TR>
++        </j:forEach>
++      </j:forEach> 
++    </j:forEach>  
++  </TABLE>	
++<BR/>
++</j:if>
++
++
++<!-- COBERTURA TEMPLATE -->
++
++<j:set var="coberturaAction" value="${it.coberturaAction}" />
++<j:if test="${coberturaAction!=null}">
++  <j:set var="coberturaResult" value="${coberturaAction.result}" />
++  <j:if test="${coberturaResult!=null}">
++  	<table width="100%"><TD class="bg1" colspan="2"><B>Cobertura Report</B></TD></table>
++	<table width="100%"><TD class="bg2" colspan="2"><B>Project Coverage Summary</B></TD></table>
++            <table border="1px" class="pane">
++                <tr>
++                    <td>Name</td>
++                    <j:forEach var="metric" items="${coberturaResult.metrics}">
++                        <td>${metric.name}</td>
++                    </j:forEach>
++                </tr>
++                <tr>
++                    <td>${coberturaResult.name}</td>
++                    <j:forEach var="metric" items="${coberturaResult.metrics}">
++                        <td data="${coberturaResult.getCoverage(metric).percentageFloat}">${coberturaResult.getCoverage(metric).percentage}%
++                            (${coberturaResult.getCoverage(metric)})
++                        </td>
++                    </j:forEach>
++                </tr>
++            </table>
++
++            <j:if test="${coberturaResult.sourceCodeLevel}">
++                <h2>Source</h2>
++                <j:choose>
++                    <j:when test="${coberturaResult.sourceFileAvailable}">
++                        <div style="overflow-x:scroll;">
++                            <table class="source">
++                                <thead>
++                                    <tr>
++                                        <th colspan="3">${coberturaResult.relativeSourcePath}</th>
++                                    </tr>
++                                </thead>
++                                ${coberturaResult.sourceFileContent}
++
++                            </table>
++                        </div>
++                    </j:when>
++                    <j:otherwise>
++                        <p>
++                            <i>Source code is unavailable</i>
++                        </p>
++                    </j:otherwise>
++                </j:choose>
++            </j:if>
++
++            <j:forEach var="element" items="${coberturaResult.childElements}">
++                <j:set var="childMetrics" value="${coberturaResult.getChildMetrics(element)}"/>
++               <table width="100%"><TD class="bg2" colspan="2">Coverage Breakdown by ${element.displayName}</TD></table>
++                <table border="1px" class="pane sortable">
++                    <tr>
++                        <td>Name</td>
++                        <j:forEach var="metric" items="${childMetrics}">
++                            <td>${metric.name}</td>
++                        </j:forEach>
++                    </tr>
++                    <j:forEach var="c" items="${coberturaResult.children}">
++                        <j:set var="child" value="${coberturaResult.getChild(c)}"/>
++                        <tr>
++
++                            <td>
++                                ${child.xmlTransform(child.name)}
++                            </td>
++                            <j:forEach var="metric" items="${childMetrics}">
++                                <j:set var="childResult" value="${child.getCoverage(metric)}"/>
++                                <j:choose>
++                                    <j:when test="${childResult!=null}">
++                                        <td data="${childResult.percentageFloat}">${childResult.percentage}%
++                                            (${childResult})
++                                        </td>
++                                    </j:when>
++                                    <j:otherwise>
++                                        <td data="101">N/A</td>
++                                    </j:otherwise>
++                                </j:choose>
++                            </j:forEach>
++                        </tr>
++                    </j:forEach>
++                </table>
++            </j:forEach>
++  </j:if>
++<BR/>
++</j:if>
++
++
++<!-- CONSOLE OUTPUT -->
++
++<j:getStatic var="resultFailure" field="FAILURE" className="hudson.model.Result"/>
++<j:if test="${build.result==resultFailure}">
++<TABLE width="100%" cellpadding="0" cellspacing="0">
++<TR><TD class="bg1"><B>CONSOLE OUTPUT</B></TD></TR>
++<j:forEach var="line" items="${build.getLog(100)}"><TR><TD class="console">${line}</TD></TR></j:forEach>
++</TABLE>
++<BR/>
++</j:if>
++
++</BODY>
++</j:jelly>
+Index: src/main/java/hudson/plugins/emailext/plugins/content/CustomJellyContent.java
+===================================================================
+--- src/main/java/hudson/plugins/emailext/plugins/content/CustomJellyContent.java	(revision 0)
++++ src/main/java/hudson/plugins/emailext/plugins/content/CustomJellyContent.java	(revision 0)
+@@ -0,0 +1,167 @@
++package hudson.plugins.emailext.plugins.content;
++
++import hudson.Functions;
++import hudson.maven.reporters.SurefireAggregatedReport;
++import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
++import hudson.model.Action;
++import hudson.model.Hudson;
++import hudson.plugins.emailext.EmailType;
++import hudson.plugins.emailext.ExtendedEmailPublisher;
++import hudson.plugins.emailext.plugins.EmailContent;
++import hudson.tasks.junit.TestResult;
++import hudson.tasks.junit.TestResultAction;
++import hudson.tasks.test.AggregatedTestResultAction.ChildReport;
++
++import java.io.ByteArrayOutputStream;
++import java.io.File;
++import java.io.IOException;
++import java.io.UnsupportedEncodingException;
++import java.util.ArrayList;
++import java.util.Collections;
++import java.util.List;
++import java.util.Map;
++
++import org.apache.commons.jelly.JellyContext;
++import org.apache.commons.jelly.JellyException;
++import org.apache.commons.jelly.JellyTagException;
++import org.apache.commons.jelly.Script;
++import org.apache.commons.jelly.XMLOutput;
++
++public class CustomJellyContent implements EmailContent {
++
++	private static final String TEMPLATE_NAME_ARG = "template";
++	private static final String DEFAULT_HTML_TEMPLATE_NAME = "html";
++	private static final String DEFAULT_TXT_TEMPLATE_NAME = "txt";
++	private static final String EMAIL_TEMPLATES_FOLDER = "email-templates";
++
++	public String getToken() {
++		return "CUSTOM";
++	}
++
++	public String getHelpText() {
++		return "Custom message content. " + 
++		"The content is generated from a jelly template. " +
++		"If no template name is provided then the default \"" + DEFAULT_HTML_TEMPLATE_NAME + "\" template is used. " +
++	    "Make sure that the message content type is set to HTML then. " + 
++	    "The other template that is available is \"" + DEFAULT_TXT_TEMPLATE_NAME + "\" which should be used with Plain Text content type. " +
++		"You can create your own message template " + 
++		"- the best way to do it is to ask Hudson administrators for the default template, modify it, " + 
++		"and send it back to the administrators who will place it in email templates folder in Hudson home directory.\n" +
++		"<ul>\n" +				
++		"<li><i>" + TEMPLATE_NAME_ARG + "</i> - the template name. <br>\n" +
++		"Defaults to \"" + DEFAULT_HTML_TEMPLATE_NAME + "\".\n" +				
++		"</ul>\n";
++	}	
++
++	public List<String> getArguments() {
++		return Collections.singletonList(TEMPLATE_NAME_ARG);
++	}
++
++	public <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>> String getContent(
++			AbstractBuild<P, B> build, ExtendedEmailPublisher publisher,
++			EmailType type, Map<String, ?> args) throws IOException,
++			InterruptedException {
++		File templatesFolder = new File(Hudson.getInstance().getRootDir(), EMAIL_TEMPLATES_FOLDER);
++		String templateName = Args.get(args, TEMPLATE_NAME_ARG, DEFAULT_HTML_TEMPLATE_NAME);
++		File templateFile = new File(templatesFolder, templateName + ".jelly");
++		return getContentFromJelly(build, templateFile);
++	}
++	
++	public boolean hasNestedContent() {
++		return false;
++	}
++
++	private <P extends AbstractProject<P, B>, B extends AbstractBuild<P, B>> String getContentFromJelly(
++			AbstractBuild<P, B> build, File file) {
++		String content = "";
++		try {
++			if (file.exists()) {
++				content = renderContent(new BuildWrapper(build), build, file);
++			} else {
++				content = "* EMAIL TEMPLATE NOT FOUND: " + file.getAbsolutePath() + ", PLEASE CONTACT HUDSON ADMINISTRATORS *";
++			}
++		} catch (Exception e) {
++			e.printStackTrace();
++		}
++		return content;		
++	}
++
++	private String renderContent(Object it, AbstractBuild<?, ?> build, File file) throws JellyException, IOException {
++        JellyContext context = createContext(it, build);
++        Script script = context.compileScript(file.toURI().toURL());
++        if (script != null) {
++        	return convert(context, script);
++        }
++        return null;
++	}
++
++	private String convert(JellyContext context, Script script)
++			throws UnsupportedEncodingException, JellyTagException, IOException {
++		ByteArrayOutputStream output = new ByteArrayOutputStream(16 * 1024);
++		XMLOutput xmlOutput = XMLOutput.createXMLOutput(output);
++		script.run(context,xmlOutput);
++		xmlOutput.flush();
++		xmlOutput.close();
++		output.close();
++		return output.toString();
++	}
++		
++	private JellyContext createContext(Object it, AbstractBuild<?, ?> build) {
++		JellyContext context = new JellyContext();
++		context.setVariable("it", it);
++		context.setVariable("build", build);
++		context.setVariable("project", build.getParent());
++		context.setVariable("rooturl", ExtendedEmailPublisher.DESCRIPTOR.getHudsonUrl());
++		return context;
++	}
++
++	public class BuildWrapper {
++
++		private AbstractBuild<?, ?> build;
++
++		public BuildWrapper(AbstractBuild<?, ?> build) {
++			this.build = build;
++		}
++
++		public String getTimestampString() {
++			return Functions.rfc822Date(build.getTimestamp());
++		}
++
++		public Action getAction(String className) {
++			for (Action a: build.getActions()) {
++				if (a.getClass().getName().equals(className)) {
++					return a;
++				}
++			}
++			return null;
++		}
++
++		public Action getCoberturaAction() {
++			return getAction("hudson.plugins.cobertura.CoberturaBuildAction");
++		}
++		
++		public List<TestResult> getJUnitTestResult(){
++			List<TestResult> result = new ArrayList<TestResult>();
++    		List<Action> actions = build.getActions();
++    		for(Action action: actions){
++    			if(action instanceof hudson.maven.reporters.SurefireAggregatedReport){
++    				/* Maven Project */
++    				List<ChildReport> reportList =((SurefireAggregatedReport)getAction("hudson.maven.reporters.SurefireAggregatedReport")).getChildReports();
++    				for(ChildReport report: reportList){
++    					if(report.result instanceof hudson.tasks.junit.TestResult){
++    						result.add((TestResult)report.result);
++    					}
++    				}
++    			}
++    		}
++    		if(result.isEmpty()){
++    			/*FreestyleProject*/
++    			TestResultAction action = ((TestResultAction)getAction("hudson.tasks.junit.TestResultAction"));
++    			if(action!=null)
++    				result.add(action.getResult());
++    		}
++    		return result;
++    	}
++	}
++}
+Index: txt.jelly
+===================================================================
+--- txt.jelly	(revision 0)
++++ txt.jelly	(revision 0)
+@@ -0,0 +1,83 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define">
++GENERAL INFO
++
++BUILD ${build.result}
++Build URL: ${rooturl}${build.url}
++Project: ${project.name}
++Date of build: ${it.timestampString}
++Build duration: ${build.durationString}
++
++<j:set var="changeSet" value="${build.changeSet}" />
++<j:if test="${changeSet!=null}">
++CHANGE SET <j:set var="hadChanges" value="false" />
++      <j:forEach var="cs" items="${changeSet.logs}" varStatus="loop">
++        <j:set var="hadChanges" value="true" />
++        <j:set var="aUser" value="${cs.hudsonUser}"/>
++  &#10;Revision ${cs.revision} by <j:choose><j:when test="${aUser!=null}">${aUser.displayName}: </j:when><j:otherwise>${cs.user}: </j:otherwise></j:choose>(${cs.msgAnnotated})
++<j:forEach var="p" items="${cs.paths}">&#10;  change: ${p.editType.name}   ${p.value}</j:forEach>
++      </j:forEach>      
++      <j:if test="${!hadChanges}">
++No changes
++      </j:if>      
++</j:if>
++&#10;
++
++<j:set var="artifacts" value="${build.artifacts}" />
++<j:if test="${artifacts!=null and artifacts.size()&gt;0}">
++ARTIFACTS <j:forEach var="f" items="${artifacts}">
++*${f}</j:forEach>
++</j:if>
++
++<j:set var="mbuilds" value="${build.moduleBuilds}" />
++<j:if test="${mbuilds!=null}">
++MAVEN ARTIFACTS<j:forEach var="m" items="${mbuilds}">
++        ${m.key.displayName}
++        <j:forEach var="mvnbld" items="${m.value}">
++        <j:set var="artifacts" value="${mvnbld.artifacts}" />
++        <j:if test="${artifacts!=null and artifacts.size()&gt;0}">
++      	          <j:forEach var="f" items="${artifacts}">
++*${f} 
++      	          </j:forEach>
++        </j:if>
++        </j:forEach>
++      </j:forEach>
++</j:if>
++
++<!-- JUNIT TEMPLATE -->
++<j:set var="junitResultList" value="${it.JUnitTestResult}" />
++<j:if test="${junitResultList.isEmpty()!=true}">
++
++JUNIT RESULTS
++	<j:forEach var="junitResult" items="${it.JUnitTestResult}">
++		<j:forEach var="packageResult" items="${junitResult.getChildren()}">
++Name: ${packageResult.getName()} Failed: ${packageResult.getFailCount()} test(s), Passed: ${packageResult.getPassCount()} test(s), Skipped: ${packageResult.getSkipCount()} test(s), Total: ${packageResult.getPassCount()+packageResult.getFailCount()+packageResult.getSkipCount()} test(s)<j:forEach var="failed_test" items="${packageResult.getFailedTests()}">
++	Failed: ${failed_test.getFullName()}</j:forEach>
++		</j:forEach> 
++	</j:forEach>  	
++</j:if>
++
++
++<!-- COBERTURA TEMPLATE -->
++<j:set var="coberturaAction" value="${it.coberturaAction}" />
++<j:if test="${coberturaAction!=null}">
++  <j:set var="coberturaResult" value="${coberturaAction.result}" />
++  <j:if test="${coberturaResult!=null}">
++
++COBERTURA RESULTS
++
++${coberturaResult.getName()}
++  <j:forEach var="key" items="${coberturaResult.getResults().keySet()}">
++${key} ${coberturaResult.getResults().get(key)} (${coberturaResult.getResults().get(key).getPercentage()}%)
++  </j:forEach>
++
++By packages
++  <j:forEach var="child" items="${coberturaResult.getChildren()}">
++	${coberturaResult.getChild(child).getName()}
++		<j:forEach var="childkey" items="${coberturaResult.getChild(child).getResults().keySet()}">
++	${childkey} ${coberturaResult.getChild(child).getResults().get(childkey)} (${coberturaResult.getChild(child).getResults().get(childkey).getPercentage()}%)
++		 </j:forEach>
++  </j:forEach>
++  </j:if>
++</j:if>
++
++</j:jelly>

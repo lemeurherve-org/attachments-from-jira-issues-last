@@ -1,0 +1,31 @@
+import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
+
+node('built-in') {
+    stage('checkout') {
+        timeout(5) {
+            checkout scm
+        }
+    }
+    
+    stage('build .net') {
+        timeout(5) {
+            bat label: 'Build .Net', script: 'dotnet build -c release /WarnAsError'
+        }
+    }
+    
+    stage('standard .net tests') {
+        timeout(10) {
+            catchError(stageResult: 'FAILURE') {
+                bat label: 'Test .Net', script: 'dotnet test -c release -r ./TestResults --runtime win-x64 --logger "xunit;LogFileName={assembly}.results.xml"
+            }
+            
+            xunit checksName: 'MyChecks', reduceLog: false, tools: [xUnitDotNet(excludesPattern: '', pattern: 'TestResults\\*.results.xml', stopProcessingIfError: true)]
+        }
+    }
+    
+    stage('testing checkout') {
+        timeout(5) {
+            checkout scm
+        }
+    }
+}

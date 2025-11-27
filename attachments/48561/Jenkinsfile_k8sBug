@@ -1,0 +1,38 @@
+@Library('DevOps@master') _
+
+import java.text.SimpleDateFormat
+import hudson.model.User
+
+def label = "mypod"
+
+properties([
+    parameters([
+        extendedChoice(name: 'destEnv', defaultValue: 'devEnv',description: 'Instalation destination',type: 'PT_RADIO', value: 'devEnv,qaEnv', multiSelectDelimiter: ',')
+    ])
+])
+
+destinationEnv = getEnvironment("${destEnv}").trim()
+
+
+podTemplate(cloud: destinationEnv, label: label, serviceAccount: 'jenkins', containers: [
+    containerTemplate(name: 'jnlp', image: '<MY_DOCKER_REPO>/jenkins/jnlp-slave:alpine'),
+    containerTemplate(name: 'python', image: '<MY_DOCKER_REPO>/3rdparties/python_custom:2.7.12', ttyEnabled: true, command: '/bin/sh'),
+    containerTemplate(name: 'git', image: '<MY_DOCKER_REPO>/3rdparties/alpine/git:1.0.7', ttyEnabled: true, command: 'cat')
+    ],
+    imagePullSecrets: ['jenkins-secret'])
+    {
+        node(label) {
+            try {
+                stage('Testing') {
+                    container('git'){
+                        sh """
+                            for i in \$(seq 0 100); do echo \$i;sleep 3; done
+                        """
+                    }
+                }
+            }
+            catch(e) {
+                throw e;
+            }
+        }
+    }

@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    options {
+        // only for Wa4PtcPlgBug:
+        // do NOT start DECLARATIVE checkout now
+        skipDefaultCheckout true
+    }
+
+    stages {
+        stage('Wa4PtcPlgBug') {
+            steps {
+                echo "Creating dirctory '${env.JENKINS_HOME}\\jobs\\${env.JOB_NAME}\\builds\\${env.BUILD_NUMBER}' on BUILD NODE to workaround PTC Plugin Bug (https://issues.jenkins.io/browse/JENKINS-70041) to store the changelog.xml (acctually this file must be stored on Jenkins HOST)"
+                dir ("${env.JENKINS_HOME}\\jobs\\${env.JOB_NAME}\\builds\\${env.BUILD_NUMBER}") {
+                    // create an empty file to force Jenkins to create the required directory
+                    writeFile file:'dummy', text:''
+                }
+            }
+        }
+
+        // only for Wa4PtcPlgBug:
+        // now start the checkout operation
+        stage('Checkout') {
+            steps {
+                 checkout scm
+            }
+        }
+
+        // now do whatever you want
+        stage("Build") {
+            ...
+        }
+    }
+}

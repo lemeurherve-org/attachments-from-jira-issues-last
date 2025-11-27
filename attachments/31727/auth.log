@@ -1,0 +1,62 @@
+Feb 1, 2016 4:39:05 PM null
+FINER: Node BTSMANCOMPILATION_NEW (i-687c9ad6)(i-687c9ad6) is ready
+Feb 1, 2016 4:39:05 PM null
+INFO: Launching instance: i-687c9ad6
+Feb 1, 2016 4:39:06 PM null
+INFO: Connecting to euca-10-133-42-246.eucalyptus.bhcloc55.eecloud.nsn-net.net on port 22, with timeout 10000.
+Feb 1, 2016 4:39:06 PM null
+INFO: Connected via SSH.
+Feb 1, 2016 4:39:06 PM null
+INFO: bootstrap()
+Feb 1, 2016 4:39:06 PM null
+INFO: Getting keypair...
+Feb 1, 2016 4:39:06 PM null
+INFO: Using key: btsman
+ad:49:db:52:9f:4c:8e:9b:69:ce:a8:e9:51:0e:3a:72:4a:55:65:18
+-----BEGIN RSA PRIVATE KEY-----
+**************************************************************
+**************************************************************
+Feb 1, 2016 4:39:06 PM null
+INFO: Authenticating as testuser
+Feb 1, 2016 4:39:06 PM null
+WARNING: Authentication failed. Trying again...
+Feb 1, 2016 4:39:36 PM null
+INFO: Authenticating as testuser
+Feb 1, 2016 4:39:36 PM null
+WARNING: Authentication failed. Trying again...
+Feb 1, 2016 4:40:06 PM null
+INFO: Authenticating as testuser
+Feb 1, 2016 4:40:06 PM null
+WARNING: Authentication failed. Trying again...
+Feb 1, 2016 4:40:36 PM null
+INFO: Authenticating as testuser
+Feb 1, 2016 4:40:36 PM null
+WARNING: Authentication failed. Trying again...
+Feb 1, 2016 4:41:06 PM null
+INFO: Authenticating as testuser
+ERROR: Publickey authentication failed.
+java.io.IOException: Publickey authentication failed.
+	at com.trilead.ssh2.auth.AuthenticationManager.authenticatePublicKey(AuthenticationManager.java:315)
+	at com.trilead.ssh2.Connection.authenticateWithPublicKey(Connection.java:467)
+	at hudson.plugins.ec2.ssh.EC2UnixLauncher.bootstrap(EC2UnixLauncher.java:288)
+	at hudson.plugins.ec2.ssh.EC2UnixLauncher.launch(EC2UnixLauncher.java:127)
+	at hudson.plugins.ec2.EC2ComputerLauncher.launch(EC2ComputerLauncher.java:100)
+	at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:243)
+	at jenkins.util.ContextResettingExecutorService$2.call(ContextResettingExecutorService.java:46)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:636)
+Caused by: java.io.IOException: Sorry, this connection is closed.
+	at com.trilead.ssh2.transport.TransportManager.ensureConnected(TransportManager.java:587)
+	at com.trilead.ssh2.transport.TransportManager.sendMessage(TransportManager.java:660)
+	at com.trilead.ssh2.auth.AuthenticationManager.authenticatePublicKey(AuthenticationManager.java:283)
+	... 11 more
+Caused by: java.io.IOException: Cannot read full block, EOF reached.
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.getBlock(CipherInputStream.java:81)
+	at com.trilead.ssh2.crypto.cipher.CipherInputStream.read(CipherInputStream.java:108)
+	at com.trilead.ssh2.transport.TransportConnection.receiveMessage(TransportConnection.java:232)
+	at com.trilead.ssh2.transport.TransportManager.receiveLoop(TransportManager.java:693)
+	at com.trilead.ssh2.transport.TransportManager$1.run(TransportManager.java:489)
+	... 1 more

@@ -1,0 +1,18 @@
+*** ./maven-plugin/src/main/java/hudson/maven/MavenProcessFactory.java	2009-05-08 10:55:16.000000000 +0200
+--- ./maven-plugin/src/main/java/hudson/maven/MavenProcessFactory_patched.java	2009-05-08 10:59:25.000000000 +0200
+***************
+*** 265,270 ****
+--- 265,277 ----
+          if(yjp)
+              args.add("-agentlib:yjpagent=tracing");
+  
++ 	final String optionsOverride =
++             getMavenOpts();
++ 
++         if(optionsOverride==null||optionsOverride.trim().length()==0) {
++             args.addTokenized(System.getenv("MAVEN_OPTS"));
++         }
++ 
+          args.addTokenized(getMavenOpts());
+  
+          args.add("-cp");

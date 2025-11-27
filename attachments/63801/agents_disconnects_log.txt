@@ -1,0 +1,427 @@
+Started by user TestUser
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on TSLDESOT118 in C:\jenkins\workspace\IP_Verification\IP3222_Staging_DryRun\Hello-Plt-1_12_Feature12__E-INST
+[Pipeline] {
+[Pipeline] ws
+Running in C:/jenkins/workspace/TestComplete-master
+[Pipeline] {
+[Pipeline] withCredentials
+Masking supported pattern matches of %TEST_AGENT%
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] timeout
+[2025-01-14T12:15:46.214Z] Timeout set to expire in 6 hr 0 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout SCM)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] buildDescription
+[2025-01-14T12:15:46.251Z] New run description is '<a href='https://TSLDVTTC02.com/computer/TSLDESOT118'>TSLDESOT118</a>'
+[Pipeline] retry
+[Pipeline] {
+[Pipeline] echo
+[2025-01-14T12:15:46.264Z] Can't perform 'checkout scm'. Pipeline definition is not from SCM. Falling back to manual checkout
+[Pipeline] checkout
+[2025-01-14T12:15:46.272Z] The recommended git tool is: C:\Program Files\Git\bin\git.exe
+[2025-01-14T12:15:46.557Z] Fetching changes from the remote Git repository
+[2025-01-14T12:15:46.615Z] Cleaning workspace
+[2025-01-14T12:15:46.336Z]  > C:\Program Files\Git\bin\git.exe rev-parse --resolve-git-dir C:\jenkins\workspace\TestComplete-master\.git # timeout=10
+[2025-01-14T12:15:46.389Z]  > C:\Program Files\Git\bin\git.exe config remote.origin.url https://azure.com/dev/software/Utah/_git/TestComplete # timeout=10
+[2025-01-14T12:15:46.443Z]  > C:\Program Files\Git\bin\git.exe rev-parse --verify HEAD # timeout=10
+[2025-01-14T12:15:46.486Z] Resetting working tree
+[2025-01-14T12:15:46.487Z]  > C:\Program Files\Git\bin\git.exe reset --hard # timeout=10
+[2025-01-14T12:15:46.930Z]  > C:\Program Files\Git\bin\git.exe clean -fdx # timeout=10
+[2025-01-14T12:15:47.891Z] Pruning obsolete local branches
+[2025-01-14T12:15:47.721Z] Fetching upstream changes from https://azure.com/dev/software/Utah/_git/TestComplete
+[2025-01-14T12:15:47.721Z]  > C:\Program Files\Git\bin\git.exe --version # timeout=10
+[2025-01-14T12:15:47.762Z]  > git --version # 'git version 2.46.0.windows.1'
+[2025-01-14T12:15:47.763Z] using GIT_ASKPASS to set credentials
+[2025-01-14T12:15:47.764Z]  > C:\Program Files\Git\bin\git.exe fetch --no-tags --force --progress --prune -- https://azure.com/dev/software/Utah/_git/TestComplete +refs/heads/*:refs/remotes/origin/* # timeout=10
+[2025-01-14T12:15:49.056Z] Checking out Revision 44fc393cf1dda3c221688680gt2498889b274a48 (refs/remotes/origin/staging/stg-25.dryrun)
+[2025-01-14T12:15:49.324Z] Commit message: "Merged PR 0000: Updated"
+[Pipeline] }
+[Pipeline] // retry
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Setup)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] load
+[Pipeline] { (Build/Jenkins/common.groovy)
+[2025-01-14T12:15:48.837Z]  > C:\Program Files\Git\bin\git.exe rev-parse "refs/remotes/origin/staging/stg-25.dryrun^{commit}" # timeout=10
+[2025-01-14T12:15:48.885Z]  > C:\Program Files\Git\bin\git.exe config core.sparsecheckout # timeout=10
+[2025-01-14T12:15:48.926Z]  > C:\Program Files\Git\bin\git.exe checkout -f 44fc393cf1dda3c221688680gt2498889b274a48 # timeout=10
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] bat
+[2025-01-14T12:15:49.698Z]
+[2025-01-14T12:15:49.698Z] C:\jenkins\workspace\TestComplete-master>py -3.11 Scripts\get_build_type.py --chapter DSL\PlatformTests\PhoenixHello\1_12_Feature12
+[2025-01-14T12:15:49.698Z] Selecting build type for: DSL\PlatformTests\PhoenixHello\1_12_Feature12
+[2025-01-14T12:15:49.698Z] Selected build type: INSTALLER
+[2025-01-14T12:15:49.698Z] Saving to file: _out/build_type.txt
+[Pipeline] readFile
+[Pipeline] bat
+[2025-01-14T12:15:49.991Z]
+[2025-01-14T12:15:49.991Z] C:\jenkins\workspace\TestComplete-master>py -3.11 Scripts/task_kill.py
+[2025-01-14T12:15:49.991Z] # ---- Kill active tasks
+[2025-01-14T12:15:51.367Z] Process: RuntimeBroker.exe ended with: SUCCESS: The process with PID 1508 (child process of PID 856) has been terminated.
+[2025-01-14T12:15:51.367Z]
+[2025-01-14T12:15:51.367Z] Process: RuntimeBroker.exe ended with: SUCCESS: The process with PID 6240 (child process of PID 856) has been terminated.
+[2025-01-14T12:15:51.367Z]
+[2025-01-14T12:15:51.367Z] Process: RuntimeBroker.exe ended with: SUCCESS: The process with PID 8064 (child process of PID 856) has been terminated.
+[2025-01-14T12:15:51.367Z]
+[2025-01-14T12:15:51.630Z] # ----
+[Pipeline] bat
+[2025-01-14T12:15:51.922Z]
+[Pipeline] parallel
+[Pipeline] { (Branch: get_build)
+[Pipeline] bat
+[Pipeline] bat
+[2025-01-14T12:15:52.225Z]
+[2025-01-14T12:15:52.226Z] C:\jenkins\workspace\TestComplete-master>py -3.11 Scripts\setup_test.py --build_type INSTALLER --brand Hello --build "25.6.921"
+[2025-01-14T12:15:52.226Z] # ---- Finding build
+[2025-01-14T12:15:52.226Z] Finding build with query: BuildQuery(
+[2025-01-14T12:15:52.226Z]                 number=25.6.921,
+[2025-01-14T12:15:52.226Z]                 path=,
+[2025-01-14T12:15:52.226Z]                 brand=Hello,
+[2025-01-14T12:15:52.226Z]                 build_type=INSTALLER,
+[2025-01-14T12:15:52.226Z]                 manufacturer=,
+[2025-01-14T12:15:52.226Z]                 install_code=,
+[2025-01-14T12:15:52.226Z]                 release=*,
+[2025-01-14T12:15:52.226Z]                 regex=
+[2025-01-14T12:15:52.226Z]             )
+[2025-01-14T12:15:52.256Z]
+[2025-01-14T12:15:55.040Z]
+[2025-01-14T12:15:55.040Z]
+[2025-01-14T12:15:55.040Z] # ----
+[Pipeline] }
+[2025-01-14T12:17:14.273Z] Finished with exit code: 0
+[2025-01-14T12:17:14.273Z] Installation finished
+[2025-01-14T12:17:14.273Z] # ----
+[2025-01-14T12:17:14.273Z] # ---- Configure FSW
+[2025-01-14T12:17:14.273Z] EmulatedVersionManager already exists on the machine
+[2025-01-14T12:17:14.275Z] Updating Configure.log4net file
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] powershell
+[Pipeline] readJSON
+[Pipeline] buildName
+[2025-01-14T12:17:14.899Z] New run name is '25.6.921'
+[Pipeline] }
+[Pipeline] // script
+Post stage
+[Pipeline] script
+[Pipeline] {
+[Pipeline] getContext
+[Pipeline] archiveArtifacts
+[2025-01-14T12:17:14.924Z] Archiving artifacts
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Generation)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] bat
+[2025-01-14T12:17:15.257Z]
+[2025-01-14T12:17:15.257Z] C:\jenkins\workspace\TestComplete-master>py -3.11 Scripts\generator.py --chapter DSL\PlatformTests\PhoenixHello\1_12_Feature12 --ip_release IP3222 --planner
+[2025-01-14T12:17:15.257Z] # ---- Generate test script
+[2025-01-14T12:17:15.257Z] Get script data
+[2025-01-14T12:17:15.257Z] Found: 8 tdf files in chapter: DSL\PlatformTests\PhoenixHello\1_12_Feature12
+[2025-01-14T12:17:15.257Z] Getting envs from TestPlanner for: test_id=73767 and ip_release=IP3222
+[2025-01-14T12:17:15.257Z] Generated: 8 test functions
+[2025-01-14T12:17:15.257Z] Save logs to: Log\generator_data.json
+[2025-01-14T12:17:15.257Z] Generate script file
+[2025-01-14T12:17:15.514Z] Code generated to: PhoenixCommon\Script\GeneratedTests.sj
+[2025-01-14T12:17:15.514Z] # ----
+[Pipeline] readFile
+[Pipeline] }
+[Pipeline] // script
+Post stage
+[Pipeline] script
+[Pipeline] {
+[Pipeline] getContext
+[Pipeline] archiveArtifacts
+[2025-01-14T12:17:15.549Z] Archiving artifacts
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Take License)
+[Pipeline] bat
+[2025-01-14T12:17:15.869Z]
+[2025-01-14T12:17:15.869Z] C:\jenkins\workspace\TestComplete-master>py -3.11 Scripts\license_manager.py --machine TSLDESOT118 --jenkins_server https://TSLDVTTC02.company.com/ take
+[2025-01-14T12:17:15.869Z] # ---- license_manager
+[2025-01-14T12:17:15.869Z] License Manager running
+[2025-01-14T12:17:16.128Z] Is TSLDESOT118 BAT ?  False
+[2025-01-14T12:17:16.128Z] LicenseState(max=217, available=207, active=10)
+[2025-01-14T12:17:16.128Z] Taking license
+[2025-01-14T12:17:16.128Z] # ----
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Tests)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+[2025-01-14T12:17:16.175Z] Running following 8 tests: [RQMID18242_Test01PFMAgeinpersonalization1, RQMID13413_Test02PFMMrelativetoTvalueforFeature12clients1, RQMID13609_Test03PFMFeature12Paneldisplaying1, RQMID10854_Test05PFMUserinterfacedistinction1, RQMID11139_Test06PFMApplyingchangestodefaultpreferences1, RQMID36391_Test08PFMHUD_DisplayManger1, RQMID19456_Test10PFMFeature12settingsoverview1, RQMID73767_Test11PFMToolsorderintheFeature11]
+[Pipeline] testcompletetest
+[2025-01-14T12:17:16.188Z]
+[2025-01-14T12:17:16.189Z] [TestComplete] The test execution started (Current/PhoenixHello/GeneratedTests/RQMID18242_Test01PFMAgeinpersonalization1).
+[2025-01-14T12:17:16.196Z] [TestComplete] Found TestComplete/TestExecute installations:
+[2025-01-14T12:17:16.196Z] 	Type: TE, Version: 15.50.3.11, Path: "C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"
+[2025-01-14T12:17:16.196Z] 	Type: TELite, Version: 15.50.3.50, Path: "C:\Program Files (x86)\SmartBear\TestExecuteLite 15\x64\bin\TestExecuteLite.exe"
+[2025-01-14T12:17:16.196Z] [TestComplete] Selected TestComplete/TestExecute installation:
+[2025-01-14T12:17:16.196Z] 	Type: TE, Version: 15.50.3.11, Path: "C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"
+[2025-01-14T12:17:16.239Z] [TestComplete] Launching the test runner.
+[2025-01-14T12:17:16.243Z] $ '"C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\SessionCreator.exe"' ExecuteProcess '/c:""C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"" "C:\jenkins\workspace\TestComplete-master\Current.pjs" /run /accesskey:******** /SilentMode /ForceConversion /ns /exit "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857036200.tclogx" "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857036200.htmlx" "/ErrorLog:C:\jenkins\workspace\TestComplete-master\1736857036200.txt" "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857036200.mht" /Timeout:14400 "/project:PhoenixHello" "/unit:GeneratedTests" "/routine:RQMID18242_Test01PFMAgeinpersonalization1" /DoNotShowLog "/psv:SystemRelease=null" "/psv:ReleaseBuildDefinition=false" /JenkinsTCPluginVersion:2.9.2'
+[2025-01-14T12:25:16.129Z] [TestComplete] Test runner exit code: 0.
+[2025-01-14T12:25:16.824Z] [TestComplete] The test execution finished (Current/PhoenixHello/GeneratedTests/RQMID18242_Test01PFMAgeinpersonalization1).
+[Pipeline] testcompletetest
+[2025-01-14T12:25:17.037Z]
+[2025-01-14T12:25:17.038Z] [TestComplete] The test execution started (Current/PhoenixHello/GeneratedTests/RQMID13413_Test02PFMMrelativetoTvalueforFeature12clients1).
+[2025-01-14T12:25:17.050Z] [TestComplete] Found TestComplete/TestExecute installations:
+[2025-01-14T12:25:17.050Z] 	Type: TE, Version: 15.50.3.11, Path: "C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"
+[2025-01-14T12:25:17.050Z] 	Type: TELite, Version: 15.50.3.50, Path: "C:\Program Files (x86)\SmartBear\TestExecuteLite 15\x64\bin\TestExecuteLite.exe"
+[2025-01-14T12:25:17.050Z] [TestComplete] Selected TestComplete/TestExecute installation:
+[2025-01-14T12:25:17.050Z] 	Type: TE, Version: 15.50.3.11, Path: "C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"
+[2025-01-14T12:25:17.090Z] [TestComplete] Launching the test runner.
+[2025-01-14T12:25:17.093Z] $ '"C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\SessionCreator.exe"' ExecuteProcess '/c:""C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"" "C:\jenkins\workspace\TestComplete-master\Current.pjs" /run /accesskey:******** /SilentMode /ForceConversion /ns /exit "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857517055.tclogx" "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857517055.htmlx" "/ErrorLog:C:\jenkins\workspace\TestComplete-master\1736857517055.txt" "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857517055.mht" /Timeout:14400 "/project:PhoenixHello" "/unit:GeneratedTests" "/routine:RQMID13413_Test02PFMMrelativetoTvalueforFeature12clients1" /DoNotShowLog "/psv:SystemRelease=null" "/psv:ReleaseBuildDefinition=false" /JenkinsTCPluginVersion:2.9.2'
+[2025-01-14T12:27:09.820Z] [TestComplete] Test runner exit code: 0.
+[2025-01-14T12:27:10.138Z] [TestComplete] The test execution finished (Current/PhoenixHello/GeneratedTests/RQMID13413_Test02PFMMrelativetoTvalueforFeature12clients1).
+[Pipeline] testcompletetest
+[2025-01-14T12:27:10.350Z]
+[2025-01-14T12:27:10.350Z] [TestComplete] The test execution started (Current/PhoenixHello/GeneratedTests/RQMID13609_Test03PFMFeature12Paneldisplaying1).
+[2025-01-14T12:27:10.355Z] [TestComplete] Found TestComplete/TestExecute installations:
+[2025-01-14T12:27:10.355Z] 	Type: TE, Version: 15.50.3.11, Path: "C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"
+[2025-01-14T12:27:10.355Z] 	Type: TELite, Version: 15.50.3.50, Path: "C:\Program Files (x86)\SmartBear\TestExecuteLite 15\x64\bin\TestExecuteLite.exe"
+[2025-01-14T12:27:10.355Z] [TestComplete] Selected TestComplete/TestExecute installation:
+[2025-01-14T12:27:10.355Z] 	Type: TE, Version: 15.50.3.11, Path: "C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"
+[2025-01-14T12:27:10.396Z] [TestComplete] Launching the test runner.
+[2025-01-14T12:27:10.399Z] $ '"C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\SessionCreator.exe"' ExecuteProcess '/c:""C:\Program Files (x86)\SmartBear\TestExecute 15\x64\bin\TestExecute.exe"" "C:\jenkins\workspace\TestComplete-master\Current.pjs" /run /accesskey:******** /SilentMode /ForceConversion /ns /exit "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857630357.tclogx" "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857630357.htmlx" "/ErrorLog:C:\jenkins\workspace\TestComplete-master\1736857630357.txt" "/ExportLog:C:\jenkins\workspace\TestComplete-master\1736857630357.mht" /Timeout:14400 "/project:PhoenixHello" "/unit:GeneratedTests" "/routine:RQMID13609_Test03PFMFeature12Paneldisplaying1" /DoNotShowLog "/psv:SystemRelease=null" "/psv:ReleaseBuildDefinition=false" /JenkinsTCPluginVersion:2.9.2'
+[2025-01-14T12:29:01.547Z] [TestComplete] [ERROR] An exception occurred:
+[2025-01-14T12:29:01.547Z] java.nio.channels.ClosedChannelException.
+[2025-01-14T12:29:01.547Z] [TestComplete] Marking the build as FAILED.
+[2025-01-14T12:29:01.547Z] [TestComplete] [WARNING] Unable to publish test results (xml data is empty).
+[2025-01-14T12:29:01.547Z] [TestComplete] The test execution finished (Current/PhoenixHello/GeneratedTests/RQMID13609_Test03PFMFeature12Paneldisplaying1).
+[Pipeline] testcompletetest
+[2025-01-14T12:29:01.757Z] TSLDESOT118 was marked offline: Connection was broken
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] getContext
+[2025-01-14T12:29:01.793Z] TSLDESOT118 was marked offline: Connection was broken
+[Pipeline] }
+[Pipeline] // script
+Error when executing always post condition:
+Also:   org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: 54bbc34a-e9b0-407c-9866-a0b807f89a82
+org.jenkinsci.plugins.workflow.support.steps.AgentOfflineException: Unable to create live FilePath for TSLDESOT118
+	at PluginClassLoader for workflow-durable-task-step//org.jenkinsci.plugins.workflow.support.steps.FilePathDynamicContext.get(FilePathDynamicContext.java:77)
+	at PluginClassLoader for workflow-durable-task-step//org.jenkinsci.plugins.workflow.support.steps.FilePathDynamicContext.get(FilePathDynamicContext.java:49)
+	at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.DynamicContext$Typed.get(DynamicContext.java:95)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.ContextVariableSet.get(ContextVariableSet.java:139)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThread.getContextVariable(CpsThread.java:135)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsStepContext.doGet(CpsStepContext.java:297)
+	at PluginClassLoader for workflow-support//org.jenkinsci.plugins.workflow.support.DefaultStepContext.get(DefaultStepContext.java:90)
+	at PluginClassLoader for workflow-basic-steps//org.jenkinsci.plugins.workflow.steps.GetContextStep$Execution.run(GetContextStep.java:83)
+	at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution.start(SynchronousStepExecution.java:38)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:323)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:196)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:124)
+	at jdk.internal.reflect.GeneratedMethodAccessor106.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.call(PogoMetaClassSite.java:41)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:180)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:23)
+	at PluginClassLoader for script-security//org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:163)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:178)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:182)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:152)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:152)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:17)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.LoggingInvoker.methodCall(LoggingInvoker.java:117)
+	at WorkflowScript.run(WorkflowScript:156)
+	at ___cps.transform___(Native Method)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ContinuationGroup.methodCall(ContinuationGroup.java:90)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:116)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:85)
+	at jdk.internal.reflect.GeneratedMethodAccessor414.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ConstantBlock.eval(ConstantBlock.java:21)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.Next.step(Next.java:83)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:147)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:17)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:49)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:180)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:422)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:330)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:294)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService.lambda$wrap$4(CpsVmExecutorService.java:140)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:139)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:68)
+	at jenkins.util.ErrorLoggingExecutorService.lambda$wrap$0(ErrorLoggingExecutorService.java:51)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.call(CpsVmExecutorService.java:53)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.call(CpsVmExecutorService.java:50)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport$ThreadCategoryInfo.use(GroovyCategorySupport.java:136)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport.use(GroovyCategorySupport.java:275)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService.lambda$categoryThreadFactory$0(CpsVmExecutorService.java:50)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+[Pipeline] script
+[Pipeline] {
+[Pipeline] getContext
+[2025-01-14T12:29:01.811Z] TSLDESOT118 was marked offline: Connection was broken
+[Pipeline] }
+[Pipeline] // script
+Error when executing cleanup post condition:
+Also:   org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: 35af5259-1488-439f-b38f-956b03efad12
+org.jenkinsci.plugins.workflow.support.steps.AgentOfflineException: Unable to create live FilePath for TSLDESOT118
+	at PluginClassLoader for workflow-durable-task-step//org.jenkinsci.plugins.workflow.support.steps.FilePathDynamicContext.get(FilePathDynamicContext.java:77)
+	at PluginClassLoader for workflow-durable-task-step//org.jenkinsci.plugins.workflow.support.steps.FilePathDynamicContext.get(FilePathDynamicContext.java:49)
+	at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.DynamicContext$Typed.get(DynamicContext.java:95)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.ContextVariableSet.get(ContextVariableSet.java:139)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThread.getContextVariable(CpsThread.java:135)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsStepContext.doGet(CpsStepContext.java:297)
+	at PluginClassLoader for workflow-support//org.jenkinsci.plugins.workflow.support.DefaultStepContext.get(DefaultStepContext.java:90)
+	at PluginClassLoader for workflow-basic-steps//org.jenkinsci.plugins.workflow.steps.GetContextStep$Execution.run(GetContextStep.java:83)
+	at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.SynchronousStepExecution.start(SynchronousStepExecution.java:38)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:323)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:196)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:124)
+	at jdk.internal.reflect.GeneratedMethodAccessor106.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.call(PogoMetaClassSite.java:41)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:180)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:23)
+	at PluginClassLoader for script-security//org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:163)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:178)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:182)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:152)
+	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:152)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:17)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.LoggingInvoker.methodCall(LoggingInvoker.java:117)
+	at WorkflowScript.run(WorkflowScript:165)
+	at ___cps.transform___(Native Method)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ContinuationGroup.methodCall(ContinuationGroup.java:90)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:116)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:85)
+	at jdk.internal.reflect.GeneratedMethodAccessor414.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ConstantBlock.eval(ConstantBlock.java:21)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.Next.step(Next.java:83)
+	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:147)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:17)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:49)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:180)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:422)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:330)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:294)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService.lambda$wrap$4(CpsVmExecutorService.java:140)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:139)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:68)
+	at jenkins.util.ErrorLoggingExecutorService.lambda$wrap$0(ErrorLoggingExecutorService.java:51)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.call(CpsVmExecutorService.java:53)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.call(CpsVmExecutorService.java:50)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport$ThreadCategoryInfo.use(GroovyCategorySupport.java:136)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport.use(GroovyCategorySupport.java:275)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService.lambda$categoryThreadFactory$0(CpsVmExecutorService.java:50)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // timestamps
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+TSLDESOT118 was marked offline: Connection was broken
+TSLDESOT118 was marked offline: Connection was broken
+TSLDESOT118 was marked offline: Connection was broken
+TSLDESOT118 was marked offline: Connection was broken
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // ws
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Also:   org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: 2d64dead-004f-4d23-8bcf-7661f7a59d48
+Also:   	Also:   org.jenkinsci.plugins.workflow.support.steps.AgentOfflineException: Unable to create live FilePath for TSLDESOT118
+	Also:   org.jenkinsci.plugins.workflow.support.steps.AgentOfflineException: Unable to create live FilePath for TSLDESOT118
+	Also:   org.jenkinsci.plugins.workflow.support.steps.AgentOfflineException: Unable to create live FilePath for TSLDESOT118
+org.jenkinsci.plugins.workflow.support.steps.AgentOfflineException: Unable to create live FilePath for TSLDESOT118
+		at PluginClassLoader for workflow-durable-task-step//org.jenkinsci.plugins.workflow.support.steps.FilePathDynamicContext.get(FilePathDynamicContext.java:77)
+		at PluginClassLoader for workflow-durable-task-step//org.jenkinsci.plugins.workflow.support.steps.FilePathDynamicContext.get(FilePathDynamicContext.java:49)
+		at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.DynamicContext$Typed.get(DynamicContext.java:95)
+		at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.ContextVariableSet.get(ContextVariableSet.java:139)
+		at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThread.getContextVariable(CpsThread.java:135)
+		at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsStepContext.doGet(CpsStepContext.java:297)
+		at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsBodySubContext.doGet(CpsBodySubContext.java:88)
+		at PluginClassLoader for workflow-support//org.jenkinsci.plugins.workflow.support.DefaultStepContext.get(DefaultStepContext.java:90)
+		at PluginClassLoader for credentials-binding//org.jenkinsci.plugins.credentialsbinding.impl.BindingStep$Callback.finished(BindingStep.java:247)
+		at PluginClassLoader for credentials-binding//org.jenkinsci.plugins.credentialsbinding.impl.BindingStep$Execution2$Callback2.finished(BindingStep.java:161)
+		at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.GeneralNonBlockingStepExecution$TailCall.lambda$onFailure$1(GeneralNonBlockingStepExecution.java:156)
+		at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.GeneralNonBlockingStepExecution.lambda$run$0(GeneralNonBlockingStepExecution.java:77)
+org.jenkinsci.plugins.workflow.support.steps.AgentOfflineException: Unable to create live FilePath for TSLDESOT118
+	at PluginClassLoader for workflow-durable-task-step//org.jenkinsci.plugins.workflow.support.steps.FilePathDynamicContext.get(FilePathDynamicContext.java:77)
+	at PluginClassLoader for workflow-durable-task-step//org.jenkinsci.plugins.workflow.support.steps.FilePathDynamicContext.get(FilePathDynamicContext.java:49)
+	at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.DynamicContext$Typed.get(DynamicContext.java:95)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.ContextVariableSet.get(ContextVariableSet.java:139)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThread.getContextVariable(CpsThread.java:135)
+	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsStepContext.doGet(CpsStepContext.java:297)
+	at PluginClassLoader for workflow-support//org.jenkinsci.plugins.workflow.support.DefaultStepContext.get(DefaultStepContext.java:90)
+	at PluginClassLoader for workflow-basic-steps//org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:83)
+	at PluginClassLoader for workflow-basic-steps//org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:71)
+	at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:47)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Finished: FAILURE

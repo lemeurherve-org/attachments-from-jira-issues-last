@@ -1,0 +1,72 @@
+diff --git a/src/main/java/com/syncapse/jenkinsci/plugins/awscloudformationwrapper/CloudFormation.java b/src/main/java/com/syncapse/jenkinsci/plugins/awscloudformationwrapper/CloudFormation.java
+index 18e3b88..84af79d 100644
+--- a/src/main/java/com/syncapse/jenkinsci/plugins/awscloudformationwrapper/CloudFormation.java
++++ b/src/main/java/com/syncapse/jenkinsci/plugins/awscloudformationwrapper/CloudFormation.java
+@@ -178,10 +178,18 @@
+ 	}
+ 	
+ 	private boolean waitForStackToBeDeleted() {
+-		
++		DescribeStacksRequest describeStacksRequest = new DescribeStacksRequest().withStackName(getExpandedStackName());
+ 		while (true){
+-			
+-			stack = getStack(amazonClient.describeStacks());
++			try {
++                            stack = getStack(amazonClient.describeStacks(describeStacksRequest));
++                        } catch (AmazonServiceException e) {
++                            // CloudFormation throws a ValidationException once the stack is gone.
++                            if ("ValidationError".equals(e.getErrorCode())) {
++                                stack = null;
++                            } else {
++                                throw e;
++                            }
++                        }
+ 			
+ 			if (stack == null) return true;
+ 			
+diff --git a/src/test/java/com/syncapse/jenkinsci/plugins/awscloudformationwrapper/CloudFormationTest.java b/src/test/java/com/syncapse/jenkinsci/plugins/awscloudformationwrapper/CloudFormationTest.java
+index bf70200..198fa57 100644
+--- a/src/test/java/com/syncapse/jenkinsci/plugins/awscloudformationwrapper/CloudFormationTest.java
++++ b/src/test/java/com/syncapse/jenkinsci/plugins/awscloudformationwrapper/CloudFormationTest.java
+@@ -1,5 +1,7 @@
+ package com.syncapse.jenkinsci.plugins.awscloudformationwrapper;
+ 
++import com.amazonaws.AmazonClientException;
++import com.amazonaws.AmazonServiceException;
+ import static org.junit.Assert.assertFalse;
+ import static org.junit.Assert.assertTrue;
+ import static org.mockito.Matchers.any;
+@@ -85,19 +87,30 @@
+ 
+ 	@Test
+ 	public void delete_waits_for_stack_to_be_deleted() throws Exception {
+-		when(awsClient.describeStacks()).thenReturn(stackDeletingResult(),
++		when(awsClient.describeStacks(any(DescribeStacksRequest.class))).thenReturn(stackDeletingResult(),
+ 				stackDeletingResult(), stackDeleteSuccessfulResult());
+ 		cf.delete();
+-		verify(awsClient, times(3)).describeStacks();
++		verify(awsClient, times(3)).describeStacks(any(DescribeStacksRequest.class));
+ 	}
+ 
+ 	@Test
+ 	public void delete_returns_false_when_stack_fails_to_delete()
+ 			throws Exception {
+-		when(awsClient.describeStacks()).thenReturn(stackDeleteFailedResult());
++		when(awsClient.describeStacks(any(DescribeStacksRequest.class))).thenReturn(stackDeleteFailedResult());
+ 		assertFalse(cf.delete());
+ 	}
+ 
++	@Test
++	public void delete_waits_for_stack_to_be_deleted_with_error() throws Exception {
++		AmazonServiceException ase = new AmazonServiceException("not found");
++		ase.setErrorCode("ValidationError");
++		when(awsClient.describeStacks(any(DescribeStacksRequest.class)))
++				.thenReturn(stackDeletingResult(), stackDeletingResult())
++				.thenThrow(ase);
++		assertTrue(cf.delete());
++		verify(awsClient, times(3)).describeStacks(any(DescribeStacksRequest.class));
++	}
++
+ 	private DescribeStacksResult stackDeleteFailedResult() {
+ 		return describeStacksResultWithStatus(StackStatus.DELETE_FAILED);
+ 	}

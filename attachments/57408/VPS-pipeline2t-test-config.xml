@@ -1,0 +1,35 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.31">
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.synopsys.arc.jenkinsci.plugins.jobrestrictions.jobs.JobRestrictionProperty plugin="job-restrictions@0.8"/>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@2.0.1">
+      <categories class="java.util.concurrent.CopyOnWriteArrayList"/>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <limitOneJobWithMatchingParams>false</limitOneJobWithMatchingParams>
+      <paramsToUseForLimit></paramsToUseForLimit>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.63">
+    <script>node {
+      for (i=0; i&lt;2; i++) { 
+           stage &quot;Stage #&quot;+i
+           print &apos;Hello, world !&apos;
+           if (i==0)
+           {
+               git &quot;https://github.com/Zulaikha12/gitnew.git&quot;
+               echo &apos;Running on Stage #0&apos;
+           }
+           else {
+               build &apos;Declarative pipeline&apos;
+               echo &apos;Running on Stage #1&apos;
+           }
+      }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

@@ -1,0 +1,45 @@
+pipeline {
+
+    // Let's try the linux agent for this one. :)
+    agent {
+        label "linux"
+    }
+
+    environment {
+        NEW_THING = ${env.BRANCH_NAME}
+    }
+
+    stages {
+        stage('The Old Thing') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        echo 'I only execute on the master branch'
+                        echo "--> $env.BRANCH_NAME"
+                    } else {
+                        echo 'I execute elsewhere'
+                        echo "--> $env.BRANCH_NAME"
+                    }
+                } // ends script block
+            }
+        }
+        stage ('The New Thing') {
+            steps {
+                echo $NEW_THING
+                sh "echo $NEW_THING"
+            }
+        }
+    } // end stages
+    post {
+        always {
+            echo "ALWAYS. Runs all the time."
+        }
+        success {
+            echo "SUCCESS. Whatever we did, it worked. Yay!"
+        }
+        failure {
+            echo "FAILURE. Womp womp."
+        }
+    }
+
+ }

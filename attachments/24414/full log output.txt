@@ -1,0 +1,45 @@
+Manually pressing "Build Now" button
+
+Sep 18, 2013 5:12:43 PM hudson.model.listeners.RunListener report
+WARNING: RunListener failed
+java.lang.NullPointerException
+        at hudson.model.PermalinkProjectAction$Permalink$3.apply(PermalinkProjectAction.java:134)
+        at jenkins.model.PeepholePermalink$RunListenerImpl.onCompleted(PeepholePermalink.java:211)
+        at hudson.model.listeners.RunListener.fireCompleted(RunListener.java:199)
+        at hudson.model.Run.execute(Run.java:1642)
+        at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+        at hudson.model.ResourceController.execute(ResourceController.java:88)
+        at hudson.model.Executor.run(Executor.java:237)
+
+Sep 18, 2013 5:12:43 PM hudson.model.Run onEndBuilding
+WARNING: XXXXX #49: No build result is set, so marking as failure. This shouldn't happen.
+Sep 18, 2013 5:12:43 PM hudson.model.Executor run
+SEVERE: Executor threw an exception
+java.lang.VerifyError: (class: org/apache/commons/codec/binary/Base64OutputStream, method: <init> signature: (Ljava/io/OutputStream;ZI[B)V) Incompatible argument to function
+        at hudson.console.ConsoleNote.encodeToBytes(ConsoleNote.java:180)
+        at hudson.console.ConsoleNote.encodeTo(ConsoleNote.java:158)
+        at hudson.util.StreamTaskListener.annotate(StreamTaskListener.java:157)
+        at hudson.util.StreamTaskListener._error(StreamTaskListener.java:132)
+        at hudson.util.StreamTaskListener.fatalError(StreamTaskListener.java:149)
+        at hudson.model.Run.handleFatalBuildProblem(Run.java:1676)
+        at hudson.model.Run.execute(Run.java:1622)
+        at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+        at hudson.model.ResourceController.execute(ResourceController.java:88)
+        at hudson.model.Executor.run(Executor.java:237)
+
+		
+		
+SCM Auto-rebuild
+		
+Sep 18, 2013 5:16:41 PM hudson.triggers.SCMTrigger$Runner run
+INFO: SCM changes detected in XXXXX. Triggering  #50
+Exception in thread "/mnt/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven3.0/bin/mvn -f XXXXXdomain/pom.xml -Dmaven.test.skip=true clean install: stdout copier" java.lang.VerifyError: (class: org/apache/commons/codec/binary/Base64OutputStream, method: <init> signature: (Ljava/io/OutputStream;ZI[B)V) Incompatible argument to function
+        at hudson.console.ConsoleNote.encodeToBytes(ConsoleNote.java:180)
+        at hudson.console.ConsoleNote.encodeTo(ConsoleNote.java:158)
+        at hudson.tasks._maven.MavenConsoleAnnotator.eol(MavenConsoleAnnotator.java:65)
+        at hudson.console.LineTransformationOutputStream.eol(LineTransformationOutputStream.java:60)
+        at hudson.console.LineTransformationOutputStream.write(LineTransformationOutputStream.java:56)
+        at hudson.console.LineTransformationOutputStream.write(LineTransformationOutputStream.java:74)
+        at hudson.util.StreamCopyThread.run(StreamCopyThread.java:61)
+Sep 18, 2013 5:17:04 PM hudson.model.Run execute
+INFO: XXXXX #50 main build action completed: SUCCESS

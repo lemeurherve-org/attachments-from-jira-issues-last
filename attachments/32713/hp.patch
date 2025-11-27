@@ -1,0 +1,87 @@
+Index: src/main/java/com/hp/application/automation/tools/run/PcBuilder.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-1252
+===================================================================
+--- src/main/java/com/hp/application/automation/tools/run/PcBuilder.java	(revision 4c9e35c89cef94d81ba32f910e261e65076e0d62)
++++ src/main/java/com/hp/application/automation/tools/run/PcBuilder.java	(revision )
+@@ -1,21 +1,5 @@
+ package com.hp.application.automation.tools.run;
+ 
+-import static com.hp.application.automation.tools.pc.RunState.FINISHED;
+-import static com.hp.application.automation.tools.pc.RunState.RUN_FAILURE;
+-import hudson.Extension;
+-import hudson.FilePath;
+-import hudson.Launcher;
+-import hudson.model.BuildListener;
+-import hudson.model.Result;
+-import hudson.model.AbstractBuild;
+-import hudson.model.AbstractProject;
+-import hudson.model.Hudson;
+-import hudson.model.ParametersAction;
+-import hudson.model.StringParameterValue;
+-import hudson.tasks.BuildStepDescriptor;
+-import hudson.tasks.Builder;
+-import hudson.util.FormValidation;
+-
+ import java.io.IOException;
+ import java.io.PrintStream;
+ import java.io.StringWriter;
+@@ -28,11 +12,6 @@
+ import javax.xml.bind.JAXBContext;
+ import javax.xml.bind.Marshaller;
+ 
+-import org.apache.commons.lang.StringUtils;
+-import org.apache.http.client.ClientProtocolException;
+-import org.kohsuke.stapler.DataBoundConstructor;
+-import org.kohsuke.stapler.QueryParameter;
+-
+ import com.hp.application.automation.tools.common.PcException;
+ import com.hp.application.automation.tools.model.PcModel;
+ import com.hp.application.automation.tools.model.PostRunAction;
+@@ -49,6 +28,27 @@
+ import com.hp.application.automation.tools.sse.result.model.junit.Testsuite;
+ import com.hp.application.automation.tools.sse.result.model.junit.Testsuites;
+ 
++import org.apache.commons.lang.StringUtils;
++import org.apache.http.client.ClientProtocolException;
++import org.kohsuke.stapler.DataBoundConstructor;
++import org.kohsuke.stapler.QueryParameter;
++
++import static com.hp.application.automation.tools.pc.RunState.FINISHED;
++import static com.hp.application.automation.tools.pc.RunState.RUN_FAILURE;
++import hudson.Extension;
++import hudson.FilePath;
++import hudson.Launcher;
++import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
++import hudson.model.BuildListener;
++import hudson.model.Hudson;
++import hudson.model.ParametersAction;
++import hudson.model.Result;
++import hudson.model.StringParameterValue;
++import hudson.tasks.BuildStepDescriptor;
++import hudson.tasks.Builder;
++import hudson.util.FormValidation;
++
+ public class PcBuilder extends Builder {
+     
+     private static final String artifactsDirectoryName = "archive";
+@@ -193,7 +193,16 @@
+             runId = pcClient.startRun();
+             
+             // This allows a user to access the runId from within Jenkins using a build variable.
+-            build.addAction(new ParametersAction(new StringParameterValue(RUNID_BUILD_VARIABLE, "" + runId))); 
++            StringParameterValue value = new StringParameterValue(RUNID_BUILD_VARIABLE, "" + runId);
++            ParametersAction newActions = new ParametersAction(value);
++            ParametersAction existingActions = build.getAction(ParametersAction.class);
++            if (existingActions != null) {
++                ParametersAction mergedActions = existingActions.merge(newActions);
++                build.replaceAction(mergedActions);
++            } else {
++                build.addAction(newActions);
++            }
++
+             logger.print("Set " + RUNID_BUILD_VARIABLE + " Env Variable to " + runId + "\n");
+             
+             response = pcClient.waitForRunCompletion(runId);

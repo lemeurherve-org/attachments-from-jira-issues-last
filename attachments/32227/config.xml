@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>When directly run with parameters, select organization and job and run with selected quorum setting.&#xd;
+Also when run without parameters, the workspace is updated from Git.  The job will be run periodically without parameters.&#xd;
+&#xd;
+NOTE: do not set this job to clear its workspace, as it creates no workspace artifacts, and uses the config in the repo to set its parameter settings.&#xd;
+&#xd;
+TODO: in process......&#xd;
+</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.1">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>GLOBAL</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.28"/>
+    <com.synopsys.arc.jenkins.plugins.ownership.jobs.JobOwnerJobProperty plugin="ownership@0.7"/>
+    <org.jenkinsci.plugins.mavenrepocleaner.MavenRepoCleanerProperty plugin="maven-repo-cleaner@1.2">
+      <notOnThisProject>false</notOnThisProject>
+    </org.jenkinsci.plugins.mavenrepocleaner.MavenRepoCleanerProperty>
+    <com.suryagaddipati.jenkins.SlaveUtilizationProperty plugin="slave-utilization-plugin@1.8">
+      <needsExclusiveAccessToNode>false</needsExclusiveAccessToNode>
+      <singleInstancePerSlave>false</singleInstancePerSlave>
+      <slaveUtilizationPercentage>0</slaveUtilizationPercentage>
+    </com.suryagaddipati.jenkins.SlaveUtilizationProperty>
+    <org.jenkinsci.plugins.mailwatcher.WatcherJobProperty plugin="mail-watcher-plugin@1.12">
+      <watcherAddresses>edsmiley@yahoo-inc.com</watcherAddresses>
+    </org.jenkinsci.plugins.mailwatcher.WatcherJobProperty>
+    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8.1">
+      <teamDomain></teamDomain>
+      <token></token>
+      <room></room>
+      <startNotification>true</startNotification>
+      <notifySuccess>true</notifySuccess>
+      <notifyAborted>true</notifyAborted>
+      <notifyNotBuilt>true</notifyNotBuilt>
+      <notifyUnstable>true</notifyUnstable>
+      <notifyFailure>true</notifyFailure>
+      <notifyBackToNormal>true</notifyBackToNormal>
+      <notifyRepeatedFailure>false</notifyRepeatedFailure>
+      <includeTestSummary>false</includeTestSummary>
+      <showCommitList>false</showCommitList>
+      <includeCustomMessage>false</includeCustomMessage>
+      <customMessage></customMessage>
+    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition plugin="extended-choice-parameter@0.56">
+          <name>ORG_JOB_QUORUM</name>
+          <description>Select Chef Organization, then Chef Push Job and Quorum.</description>
+          <quoteValue>false</quoteValue>
+          <saveJSONParameterToFile>false</saveJSONParameterToFile>
+          <visibleItemCount>5</visibleItemCount>
+          <type>PT_MULTI_LEVEL_SINGLE_SELECT</type>
+          <value>Organization,Job,Quorum</value>
+          <propertyFile>/home/babylon/jenkins-slave/jenkins-slave/workspace/chef-push-job/config/extended-choice-config.txt</propertyFile>
+          <multiSelectDelimiter>,</multiSelectDelimiter>
+        </com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.heavy__job.HeavyJobProperty plugin="heavy-job@1.1">
+      <weight>1</weight>
+    </hudson.plugins.heavy__job.HeavyJobProperty>
+    <job-metadata plugin="metadata@1.1.0b">
+      <values class="linked-list">
+        <metadata-tree>
+          <name>job-info</name>
+          <parent class="job-metadata" reference="../../.."/>
+          <generated>true</generated>
+          <exposedToEnvironment>false</exposedToEnvironment>
+          <children class="linked-list">
+            <metadata-tree>
+              <name>last-saved</name>
+              <description></description>
+              <parent class="metadata-tree" reference="../../.."/>
+              <generated>true</generated>
+              <exposedToEnvironment>false</exposedToEnvironment>
+              <children class="linked-list">
+                <metadata-date>
+                  <name>time</name>
+                  <description></description>
+                  <parent class="metadata-tree" reference="../../.."/>
+                  <generated>true</generated>
+                  <exposedToEnvironment>false</exposedToEnvironment>
+                  <value>
+                    <time>1458583686928</time>
+                    <timezone>America/Los_Angeles</timezone>
+                  </value>
+                  <checked>false</checked>
+                </metadata-date>
+                <metadata-tree>
+                  <name>user</name>
+                  <parent class="metadata-tree" reference="../../.."/>
+                  <generated>true</generated>
+                  <exposedToEnvironment>false</exposedToEnvironment>
+                  <children class="linked-list">
+                    <metadata-string>
+                      <name>display-name</name>
+                      <description></description>
+                      <parent class="metadata-tree" reference="../../.."/>
+                      <generated>true</generated>
+                      <exposedToEnvironment>false</exposedToEnvironment>
+                      <value>Ed Smiley</value>
+                    </metadata-string>
+                    <metadata-string>
+                      <name>full-name</name>
+                      <description></description>
+                      <parent class="metadata-tree" reference="../../.."/>
+                      <generated>true</generated>
+                      <exposedToEnvironment>false</exposedToEnvironment>
+                      <value>Ed Smiley</value>
+                    </metadata-string>
+                  </children>
+                </metadata-tree>
+              </children>
+            </metadata-tree>
+          </children>
+        </metadata-tree>
+      </values>
+    </job-metadata>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>** git repo suppressed for security reasons***</url>
+        <credentialsId>** git credential suppressed for security reasons***</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>** git repo branch suppressed for security reasons***</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <assignedNode>*** suppressed for security reasons ***</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(System)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command># debug
+cat /home/babylon/jenkins-slave/jenkins-slave/workspace/chef-push-job/config/extended-choice-config.txt 
+# 
+# if this parameter is set, we are explicitly running a specific push job
+#
+if [ -n &quot;$ORG_JOB_QUORUM&quot; ]; then
+
+  echo &quot;Running with settings: ORG_JOB_QUORUM=$ORG_JOB_QUORUM&quot;
+  
+  #
+  # we us this to set the organization on the fly
+  #
+  ORGANIZATION=`echo $ORG_JOB_QUORUM | awk -F: &apos;{print $1}&apos;`
+  DEFAULT_ORGANIZATION=&quot;test-org&quot;
+  sed -e s/$DEFAULT_ORGANIZATION/$ORGANIZATION/g .chef/knife.rb &gt; .chef/knife.rb.new
+  mv  .chef/knife.rb.new .chef/knife.rb 
+
+  #
+  # make knife trust the server&apos;s certificates.
+  #
+  knife ssl fetch
+
+  #
+  # get the nodes and settings for the organization push job and launch
+  #
+  echo &quot;Running: &apos;ruby scripts/organization-job-nodes.rb $ORG_JOB_QUORUM&apos;&quot;
+  #ruby scripts/organization-job-nodes.rb $ORG_JOB_QUORUM
+  
+else 
+  #
+  # if unset, this will merely be a periodic refresh run as a scheduled task
+  #
+  echo &quot;ORG_JOB_QUORUM parameter not set. Refreshing workspace with latest from Git.&quot;;
+fi
+echo &quot;Done.&quot;
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <io.chef.jenkins.ChefIdentityBuildWrapper plugin="chef-identity@1.0.0">
+      <jobIdentity>**suppressed for security reasons***</jobIdentity>
+    </io.chef.jenkins.ChefIdentityBuildWrapper>
+  </buildWrappers>
+</project>
+    

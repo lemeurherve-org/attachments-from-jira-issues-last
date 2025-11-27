@@ -1,0 +1,235 @@
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision dcd8c308b10746ededb1014eafc15409b875f3ba)
++++ pom.xml	(revision )
+@@ -7,7 +7,7 @@
+         <artifactId>plugin</artifactId>
+        <!-- Since rebuild plugin is using some functions available in
+         Jenkins version 1.405 ,version is updating from 1.400 to 1.405-->
+-        <version>1.405</version>
++        <version>1.481</version>
+         <relativePath>../pom.xml</relativePath>
+     </parent>
+ 
+Index: src/main/java/com/sonyericsson/rebuild/RebuildAction.java
+===================================================================
+--- src/main/java/com/sonyericsson/rebuild/RebuildAction.java	(revision dcd8c308b10746ededb1014eafc15409b875f3ba)
++++ src/main/java/com/sonyericsson/rebuild/RebuildAction.java	(revision )
+@@ -24,31 +24,20 @@
+  */
+ package com.sonyericsson.rebuild;
+ 
+-import hudson.matrix.MatrixRun;
+-import hudson.model.AbstractBuild;
+-import hudson.model.AbstractProject;
+-import hudson.model.Action;
+-import hudson.model.BooleanParameterValue;
+-import hudson.model.Cause;
+-import hudson.model.CauseAction;
+-import hudson.model.Hudson;
+-import hudson.model.ParameterDefinition;
+-import hudson.model.ParameterValue;
+-import hudson.model.ParametersAction;
+-import hudson.model.ParametersDefinitionProperty;
+-import hudson.model.PasswordParameterValue;
+-import hudson.model.RunParameterValue;
+-import hudson.model.StringParameterValue;
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.List;
+ import javax.servlet.ServletException;
+-import net.sf.json.JSONArray;
+-import net.sf.json.JSONObject;
++
+ import org.kohsuke.stapler.Stapler;
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
+ 
++import hudson.matrix.MatrixRun;
++import hudson.model.*;
++import net.sf.json.JSONArray;
++import net.sf.json.JSONObject;
++
+ /**
+  * Rebuild RootAction implementation class. This class will basically reschedule
+  * the build with existing parameters.
+@@ -56,10 +45,12 @@
+  * @author Shemeer S;
+  */
+ public class RebuildAction implements Action {
++
++    private static final String SVN_TAG_PARAM_CLASS = "hudson.scm.listtagsparameter.ListSubversionTagsParameterValue";
+     /*
+-     * All the below transient variables are declared only for backward
+-     * compatibility of the rebuild plugin.
+-     */
++    * All the below transient variables are declared only for backward
++    * compatibility of the rebuild plugin.
++    */
+     private transient String rebuildurl = "rebuild";
+     private transient String parameters = "rebuildParam";
+     private transient String p = "parameter";
+@@ -187,7 +178,7 @@
+                 for (Object o : a) {
+                     JSONObject jo = (JSONObject)o;
+                     String name = jo.getString("name");
+-                    ParameterValue parameterValue = null;
++                    ParameterValue parameterValue;
+                     parameterValue = getParameterValue(paramDefProp, name, paramAction, req, jo);
+                     if (parameterValue != null) {
+                         values.add(parameterValue);
+@@ -224,12 +215,9 @@
+      * @return boolean
+      */
+     public boolean isRebuildAvailable() {
+-        if (getProject() != null && getProject().hasPermission(AbstractProject.BUILD)
+-                && getProject().isBuildable() && !(getProject().isDisabled()) && !isMatrixRun()) {
+-            return true;
++        return getProject() != null && getProject().hasPermission(AbstractProject.BUILD)
++                && getProject().isBuildable() && !(getProject().isDisabled()) && !isMatrixRun();
+-        }
++    }
+-        return false;
+-    }
+ 
+     /**
+      * Method for getting the ParameterValue instance from ParameterDefinition
+@@ -244,24 +232,26 @@
+      */
+     public ParameterValue getParameterValue(ParametersDefinitionProperty paramDefProp,
+             String parameterName, ParametersAction paramAction, StaplerRequest req, JSONObject jo) {
+-        ParameterDefinition paramDef = null;
++        ParameterDefinition paramDef;
+-            // this is normal case when user try to rebuild a parameterized job.
+-                if (paramDefProp != null) {
+-                    paramDef = paramDefProp.getParameterDefinition(parameterName);
+-                    if (paramDef != null) {
+-                        return paramDef.createValue(req, jo);
+-                    }
+-                }
+-            /*
+-             * when user try to rebuild a build that was invoked by
+-             * parameterized trigger plugin in that case ParameterDefinition
+-             * is null for that parametername that is paased by parameterize
+-             * trigger plugin,so for handling that scenario, we need to
+-             * create an instance of that specific ParameterValue with
+-             * passed parameter value by form.
++        // this is normal case when user try to rebuild a parameterized job.
++            if (paramDefProp != null) {
++                paramDef = paramDefProp.getParameterDefinition(parameterName);
++                if (paramDef != null) {
++                    return paramDef.createValue(req, jo);
++                }
++            }
++        /*
++         * when user try to rebuild a build that was invoked by
++         * parameterized trigger plugin in that case ParameterDefinition
++         * is null for that parametername that is paased by parameterize
++         * trigger plugin,so for handling that scenario, we need to
++         * create an instance of that specific ParameterValue with
++         * passed parameter value by form.
++         *
++         * In contrast to all other parameterActions, ListSubversionTagsParameterValue uses "tag" instead of "value"
+-             */
++         */
+-                return cloneParameter(paramAction.getParameter(parameterName),
+-                        jo.getString("value"));
++        String value = jo.containsKey("value") ? jo.getString("value") : jo.getString("tag");
++        return cloneParameter(paramAction.getParameter(parameterName), value);
+     }
+ 
+     /**
+@@ -282,6 +272,11 @@
+         } else if (oldValue instanceof PasswordParameterValue) {
+             return new PasswordParameterValue(oldValue.getName(), newValue,
+                     oldValue.getDescription());
++        } else if (oldValue.getClass().getName().equals(SVN_TAG_PARAM_CLASS)) {
++            /**
++             * getClass().getName() to avoid dependency on svn plugin.
++             */
++            return new StringParameterValue(oldValue.getName(), newValue, oldValue.getDescription());
+         }
+         throw new IllegalArgumentException("Unrecognized parameter type: " + oldValue.getClass());
+     }
+Index: src/main/resources/com/sonyericsson/rebuild/RebuildAction/ListSubversionTagsParameterValue.jelly
+===================================================================
+--- src/main/resources/com/sonyericsson/rebuild/RebuildAction/ListSubversionTagsParameterValue.jelly	(revision )
++++ src/main/resources/com/sonyericsson/rebuild/RebuildAction/ListSubversionTagsParameterValue.jelly	(revision )
+@@ -0,0 +1,34 @@
++<!--
++  - The MIT License
++  -
++  - Copyright (c) 2010, Manufacture Francaise des Pneumatiques Michelin, Romain Seguy
++  -
++  - Permission is hereby granted, free of charge, to any person obtaining a copy
++  - of this software and associated documentation files (the "Software"), to deal
++  - in the Software without restriction, including without limitation the rights
++  - to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++  - copies of the Software, and to permit persons to whom the Software is
++  - furnished to do so, subject to the following conditions:
++  -
++  - The above copyright notice and this permission notice shall be included in
++  - all copies or substantial portions of the Software.
++  -
++  - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++  - IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++  - FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++  - AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++  - LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++  - OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++  - THE SOFTWARE.
++  -->
++
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
++	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
++	xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
++    <f:entry title="${it.name}">
++        <div name="parameter">
++            <input type="hidden" name="name" value="${it.name}" />
++            <f:textbox name="tag" value="${it.tag}" />
++        </div>
++    </f:entry>
++</j:jelly>
+Index: src/main/resources/com/sonyericsson/rebuild/RebuildAction/TextParameterValue.jelly
+===================================================================
+--- src/main/resources/com/sonyericsson/rebuild/RebuildAction/TextParameterValue.jelly	(revision )
++++ src/main/resources/com/sonyericsson/rebuild/RebuildAction/TextParameterValue.jelly	(revision )
+@@ -0,0 +1,38 @@
++<!--
++The MIT License
++
++Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Tom Huybrechts
++
++Copyright 2010 Sony Ericsson Mobile Communications.All rights reserved.
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in
++all copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++THE SOFTWARE.
++-->
++
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
++	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
++	xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
++    <f:entry title="${it.name}" description="${it.description}">
++        <div name="parameter" description="${it.description}">
++            <input type="hidden" name="name" value="${it.name}" />
++            <f:textarea name="value" value="${it.value}" />
++        </div>
++    </f:entry>
++</j:jelly>
++
++

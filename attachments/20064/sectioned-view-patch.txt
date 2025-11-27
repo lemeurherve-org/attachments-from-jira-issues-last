@@ -1,0 +1,100 @@
+Index: src/main/resources/hudson/plugins/sectioned_view/ListViewSection/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/sectioned_view/ListViewSection/config.jelly	(revision 37273)
++++ src/main/resources/hudson/plugins/sectioned_view/ListViewSection/config.jelly	(working copy)
+@@ -27,6 +27,16 @@
+         </f:entry>
+       </f:optionalBlock>
+ 
++	  <j:if test="${instance.hasJobFilterExtensions()}">
++	   <j:invokeStatic var="allJobFilters" className="hudson.views.ViewJobFilter" method="all"/>
++	   <f:block>
++	      <f:hetero-list name="jobFilters" hasHeader="true"
++	      	descriptors="${allJobFilters}"
++	        items="${instance.jobFilters}"
++	        addCaption="${%Add Job Filter}" />
++	   </f:block>
++	  </j:if>
++
+       <f:section title="${%Columns}">
+         <j:invokeStatic var="allColumns" className="hudson.views.ListViewColumn" method="all"/>
+         <j:invokeStatic var="defaultColumns" className="hudson.plugins.sectioned_view.ListViewSection" method="getDefaultColumns"/>
+Index: src/main/java/hudson/plugins/sectioned_view/ListViewSection.java
+===================================================================
+--- src/main/java/hudson/plugins/sectioned_view/ListViewSection.java	(revision 37273)
++++ src/main/java/hudson/plugins/sectioned_view/ListViewSection.java	(working copy)
+@@ -5,6 +5,7 @@
+ import hudson.model.Descriptor;
+ import hudson.model.Hudson;
+ import hudson.model.Saveable;
++import hudson.model.TopLevelItem;
+ import hudson.model.Descriptor.FormException;
+ import hudson.util.DescribableList;
+ import hudson.views.BuildButtonColumn;
+@@ -14,11 +15,13 @@
+ import hudson.views.LastSuccessColumn;
+ import hudson.views.ListViewColumn;
+ import hudson.views.StatusColumn;
++import hudson.views.ViewJobFilter;
+ import hudson.views.WeatherColumn;
+ 
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.Arrays;
++import java.util.Collection;
+ import java.util.Collections;
+ import java.util.List;
+ import java.util.logging.Level;
+@@ -32,6 +35,7 @@
+ public class ListViewSection extends SectionedViewSection {
+ 
+     private DescribableList<ListViewColumn, Descriptor<ListViewColumn>> columns;
++    private DescribableList<ViewJobFilter, Descriptor<ViewJobFilter>> jobFilters;
+ 
+     @DataBoundConstructor
+     public ListViewSection(String name, Width width, Positioning alignment) {
+@@ -41,7 +45,29 @@
+     public Iterable<ListViewColumn> getColumns() {
+         return columns;
+     }
++    
++    public Iterable<ViewJobFilter> getJobFilters() {
++    	return jobFilters;
++    }
+ 
++    public boolean hasJobFilterExtensions() {
++    	return !ViewJobFilter.all().isEmpty();
++    }
++    
++    @Override
++    public Collection<TopLevelItem> getItems() {
++    	Collection<TopLevelItem> itemsCollection = super.getItems();
++    	List<TopLevelItem> items = new ArrayList(itemsCollection);
++	    // check the filters
++	    Iterable<ViewJobFilter> jobFilters = getJobFilters();
++	    List<TopLevelItem> allItems = Hudson.getInstance().getItems();
++		for (ViewJobFilter jobFilter: jobFilters) {
++			items = jobFilter.filter(items, allItems, null);
++		}
++		return items;
++    }
++
++
+     public static List<ListViewColumn> getDefaultColumns() {
+         ArrayList<ListViewColumn> r = new ArrayList<ListViewColumn>();
+         DescriptorExtensionList<ListViewColumn, Descriptor<ListViewColumn>> all = ListViewColumn.all();
+@@ -75,6 +101,14 @@
+             } catch (IOException e) {
+                 throw new FormException("Error rebuilding list of columns.", e, "columns");
+             }
++            if (section.jobFilters == null) {
++            	section.jobFilters = new DescribableList<ViewJobFilter,Descriptor<ViewJobFilter>>(Saveable.NOOP);
++            }
++            try {
++            	section.jobFilters.rebuildHetero(req, formData, ViewJobFilter.all(), "jobFilters");
++            } catch (IOException e) {
++                throw new FormException("Error rebuilding list of view job filters.", e, "jobFilters");
++            }
+ 
+             return section;
+         }

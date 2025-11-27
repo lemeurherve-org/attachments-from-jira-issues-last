@@ -1,0 +1,63 @@
+Started by user admin
+Updating svn://192.168.3.3/egf/trunk
+At revision 1362
+no change for svn://192.168.3.3/egf/trunk since the previous build
+Parsing POMs
+[trunk] $ /usr/local/jdk1.6.0_21/bin/java -cp /home/hudson/.hudson/plugins/maven-plugin/WEB-INF/lib/maven-agent-1.373.jar:/usr/local/apache-maven-2.2.1/boot/classworlds-1.1.jar hudson.maven.agent.Main /usr/local/apache-maven-2.2.1 /usr/local/apache-tomcat-7.0.2/webapps/hudson/WEB-INF/lib/remoting-1.373.jar /home/hudson/.hudson/plugins/maven-plugin/WEB-INF/lib/maven-interceptor-1.373.jar 47539 /home/hudson/.hudson/plugins/maven-plugin/WEB-INF/lib/maven2.1-interceptor-1.2.jar
+<===[HUDSON REMOTING CAPACITY]===>���channel started
+Executing Maven:  -B -f /home/hudson/.hudson/jobs/java_trunk/workspace/trunk/pom.xml clean install cobertura:cobertura
+[INFO] Scanning for projects...
+[INFO] Reactor build order: 
+[INFO]   project_foo (Parent Project)
+[INFO]   Common Components
+[INFO]   Java Components
+[INFO]   Foo Library
+[INFO]   Remote Administration
+[INFO]   Master Implementation
+[INFO] Searching repository for plugin with prefix: 'cobertura'.
+[INFO] ------------------------------------------------------------------------
+[INFO] Building project_foo (Parent Project)
+[INFO]    task-segment: [clean, install, cobertura:cobertura]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean {execution: default-clean}]
+[INFO] [site:attach-descriptor {execution: default-attach-descriptor}]
+[INFO] [install:install {execution: default-install}]
+[INFO] Installing /home/hudson/.hudson/jobs/java_trunk/workspace/trunk/pom.xml to /home/hudson/.m2/repository/com/bah/project_foo/project_foo/1.0-SNAPSHOT/project_foo-1.0-SNAPSHOT.pom
+[INFO] Preparing cobertura:cobertura
+[HUDSON] Archiving /home/hudson/.hudson/jobs/java_trunk/workspace/trunk/pom.xml to /home/hudson/.hudson/jobs/java_trunk/modules/com.bah.project_foo$project_foo/builds/2011-01-13_10-03-49/archive/com.bah.project_foo/project_foo/1.0-SNAPSHOT/pom.xml
+[HUDSON] Archiving /home/hudson/.m2/repository/com/bah/project_foo/project_foo/1.0-SNAPSHOT/project_foo-1.0-SNAPSHOT.pom to /home/hudson/.hudson/jobs/java_trunk/modules/com.bah.project_foo$project_foo/builds/2011-01-13_10-03-49/archive/com.bah.project_foo/project_foo/1.0-SNAPSHOT/project_foo-1.0-SNAPSHOT.pom
+[INFO] [cobertura:instrument {execution: default-instrument}]
+[INFO] Not executing cobertura:instrument as the project is not a Java classpath-capable package
+[FATAL ERROR] hudson.maven.agent.PluginManagerInterceptor$1MojoIntercepterImpl#configureComponent(...) caused a linkage error (java.lang.NoSuchMethodError) and may be out-of-date. Check the realms:
+[FATAL ERROR] Plugin realm = app0.child-container[org.codehaus.mojo:cobertura-maven-plugin:2.4]
+urls[0] = file:/home/hudson/.m2/repository/org/codehaus/mojo/cobertura-maven-plugin/2.4/cobertura-maven-plugin-2.4.jar
+urls[1] = file:/home/hudson/.m2/repository/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1.jar
+urls[2] = file:/home/hudson/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar
+urls[3] = file:/home/hudson/.m2/repository/asm/asm/3.0/asm-3.0.jar
+urls[4] = file:/home/hudson/.m2/repository/asm/asm-tree/3.0/asm-tree-3.0.jar
+urls[5] = file:/home/hudson/.m2/repository/log4j/log4j/1.2.9/log4j-1.2.9.jar
+urls[6] = file:/home/hudson/.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar
+urls[7] = file:/home/hudson/.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar
+urls[8] = file:/home/hudson/.m2/repository/net/sourceforge/cobertura/cobertura-runtime/1.9.4.1/cobertura-runtime-1.9.4.1.pom
+urls[9] = file:/home/hudson/.m2/repository/urbanophile/java-getopt/1.0.9/java-getopt-1.0.9.jar
+urls[10] = file:/home/hudson/.m2/repository/org/codehaus/plexus/plexus-utils/2.0.2/plexus-utils-2.0.2.jar
+urls[11] = file:/home/hudson/.m2/repository/org/apache/maven/reporting/maven-reporting-impl/2.0/maven-reporting-impl-2.0.jar
+urls[12] = file:/home/hudson/.m2/repository/commons-validator/commons-validator/1.1.4/commons-validator-1.1.4.jar
+urls[13] = file:/home/hudson/.m2/repository/doxia/doxia-core/1.0-alpha-4/doxia-core-1.0-alpha-4.jar
+urls[14] = file:/home/hudson/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar
+[FATAL ERROR] Container realm = plexus.core.maven
+
+[INFO] ------------------------------------------------------------------------
+[ERROR] BUILD ERROR
+[INFO] ------------------------------------------------------------------------
+[INFO] Error configuring: org.codehaus.mojo:cobertura-maven-plugin. Reason: java.lang.NoSuchMethodError: hudson.maven.MavenBuildProxy.getMavenBuildInformation()Lhudson/maven/MavenBuildInformation;
+[INFO] ------------------------------------------------------------------------
+[INFO] For more information, run Maven with the -e switch
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3 seconds
+[INFO] Finished at: Thu Jan 13 10:03:55 EST 2011
+[INFO] Final Memory: 26M/607M
+[INFO] ------------------------------------------------------------------------
+channel stopped
+Finished: FAILURE
+

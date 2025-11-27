@@ -1,0 +1,67 @@
+started
+[workspace] $ cvs -q -z0 update -PdC -D "Friday, October 19, 2007 11:50:29 PM UTC"
+$ no changes detected
+Parsing POMs
+ERROR: Failed to parse POMs
+hudson.util.IOException2: Cannot lookup required component.
+	at hudson.maven.MavenModuleSetBuild$PomParser.invoke(MavenModuleSetBuild.java:518)
+	at hudson.maven.MavenModuleSetBuild$PomParser.invoke(MavenModuleSetBuild.java:457)
+	at hudson.FilePath.act(FilePath.java:280)
+	at hudson.maven.MavenModuleSetBuild$RunnerImpl.doRun(MavenModuleSetBuild.java:239)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:182)
+	at hudson.model.Run.run(Run.java:579)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:172)
+	at hudson.model.ResourceController.execute(ResourceController.java:70)
+	at hudson.model.Executor.run(Executor.java:62)
+Caused by: org.apache.maven.embedder.MavenEmbedderException: Cannot lookup required component.
+	at hudson.maven.MavenEmbedder.start(MavenEmbedder.java:653)
+	at hudson.maven.MavenUtil.createEmbedder(MavenUtil.java:44)
+	at hudson.maven.MavenModuleSetBuild$PomParser.invoke(MavenModuleSetBuild.java:498)
+	... 8 more
+Caused by: org.codehaus.plexus.component.repository.exception.ComponentLookupException: Unable to lookup component 'org.apache.maven.lifecycle.LifecycleExecutor', it could not be started
+	at org.codehaus.plexus.DefaultPlexusContainer.lookup(DefaultPlexusContainer.java:339)
+	at org.codehaus.plexus.embed.Embedder.lookup(Embedder.java:78)
+	at hudson.maven.MavenEmbedder.start(MavenEmbedder.java:633)
+	... 10 more
+Caused by: org.codehaus.plexus.component.repository.exception.ComponentLifecycleException: Error starting component
+	at org.codehaus.plexus.component.manager.AbstractComponentManager.startComponentLifecycle(AbstractComponentManager.java:109)
+	at org.codehaus.plexus.component.manager.AbstractComponentManager.createComponentInstance(AbstractComponentManager.java:95)
+	at org.codehaus.plexus.component.manager.ClassicSingletonComponentManager.getComponent(ClassicSingletonComponentManager.java:92)
+	at org.codehaus.plexus.DefaultPlexusContainer.lookup(DefaultPlexusContainer.java:331)
+	... 12 more
+Caused by: org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException: Error composing component
+	at org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase.execute(CompositionPhase.java:33)
+	at org.codehaus.plexus.lifecycle.AbstractLifecycleHandler.start(AbstractLifecycleHandler.java:101)
+	at org.codehaus.plexus.component.manager.AbstractComponentManager.startComponentLifecycle(AbstractComponentManager.java:105)
+	... 15 more
+Caused by: org.codehaus.plexus.component.composition.CompositionException: Composition failed of field extensionManager in object of type org.apache.maven.lifecycle.DefaultLifecycleExecutor because the requirement ComponentRequirement{role='org.apache.maven.extension.ExtensionManager', roleHint='null', fieldName='null'} was missing
+	at org.codehaus.plexus.component.composition.FieldComponentComposer.assignRequirementToField(FieldComponentComposer.java:154)
+	at org.codehaus.plexus.component.composition.FieldComponentComposer.assembleComponent(FieldComponentComposer.java:73)
+	at org.codehaus.plexus.component.composition.DefaultComponentComposerManager.assembleComponent(DefaultComponentComposerManager.java:68)
+	at org.codehaus.plexus.DefaultPlexusContainer.composeComponent(DefaultPlexusContainer.java:1486)
+	at org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase.execute(CompositionPhase.java:29)
+	... 17 more
+Caused by: org.codehaus.plexus.component.repository.exception.ComponentLookupException: Unable to lookup component 'org.apache.maven.extension.ExtensionManager', it could not be started
+	at org.codehaus.plexus.DefaultPlexusContainer.lookup(DefaultPlexusContainer.java:339)
+	at org.codehaus.plexus.component.composition.FieldComponentComposer.assignRequirementToField(FieldComponentComposer.java:129)
+	... 21 more
+Caused by: org.codehaus.plexus.component.repository.exception.ComponentLifecycleException: Error starting component
+	at org.codehaus.plexus.component.manager.AbstractComponentManager.startComponentLifecycle(AbstractComponentManager.java:109)
+	at org.codehaus.plexus.component.manager.AbstractComponentManager.createComponentInstance(AbstractComponentManager.java:95)
+	at org.codehaus.plexus.component.manager.ClassicSingletonComponentManager.getComponent(ClassicSingletonComponentManager.java:92)
+	at org.codehaus.plexus.DefaultPlexusContainer.lookup(DefaultPlexusContainer.java:331)
+	... 22 more
+Caused by: org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException: Error composing component
+	at org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase.execute(CompositionPhase.java:33)
+	at org.codehaus.plexus.lifecycle.AbstractLifecycleHandler.start(AbstractLifecycleHandler.java:101)
+	at org.codehaus.plexus.component.manager.AbstractComponentManager.startComponentLifecycle(AbstractComponentManager.java:105)
+	... 25 more
+Caused by: org.codehaus.plexus.component.composition.CompositionException: Component composition failed. No field of type: 'interface org.apache.maven.artifact.factory.ArtifactFactory' exists in class 'org.apache.maven.extension.DefaultExtensionManager'. Component: role: 'org.apache.maven.extension.ExtensionManager', implementation: 'org.apache.maven.extension.DefaultExtensionManager'
+	at org.codehaus.plexus.component.composition.FieldComponentComposer.getFieldByType(FieldComponentComposer.java:305)
+	at org.codehaus.plexus.component.composition.FieldComponentComposer.findMatchingField(FieldComponentComposer.java:204)
+	at org.codehaus.plexus.component.composition.FieldComponentComposer.assembleComponent(FieldComponentComposer.java:62)
+	at org.codehaus.plexus.component.composition.DefaultComponentComposerManager.assembleComponent(DefaultComponentComposerManager.java:68)
+	at org.codehaus.plexus.DefaultPlexusContainer.composeComponent(DefaultPlexusContainer.java:1486)
+	at org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase.execute(CompositionPhase.java:29)
+	... 27 more
+finished: FAILURE

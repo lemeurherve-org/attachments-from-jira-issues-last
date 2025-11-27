@@ -1,0 +1,35 @@
+pipeline {
+   agent any 
+   stages {
+     stage('Build') {
+      steps {
+         gitlabCommitStatus(name:"build") {
+         script { 
+           docker.withRegistry('Nexus URL', 'docker-pull-id') {
+              app = docker.build("my-project","--my proxy options") 
+           }
+         }
+        } 
+       }
+     }
+     stage('Push image') {
+       steps {
+         script { 
+           docker.withRegistry('Nexus URL', 'docker-push-id') {
+           app.push("latest")
+         }
+        }
+      }
+     }
+     stage('Push tag image') {
+       when { buildingTag() }
+        steps {
+          script { 
+             docker.withRegistry('Nexus URL', 'docker-pull-id')') {
+               app.push("tag")
+            }
+          }
+       }
+    }
+  }
+}

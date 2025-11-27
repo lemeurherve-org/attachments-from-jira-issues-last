@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.7">
+  <actions/>
+  <description>Build, test and publish the DB kit. Converted to a Pipeline job so we can retry the checkout. Sanity checks on freshly built kits - make sure things come up and respond.&lt;br/&gt;&lt;br/&gt; &lt;div style=&apos;color:red; font-size:15px&apos;&gt;This job gets automatically re-generated.  Manual edits are not advisable&lt;/div&gt;&lt;div&gt;Last Generated Tue Feb 21 06:53:01 PST 2017&lt;/div&gt;</description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>5</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <se.diabol.jenkins.pipeline.PipelineProperty plugin="delivery-pipeline-plugin@0.9.12">
+      <taskName>blablabla-db-kit</taskName>
+    </se.diabol.jenkins.pipeline.PipelineProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+        <c class="list">
+          <hudson.triggers.SCMTrigger>
+            <spec>H/15 * * * *</spec>
+            <ignorePostCommitHooks>false</ignorePostCommitHooks>
+          </hudson.triggers.SCMTrigger>
+        </c>
+        <list reference="../c"/>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.19">
+    <script>
+timeout(30) {
+    timestamps {
+        node(&apos;pnpm&amp;&amp;container&apos;) {
+
+            def mvn = &quot;${tool name: &apos;Maven 3.2.5&apos;, type: &apos;hudson.tasks.Maven$MavenInstallation&apos;}/bin/mvn&quot;
+
+            env.JAVA_HOME=&quot;${tool name: &apos;JDK_1.8&apos;, type: &apos;hudson.model.JDK&apos;}&quot;
+            env.PATH=&quot;${env.JAVA_HOME}/bin:${env.PATH}:${tool name: &apos;nodejs-7-latest&apos;}/bin&quot;
+            env.MAVEN_OPTS=&quot;-XX:MaxPermSize=512m -Xmx1024m -Xss1024k&quot;
+            def gitHash = null
+
+            stage(&quot;Checkout&quot;) {
+                retry(3) {
+                    checkout([$class: &apos;GitSCM&apos;, branches: [[name: &apos;*/master&apos;]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: &apos;CheckoutOption&apos;, timeout: 5], [$class: &apos;CloneOption&apos;, depth: 0, noTags: true, reference: &apos;/nfs00/infra/jenkins/gitreference/bla/blablabla-enterprise/&apos;, shallow: true, timeout: 5]], gitTool: &apos;System Git&apos;, submoduleCfg: [], userRemoteConfigs: [[credentialsId: &apos;826a7abb-11b3-461b-a1b2-fbc8c729e570&apos;, url: &apos;ssh://git@hidden:7999/bla/blablabla-enterprise.git&apos;]]])
+                }
+
+                gitHash = sh(returnStdout: true, script: &apos;git rev-parse HEAD&apos;).trim()
+            }
+
+            stage(&apos;Prep&apos;) {
+
+                // tmc prerequisites
+                retry(3) {
+                    // retry because pnpm doesn&apos;t always succeed on the first try.
+                    sh &quot;cd bla &amp;&amp; PHANTOMJS_CDNURL=http://nexus.blablabla/content/repositories/thirdparty/phantomjs/phantomjs.zip/phantomjs/ npm install&quot;
+                }
+
+            }
+
+            stage(&apos;Build&apos;) {
+                sh &quot;${mvn} -f pom.xml package -DskipTests -Ptmc.tms&quot;
+                sh &quot;&quot;&quot;find . -name &apos;*.gz&apos; &quot;&quot;&quot;
+                //archiveArtifacts &apos;**/*kit*.zip, **/*kit*.tar.gz&apos;
+            }
+
+
+            stage(&apos;Publish&apos;) {
+                def originalVersion = sh (returnStdout: true, script: &quot;${mvn} -f distribution/kit/pom.xml org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v &apos;\\[&apos;&quot;).trim()
+                def type = (originalVersion.indexOf(&apos;SNAPSHOT&apos;) &gt; 0 ) ? &apos;snapshot&apos; : &apos;final&apos;
+                def somethingVersion = originalVersion.replaceFirst(/-SNAPSHOT/, &apos;&apos;).trim()
+                sh &quot;&quot;&quot;deploy-kit-to-something.rb distribution/kit/target/blablabla-db-${originalVersion}.tar.gz --version &quot;${somethingVersion}&quot; --kit-type &quot;${type}&quot; --tags &quot;blablabla-db&quot; --revision &quot;${gitHash}&quot; --creator &quot;\$JOB_NAME (#\$BUILD_NUMBER)&quot; &quot;&quot;&quot;
+                sh &quot;&quot;&quot;deploy-kit-to-something.rb distribution/kit/target/blablabla-blabla-${originalVersion}.tar.gz --version &quot;${somethingVersion}&quot; --kit-type &quot;${type}&quot; --tags &quot;blablabla-eblabla&quot; --revision &quot;${gitHash}&quot; --creator &quot;\$JOB_NAME (#\$BUILD_NUMBER)&quot; &quot;&quot;&quot;
+
+            }
+
+
+            stage(&apos;QA Trigger&apos;) {
+                build job: &apos;/BLA1/bla-Parent-10.0&apos;, parameters: [string(name: &apos;PARENT_BUILD_NUMBER&apos;, value: &apos;NA&apos;), string(name: &apos;PARENT_GIT_COMMIT&apos;, value: gitHash)], wait: false
+                build job: &apos;/BLA2/bla-Parent-10.0&apos;, parameters: [string(name: &apos;PARENT_BUILD_NUMBER&apos;, value: &apos;NA&apos;), string(name: &apos;PARENT_GIT_COMMIT&apos;, value: gitHash)], wait: false
+            }
+        }
+    }
+}
+                </script>
+    <sandbox>true</sandbox>
+  </definition>
+</flow-definition>

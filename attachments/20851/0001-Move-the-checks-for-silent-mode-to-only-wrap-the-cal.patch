@@ -1,0 +1,119 @@
+From ccfa7ce5c21254d036f3a4c3665e6882c1d6dbf4 Mon Sep 17 00:00:00 2001
+From: Stephen Ware <stephen.e.ware@intel.com>
+Date: Wed, 21 Sep 2011 11:43:48 -0700
+Subject: [PATCH] Move the checks for silent mode to only wrap the calls to
+ NotificationFactory
+
+Signed-off-by: Stephen Ware <stephen.e.ware@intel.com>
+---
+ .../gerritnotifier/ToGerritRunListener.java        |   30 ++++++++++----------
+ .../trigger/hudsontrigger/GerritTrigger.java       |   20 +++++--------
+ 2 files changed, 23 insertions(+), 27 deletions(-)
+
+diff --git a/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/gerritnotifier/ToGerritRunListener.java b/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/gerritnotifier/ToGerritRunListener.java
+index e160d6c..62112e3 100644
+--- a/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/gerritnotifier/ToGerritRunListener.java
++++ b/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/gerritnotifier/ToGerritRunListener.java
+@@ -85,21 +85,21 @@ public class ToGerritRunListener extends RunListener<AbstractBuild> {
+             cleanUpGerritCauses(cause, r);
+             PatchsetCreated event = cause.getEvent();
+             event.fireBuildCompleted(r);
+-            if (!cause.isSilentMode()) {
+-                PatchSetKey key = memory.completed(event, r);
+-                updateTriggerContexts(r, key);
+-                if (memory.isAllBuildsCompleted(key)) {
+-                    try {
+-                        logger.info("All Builds are completed for cause: {}", cause);
+-                        event.fireAllBuildsCompleted();
++            PatchSetKey key = memory.completed(event, r);
++            updateTriggerContexts(r, key);
++            if (memory.isAllBuildsCompleted(key)) {
++                try {
++                    logger.info("All Builds are completed for cause: {}", cause);
++                    event.fireAllBuildsCompleted();
++                    if (!cause.isSilentMode()) {
+                         NotificationFactory.getInstance().queueBuildCompleted(memory.getMemoryImprint(key), listener);
+-                    } finally {
+-                        memory.forget(key);
+                     }
+-                } else {
+-                    logger.info("Waiting for more builds to complete for cause [{}]. Status: \n{}",
+-                            cause, memory.getStatusReport(key));
++                } finally {
++                    memory.forget(key);
+                 }
++            } else {
++                logger.info("Waiting for more builds to complete for cause [{}]. Status: \n{}",
++                        cause, memory.getStatusReport(key));
+             }
+         }
+     }
+@@ -115,10 +115,10 @@ public class ToGerritRunListener extends RunListener<AbstractBuild> {
+             if (cause.getEvent() != null) {
+                 cause.getEvent().fireBuildStarted(r);
+             }
++            key = memory.started(cause.getEvent(), r);
++            updateTriggerContexts(r, key);
++            BuildsStartedStats stats = memory.getBuildsStartedStats(key);
+             if (!cause.isSilentMode()) {
+-                key = memory.started(cause.getEvent(), r);
+-                updateTriggerContexts(r, key);
+-                BuildsStartedStats stats = memory.getBuildsStartedStats(key);
+                 NotificationFactory.getInstance().queueBuildStarted(r, listener, cause.getEvent(), stats);
+             }
+             logger.info("Gerrit build [{}] Started for cause: [{}].", r, cause);
+diff --git a/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/hudsontrigger/GerritTrigger.java b/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/hudsontrigger/GerritTrigger.java
+index 3fa58b5..2ad83e9 100644
+--- a/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/hudsontrigger/GerritTrigger.java
++++ b/gerrithudsontrigger/src/main/java/com/sonyericsson/hudson/plugins/gerrit/trigger/hudsontrigger/GerritTrigger.java
+@@ -51,7 +51,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
+ import org.kohsuke.stapler.QueryParameter;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+-
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+@@ -281,8 +280,8 @@ public class GerritTrigger extends Trigger<AbstractProject> implements GerritEve
+      * @return the ParameterAction.
+      */
+     protected ParametersAction createParameters(PatchsetCreated event, AbstractProject project) {
+-        List<ParameterValue> parameters = getDefaultParametersValues(project);
+-        setOrCreateParameters(event, parameters, isEscapeQuotes());
++            List<ParameterValue> parameters = getDefaultParametersValues(project);
++            setOrCreateParameters(event, parameters, isEscapeQuotes());
+         return new ParametersAction(parameters);
+     }
+ 
+@@ -335,12 +334,11 @@ public class GerritTrigger extends Trigger<AbstractProject> implements GerritEve
+                 && !ToGerritRunListener.getInstance().isBuilding(context.getThisBuild().getProject(),
+                 context.getEvent())) {
+ 
+-            if (!silentMode) {
+-                ToGerritRunListener.getInstance().onRetriggered(
+-                        context.getThisBuild().getProject(),
+-                        context.getEvent(),
+-                        context.getOtherBuilds());
+-            }
++            ToGerritRunListener.getInstance().onRetriggered(
++                    context.getThisBuild().getProject(),
++                    context.getEvent(),
++                    context.getOtherBuilds());
++
+             final GerritUserCause cause = new GerritUserCause(context.getEvent(), silentMode);
+             schedule(cause, context.getEvent(), context.getThisBuild().getProject());
+         }
+@@ -376,9 +374,7 @@ public class GerritTrigger extends Trigger<AbstractProject> implements GerritEve
+      */
+     private void retrigger(AbstractProject project, PatchsetCreated event) {
+         if (project.isBuildable()) {
+-            if (!silentMode) {
+-                ToGerritRunListener.getInstance().onRetriggered(project, event, null);
+-            }
++            ToGerritRunListener.getInstance().onRetriggered(project, event, null);
+             GerritUserCause cause = new GerritUserCause(event, silentMode);
+             schedule(cause, event, project);
+         }
+-- 
+1.7.4.4
+

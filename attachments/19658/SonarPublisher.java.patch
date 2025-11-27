@@ -1,0 +1,283 @@
+Index: src/main/java/hudson/plugins/sonar/SonarPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/sonar/SonarPublisher.java	(revision 33788)
++++ src/main/java/hudson/plugins/sonar/SonarPublisher.java	(working copy)
+@@ -15,21 +15,43 @@
+  */
+ package hudson.plugins.sonar;
+ 
+-import hudson.*;
++import hudson.CopyOnWrite;
++import hudson.EnvVars;
++import hudson.Extension;
++import hudson.FilePath;
++import hudson.Launcher;
++import hudson.Util;
+ import hudson.maven.AbstractMavenProject;
++import hudson.maven.ModuleName;
+ import hudson.maven.MavenModule;
+ import hudson.maven.MavenModuleSet;
+-import hudson.maven.ModuleName;
+-import hudson.model.*;
++import hudson.model.Action;
++import hudson.model.BuildListener;
++import hudson.model.Result;
++import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
++import hudson.model.Hudson;
+ import hudson.plugins.sonar.model.LightProjectConfig;
+ import hudson.plugins.sonar.model.TriggersConfig;
+ import hudson.plugins.sonar.template.SonarPomGenerator;
+ import hudson.plugins.sonar.utils.MagicNames;
+ import hudson.plugins.sonar.utils.SonarMaven;
+-import hudson.tasks.*;
++import hudson.tasks.BuildStepDescriptor;
++import hudson.tasks.BuildStepMonitor;
++import hudson.tasks.Notifier;
++import hudson.tasks.Publisher;
++import hudson.tasks.Maven;
+ import hudson.tasks.Maven.MavenInstallation;
+ import hudson.util.FormValidation;
++
++import java.io.IOException;
++import java.io.InputStreamReader;
++import java.util.Arrays;
++import java.util.List;
++import java.util.logging.Logger;
++
+ import net.sf.json.JSONObject;
++
+ import org.apache.commons.lang.StringUtils;
+ import org.apache.maven.model.Model;
+ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+@@ -38,12 +60,6 @@
+ import org.kohsuke.stapler.QueryParameter;
+ import org.kohsuke.stapler.StaplerRequest;
+ 
+-import java.io.IOException;
+-import java.io.InputStreamReader;
+-import java.util.Arrays;
+-import java.util.List;
+-import java.util.logging.Logger;
+-
+ /**
+  * Old fields should be left so that old config data can be read in, but
+  * they should be deprecated and transient so that they won't show up in XML
+@@ -68,7 +84,7 @@
+    *
+    * @since 1.4
+    */
+-  private String branch;
++  private final String branch;
+ 
+   /**
+    * Optional.
+@@ -85,56 +101,56 @@
+    *
+    * @since 1.2
+    */
+-  private TriggersConfig triggers;
++  private final TriggersConfig triggers;
+ 
+   // =================================================
+   // Next fields available only for free-style projects
+ 
+-  private String mavenInstallationName;
++  private final String mavenInstallationName;
+ 
+   /**
+    * @since 1.2
+    */
+-  private String rootPom;
++  private final String rootPom;
+ 
+   /**
+    * If not null, then we should generate pom.xml.
+    *
+    * @since 1.2
+    */
+-  private LightProjectConfig lightProject;
++  private final LightProjectConfig lightProject;
+ 
+-  public SonarPublisher(String installationName, String jobAdditionalProperties, String mavenOpts) {
++  public SonarPublisher(final String installationName, final String jobAdditionalProperties, final String mavenOpts) {
+     this(installationName, new TriggersConfig(), jobAdditionalProperties, mavenOpts, null, null, null);
+   }
+ 
+   public SonarPublisher(
+-      String installationName,
+-      TriggersConfig triggers,
+-      String jobAdditionalProperties, String mavenOpts
++      final String installationName,
++      final TriggersConfig triggers,
++      final String jobAdditionalProperties, final String mavenOpts
+   ) {
+     this(installationName, triggers, jobAdditionalProperties, mavenOpts, null, null, null);
+   }
+ 
+-  public SonarPublisher(String installationName,
+-                        TriggersConfig triggers,
+-                        String jobAdditionalProperties, String mavenOpts,
+-                        String mavenInstallationName, String rootPom,
+-                        LightProjectConfig lightProject
++  public SonarPublisher(final String installationName,
++                        final TriggersConfig triggers,
++                        final String jobAdditionalProperties, final String mavenOpts,
++                        final String mavenInstallationName, final String rootPom,
++                        final LightProjectConfig lightProject
+   ) {
+     this(installationName, null, triggers, jobAdditionalProperties, mavenOpts, mavenInstallationName, rootPom, lightProject);
+   }
+ 
+   @DataBoundConstructor
+-  public SonarPublisher(String installationName,
+-                        String branch,
+-                        TriggersConfig triggers,
+-                        String jobAdditionalProperties, String mavenOpts,
+-                        String mavenInstallationName, String rootPom,
+-                        LightProjectConfig lightProject
++  public SonarPublisher(final String installationName,
++                        final String branch,
++                        final TriggersConfig triggers,
++                        final String jobAdditionalProperties, final String mavenOpts,
++                        final String mavenInstallationName, final String rootPom,
++                        final LightProjectConfig lightProject
+   ) {
+     super();
+-    this.configVersion = 1;
++    configVersion = 1;
+     this.installationName = installationName;
+     this.branch = branch;
+     // Triggers
+@@ -254,7 +270,7 @@
+   }
+ 
+   @SuppressWarnings({"UnusedDeclaration"})
+-  public static boolean isMavenBuilder(AbstractProject currentProject) {
++  public static boolean isMavenBuilder(final AbstractProject currentProject) {
+     return currentProject instanceof MavenModuleSet;
+   }
+ 
+@@ -281,7 +297,7 @@
+     return null;
+   }
+ 
+-  private boolean isSkip(AbstractBuild<?, ?> build, BuildListener listener, SonarInstallation sonarInstallation) {
++  private boolean isSkip(final AbstractBuild<?, ?> build, final BuildListener listener, final SonarInstallation sonarInstallation) {
+     final String skipLaunchMsg;
+     if (sonarInstallation == null) {
+       skipLaunchMsg = Messages.SonarPublisher_NoInstallation(getInstallationName(), Hudson.getInstance().getDescriptorByType(DescriptorImpl.class).getInstallations().length);
+@@ -300,7 +316,7 @@
+   }
+ 
+   @Override
+-  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
++  public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) {
+     final SonarInstallation sonarInstallation = getInstallation();
+     if (isSkip(build, listener, sonarInstallation)) {
+       return true;
+@@ -316,11 +332,11 @@
+     return sonarSuccess;
+   }
+ 
+-  public MavenModuleSet getMavenProject(AbstractBuild build) {
++  public MavenModuleSet getMavenProject(final AbstractBuild build) {
+     return (build.getProject() instanceof MavenModuleSet) ? (MavenModuleSet) build.getProject() : null;
+   }
+ 
+-  private String getPomName(AbstractBuild<?, ?> build) {
++  private String getPomName(final AbstractBuild<?, ?> build) {
+     String pomName;
+     MavenModuleSet mavenModuleProject = getMavenProject(build);
+     if (mavenModuleProject != null) {
+@@ -334,7 +350,7 @@
+     return pomName;
+   }
+ 
+-  private String getPomName(AbstractBuild<?, ?> build, BuildListener listener) throws IOException, InterruptedException {
++  private String getPomName(final AbstractBuild<?, ?> build, final BuildListener listener) throws IOException, InterruptedException {
+     String pomName = getPomName(build);
+     // TODO Godin: why we should expand it?
+     // Expand, because pomName can be "${VAR}/pom.xml"
+@@ -343,7 +359,7 @@
+     return pomName;
+   }
+ 
+-  private boolean executeSonar(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener, SonarInstallation sonarInstallation) {
++  private boolean executeSonar(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener, final SonarInstallation sonarInstallation) {
+     try {
+       String pomName = getPomName(build);
+       FilePath root = build.getModuleRoot();
+@@ -375,7 +391,7 @@
+     }
+   }
+ 
+-  protected String getSonarUrl(AbstractProject<?, ?> project) {
++  protected String getSonarUrl(final AbstractProject<?, ?> project) {
+     SonarInstallation sonarInstallation = getInstallation();
+     if (sonarInstallation == null) {
+       return null;
+@@ -418,14 +434,14 @@
+     } catch (XmlPullParserException e) {
+       // ignore
+     } catch (NullPointerException e) {
+-        // ignore something in the line can be null for maven project 
++        // ignore something in the line can be null for maven project
+         // Model model = reader.read(new InputStreamReader(lastBuild.getWorkspace().child(getPomName(lastBuild)).read()));
+     }
+     return url;
+   }
+ 
+   @Override
+-  public Action getProjectAction(AbstractProject<?, ?> project) {
++  public Action getProjectAction(final AbstractProject<?, ?> project) {
+     return new ProjectSonarAction(getSonarUrl(project));
+   }
+ 
+@@ -433,7 +449,7 @@
+     return BuildStepMonitor.BUILD;
+   }
+ 
+-  @Extension
++  @Extension(ordinal = 1000)
+   public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+ 
+     @CopyOnWrite
+@@ -461,32 +477,32 @@
+       return installations;
+     }
+ 
+-    public void setInstallations(SonarInstallation... installations) {
++    public void setInstallations(final SonarInstallation... installations) {
+       this.installations = installations;
+       save();
+     }
+ 
+     @Override
+-    public boolean configure(StaplerRequest req, JSONObject json) {
++    public boolean configure(final StaplerRequest req, final JSONObject json) {
+       List<SonarInstallation> list = req.bindJSONToList(SonarInstallation.class, json.get("inst"));
+       setInstallations(list.toArray(new SonarInstallation[list.size()]));
+       return true;
+     }
+ 
+     @SuppressWarnings({"UnusedDeclaration", "ThrowableResultOfMethodCallIgnored"})
+-    public FormValidation doCheckMandatory(@QueryParameter String value) {
++    public FormValidation doCheckMandatory(@QueryParameter final String value) {
+       return StringUtils.isBlank(value) ?
+           FormValidation.error(Messages.SonarPublisher_MandatoryProperty()) : FormValidation.ok();
+     }
+ 
+     @SuppressWarnings({"UnusedDeclaration", "ThrowableResultOfMethodCallIgnored"})
+-    public FormValidation doCheckMandatoryAndNoSpaces(@QueryParameter String value) {
++    public FormValidation doCheckMandatoryAndNoSpaces(@QueryParameter final String value) {
+       return (StringUtils.isBlank(value) || value.contains(" ")) ?
+           FormValidation.error(Messages.SonarPublisher_MandatoryPropertySpaces()) : FormValidation.ok();
+     }
+ 
+     @Override
+-    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
++    public boolean isApplicable(final Class<? extends AbstractProject> jobType) {
+       // eventually check if job type of FreeStyleProject.class || MavenModuleSet.class
+       return true;
+     }

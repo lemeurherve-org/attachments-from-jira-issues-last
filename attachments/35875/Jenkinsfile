@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+    stages {
+        stage('build') {
+            agent { 
+                docker {
+                    image 'openjdk:8u111-jdk'
+                }
+            }
+            steps {
+                checkout scm
+                sh 'pwd'
+            }
+        }
+        stage('image') {
+            steps {
+                sh 'pwd'
+                script {
+                    sh 'pwd'
+                }
+            }
+        }
+    } 
+}
+

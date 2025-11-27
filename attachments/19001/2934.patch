@@ -1,0 +1,36 @@
+Index: AbstractClearCaseScm.java
+===================================================================
+--- AbstractClearCaseScm.java	(revision 25441)
++++ AbstractClearCaseScm.java	(working copy)
+@@ -79,7 +79,7 @@
+     private final String viewName;
+     private final String mkviewOptionalParam;
+     private final boolean filteringOutDestroySubBranchEvent;
+-    private transient String normalizedViewName;
++    private ThreadLocal<String> normalizedViewName = new ThreadLocal<String>();
+     private final boolean useUpdate;
+     private final boolean removeViewOnRename;
+     private String excludedRegions;
+@@ -92,11 +92,11 @@
+     private String unixDynStorageDir;
+     
+     protected void setNormalizedViewName(String normalizedViewName) {
+-        this.normalizedViewName = normalizedViewName;
++        this.normalizedViewName.set(normalizedViewName);
+     }
+     
+     protected String getNormalizedViewName() {
+-        return normalizedViewName;
++        return normalizedViewName.get();
+     }
+     
+     public AbstractClearCaseScm(final String viewName,
+@@ -342,7 +342,7 @@
+         
+         generatedNormalizedViewName = generatedNormalizedViewName.replaceAll(
+                                                                              "[\\s\\\\\\/:\\?\\*\\|]+", "_");
+-        this.normalizedViewName = generatedNormalizedViewName;
++        setNormalizedViewName(generatedNormalizedViewName);
+         return generatedNormalizedViewName;
+     }
+     

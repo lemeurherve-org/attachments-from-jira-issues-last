@@ -1,0 +1,151 @@
+Index: pom.xml
+===============================================================
+--- pom.xml	(revision 30369)
++++ pom.xml	(working copy)
+@@ -3,7 +3,7 @@
+   <parent>
+     <groupId>org.jvnet.hudson.plugins</groupId>
+     <artifactId>plugin</artifactId>
+-    <version>1.351</version>
++    <version>1.382</version>
+     <relativePath>../pom.xml</relativePath>
+   </parent>
+ 
+Index: src/main/java/hudson/plugins/bazaar/BazaarSCM.java
+===============================================================
+--- src/main/java/hudson/plugins/bazaar/BazaarSCM.java	(revision 30369)
++++ src/main/java/hudson/plugins/bazaar/BazaarSCM.java	(working copy)
+@@ -178,25 +178,6 @@ public class BazaarSCM extends SCM implements Serializable {
+         return local == null ? null : new BazaarRevisionState(local);
+     }
+ 
+-    /** for old hudsons - delete at will **/
+-    @Override
+-    public boolean pollChanges(AbstractProject project, Launcher launcher,
+-            FilePath workspace, TaskListener listener) throws IOException,
+-            InterruptedException {
+-
+-        PrintStream output = listener.getLogger();
+-
+-        output.println("Getting upstream revision...");
+-        String upstream = getRevid(launcher, listener, source);
+-        output.println(upstream);
+-
+-        output.println("Getting local revision...");
+-        String local = getRevid(launcher, listener, workspace.getRemote());
+-        output.println(local);
+-
+-        return ! upstream.equals(local);
+-    }
+-
+     @Override
+     public boolean checkout(AbstractBuild build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws IOException, InterruptedException {
+         boolean canUpdate = workspace.act(new FileCallable<Boolean>() {
+@@ -209,8 +190,8 @@ public class BazaarSCM extends SCM implements Serializable {
+             }
+         });
+ 
+-        if (canUpdate && !clean) {
+-            return update(build, launcher, workspace, listener, changelogFile);
++        if (canUpdate) {
++            return update(clean, build, launcher, workspace, listener, changelogFile);
+         } else {
+             return clone(build, launcher, workspace, listener, changelogFile);
+         }
+@@ -219,21 +200,39 @@ public class BazaarSCM extends SCM implements Serializable {
+     /**
+      * Updates the current workspace.
+      */
+-    private boolean update(AbstractBuild<?, ?> build, Launcher launcher,
+-            FilePath workspace, BuildListener listener, File changelogFile)
+-            throws InterruptedException, IOException {
+-        try {
+-            String oldid = getRevid(launcher, listener, workspace.getRemote());
++    private boolean update(boolean clean, AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
++        String oldid = getRevid(launcher, listener, workspace.getRemote());
++
++        boolean hasProblemOccured = false;
++        if (clean) {
++            hasProblemOccured = ! branch(build, launcher, workspace, listener);
++        } else {
++            hasProblemOccured = ! pull(build, launcher, workspace, listener);
++        }
++        if (hasProblemOccured) {
++            return false;
++        }
++
++        String newid = getRevid(launcher, listener, workspace.getRemote());
++        getLog(launcher, workspace, oldid, newid, changelogFile);
+ 
+-            if (launcher.launch().cmds(getDescriptor().getBzrExe(), "pull", "--overwrite", source)
+-                    .envs(build.getEnvironment(listener)).stdout(listener.getLogger()).pwd(workspace).join() != 0) {
++        return true;
++    }
++
++    /**
++     * Pull the remote branch into workspace.
++     */
++    private boolean pull(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener) throws InterruptedException {
++        ArgumentListBuilder args = new ArgumentListBuilder();
++        args.add(getDescriptor().getBzrExe(),
++                 "pull", "--overwrite",
++                 source);
++        try {
++            if (launcher.launch().cmds(args).envs(build.getEnvironment(listener)).stdout(listener.getLogger()).pwd(workspace).join() != 0) {
+                 listener.error("Failed to pull");
+                 return false;
+             }
+ 
+-            String newid = getRevid(launcher, listener, workspace.getRemote());
+-            getLog(launcher, workspace, oldid, newid, changelogFile);
+-
+         } catch (IOException e) {
+             listener.error("Failed to pull");
+             return false;
+@@ -246,7 +245,19 @@ public class BazaarSCM extends SCM implements Serializable {
+      * Start from scratch and clone the whole repository.
+      */
+     private boolean clone(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException {
++        if (!branch(build, launcher, workspace, listener)) {
++            return false;
++        }
++
++        return createEmptyChangeLog(changelogFile, listener, "changelog");
++    }
++
++    /**
++     * Remove the workspace and branch the remote branch into a new one.
++     */
++    private boolean branch(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener) throws InterruptedException {
+         try {
++            listener.getLogger().println("Cleaning workspace...");
+             workspace.deleteRecursive();
+         } catch (IOException e) {
+             e.printStackTrace(listener.error("Failed to clean the workspace"));
+@@ -254,8 +265,9 @@ public class BazaarSCM extends SCM implements Serializable {
+         }
+ 
+         ArgumentListBuilder args = new ArgumentListBuilder();
+-        args.add(getDescriptor().getBzrExe(), "branch");
+-        args.add(source, workspace.getRemote());
++        args.add(getDescriptor().getBzrExe(),
++                 "branch",
++                 source, workspace.getRemote());
+         try {
+             if (launcher.launch().cmds(args).envs(build.getEnvironment(listener)).stdout(listener.getLogger()).join() != 0) {
+                 listener.error("Failed to clone " + source);
+@@ -265,12 +277,11 @@ public class BazaarSCM extends SCM implements Serializable {
+             e.printStackTrace(listener.error("Failed to clone " + source));
+             return false;
+         }
+-
+-        return createEmptyChangeLog(changelogFile, listener, "changelog");
++        return true;
+     }
+ 
+     @Override
+-    public void buildEnvVars(AbstractBuild build, Map<String, String> env) {
++    public void buildEnvVars(AbstractBuild<?,?> build, Map<String, String> env) {
+     }
+ 
+     @Override

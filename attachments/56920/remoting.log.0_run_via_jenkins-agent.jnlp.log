@@ -1,0 +1,30 @@
+Dec 08, 2021 1:22:02 PM org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve
+INFO: Remoting server accepts the following protocols: [JNLP4-connect, Ping]
+Dec 08, 2021 1:22:02 PM org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run
+INFO: Waiting for ProtocolStack to start.
+Dec 08, 2021 1:22:03 PM hudson.remoting.UserRequest perform
+WARNING: LinkageError while performing UserRequest:hudson.slaves.SlaveComputer$SlaveInitializer@28709ff5
+java.lang.ExceptionInInitializerError
+	at hudson.slaves.SlaveComputer$SlaveInitializer.call(SlaveComputer.java:1050)
+	at hudson.slaves.SlaveComputer$SlaveInitializer.call(SlaveComputer.java:1041)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:211)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:54)
+	at hudson.remoting.Request$2.run(Request.java:376)
+	at hudson.remoting.InterceptingExecutorService.lambda$wrap$0(InterceptingExecutorService.java:78)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:122)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.security.AccessControlException: access denied ("java.util.PropertyPermission" "hudson.util.RingBufferLogHandler.defaultSize" "read")
+	at java.security.AccessControlContext.checkPermission(Unknown Source)
+	at java.security.AccessController.checkPermission(Unknown Source)
+	at java.lang.SecurityManager.checkPermission(Unknown Source)
+	at com.sun.javaws.security.JavaWebStartSecurity.checkPermission(Unknown Source)
+	at java.lang.SecurityManager.checkPropertyAccess(Unknown Source)
+	at java.lang.System.getProperty(Unknown Source)
+	at java.lang.Integer.getInteger(Unknown Source)
+	at java.lang.Integer.getInteger(Unknown Source)
+	at hudson.util.RingBufferLogHandler.<clinit>(RingBufferLogHandler.java:39)
+	... 11 more
+

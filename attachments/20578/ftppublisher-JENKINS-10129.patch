@@ -1,0 +1,91 @@
+Index: src/main/resources/com/zanox/hudson/plugins/FTPPublisher/config.jelly
+===================================================================
+--- src/main/resources/com/zanox/hudson/plugins/FTPPublisher/config.jelly	(revision 39041)
++++ src/main/resources/com/zanox/hudson/plugins/FTPPublisher/config.jelly	(working copy)
+@@ -35,7 +35,7 @@
+   </f:entry>
+   
+   <f:entry title="Flatten files" help="${helpURL}/help-flatten.html">
+-    <f:checkbox name="publisher.flatten" checked="${instance.flatten}" />
++    <f:checkbox name="publisher.flatten" checked="${descriptor.isFlatten(instance)}" />
+   </f:entry>
+   
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/resources/com/zanox/hudson/plugins/FTPPublisher/global.jelly
+===================================================================
+--- src/main/resources/com/zanox/hudson/plugins/FTPPublisher/global.jelly	(revision 39041)
++++ src/main/resources/com/zanox/hudson/plugins/FTPPublisher/global.jelly	(working copy)
+@@ -37,6 +37,9 @@
+         </table>
+       </f:repeatable>
+     </f:entry>
++    <f:entry title="Flatten Files selected by default" help="/plugin/ftppublisher/help-flattenfilesselectedbydefault.html">
++      <f:checkbox name="flattenFilesSelectedByDefault" checked="${descriptor.flattenFilesSelectedByDefault}"/>
++    </f:entry>
+   </f:section>
+ 
+ 
+Index: src/main/webapp/help-flattenfilesselectedbydefault.html
+===================================================================
+--- src/main/webapp/help-flattenfilesselectedbydefault.html	(revision 0)
++++ src/main/webapp/help-flattenfilesselectedbydefault.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++	If this is selected, then the Flatten Files option will be selected by default when a job is first configured to use FTP Publishing.
++	<br/>
++	This option can of course be unselected if a job chooses not to flatten files.
++</div>
+Index: src/main/java/com/zanox/hudson/plugins/FTPPublisher.java
+===================================================================
+--- src/main/java/com/zanox/hudson/plugins/FTPPublisher.java	(revision 39041)
++++ src/main/java/com/zanox/hudson/plugins/FTPPublisher.java	(working copy)
+@@ -196,6 +196,9 @@
+ 
+ 		private final CopyOnWriteList<FTPSite> sites = new CopyOnWriteList<FTPSite>();
+ 
++		/** Whether to flatten files by default */
++		private boolean flattenFilesSelectedByDefault;
++
+ 		/**
+ 		 * The default constructor.
+ 		 */
+@@ -203,6 +206,15 @@
+ 			super(FTPPublisher.class);
+ 			load();
+ 		}
++		
++		public void setFlattenFilesSelectedByDefault(
++				boolean flattenFilesSelectedByDefault) {
++			this.flattenFilesSelectedByDefault = flattenFilesSelectedByDefault;
++		}
++		
++		public boolean isFlattenFilesSelectedByDefault() {
++			return flattenFilesSelectedByDefault;
++		}
+ 
+ 		/**
+ 		 * The name of the plugin to display them on the project configuration web page.
+@@ -258,6 +270,14 @@
+ 			return pub;
+ 		}
+ 
++		public boolean isFlatten(FTPPublisher pub) {
++			if (pub != null) {
++				return pub.isFlatten();
++			} else {
++				return flattenFilesSelectedByDefault;
++			}
++		}
++		
+ 		/**
+ 		 * The getter of the sites field.
+ 		 * 
+@@ -284,6 +304,7 @@
+ 		@Override
+ 		public boolean configure(StaplerRequest req, JSONObject formData) {
+ 			sites.replaceBy(req.bindParametersToList(FTPSite.class, "ftp."));
++			flattenFilesSelectedByDefault = formData.getBoolean("flattenFilesSelectedByDefault");
+ 			save();
+ 			return true;
+ 		}

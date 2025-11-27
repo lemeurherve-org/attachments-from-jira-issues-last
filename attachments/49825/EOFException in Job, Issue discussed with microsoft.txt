@@ -1,0 +1,63 @@
+Started by timer
+Checking out git git@bitbucket.org:apttusdev/frameworkessentials.git into /var/lib/jenkins/workspace/ApttusAutomationFramework/SfdcOmClassicSmoke@script to read projects\\om\\OMClassicSmoke
+using credential apttus-jenkins-bitbucket-ssh-creds
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url git@bitbucket.org:apttusdev/frameworkessentials.git # timeout=10
+Fetching upstream changes from git@bitbucket.org:apttusdev/frameworkessentials.git
+ > git --version # timeout=10
+using GIT_SSH to set credentials SSH Key for Jenkins and BitBucket
+ > git fetch --tags --progress git@bitbucket.org:apttusdev/frameworkessentials.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 2e4481b0e217a156e57e3e3a6a3ba1f819121e5c (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 2e4481b0e217a156e57e3e3a6a3ba1f819121e5c
+Commit message: "cpqRegression edited online with Bitbucket"
+ > git rev-list --no-walk 2e4481b0e217a156e57e3e3a6a3ba1f819121e5c # timeout=10
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Still waiting to schedule task
+Waiting for next available executor on ‘win-automation-test-agent’
+win-auto1195b0 was marked offline: Connection was broken: java.io.EOFException
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2681)
+	at java.io.ObjectInputStream$BlockDataInputStream.readShort(ObjectInputStream.java:3156)
+	at java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:862)
+	at java.io.ObjectInputStream.<init>(ObjectInputStream.java:358)
+	at hudson.remoting.ObjectInputStreamEx.<init>(ObjectInputStreamEx.java:49)
+	at hudson.remoting.Command.readFrom(Command.java:140)
+	at hudson.remoting.Command.readFrom(Command.java:126)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:36)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:63)
+Caused: java.io.IOException: Unexpected termination of the channel
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:77)
+
+[Pipeline] // node
+[Pipeline] End of Pipeline
+java.io.EOFException
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2681)
+	at java.io.ObjectInputStream$BlockDataInputStream.readShort(ObjectInputStream.java:3156)
+	at java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:862)
+	at java.io.ObjectInputStream.<init>(ObjectInputStream.java:358)
+	at hudson.remoting.ObjectInputStreamEx.<init>(ObjectInputStreamEx.java:49)
+	at hudson.remoting.Command.readFrom(Command.java:140)
+	at hudson.remoting.Command.readFrom(Command.java:126)
+	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:36)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:63)
+Caused: java.io.IOException: Unexpected termination of the channel
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:77)
+Also:   hudson.remoting.Channel$CallSiteStackTrace: Remote call to win-auto1195b0
+		at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1743)
+		at hudson.remoting.Request.call(Request.java:202)
+		at hudson.remoting.Channel.call(Channel.java:956)
+		at hudson.EnvVars.getRemote(EnvVars.java:428)
+		at hudson.model.Computer.getEnvironment(Computer.java:1189)
+		at org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution$PlaceholderTask$PlaceholderExecutable.run(ExecutorStepExecution.java:807)
+		at hudson.model.ResourceController.execute(ResourceController.java:97)
+		at hudson.model.Executor.run(Executor.java:429)
+Caused: hudson.remoting.RequestAbortedException
+	at hudson.remoting.Request.abort(Request.java:340)
+	at hudson.remoting.Channel.terminate(Channel.java:1040)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:94)
+Finished: FAILURE

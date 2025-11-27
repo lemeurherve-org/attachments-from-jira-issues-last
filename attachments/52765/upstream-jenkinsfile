@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+    stages {
+        stage('Stage') {
+            steps {
+                triggerRemoteJob job: 'https://[redacted]/job/downstream',
+                    pollInterval: 2,
+                    enhancedLogging: true,
+                    abortTriggeredJob: true
+            }
+        }
+    }
+}

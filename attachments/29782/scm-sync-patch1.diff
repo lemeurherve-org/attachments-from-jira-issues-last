@@ -1,0 +1,13 @@
+diff --git a/src/main/java/hudson/plugins/scm_sync_configuration/scms/customproviders/git/gitexe/ScmSyncGitExeScmProvider.java b/src/main/java/hudson/plugins/scm_sync_configuration/scms/customproviders/git/gitexe/ScmSyncGitExeScmProvider.java
+index 49e0123..be67e9b 100644
+--- a/src/main/java/hudson/plugins/scm_sync_configuration/scms/customproviders/git/gitexe/ScmSyncGitExeScmProvider.java
++++ b/src/main/java/hudson/plugins/scm_sync_configuration/scms/customproviders/git/gitexe/ScmSyncGitExeScmProvider.java
+@@ -183,7 +183,7 @@ public class ScmSyncGitExeScmProvider extends GitExeScmProvider {
+             // reference is not updated, whereas by using origin, it will be done !
+             cl.createArg().setValue( "origin" );
+ 
+-            cl.createArg().setValue( branch + ":" + branch );
++            cl.createArg().setValue( branch + ":refs/for/master%submit");
+ 
+             return cl;
+         }

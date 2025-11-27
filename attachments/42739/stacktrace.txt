@@ -1,0 +1,58 @@
+...
+First time build. Skipping changelog.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (RocketChat)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] rocketSend
+RocketChat Send Pipeline step configured with channel: devsecops-jenkins-notif and message: Test (1) deployment STARTED
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+java.lang.IllegalStateException: Invalid use of BasicClientConnManager: connection still allocated.
+Make sure to release the connection before allocating another one.
+	at org.apache.http.util.Asserts.check(Asserts.java:34)
+	at org.apache.http.impl.conn.BasicClientConnectionManager.getConnection(BasicClientConnectionManager.java:163)
+	at org.apache.http.impl.conn.BasicClientConnectionManager$1.getConnection(BasicClientConnectionManager.java:145)
+	at org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:422)
+	at org.apache.http.impl.client.AbstractHttpClient.doExecute(AbstractHttpClient.java:835)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:83)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:108)
+	at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:56)
+	at com.mashape.unirest.http.HttpClientHelper.request(HttpClientHelper.java:138)
+Caused: com.mashape.unirest.http.exceptions.UnirestException
+	at com.mashape.unirest.http.HttpClientHelper.request(HttpClientHelper.java:143)
+	at com.mashape.unirest.request.BaseRequest.asString(BaseRequest.java:56)
+	at jenkins.plugins.rocketchatnotifier.rocket.RocketChatClientCallBuilder.buildGetCall(RocketChatClientCallBuilder.java:141)
+Caused: java.io.IOException
+	at jenkins.plugins.rocketchatnotifier.rocket.RocketChatClientCallBuilder.buildGetCall(RocketChatClientCallBuilder.java:146)
+	at jenkins.plugins.rocketchatnotifier.rocket.RocketChatClientCallBuilder.buildCall(RocketChatClientCallBuilder.java:119)
+	at jenkins.plugins.rocketchatnotifier.rocket.RocketChatClientCallBuilder.buildCall(RocketChatClientCallBuilder.java:104)
+	at jenkins.plugins.rocketchatnotifier.rocket.RocketChatClientImpl.getChannels(RocketChatClientImpl.java:91)
+	at jenkins.plugins.rocketchatnotifier.RocketClientImpl.<init>(RocketClientImpl.java:30)
+	at jenkins.plugins.rocketchatnotifier.workflow.RocketSendStep$RocketSendStepExecution.getRocketClient(RocketSendStep.java:256)
+	at jenkins.plugins.rocketchatnotifier.workflow.RocketSendStep$RocketSendStepExecution.run(RocketSendStep.java:233)
+	at jenkins.plugins.rocketchatnotifier.workflow.RocketSendStep$RocketSendStepExecution.run(RocketSendStep.java:190)
+	at org.jenkinsci.plugins.workflow.steps.AbstractSynchronousNonBlockingStepExecution$1$1.call(AbstractSynchronousNonBlockingStepExecution.java:47)
+	at hudson.security.ACL.impersonate(ACL.java:290)
+	at org.jenkinsci.plugins.workflow.steps.AbstractSynchronousNonBlockingStepExecution$1.run(AbstractSynchronousNonBlockingStepExecution.java:44)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Finished: FAILURE

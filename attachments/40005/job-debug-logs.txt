@@ -1,0 +1,36 @@
+Oct 12, 2017 4:44:57 PM INFO org.csanchez.jenkins.plugins.kubernetes.ProvisioningCallback call
+Waiting for Pod to be scheduled (0/100): my-pod-0n5h4-lcg0h
+Oct 12, 2017 4:45:01 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesComputer
+ Computer KubernetesComputer name: my-pod-0n5h4-lcg0h slave: KubernetesSlave name: my-pod-0n5h4-lcg0h taskAccepted
+Oct 12, 2017 4:45:01 PM FINE org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerStepExecution
+Starting container step.
+Oct 12, 2017 4:45:01 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Building connection to Kubernetes CI URL https://kubernetes.default.svc.cluster.local
+Oct 12, 2017 4:45:01 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesFactoryAdapter
+Creating Kubernetes client: KubernetesFactoryAdapter [serviceAddress=https://kubernetes.default.svc.cluster.local, namespace=jenkins, caCertData=-----BEGIN CERTIFICATE-----
+........
+-----END CERTIFICATE-----
+, credentials=org.csanchez.jenkins.plugins.kubernetes.ServiceAccountCredential@f6f78752, skipTlsVerify=true, connectTimeout=0, readTimeout=0]
+Oct 12, 2017 4:45:01 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Connected to Kubernetes CI URL https://kubernetes.default.svc.cluster.local
+Oct 12, 2017 4:45:02 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator
+Executing shell script inside container [kubectl-cmd] of pod [my-pod-0n5h4-lcg0h]
+Oct 12, 2017 4:45:02 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator
+Executing command: "nohup" "sh" "-c" "echo \$\$ > '/home/jenkins/workspace/kubectl-test@tmp/durable-0449098e/pid'; jsc=durable-9e31327348f13dcf415c16805878a39d; JENKINS_SERVER_COOKIE=\$jsc '/home/jenkins/workspace/kubectl-test@tmp/durable-0449098e/script.sh' > '/home/jenkins/workspace/kubectl-test@tmp/durable-0449098e/jenkins-log.txt' 2>&1; echo \$? > '/home/jenkins/workspace/kubectl-test@tmp/durable-0449098e/jenkins-result.txt'" 
+printf "EXITCODE %3d" $?; exit
+
+Oct 12, 2017 4:45:02 PM FINEST org.csanchez.jenkins.plugins.kubernetes.pipeline.ContainerExecDecorator
+onClose : java.util.concurrent.CountDownLatch@6dcd9afc[Count = 0]
+Oct 12, 2017 4:45:03 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Building connection to Kubernetes CI URL https://kubernetes.default.svc.cluster.local
+Oct 12, 2017 4:45:03 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesFactoryAdapter
+Creating Kubernetes client: KubernetesFactoryAdapter [serviceAddress=https://kubernetes.default.svc.cluster.local, namespace=jenkins, caCertData=-----BEGIN CERTIFICATE-----
+.......
+-----END CERTIFICATE-----
+, credentials=org.csanchez.jenkins.plugins.kubernetes.ServiceAccountCredential@f6f78752, skipTlsVerify=true, connectTimeout=0, readTimeout=0]
+Oct 12, 2017 4:45:03 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Connected to Kubernetes CI URL https://kubernetes.default.svc.cluster.local
+Oct 12, 2017 4:45:17 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesComputer
+ Computer KubernetesComputer name: my-pod-0n5h4-lcg0h slave: KubernetesSlave name: my-pod-0n5h4-lcg0h taskCompleted
+Oct 12, 2017 4:45:17 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesSlave _terminate
+Terminating Kubernetes instance for agent my-pod-0n5h4-lcg0h

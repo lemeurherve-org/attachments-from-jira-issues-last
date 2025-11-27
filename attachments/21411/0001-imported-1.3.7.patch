@@ -1,0 +1,537 @@
+From 72f2b52945850719e3baf0e55847dd90eb41ed6d Mon Sep 17 00:00:00 2001
+From: Dominik Stadler <dominik.stadler@gmx.at>
+Date: Sun, 25 Dec 2011 09:56:33 +0100
+Subject: [PATCH 1/4] imported 1.3.7
+
+---
+ CHANGES.txt                                        |    8 +++++
+ README.txt                                         |    3 ++
+ build.gradle                                       |    4 ++-
+ svnkit-cli/build.gradle                            |   12 +++++++
+ svnkit-distribution/build.gradle                   |    3 ++
+ svnkit-test/build.gradle                           |    6 +++-
+ .../svn/core/internal/io/dav/DAVConnection.java    |    5 ++-
+ .../svn/core/internal/io/dav/DAVRepository.java    |    2 +-
+ .../core/internal/io/dav/http/HTTPConnection.java  |    3 +-
+ .../svn/core/internal/io/fs/FSRepository.java      |    1 +
+ .../core/internal/io/svn/SVNRepositoryImpl.java    |   34 ++++++++++---------
+ .../svn/core/internal/io/svn/SVNSSHConnector2.java |    2 +-
+ .../svn/core/internal/util/SVNSocketFactory.java   |   22 ++++++++++++-
+ .../org/tmatesoft/svn/core/io/SVNRepository.java   |   27 ++++++++++++++-
+ .../org/tmatesoft/svn/core/wc/SVNUpdateClient.java |   26 ++++++++-------
+ .../main/java/org/tmatesoft/svn/util/Version.java  |    4 +-
+ 16 files changed, 123 insertions(+), 39 deletions(-)
+
+diff --git a/CHANGES.txt b/CHANGES.txt
+index 810af92..9974bb1 100644
+--- a/CHANGES.txt
++++ b/CHANGES.txt
+@@ -1,3 +1,11 @@
++== version 1.3.7 ==
++
+++ 1.7 Subversion servers compatibility issues fixed.
+++ Export operation failed on missing directories, fixed.
++
++* For new 1.7 Subversion working copy format support 
++  please use SVNKit 1.7.0-alpha version.
++
+ == version 1.3.6.1 ==
+ 
+ + OSGi bundle exports JavaHL API package.
+diff --git a/README.txt b/README.txt
+index 2fc91b9..a176132 100644
+--- a/README.txt
++++ b/README.txt
+@@ -28,6 +28,9 @@ available with the command line Subversion client.
+ 
+ This version of SVNKit supports all Subversion 1.6.17 features and supports older Subversion repositories.
+ 
++This version of SVNKit supports Subversion 1.7.0 and newer servers, but DOES NOT support new Subversion 1.7
++working copy format. New Subversion 1.7 working copy format is supported in SVNKit 1.7 or newer versions. 
++
+ 4. RESOURCES
+ 
+ SVNKit Web Site: http://svnkit.com/
+diff --git a/build.gradle b/build.gradle
+index 38dc27c..f7726e0 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -1,5 +1,5 @@
+ group = 'org.tmatesoft.svnkit'
+-version = '1.3.6.v1'
++version = '1.3.7'
+ release = true
+ target = '1.4'
+ compatibleSvnVersion = '1.6.17'
+@@ -113,6 +113,7 @@ project(':svnkit-distribution') {
+         binaries
+         sources
+         scripts
++        conf
+         osgi
+     }
+ 
+@@ -126,6 +127,7 @@ project(':svnkit-distribution') {
+         sources project(path: ':svnkit-javahl16', configuration: 'sources')
+ 
+         scripts project(path: ':svnkit-cli', configuration: 'scripts')
++        conf project(path: ':svnkit-cli', configuration: 'conf')
+ 
+         osgi project(path: ':svnkit-osgi', configuration: 'archives')
+         osgi 'com.trilead:trilead-ssh2-osgi:1.0.0-build214'
+diff --git a/svnkit-cli/build.gradle b/svnkit-cli/build.gradle
+index 10d4a12..343601c 100644
+--- a/svnkit-cli/build.gradle
++++ b/svnkit-cli/build.gradle
+@@ -1,5 +1,6 @@
+ configurations {
+     scripts
++    conf
+ }
+ 
+ packageName = 'org.tmatesoft.svn.cli'
+@@ -15,6 +16,8 @@ jar << {
+     
+     File scriptsDir = new File(buildDir, 'scripts')
+     scriptsDir.mkdirs()
++    File confDir = new File(buildDir, 'conf')
++    confDir.mkdirs()
+     
+     def classpath = []
+     configurations.compile.files.each {
+@@ -55,7 +58,16 @@ jar << {
+             it = expandClasspath(it, classpath)
+         }
+     }
++    copy {
++        from file("src/main/conf/logging.properties")
++        into confDir
++        eachFile {
++           it.name = it.name + '.disabled'
++        }
++    }
+ 
+     configurations.scripts.addArtifact(new
+         org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact("svn-cli-scripts", "dir", "dir", null, new  Date(), scriptsDir))
++    configurations.conf.addArtifact(new
++        org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact("svn-cli-conf", "dir", "dir", null, new  Date(), confDir))
+ }
+\ No newline at end of file
+diff --git a/svnkit-distribution/build.gradle b/svnkit-distribution/build.gradle
+index 211d611..06c431f 100644
+--- a/svnkit-distribution/build.gradle
++++ b/svnkit-distribution/build.gradle
+@@ -13,6 +13,9 @@ task buildAll << {
+         into('src') {
+             from configurations.sources.files
+         }
++        into('conf') {
++            from configurations.conf.files
++        }
+         into('licenses') {
+             from file('src/main/licenses')
+         }
+diff --git a/svnkit-test/build.gradle b/svnkit-test/build.gradle
+index b23f433..b93c9dc 100644
+--- a/svnkit-test/build.gradle
++++ b/svnkit-test/build.gradle
+@@ -4,7 +4,11 @@ configurations {
+ }
+ dependencies {
+     pythonTests16 'org.tigris.subversion:svn-python-tests:1.6.18-SNAPSHOT@tgz'
+-    svnBinaries16 'org.tigris.subversion:svn-binaries:1.6.18-SNAPSHOT@tgz'
++    if (project.hasProperty('svn17binaries')) {
++        svnBinaries16 'org.apache.subversion:svn-binaries:1.7.0-SNAPSHOT@tgz'
++    } else {
++        svnBinaries16 'org.tigris.subversion:svn-binaries:1.6.18-SNAPSHOT@tgz'
++    }
+ }
+ 
+ sourceSets {
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/DAVConnection.java b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/DAVConnection.java
+index 2edd9da..f6815ac 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/DAVConnection.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/DAVConnection.java
+@@ -201,7 +201,10 @@ public class DAVConnection {
+             if (status.getError() != null) {
+                 SVNErrorManager.error(status.getError(), SVNLogType.NETWORK);
+             }
+-            String userName = httpConnection.getLastValidCredentials() != null ? httpConnection.getLastValidCredentials().getUserName() : null; 
++            String userName = status.getHeader().getFirstHeaderValue(HTTPHeader.LOCK_OWNER_HEADER);
++            if (userName == null) {
++                userName = httpConnection.getLastValidCredentials() != null ? httpConnection.getLastValidCredentials().getUserName() : null;
++            }
+             String created = status.getHeader().getFirstHeaderValue(HTTPHeader.CREATION_DATE_HEADER);
+             if (userName == null || created == null) {
+                 SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.RA_DAV_MALFORMED_DATA, "Incomplete lock data returned");
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/DAVRepository.java b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/DAVRepository.java
+index 1e0f0bd..a9d4b27 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/DAVRepository.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/DAVRepository.java
+@@ -1217,7 +1217,7 @@ public class DAVRepository extends SVNRepository {
+         }
+         String[] repositoryPaths = new String[paths.length];
+         for (int i = 0; i < paths.length; i++) {
+-            repositoryPaths[i] = getRepositoryPath(paths[i]);
++            repositoryPaths[i] = paths[i];
+         }
+         StringBuffer request = DAVMergeInfoHandler.generateMergeInfoRequest(null, revision, repositoryPaths, inherit, includeDescendants);
+         DAVMergeInfoHandler handler = new DAVMergeInfoHandler();
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/http/HTTPConnection.java b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/http/HTTPConnection.java
+index 73372d9..3e6a817 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/http/HTTPConnection.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/dav/http/HTTPConnection.java
+@@ -647,7 +647,8 @@ class HTTPConnection implements IHTTPConnection {
+     }
+ 
+     private boolean isClearCredentialsOnClose(HTTPAuthentication auth) {
+-        return !(auth instanceof HTTPBasicAuthentication || auth instanceof HTTPDigestAuthentication);
++        return !(auth instanceof HTTPBasicAuthentication || auth instanceof HTTPDigestAuthentication 
++                || auth instanceof HTTPNegotiateAuthentication);
+     }
+ 
+ 	private HTTPSSLKeyManager createKeyManager() {
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/fs/FSRepository.java b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/fs/FSRepository.java
+index 5707f4e..c249b5c 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/fs/FSRepository.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/fs/FSRepository.java
+@@ -731,6 +731,7 @@ public class FSRepository extends SVNRepository implements ISVNReporter {
+     protected long getDeletedRevisionImpl(String path, long pegRevision, long endRevision) throws SVNException {
+         try {
+             openRepository();
++            path = getRepositoryPath(path);
+             return myFSFS.getDeletedRevision(path, pegRevision, endRevision);
+         } finally {
+             closeRepository();
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/svn/SVNRepositoryImpl.java b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/svn/SVNRepositoryImpl.java
+index 97956aa..adeb291 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/svn/SVNRepositoryImpl.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/svn/SVNRepositoryImpl.java
+@@ -241,7 +241,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+     public SVNNodeKind checkPath(String path, long revision) throws SVNException {
+         try {
+             openConnection();
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             Object[] buffer = new Object[]{"check-path", path, getRevisionObject(revision)};
+             write("(w(s(n)))", buffer);
+             authenticate();
+@@ -263,7 +263,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+         int count = 0;
+         try {
+             openConnection();
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             Object[] buffer = new Object[]{"get-locations", path, getRevisionObject(pegRevision), revisions};
+             write("(w(sn(*n)))", buffer);
+             authenticate();
+@@ -303,7 +303,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+         long count = 0;
+         try {
+             openConnection();
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             Object[] buffer = new Object[] { "get-location-segments", path, getRevisionObject(pegRevision), 
+                     getRevisionObject(startRevision), getRevisionObject(endRevision) };
+             write("(w(s(n)(n)(n)))", buffer);
+@@ -351,7 +351,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+         Long rev = revision > 0 ? new Long(revision) : null;
+         try {
+             openConnection();
+-            Object[] buffer = new Object[]{"get-file", getRepositoryPath(path), rev,
++            Object[] buffer = new Object[]{"get-file", getLocationRelativePath(path), rev,
+                     Boolean.valueOf(properties != null), Boolean.valueOf(contents != null)};
+             write("(w(s(n)ww))", buffer);
+             authenticate();
+@@ -420,7 +420,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+ 
+             String fullPath = getFullPath(path);
+             final SVNURL url = getLocation().setPath(fullPath, false);
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+ 
+             List individualProps = new LinkedList();
+             if ((entryFields & SVNDirEntry.DIRENT_KIND) != 0) {
+@@ -474,7 +474,8 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+                     long createdRevision = SVNReader.getLong(direntProps, 4);
+                     Date createdDate = SVNDate.parseDate(SVNReader.getString(direntProps, 5));
+                     String lastAuthor = SVNReader.getString(direntProps, 6);
+-                    handler.handleDirEntry(new SVNDirEntry(url.appendPath(name, false), repositoryRoot, name, kind, size, hasProps, createdRevision, createdDate, lastAuthor));
++                    handler.handleDirEntry(new SVNDirEntry(url.appendPath(name, false), repositoryRoot, 
++                            "".equals(name) ? SVNPathUtil.tail(url.getPath()) : name, kind, size, hasProps, createdRevision, createdDate, lastAuthor));
+                 }
+             }
+         } catch (SVNException e) {
+@@ -503,7 +504,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+                     }
+                 }
+             };
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             // get parent
+             Object[] buffer = new Object[]{"stat", path, getRevisionObject(revision)};
+             write("(w(s(n)))", buffer);
+@@ -584,7 +585,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+         try {
+             openConnection();
+             Object[] buffer = new Object[]{"get-file-revs",
+-                    getRepositoryPath(path),
++                    getLocationRelativePath(path),
+                     srev, erev, Boolean.toString(includeMergedRevisions)};
+             write("(w(s(n)(n)w))", buffer);
+             authenticate();
+@@ -905,7 +906,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+     public SVNLock getLock(String path) throws SVNException {
+         try {
+             openConnection();
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             Object[] buffer = new Object[]{"get-lock", path};
+             write("(w(s))", buffer);
+             authenticate();
+@@ -924,7 +925,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+     public SVNLock[] getLocks(String path) throws SVNException {
+         try {
+             openConnection();
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             Object[] buffer = new Object[]{"get-locks", path};
+             write("(w(s))", buffer);
+             authenticate();
+@@ -959,7 +960,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+             write("(w((s)w(", buffer);
+             buffer = new Object[2];
+             for (Iterator paths = pathsToRevisions.keySet().iterator(); paths.hasNext();) {
+-                buffer[0] = paths.next();
++                buffer[0] = getLocationRelativePath((String) paths.next());
+                 buffer[1] = pathsToRevisions.get(buffer[0]);
+                 write("(s(n))", buffer);
+             }
+@@ -1035,7 +1036,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+         for (Iterator paths = pathsToRevisions.keySet().iterator(); paths.hasNext();) {
+             String path = (String) paths.next();
+             Long revision = (Long) pathsToRevisions.get(path);
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             Object[] buffer = new Object[]{"lock", path, comment, Boolean.valueOf(force), revision};
+             write("(w(s(s)w(n)))", buffer);
+             authenticate();
+@@ -1141,7 +1142,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+         for (Iterator paths = pathToTokens.keySet().iterator(); paths.hasNext();) {
+             String path = (String) paths.next();
+             String id = (String) pathToTokens.get(path);
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             if (id == null) {
+                 Object[] buffer = new Object[]{"get-lock", path};
+                 write("(w(s))", buffer);
+@@ -1185,7 +1186,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+             openConnection();
+             String fullPath = getFullPath(path);
+             SVNURL url = getLocation().setPath(fullPath, false);
+-            path = getRepositoryPath(path);
++            path = getLocationRelativePath(path);
+             Object[] buffer = new Object[]{"stat", path, getRevisionObject(revision)};
+             write("(w(s(n)))", buffer);
+             authenticate();
+@@ -1204,7 +1205,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+                 long createdRevision = SVNReader.getLong(values, 3);
+                 Date createdDate = SVNDate.parseDate(SVNReader.getString(values, 4));
+                 String lastAuthor = SVNReader.getString(values, 5);
+-                entry = new SVNDirEntry(url, repositoryRoot, SVNPathUtil.tail(path), kind, size, hasProperties, createdRevision, createdDate, lastAuthor);
++                entry = new SVNDirEntry(url, repositoryRoot, "".equals(path) ? SVNPathUtil.tail(getLocation().getPath()) : SVNPathUtil.tail(path), kind, size, hasProperties, createdRevision, createdDate, lastAuthor);
+             }
+             return entry;
+         } catch (SVNException e) {
+@@ -1326,7 +1327,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+         }
+         String[] fullPaths = new String[paths.length];
+         for (int i = 0; i < paths.length; i++) {
+-            fullPaths[i] = getRepositoryPath(paths[i]);
++            fullPaths[i] = getLocationRelativePath(paths[i]);
+         }
+         return fullPaths;
+     }
+@@ -1624,6 +1625,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
+     protected long getDeletedRevisionImpl(String path, long pegRevision, long endRevision) throws SVNException {
+         try {
+             openConnection();
++            path = getLocationRelativePath(path);
+             Long srev = getRevisionObject(pegRevision);
+             Long erev = getRevisionObject(endRevision);
+             Object[] buffer = new Object[] { "get-deleted-rev", path, srev, erev };
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/svn/SVNSSHConnector2.java b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/svn/SVNSSHConnector2.java
+index 6586fd4..dbbdecd 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/svn/SVNSSHConnector2.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/io/svn/SVNSSHConnector2.java
+@@ -92,7 +92,7 @@ public class SVNSSHConnector2 implements ISVNConnector {
+                     try {
+                         final ISVNSSHHostVerifier verifier = (ISVNSSHHostVerifier) (authManager instanceof ISVNSSHHostVerifier ? authManager : null);
+                         String host = repository.getLocation().getHost();
+-                        int port = repository.getLocation().getPort() > 0 ? repository.getLocation().getPort() : authentication.getPortNumber();
++                        int port = repository.getLocation().hasPort() ? repository.getLocation().getPort() : authentication.getPortNumber();
+                         if (port < 0) {
+                             port = 22;
+                         }
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/util/SVNSocketFactory.java b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/util/SVNSocketFactory.java
+index 399783d..f0f3110 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/internal/util/SVNSocketFactory.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/internal/util/SVNSocketFactory.java
+@@ -23,6 +23,8 @@ import java.security.KeyManagementException;
+ import java.security.NoSuchAlgorithmException;
+ import java.security.cert.CertificateException;
+ import java.security.cert.X509Certificate;
++import java.util.ArrayList;
++import java.util.Collection;
+ import java.util.StringTokenizer;
+ 
+ import javax.net.ssl.KeyManager;
+@@ -50,6 +52,7 @@ public class SVNSocketFactory {
+ 
+     private static boolean ourIsSocketStaleCheck = false;
+     private static int ourSocketReceiveBufferSize = 0; // default
++    private static String ourSSLProtocols = System.getProperty("svnkit.http.sslProtocols");
+ 
+     public static Socket createPlainSocket(String host, int port, int connectTimeout, int readTimeout, ISVNCanceller cancel) throws IOException, SVNCancelException {
+         InetAddress address = createAddres(host);
+@@ -230,7 +233,24 @@ public class SVNSocketFactory {
+             return null;
+         }
+         SSLSocket sslSocket = (SSLSocket) socket;
+-        String[] protocols = sslSocket.getSupportedProtocols();
++        if (ourSSLProtocols != null && "SSLv3".equals(ourSSLProtocols.trim())) {
++            sslSocket.setEnabledProtocols(new String[] {"SSLv3"});
++            return sslSocket;
++        }
++        String[] protocols = null;
++        
++        if (ourSSLProtocols != null) {
++            Collection userProtocols = new ArrayList();
++            for(StringTokenizer tokens = new StringTokenizer(ourSSLProtocols, ","); tokens.hasMoreTokens();) {
++                String userProtocol = tokens.nextToken().trim();
++                if (!"".equals(userProtocol)) {
++                    userProtocols.add(userProtocol);
++                }
++            }
++            protocols = (String[]) userProtocols.toArray(new String[userProtocols.size()]);
++        } else {
++            protocols = sslSocket.getSupportedProtocols();
++        }
+         String[] suites = sslSocket.getSupportedCipherSuites();
+         if (protocols != null && protocols.length > 0) {
+             sslSocket.setEnabledProtocols(protocols);
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/io/SVNRepository.java b/svnkit/src/main/java/org/tmatesoft/svn/core/io/SVNRepository.java
+index e153d26..d6bb833 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/io/SVNRepository.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/io/SVNRepository.java
+@@ -2738,8 +2738,8 @@ public abstract class SVNRepository {
+      * @since    1.3
+      */
+     public long getDeletedRevision(String path, long pegRevision, long endRevision) throws SVNException {
+-        path = getRepositoryPath(path);
+-        if ("/".equals(path)) {
++        String repositoryPath = getRepositoryPath(path);
++        if ("/".equals(repositoryPath)) {
+             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.UNKNOWN, "root path could not be deleted");
+             SVNErrorManager.error(err, SVNLogType.DEFAULT);
+         }
+@@ -2760,6 +2760,7 @@ public abstract class SVNRepository {
+         }
+         
+         try {
++            path = getLocationRelativePath(path);
+             return getDeletedRevisionImpl(path, pegRevision, endRevision);
+         } catch (SVNException svne) {
+             SVNErrorCode errCode = svne.getErrorMessage().getErrorCode();
+@@ -2897,6 +2898,28 @@ public abstract class SVNRepository {
+         }
+         return repositoryPath;
+     }
++
++    protected String getLocationRelativePath(String relativeOrAbsolutePath) throws SVNException {
++        if (relativeOrAbsolutePath == null) {
++            relativeOrAbsolutePath = "/";
++        }
++        if (relativeOrAbsolutePath.length() > 0 && relativeOrAbsolutePath.charAt(0) == '/') {
++            // get relative path if it is child or equal to location path
++            String locationPath = getLocation().getPath();
++            locationPath = locationPath.substring(getRepositoryRoot(true).getPath().length());
++            if (!locationPath.startsWith("/")) {
++                locationPath = "/" + locationPath;
++            }
++            if (relativeOrAbsolutePath.startsWith(locationPath + "/") || relativeOrAbsolutePath.equals(locationPath)) {
++                relativeOrAbsolutePath = relativeOrAbsolutePath.substring(locationPath.length());
++                if (relativeOrAbsolutePath.startsWith("/")) {
++                    relativeOrAbsolutePath = relativeOrAbsolutePath.substring(1);
++                }
++            }
++            return relativeOrAbsolutePath;
++        }
++        return relativeOrAbsolutePath;
++    }
+     
+     /**
+      * Resolves a path, relative either to the location to which this 
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/core/wc/SVNUpdateClient.java b/svnkit/src/main/java/org/tmatesoft/svn/core/wc/SVNUpdateClient.java
+index a3409c2..5a7992a 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/core/wc/SVNUpdateClient.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/core/wc/SVNUpdateClient.java
+@@ -1300,22 +1300,24 @@ public class SVNUpdateClient extends SVNBasicClient {
+                 SVNErrorManager.error(err, SVNLogType.WC);
+             }
+             // read entries
+-            for (Iterator ents = adminArea.entries(false); ents.hasNext();) {
+-                SVNEntry childEntry = (SVNEntry) ents.next();
+-                if (childEntry.isDirectory()) {
+-                    if (adminArea.getThisDirName().equals(childEntry.getName())) {
+-                        continue;
+-                    } else if (depth == SVNDepth.INFINITY) {
++            if (entry.isThisDir()) {
++                for (Iterator ents = adminArea.entries(false); ents.hasNext();) {
++                    SVNEntry childEntry = (SVNEntry) ents.next();
++                    if (childEntry.isDirectory()) {
++                        if (adminArea.getThisDirName().equals(childEntry.getName())) {
++                            continue;
++                        } else if (depth == SVNDepth.INFINITY) {
++                            File childTo = new File(to, childEntry.getName());
++                            File childFrom = new File(from, childEntry.getName());
++                            copyVersionedDir(childFrom, childTo, revision, eolStyle, force, depth);
++                        }
++                    } else if (childEntry.isFile()) {
+                         File childTo = new File(to, childEntry.getName());
+-                        File childFrom = new File(from, childEntry.getName());
+-                        copyVersionedDir(childFrom, childTo, revision, eolStyle, force, depth);
++                        copyVersionedFile(childTo, adminArea, childEntry.getName(), revision, eolStyle);
+                     }
+-                } else if (childEntry.isFile()) {
+-                    File childTo = new File(to, childEntry.getName());
+-                    copyVersionedFile(childTo, adminArea, childEntry.getName(), revision, eolStyle);
+                 }
+             }
+-            if (!isIgnoreExternals() && depth == SVNDepth.INFINITY && entry.getDepth() == SVNDepth.INFINITY) {
++            if (entry.isThisDir() && !isIgnoreExternals() && depth == SVNDepth.INFINITY && entry.getDepth() == SVNDepth.INFINITY) {
+                 SVNVersionedProperties properties = adminArea.getProperties(adminArea.getThisDirName());
+                 String externalsValue = properties.getStringPropertyValue(SVNProperty.EXTERNALS);
+                 if (externalsValue != null) {
+diff --git a/svnkit/src/main/java/org/tmatesoft/svn/util/Version.java b/svnkit/src/main/java/org/tmatesoft/svn/util/Version.java
+index 195d8bb..4093c3f 100644
+--- a/svnkit/src/main/java/org/tmatesoft/svn/util/Version.java
++++ b/svnkit/src/main/java/org/tmatesoft/svn/util/Version.java
+@@ -31,12 +31,12 @@ public class Version {
+     private static final String VERSION_MICRO_PROPERTY = "svnkit.version.micro";
+     private static final String VERSION_REVISION_PROPERTY = "svnkit.version.revision";
+ 
+-    private static final String VERSION_STRING_DEFAULT = "SVN/1.6.17 SVNKit/1.3.6 (http://svnkit.com/) rSNAPSHOT";
++    private static final String VERSION_STRING_DEFAULT = "SVN/1.6.17 SVNKit/1.3.7-SNAPSHOT (http://svnkit.com/) rSNAPSHOT";
+     private static final String SVN_VERSION_PROPERTY = "svnkit.svn.version";  
+     
+     private static final String VERSION_MAJOR_DEFAULT = "1";
+     private static final String VERSION_MINOR_DEFAULT = "3";
+-    private static final String VERSION_MICRO_DEFAULT = "6";
++    private static final String VERSION_MICRO_DEFAULT = "7";
+     private static final String VERSION_REVISION_DEFAULT = "SNAPSHOT";
+     private static final String SVN_VERSION_DEFAULT = "1.6.17";
+     private static String ourUserAgent;
+-- 
+1.7.1
+

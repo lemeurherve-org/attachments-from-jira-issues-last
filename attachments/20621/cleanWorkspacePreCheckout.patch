@@ -1,0 +1,86 @@
+diff --git a/src/main/java/hudson/plugins/release/ReleaseWrapper.java b/src/main/java/hudson/plugins/release/ReleaseWrapper.java
+index 22ec841..2e0563f 100644
+--- a/src/main/java/hudson/plugins/release/ReleaseWrapper.java
++++ b/src/main/java/hudson/plugins/release/ReleaseWrapper.java
+@@ -2,6 +2,7 @@ package hudson.plugins.release;
+ 
+ import hudson.EnvVars;
+ import hudson.Extension;
++import hudson.FilePath;
+ import hudson.Launcher;
+ import hudson.Util;
+ import hudson.maven.MavenModuleSet;
+@@ -61,6 +62,7 @@ public class ReleaseWrapper extends BuildWrapper {
+ 	
+ 	private String releaseVersionTemplate;
+     private boolean doNotKeepLog;
++    private boolean cleanWorkspace;
+ 	private List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
+     private List<Builder> preBuildSteps = new ArrayList<Builder>();
+     private List<Builder> postBuildSteps = new ArrayList<Builder>();
+@@ -132,6 +134,14 @@ public class ReleaseWrapper extends BuildWrapper {
+     public void setDoNotKeepLog(boolean doNotKeepLog) {
+         this.doNotKeepLog = doNotKeepLog;
+     }
++    
++    public boolean isCleanWorkspace() {
++        return cleanWorkspace;
++    }
++    
++    public void setCleanWorkspace(boolean v) {
++        this.cleanWorkspace = v;
++    }
+ 
+     public List<ParameterDefinition> getParameterDefinitions() {
+ 		return parameterDefinitions;
+@@ -191,6 +201,19 @@ public class ReleaseWrapper extends BuildWrapper {
+     }
+     
+     @Override
++    public void preCheckout(AbstractBuild build, Launcher launcher, BuildListener listener) {
++        final ReleaseBuildBadgeAction releaseBuildBadge = build.getAction(ReleaseBuildBadgeAction.class);
++        if (releaseBuildBadge != null) {
++	    	listener.getLogger().println("Cleaning workspace");
++	        try {
++	        	build.getWorkspace().deleteRecursive();
++			} catch (Exception e) {
++				e.printStackTrace();
++			}
++        }
++    }
++    
++    @Override
+     public Environment setUp(AbstractBuild build, final Launcher launcher, BuildListener listener) throws IOException,
+             InterruptedException {
+ 
+@@ -337,6 +360,7 @@ public class ReleaseWrapper extends BuildWrapper {
+             ReleaseWrapper instance = new ReleaseWrapper();
+             instance.releaseVersionTemplate = formData.getString("releaseVersionTemplate");
+             instance.doNotKeepLog = formData.getBoolean("doNotKeepLog");
++            instance.cleanWorkspace = formData.getBoolean("cleanWorkspace");
+             instance.parameterDefinitions = Descriptor.newInstancesFromHeteroList(req, formData, "parameters", ParameterDefinition.all());
+             instance.preBuildSteps = Descriptor.newInstancesFromHeteroList(req, formData, "preBuildSteps", Builder.all());
+             instance.postBuildSteps = Descriptor.newInstancesFromHeteroList(req, formData, "postBuildSteps", Builder.all());
+@@ -350,6 +374,7 @@ public class ReleaseWrapper extends BuildWrapper {
+             return FreeStyleProject.class.isInstance(item) || MavenModuleSet.class.isInstance(item);
+         }
+     }
++	
+ 
+     public class ReleaseAction implements Action, PermalinkProjectAction {
+         private AbstractProject project;
+diff --git a/src/main/resources/hudson/plugins/release/ReleaseWrapper/config.jelly b/src/main/resources/hudson/plugins/release/ReleaseWrapper/config.jelly
+index 689d2d2..225e350 100644
+--- a/src/main/resources/hudson/plugins/release/ReleaseWrapper/config.jelly
++++ b/src/main/resources/hudson/plugins/release/ReleaseWrapper/config.jelly
+@@ -5,6 +5,10 @@
+     <f:entry title="${%Release Version Template}" help="/plugin/release/help-releaseVersionTemplate.html">
+ 		<f:textbox field="releaseVersionTemplate" />
+ 	</f:entry>
++	
++	<f:entry title="${%Clean workspace before updating}">
++	  <f:checkbox name="cleanWorkspace" field="cleanWorkspace" />
++	</f:entry>
+ 
+     <f:entry title="${%Do not mark build as keep forever}" help="/plugin/release/help-doNotKeepLog.html">
+       <f:checkbox name="doNotKeepLog" field="doNotKeepLog" />

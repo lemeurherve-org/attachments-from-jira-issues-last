@@ -1,0 +1,458 @@
+Started by user p3d
+Replayed #126
+Loading library jenkins globals groovy pipeline utils@master
+ > /usr/bin/git rev-parse --is-inside-work-tree # timeout=10
+Setting origin to git@myhost:webinfr/jenkins-utils.git
+ > /usr/bin/git config remote.origin.url git@myhost:webinfr/jenkins-utils.git # timeout=10
+Fetching origin...
+Fetching upstream changes from origin
+ > /usr/bin/git --version # timeout=10
+using GIT_SSH to set credentials 
+ > /usr/bin/git fetch --tags --progress origin +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git rev-parse master^{commit} # timeout=10
+ > /usr/bin/git rev-parse origin/master^{commit} # timeout=10
+ > /usr/bin/git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > /usr/bin/git config remote.origin.url git@myhost:webinfr/jenkins-utils.git # timeout=10
+Fetching without tags
+Fetching upstream changes from git@myhost:webinfr/jenkins-utils.git
+ > /usr/bin/git --version # timeout=10
+using GIT_SSH to set credentials 
+ > /usr/bin/git fetch --no-tags --progress git@myhost:webinfr/jenkins-utils.git +refs/heads/*:refs/remotes/origin/*
+Checking out Revision c35f7cebdbaa694331a43e3c6864bc833e864192 (master)
+Commit message: "usa ftp installato"
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f c35f7cebdbaa694331a43e3c6864bc833e864192
+ > /usr/bin/git rev-list c35f7cebdbaa694331a43e3c6864bc833e864192 # timeout=10
+[Pipeline] node
+Running on mybuildhost in /home/jenkins/work/workspace/my-project
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Prepare)
+[Pipeline] deleteDir
+[Pipeline] checkout
+Cloning the remote Git repository
+Cloning repository git@myhost:my-folder/my-project.git
+ > /usr/bin/git init /home/jenkins/work/workspace/my-project # timeout=10
+Fetching upstream changes from git@myhost:my-folder/my-project.git
+ > /usr/bin/git --version # timeout=10
+using GIT_SSH to set credentials 
+ > /usr/bin/git fetch --tags --progress git@myhost:my-folder/my-project.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git config remote.origin.url git@myhost:my-folder/my-project.git # timeout=10
+ > /usr/bin/git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > /usr/bin/git config remote.origin.url git@myhost:my-folder/my-project.git # timeout=10
+Fetching upstream changes from git@myhost:my-folder/my-project.git
+using GIT_SSH to set credentials 
+ > /usr/bin/git fetch --tags --progress git@myhost:my-folder/my-project.git +refs/heads/*:refs/remotes/origin/*
+Seen branch in repository origin/master
+Seen branch in repository origin/stable/v1.0
+Seen branch in repository origin/validation
+Seen 3 remote branches
+ > /usr/bin/git tag -l # timeout=10
+ > /usr/bin/git rev-parse refs/tags/devstart^{commit} # timeout=10
+ > /usr/bin/git rev-parse refs/tags/v1.0^{commit} # timeout=10
+Checking out Revision 9ee9cc42eeba79aed1514212378b5e0bc628b772 (origin/master)
+Commit message: "ancora prova - disabilito produzione standalone.jar"
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f 9ee9cc42eeba79aed1514212378b5e0bc628b772
+ > /usr/bin/git rev-list 9ee9cc42eeba79aed1514212378b5e0bc628b772 # timeout=10
+ > /usr/bin/git remote # timeout=10
+ > /usr/bin/git submodule init # timeout=10
+ > /usr/bin/git submodule sync # timeout=10
+ > /usr/bin/git config --get remote.origin.url # timeout=10
+ > /usr/bin/git submodule init # timeout=10
+ > /usr/bin/git config -f .gitmodules --get-regexp ^submodule\.(.*)\.url # timeout=10
+ > /usr/bin/git config --get submodule.src/test/resources/cucumber.url # timeout=10
+ > /usr/bin/git config -f .gitmodules --get submodule.src/test/resources/cucumber.path # timeout=10
+ > /usr/bin/git submodule update --init --recursive src/test/resources/cucumber
+[Pipeline] sh
+[my-project] Running shell script
++ git describe --tags --dirty
+[Pipeline] echo
+v1.0-4-g9ee9cc4
+[Pipeline] readMavenPom
+[Pipeline] echo
+1.1-SNAPSHOT
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build maven)
+[Pipeline] withMaven
+[withMaven] Options: []
+[withMaven] Available options: 
+[withMaven] use JDK installation Build JDK
+[withMaven] use Maven installation 'Maven35'
+[Pipeline] {
+[Pipeline] sh
+[my-project] Running shell script
++ mvn --fail-at-end clean verify deploy
+----- withMaven Wrapper script -----
+Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5" 
+Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed in 8.0
+Apache Maven 3.5.0 (ff8f5e7444045639af65f6095c62210b5713f426; 2017-04-03T21:39:06+02:00)
+Maven home: /home/jenkins/work/tools/hudson.tasks.Maven_MavenInstallation/Maven35
+Java version: 1.8.0_121, vendor: Oracle Corporation
+Java home: /home/jenkins/work/tools/hudson.model.JDK/Build_JDK/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "2.6.32-642.15.1.el6.x86_64", arch: "amd64", family: "unix"
+[jenkins-maven-event-spy] INFO generate /home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5/maven-spy-20170904-105443-688.log ...
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building my-project 1.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ my-project ---
+[INFO] 
+[INFO] --- maven-toolchains-plugin:1.1:toolchain (default) @ my-project ---
+[INFO] Required toolchain: jdk [ vendor='sun' version='1.7' ]
+[INFO] Found matching toolchain for type jdk: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent (pre-unit-test) @ my-project ---
+[INFO] surefireJacocoAgent set to -javaagent:/home/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ my-project ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 68 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.5.1:compile (default-compile) @ my-project ---
+[INFO] Toolchain in compiler-plugin: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] Compiling 116 source files to /home/jenkins/work/workspace/my-project/target/classes
+[WARNING] Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5" 
+/home/jenkins/work/workspace/my-project/src/main/java/my/package/validation/xsd/parser/XmlSchemaFacetParser.java:[3,58] RegularExpression is internal proprietary API and may be removed in a future release
+[WARNING] /home/jenkins/work/workspace/my-project/src/main/java/my/package/validation/xsd/parser/XmlSchemaFacetParser.java:[3,58] RegularExpression is internal proprietary API and may be removed in a future release
+[WARNING] /home/jenkins/work/workspace/my-project/src/main/java/my/package/validation/xsd/parser/XmlSchemaFacetParser.java:[3,58] RegularExpression is internal proprietary API and may be removed in a future release
+[WARNING] /home/jenkins/work/workspace/my-project/src/main/java/my/package/validation/xsd/parser/XmlSchemaFacetParser.java:[3,58] RegularExpression is internal proprietary API and may be removed in a future release
+[WARNING] /home/jenkins/work/workspace/my-project/src/main/java/my/package/validation/xsd/parser/XmlSchemaFacetParser.java:[67,18] RegularExpression is internal proprietary API and may be removed in a future release
+[WARNING] /home/jenkins/work/workspace/my-project/src/main/java/my/package/validation/xsd/parser/XmlSchemaFacetParser.java:[67,48] RegularExpression is internal proprietary API and may be removed in a future release
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ my-project ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 14 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.5.1:testCompile (default-testCompile) @ my-project ---
+[INFO] Toolchain in compiler-plugin: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] Compiling 47 source files to /home/jenkins/work/workspace/my-project/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.19.1:test (default-test) @ my-project ---
+[INFO] Toolchain in maven-surefire-plugin: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5" 
+Running my.package.validation.MyProjectValidationErrorCollectorTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.504 sec - in my.package.validation.MyProjectValidationErrorCollectorTest
+Running my.package.validation.xsd.step.MaxInclusiveDataSetValidationStepTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 sec - in my.package.validation.xsd.step.MaxInclusiveDataSetValidationStepTest
+Running my.package.validation.xsd.step.MinExclusiveDataSetValidationStepTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec - in my.package.validation.xsd.step.MinExclusiveDataSetValidationStepTest
+Running my.package.validation.xsd.step.MinLengthDataSetValidationStepTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec - in my.package.validation.xsd.step.MinLengthDataSetValidationStepTest
+Running my.package.validation.xsd.step.MaxLengthDataSetValidationStepTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec - in my.package.validation.xsd.step.MaxLengthDataSetValidationStepTest
+Running my.package.validation.xsd.step.MaxExclusiveDataSetValidationStepTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec - in my.package.validation.xsd.step.MaxExclusiveDataSetValidationStepTest
+Running my.package.validation.xsd.step.WhiteSpaceDataSetValidationStepTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec - in my.package.validation.xsd.step.WhiteSpaceDataSetValidationStepTest
+Running my.package.validation.xsd.step.LengthDataSetValidationStepTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec - in my.package.validation.xsd.step.LengthDataSetValidationStepTest
+Running my.package.validation.xsd.step.MinInclusiveDataSetValidationStepTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec - in my.package.validation.xsd.step.MinInclusiveDataSetValidationStepTest
+Running my.package.validation.xsd.step.FractionDigitsDataSetValidationStepTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec - in my.package.validation.xsd.step.FractionDigitsDataSetValidationStepTest
+Running my.package.validation.xsd.type.factory.DoubleSimpleValueFactoryTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.118 sec - in my.package.validation.xsd.type.factory.DoubleSimpleValueFactoryTest
+Running my.package.validation.xsd.type.factory.FloatSimpleValueFactoryTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec - in my.package.validation.xsd.type.factory.FloatSimpleValueFactoryTest
+Running my.package.validation.SAXParseExceptionMessageGeneralizerTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.306 sec - in my.package.validation.SAXParseExceptionMessageGeneralizerTest
+Running my.package.validation.NonRepeatingErrorHandlerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec - in my.package.validation.NonRepeatingErrorHandlerTest
+Running my.package.buba.BubaMetaTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.373 sec - in my.package.buba.BubaMetaTest
+Running my.package.buba.BUBAConstantsTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec - in my.package.buba.BUBAConstantsTest
+Running my.package.StringInmindRecordTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.117 sec - in my.package.StringInmindRecordTest
+Running my.package.guida.FlussoGuidaCSVReaderTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.064 sec - in my.package.guida.FlussoGuidaCSVReaderTest
+Running my.package.SDMXMyProjectInstanceHeaderWriterTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 sec - in my.package.SDMXMyProjectInstanceHeaderWriterTest
+Running my.package.InmindMetaCheckerTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 sec - in my.package.InmindMetaCheckerTest
+Running my.package.SDMXMyProjectRecordWriterTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.078 sec - in my.package.SDMXMyProjectRecordWriterTest
+Running my.package.FormatoInmindParserTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 sec - in my.package.FormatoInmindParserTest
+Running my.package.bankitalia.BankitaliaConstantsTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec - in my.package.bankitalia.BankitaliaConstantsTest
+Running my.package.common.ByteStreamCopierTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.051 sec - in my.package.common.ByteStreamCopierTest
+Running my.package.common.StringAttributeContainerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 sec - in my.package.common.StringAttributeContainerTest
+Running my.package.common.PrettyXMLStreamWriterTest
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec - in my.package.common.PrettyXMLStreamWriterTest
+Running my.package.common.SDMXSchemaResourceResolverTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec - in my.package.common.SDMXSchemaResourceResolverTest
+Running my.package.XMLVariabileInmindParserTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec - in my.package.XMLVariabileInmindParserTest
+Running my.package.SDMXMyProjectTabWriterTest
+10:54:58.546 [main] INFO  my.package.SDMXMyProjectTabWriter - Empty dataset, write skipped
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 sec - in my.package.SDMXMyProjectTabWriterTest
+Running my.package.mappingrules.AliasRuleTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 sec - in my.package.mappingrules.AliasRuleTest
+Running my.package.mappingrules.ConcatRuleTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec - in my.package.mappingrules.ConcatRuleTest
+Running my.package.mappingrules.XMLDateRuleTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 sec - in my.package.mappingrules.XMLDateRuleTest
+Running my.package.mappingrules.VariabileRuleTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec - in my.package.mappingrules.VariabileRuleTest
+
+Results :
+
+Tests run: 84, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:report (post-unit-test) @ my-project ---
+[INFO] Loading execution data file /home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco.exec
+[INFO] Analyzed bundle 'my-project' with 132 classes
+[INFO] 
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ my-project ---
+[INFO] Building jar: /home/jenkins/work/workspace/my-project/target/my-project-1.1-SNAPSHOT.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:2.4:jar (attach-sources) > generate-sources @ my-project >>>
+[INFO] 
+[INFO] --- maven-toolchains-plugin:1.1:toolchain (default) @ my-project ---
+[INFO] Required toolchain: jdk [ vendor='sun' version='1.7' ]
+[INFO] Found matching toolchain for type jdk: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent (pre-unit-test) @ my-project ---
+[INFO] surefireJacocoAgent set to -javaagent:/home/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:2.4:jar (attach-sources) < generate-sources @ my-project <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:2.4:jar (attach-sources) @ my-project ---
+[INFO] Building jar: /home/jenkins/work/workspace/my-project/target/my-project-1.1-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent-integration (pre-integration-test) @ my-project ---
+[INFO] failsafeJacocoAgent set to -javaagent:/home/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco-it.exec
+[INFO] 
+[INFO] --- maven-failsafe-plugin:2.19.1:integration-test (default) @ my-project ---
+[INFO] Toolchain in maven-failsafe-plugin: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5" 
+Running my.package.validation.SDMXValidatorFactoryIT
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.758 sec - in my.package.validation.SDMXValidatorFactoryIT
+Running my.package.validation.MyProjectValidatorIT
+Tests run: 34, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.077 sec - in my.package.validation.MyProjectValidatorIT
+Running my.package.FormatoInmindParserIT
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 sec - in my.package.FormatoInmindParserIT
+Running RunCucumberIT
+
+28 Scenarios (28 passed)
+167 Steps (167 passed)
+0m3.998s
+
+Tests run: 195, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.414 sec - in RunCucumberIT
+
+Results :
+
+Tests run: 237, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-failsafe-plugin:2.19.1:verify (default) @ my-project ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:report-integration (post-integration-test) @ my-project ---
+[INFO] Loading execution data file /home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco-it.exec
+[INFO] Analyzed bundle 'my-project' with 132 classes
+[INFO] 
+[INFO] --- maven-toolchains-plugin:1.1:toolchain (default) @ my-project ---
+[INFO] Required toolchain: jdk [ vendor='sun' version='1.7' ]
+[INFO] Found matching toolchain for type jdk: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent (pre-unit-test) @ my-project ---
+[INFO] surefireJacocoAgent set to -javaagent:/home/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ my-project ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 68 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.5.1:compile (default-compile) @ my-project ---
+[INFO] Toolchain in compiler-plugin: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ my-project ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 14 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.5.1:testCompile (default-testCompile) @ my-project ---
+[INFO] Toolchain in compiler-plugin: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.19.1:test (default-test) @ my-project ---
+[INFO] Toolchain in maven-surefire-plugin: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] Skipping execution of surefire because it has already been run for this configuration
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:report (post-unit-test) @ my-project ---
+[INFO] Loading execution data file /home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco.exec
+[INFO] Analyzed bundle 'my-project' with 132 classes
+[INFO] 
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ my-project ---
+[INFO] 
+[INFO] >>> maven-source-plugin:2.4:jar (attach-sources) > generate-sources @ my-project >>>
+[INFO] 
+[INFO] --- maven-toolchains-plugin:1.1:toolchain (default) @ my-project ---
+[INFO] Required toolchain: jdk [ vendor='sun' version='1.7' ]
+[INFO] Found matching toolchain for type jdk: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent (pre-unit-test) @ my-project ---
+[INFO] surefireJacocoAgent set to -javaagent:/home/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:2.4:jar (attach-sources) < generate-sources @ my-project <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:2.4:jar (attach-sources) @ my-project ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:prepare-agent-integration (pre-integration-test) @ my-project ---
+[INFO] failsafeJacocoAgent set to -javaagent:/home/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.7.9/org.jacoco.agent-0.7.9-runtime.jar=destfile=/home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco-it.exec
+[INFO] 
+[INFO] --- maven-failsafe-plugin:2.19.1:integration-test (default) @ my-project ---
+[INFO] Toolchain in maven-failsafe-plugin: JDK[/home/jenkins/work/tools/hudson.model.JDK/JDK7]
+[INFO] Skipping execution of surefire because it has already been run for this configuration
+[INFO] 
+[INFO] --- maven-failsafe-plugin:2.19.1:verify (default) @ my-project ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.9:report-integration (post-integration-test) @ my-project ---
+[INFO] Loading execution data file /home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco-it.exec
+[INFO] Analyzed bundle 'my-project' with 132 classes
+[INFO] 
+[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ my-project ---
+[INFO] Installing /home/jenkins/work/workspace/my-project/target/my-project-1.1-SNAPSHOT.jar to /home/jenkins/.m2/repository/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-SNAPSHOT.jar
+[INFO] Installing /home/jenkins/work/workspace/my-project/pom.xml to /home/jenkins/.m2/repository/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-SNAPSHOT.pom
+[INFO] Installing /home/jenkins/work/workspace/my-project/target/my-project-1.1-SNAPSHOT-sources.jar to /home/jenkins/.m2/repository/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-SNAPSHOT-sources.jar
+[INFO] Installing /home/jenkins/work/workspace/my-project/target/my-project-1.1-SNAPSHOT-sources.jar to /home/jenkins/.m2/repository/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.7:deploy (default-deploy) @ my-project ---
+[INFO] Downloading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/maven-metadata.xml
+[INFO] Downloaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/maven-metadata.xml (1.2 kB at 11 kB/s)
+[INFO] Uploading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-20170904.085522-6.jar
+[INFO] Uploaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-20170904.085522-6.jar (449 kB at 3.7 MB/s)
+[INFO] Uploading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-20170904.085522-6.pom
+[INFO] Uploaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-20170904.085522-6.pom (12 kB at 252 kB/s)
+[INFO] Downloading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/maven-metadata.xml
+[INFO] Downloaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/maven-metadata.xml (423 B at 18 kB/s)
+[INFO] Uploading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/maven-metadata.xml
+[INFO] Uploaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/maven-metadata.xml (1.2 kB at 24 kB/s)
+[INFO] Uploading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/maven-metadata.xml
+[INFO] Uploaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/maven-metadata.xml (423 B at 9.2 kB/s)
+[INFO] Uploading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-20170904.085522-6-sources.jar
+[INFO] Uploaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-20170904.085522-6-sources.jar (339 kB at 5.1 MB/s)
+[INFO] Uploading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/maven-metadata.xml
+[INFO] Uploaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/maven-metadata.xml (1.2 kB at 29 kB/s)
+[INFO] Uploading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-20170904.085522-6-sources.jar
+[INFO] Uploaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/my-project-1.1-20170904.085522-6-sources.jar (339 kB at 4.1 MB/s)
+[INFO] Uploading: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/maven-metadata.xml
+[INFO] Uploaded: http://myhost:8081/nexus/content/repositories/snapshots/my/package/my-project/1.1-SNAPSHOT/maven-metadata.xml (1.2 kB at 23 kB/s)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 39.012 s
+[INFO] Finished at: 2017-09-04T10:55:22+02:00
+[INFO] Final Memory: 26M/333M
+[INFO] ------------------------------------------------------------------------
+[jenkins-maven-event-spy] INFO generated /home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5/maven-spy-20170904-105443-688.log
+[Pipeline] writeFile
+[Pipeline] }
+ERROR: [withMaven] WARNING Exception archiving Maven build logs /home/jenkins/work/workspace/my-project@tmp/withMaven81b037b5/maven-spy-20170904-105443-688.log, skip file. 
+java.lang.InterruptedException
+	at java.util.concurrent.FutureTask.awaitDone(FutureTask.java:404)
+	at java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at hudson.remoting.Request.call(Request.java:158)
+	at hudson.remoting.Channel.call(Channel.java:829)
+	at hudson.FilePath.act(FilePath.java:987)
+	at hudson.FilePath.act(FilePath.java:976)
+	at hudson.FilePath.copyTo(FilePath.java:2024)
+	at hudson.FilePath.copyTo(FilePath.java:2000)
+	at org.jenkinsci.plugins.pipeline.maven.publishers.JenkinsMavenEventSpyLogsPublisher.process(JenkinsMavenEventSpyLogsPublisher.java:39)
+	at org.jenkinsci.plugins.pipeline.maven.MavenSpyLogProcessor.processMavenSpyLogs(MavenSpyLogProcessor.java:92)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution$Callback.finished(WithMavenStepExecution.java:864)
+	at org.jenkinsci.plugins.workflow.steps.BodyExecutionCallback$TailCall.onSuccess(BodyExecutionCallback.java:114)
+	at org.jenkinsci.plugins.workflow.cps.CpsBodyExecution$SuccessAdapter.receive(CpsBodyExecution.java:362)
+	at com.cloudbees.groovy.cps.Outcome.resumeFrom(Outcome.java:73)
+	at com.cloudbees.groovy.cps.Continuable$1.call(Continuable.java:165)
+	at com.cloudbees.groovy.cps.Continuable$1.call(Continuable.java:162)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport$ThreadCategoryInfo.use(GroovyCategorySupport.java:122)
+	at org.codehaus.groovy.runtime.GroovyCategorySupport.use(GroovyCategorySupport.java:261)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:162)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:19)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:35)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:32)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:108)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:32)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:174)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:330)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$100(CpsThreadGroup.java:82)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:242)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:230)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:64)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:112)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+[withMaven] Archive artifact pom.xml under my/package/my-project/1.1-SNAPSHOT/my-project-1.1-SNAPSHOT.pom
+[withMaven] Archive artifact target/my-project-1.1-SNAPSHOT.jar under my/package/my-project/1.1-20170904.085522-6/my-project-1.1-20170904.085522-6.jar
+[withMaven] Archive artifact target/my-project-1.1-SNAPSHOT-sources.jar under my/package/my-project/1.1-20170904.085522-6/my-project-1.1-20170904.085522-6-sources.jar
+[withMaven] Archive artifact target/my-project-1.1-SNAPSHOT-sources.jar under my/package/my-project/1.1-20170904.085522-6/my-project-1.1-20170904.085522-6-sources.jar
+[withMaven] Archive test results for Maven artifact MavenArtifact{MyProject:my-project::1.1-SNAPSHOT} generated by PluginInvocation{org.apache.maven.plugins:maven-surefire-plugin:2.19.1@test  default-test}: target/surefire-reports/*.xml
+[withMaven] Jenkins JUnit Attachments Plugin not found, can't publish test attachments.Recording test results
+[withMaven] Archive test results for Maven artifact MavenArtifact{MyProject:my-project::1.1-SNAPSHOT} generated by PluginInvocation{org.apache.maven.plugins:maven-surefire-plugin:2.19.1@test  default-test}: target/surefire-reports/*.xml
+[withMaven] Jenkins JUnit Attachments Plugin not found, can't publish test attachments.Recording test results
+[withMaven] Archive test results for Maven artifact MavenArtifact{MyProject:my-project::1.1-SNAPSHOT} generated by PluginInvocation{org.apache.maven.plugins:maven-failsafe-plugin:2.19.1@integration-test  default}: target/failsafe-reports/*.xml
+[withMaven] Jenkins JUnit Attachments Plugin not found, can't publish test attachments.Recording test results
+[withMaven] Archive test results for Maven artifact MavenArtifact{MyProject:my-project::1.1-SNAPSHOT} generated by PluginInvocation{org.apache.maven.plugins:maven-failsafe-plugin:2.19.1@integration-test  default}: target/failsafe-reports/*.xml
+[withMaven] Jenkins JUnit Attachments Plugin not found, can't publish test attachments.Recording test results
+[withMaven] Scan Tasks for Maven artifact MavenArtifact{MyProject:my-project::1.1-SNAPSHOT} in source directory src/main/java
+[TASKS] Scanning folder '/home/jenkins/work/workspace/my-project' for files matching the pattern 'src/main/java/**/*' - excludes: null
+[TASKS] Found 116 files to scan for tasks
+[TASKS] Found 12 open tasks.
+Skipping warnings blame since pipelines do not have an SCM link.%n
+[TASKS] Computing warning deltas based on reference build #126
+[Pipeline] // withMaven
+[Pipeline] cucumber
+[CucumberReport] Preparing Cucumber Reports
+[CucumberReport] JSON report directory is ""
+[CucumberReport] Copied 1 json files from workspace "/home/jenkins/work/workspace/my-project" to reports directory "/var/lib/jenkins/jobs/my-project/builds/127/cucumber-html-reports/.cache"
+[CucumberReport] Processing 1 json files:
+[CucumberReport] /var/lib/jenkins/jobs/my-project/builds/127/cucumber-html-reports/.cache/target/cucumber/cucumber.json
+[Pipeline] jacoco
+[JaCoCo plugin] Collecting JaCoCo coverage data...
+[JaCoCo plugin] target/coverage-reports/jacoco*.exec;**/classes;**/src/main/java; locations are configured
+[JaCoCo plugin] Number of found exec files for pattern target/coverage-reports/jacoco*.exec: 2
+[JaCoCo plugin] Saving matched execfiles:  /home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco-it.exec /home/jenkins/work/workspace/my-project/target/coverage-reports/jacoco.exec
+[JaCoCo plugin] Saving matched class directories for class-pattern: **/classes: 
+[JaCoCo plugin]  - /home/jenkins/work/workspace/my-project/target/classes 160 files
+[JaCoCo plugin] Saving matched source directories for source-pattern: **/src/main/java: 
+[JaCoCo plugin] - /home/jenkins/work/workspace/my-project/src/main/java 116 files
+[JaCoCo plugin] Loading inclusions files..
+[JaCoCo plugin] inclusions: []
+[JaCoCo plugin] exclusions: []
+[JaCoCo plugin] Thresholds: JacocoHealthReportThresholds [minClass=0, maxClass=0, minMethod=0, maxMethod=0, minLine=0, maxLine=0, minBranch=0, maxBranch=0, minInstruction=0, maxInstruction=0, minComplexity=0, maxComplexity=0]
+[JaCoCo plugin] Publishing the results..
+[JaCoCo plugin] Loading packages..
+[JaCoCo plugin] Done.
+[JaCoCo plugin] Overall coverage: class: 88, method: 57, line: 60, branch: 37, instruction: 52
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

@@ -1,0 +1,50 @@
+Index: src/main/java/hudson/plugins/perforce/PerforceSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/perforce/PerforceSCM.java	(revision 18726)
++++ src/main/java/hudson/plugins/perforce/PerforceSCM.java	(working copy)
+@@ -388,7 +388,13 @@
+ 			}
+ 
+ 			// reset one time use variables...
+-			forceSync = false;
++
++			if ((forceSync) && (!this.isDontRenameClient())) {
++				// If dont rename clients for slaves - and forceSync set - do not reset it
++				listener.getLogger().println("Force sync remains set!");
++			} else {
++				forceSync = false;
++			}
+ 			firstChange = -1;
+ 
+ 			listener.getLogger().println("Sync complete, took " + 
+Index: src/main/resources/hudson/plugins/perforce/PerforceSCM/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/perforce/PerforceSCM/config.jelly	(revision 18726)
++++ src/main/resources/hudson/plugins/perforce/PerforceSCM/config.jelly	(working copy)
+@@ -56,7 +56,7 @@
+ 	    	<f:checkbox field="updateView" default="true" value="True"/>
+ 	    </f:entry>   
+ 	
+-	    <f:entry title="Don't rename workspace for each slave" 
++	    <f:entry title="Don't rename workspace for each slave (See help re One Time Force Sync flag)" 
+ 	    	help="/plugin/perforce/help/dontRenameClient.html">
+ 	    	<f:checkbox field="dontRenameClient" default="false" />
+ 	    </f:entry>			
+Index: src/main/webapp/help/dontRenameClient.html
+===================================================================
+--- src/main/webapp/help/dontRenameClient.html	(revision 18726)
++++ src/main/webapp/help/dontRenameClient.html	(working copy)
+@@ -14,4 +14,11 @@
+ 	If you do not want the plugin to automatically rename clients for each slave
+ 	then check this box  	
+   </p>
+-</div>
+\ No newline at end of file
++<p>
++	If the One Time sync flag is set, then setting the the dontRename workspace will
++	cause the One Time Force Sync flag to remain set. 
++
++	This allows for the same workspace to be used accurately on multiple slaves, but at the
++	Cost of requiring a forced sync for every build.
++</p>
++</div>

@@ -1,0 +1,552 @@
+<?xml version='1.0' encAPP3ng='UTF-8'?>
+<com.tikal.jenkins.plugins.multijob.MultiJobProject plugin="jenkins-multijob-plugin@1.21">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.28"/>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.16.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <hudson.plugins.promoted__builds.JobPropertyImpl plugin="promoted-builds@2.27">
+      <activeProcessNames>
+        <string>Test_Chandra_Default_Promotion</string>
+        <string>Test_Chandra_Manual_Promotion</string>
+      </activeProcessNames>
+    </hudson.plugins.promoted__builds.JobPropertyImpl>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.22">
+      <autoRebuild>false</autoRebuild>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <com.seitenbau.jenkins.plugins.dynamicparameter.scriptler.ScriptlerChoiceParameterDefinition plugin="dynamicparameter@0.2.0">
+          <name>ENV</name>
+          <description>ST Environment to start the deployment to</description>
+          <__uuid>4d65d9a1-b6b7-414c-bf5c-7e95ec3f23d2</__uuid>
+          <__remote>false</__remote>
+          <__scriptlerScriptId>DynamicChoice_Environments.groovy</__scriptlerScriptId>
+          <__parameters>
+            <com.seitenbau.jenkins.plugins.dynamicparameter.scriptler.ScriptlerParameterDefinition_-ScriptParameter>
+              <name>DIR_PATH</name>
+              <value>/var/build/env/Test_Chandra</value>
+            </com.seitenbau.jenkins.plugins.dynamicparameter.scriptler.ScriptlerParameterDefinition_-ScriptParameter>
+          </__parameters>
+          <readonlyInputField>false</readonlyInputField>
+        </com.seitenbau.jenkins.plugins.dynamicparameter.scriptler.ScriptlerChoiceParameterDefinition>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@1.4">
+          <name>APP1_Deploy</name>
+          <description>Do you want to deploy APP1?</description>
+          <randomName>choice-parameter-5399517263198808</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>return[
+&apos;No&apos;,
+&apos;Yes&apos;
+]</script>
+            <fallbackScript>return[
+&apos;No&apos;
+]</fallbackScript>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.4">
+          <name>APP1_Deploy_ID</name>
+          <description>APP1 Build number if deployment needed</description>
+          <randomName>choice-parameter-5399517265370000</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>List_Build_Tags_Pipeline_APP1.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>DIR_PATH</string>
+                <string>/opt/Jenkins_Archives/APP1_Build_Test_Chandra</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>APP1_Deploy</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@1.4">
+          <name>APP2_Deploy</name>
+          <description>Do you want to deploy APP2?</description>
+          <randomName>choice-parameter-5399517266934900</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>return[
+&apos;No&apos;,
+&apos;Yes&apos;
+]</script>
+            <fallbackScript>return[
+&apos;No&apos;
+]</fallbackScript>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.4">
+          <name>APP2_Deploy_ID</name>
+          <description>APP2 Build number if deployment needed</description>
+          <randomName>choice-parameter-5399517269421818</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>List_Build_Tags_Pipeline_APP2.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>DIR_PATH</string>
+                <string>/opt/Jenkins_Archives/APP2_Build_Test_Chandra</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>APP2_Deploy</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@1.4">
+          <name>APP4_Deploy</name>
+          <description>Do you want to deploy Siebel?</description>
+          <randomName>choice-parameter-5476398606871985</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>return[
+&apos;No&apos;,
+&apos;Yes&apos;
+]</script>
+            <fallbackScript>return[
+&apos;No&apos;
+]</fallbackScript>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.4">
+          <name>APP4_Deploy_ID</name>
+          <description>Siebel Build number if deployment needed</description>
+          <randomName>choice-parameter-5476398608906199</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>List_Build_Tags_Pipeline_APP4.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>DIR_PATH</string>
+                <string>/opt/Jenkins_Archives/APP4_Build_Test_Chandra</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>APP4_Deploy</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@1.4">
+          <name>APP3_Deploy</name>
+          <description>Do you want to deploy APP3?</description>
+          <randomName>choice-parameter-5476398610480261</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>return[
+&apos;No&apos;,
+&apos;Yes&apos;
+]</script>
+            <fallbackScript>return[
+&apos;No&apos;
+]</fallbackScript>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.4">
+          <name>APP3_Deploy_ID</name>
+          <description>APP3 Build number if deployment needed</description>
+          <randomName>choice-parameter-5476398612507509</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>List_Build_Tags_Pipeline_APP3.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>DIR_PATH</string>
+                <string>/opt/Jenkins_Archives/APP3_Build_Test_Chandra</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>APP3_Deploy</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@1.4">
+          <name>APP5_Deploy</name>
+          <description>Do you want to deploy APP5?</description>
+          <randomName>choice-parameter-5477725031575832</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>return[
+&apos;No&apos;,
+&apos;Yes&apos;
+]</script>
+            <fallbackScript>return[
+&apos;No&apos;
+]</fallbackScript>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.4">
+          <name>APP5_Deploy_ID</name>
+          <description>APP5 Build number if deployment needed</description>
+          <randomName>choice-parameter-5477725033657692</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>List_Build_Tags_Pipeline_APP5.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>DIR_PATH</string>
+                <string>/opt/Jenkins_Archives/MyCo-APP5-Build</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>APP5_Deploy</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@1.4">
+          <name>APP6_Deploy</name>
+          <description>Do you want to deploy APP6?</description>
+          <randomName>choice-parameter-5477725035735746</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>return[
+&apos;No&apos;,
+&apos;Yes&apos;
+]</script>
+            <fallbackScript>return[
+&apos;No&apos;
+]</fallbackScript>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.4">
+          <name>APP6_Deploy_ID</name>
+          <description>APP6 Build number if deployment needed</description>
+          <randomName>choice-parameter-5477725038290000</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>List_Build_Tags_Pipeline_APP6.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>DIR_PATH</string>
+                <string>/opt/Jenkins_Archives/MyCo-APP6-Build</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>APP6_Deploy</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@1.4">
+          <name>APP7_Deploy</name>
+          <description>Do you want to deploy APP7?</description>
+          <randomName>choice-parameter-5477725039944697</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>return[
+&apos;No&apos;,
+&apos;Yes&apos;
+]</script>
+            <fallbackScript>return[
+&apos;No&apos;
+]</fallbackScript>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.4">
+          <name>APP7_Deploy_ID</name>
+          <description>APP7 Build number if deployment needed</description>
+          <randomName>choice-parameter-5477725042051696</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.ScriptlerScript">
+            <scriptlerScriptId>List_Build_Tags_Pipeline_APP7.groovy</scriptlerScriptId>
+            <parameters class="linked-hash-map">
+              <entry>
+                <string>DIR_PATH</string>
+                <string>/opt/Jenkins_Archives/MyCo-APP7-GIT-Build/Test_Chandra</string>
+              </entry>
+            </parameters>
+          </script>
+          <projectName>Chandra_Deploy_ST</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>APP7_Deploy</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <com.seitenbau.jenkins.plugins.dynamicparameter.scriptler.ScriptlerChoiceParameterDefinition plugin="dynamicparameter@0.2.0">
+          <name>SIT_ENV</name>
+          <description>SIT environment to continue deployment to once ST Sanity passes</description>
+          <__uuid>70bf499d-fb0d-454d-b88e-46dd6cc049e1</__uuid>
+          <__remote>false</__remote>
+          <__scriptlerScriptId>DynamicChoice_Environments.groovy</__scriptlerScriptId>
+          <__parameters>
+            <com.seitenbau.jenkins.plugins.dynamicparameter.scriptler.ScriptlerParameterDefinition_-ScriptParameter>
+              <name>DIR_PATH</name>
+              <value>/var/build/env//Test_Chandra</value>
+            </com.seitenbau.jenkins.plugins.dynamicparameter.scriptler.ScriptlerParameterDefinition_-ScriptParameter>
+          </__parameters>
+          <readonlyInputField>false</readonlyInputField>
+        </com.seitenbau.jenkins.plugins.dynamicparameter.scriptler.ScriptlerChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@1.8.4">
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+    <EnvInjectJobProperty plugin="envinject@1.92.1">
+      <info>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+      <on>true</on>
+      <keepJenkinsSystemVariables>true</keepJenkinsSystemVariables>
+      <keepBuildVariables>true</keepBuildVariables>
+      <overrideBuildParameters>false</overrideBuildParameters>
+      <contributors/>
+    </EnvInjectJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <com.tikal.jenkins.plugins.multijob.MultiJobBuilder>
+      <phaseName>APP1 Deploy</phaseName>
+      <phaseJobs>
+        <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+          <jobName>APP1_Deploy_Multijob_Test_Chandra</jobName>
+          <currParams>true</currParams>
+          <exposedSCM>false</exposedSCM>
+          <disableJob>false</disableJob>
+          <parsingRulesPath></parsingRulesPath>
+          <maxRetries>0</maxRetries>
+          <enableRetryStrategy>false</enableRetryStrategy>
+          <enableCondition>true</enableCondition>
+          <abortAllJob>false</abortAllJob>
+          <condition>&quot;${APP1_Deploy}&quot; == &quot;Yes&quot; &amp;&amp; &quot;${APP1_Deploy_ID}&quot; != &quot;&quot; </condition>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters plugin="parameterized-trigger@2.25">
+              <properties>buildid=${APP1_Deploy_ID}</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+          <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+          <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+        </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+        <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+          <jobName>APP2_Deploy_Multijob_Test_Chandra</jobName>
+          <currParams>true</currParams>
+          <exposedSCM>false</exposedSCM>
+          <disableJob>false</disableJob>
+          <parsingRulesPath></parsingRulesPath>
+          <maxRetries>0</maxRetries>
+          <enableRetryStrategy>false</enableRetryStrategy>
+          <enableCondition>true</enableCondition>
+          <abortAllJob>false</abortAllJob>
+          <condition>&quot;${APP2_Deploy}&quot; == &quot;Yes&quot; &amp;&amp; &quot;${APP2_Deploy_ID}&quot; != &quot;&quot; </condition>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters plugin="parameterized-trigger@2.25">
+              <properties>buildid=${APP2_Deploy_ID}</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+          <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+          <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+        </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+        <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+          <jobName>APP4_Deploy_Multijob_Test_Chandra</jobName>
+          <currParams>true</currParams>
+          <exposedSCM>false</exposedSCM>
+          <disableJob>false</disableJob>
+          <parsingRulesPath></parsingRulesPath>
+          <maxRetries>0</maxRetries>
+          <enableRetryStrategy>false</enableRetryStrategy>
+          <enableCondition>true</enableCondition>
+          <abortAllJob>false</abortAllJob>
+          <condition>&quot;${APP4_Deploy}&quot; == &quot;Yes&quot; &amp;&amp; &quot;${APP4_Deploy_ID}&quot; != &quot;&quot; </condition>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters plugin="parameterized-trigger@2.25">
+              <properties>buildid=${APP4_Deploy_ID}</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+          <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+          <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+        </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+        <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+          <jobName>APP5_Deploy_Multijob_</jobName>
+          <currParams>true</currParams>
+          <exposedSCM>false</exposedSCM>
+          <disableJob>false</disableJob>
+          <parsingRulesPath></parsingRulesPath>
+          <maxRetries>0</maxRetries>
+          <enableRetryStrategy>false</enableRetryStrategy>
+          <enableCondition>true</enableCondition>
+          <abortAllJob>false</abortAllJob>
+          <condition>&quot;${APP5_Deploy}&quot; == &quot;Yes&quot; &amp;&amp; &quot;${APP5_Deploy_ID}&quot; != &quot;&quot; </condition>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters plugin="parameterized-trigger@2.25">
+              <properties>BUILDID=${APP5_Deploy_ID}</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+          <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+          <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+        </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+        <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+          <jobName>APP6_Deploy_Multijob_</jobName>
+          <currParams>true</currParams>
+          <exposedSCM>false</exposedSCM>
+          <disableJob>false</disableJob>
+          <parsingRulesPath></parsingRulesPath>
+          <maxRetries>0</maxRetries>
+          <enableRetryStrategy>false</enableRetryStrategy>
+          <enableCondition>true</enableCondition>
+          <abortAllJob>false</abortAllJob>
+          <condition>&quot;${APP6_Deploy}&quot; == &quot;Yes&quot; &amp;&amp; &quot;${APP6_Deploy_ID}&quot; != &quot;&quot; </condition>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters plugin="parameterized-trigger@2.25">
+              <properties>buildid=${APP6_Deploy_ID}</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+          <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+          <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+        </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+        <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+          <jobName>APP7_Multijob_Test_Chandra</jobName>
+          <currParams>true</currParams>
+          <exposedSCM>false</exposedSCM>
+          <disableJob>false</disableJob>
+          <parsingRulesPath></parsingRulesPath>
+          <maxRetries>0</maxRetries>
+          <enableRetryStrategy>false</enableRetryStrategy>
+          <enableCondition>true</enableCondition>
+          <abortAllJob>false</abortAllJob>
+          <condition>&quot;${APP7_Deploy}&quot; == &quot;Yes&quot; &amp;&amp; &quot;${APP7_Deploy_ID}&quot; != &quot;&quot; </condition>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters plugin="parameterized-trigger@2.25">
+              <properties>BUILDID=${APP7_Deploy_ID}</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+          <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+          <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+        </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+      </phaseJobs>
+      <continuationCondition>SUCCESSFUL</continuationCondition>
+    </com.tikal.jenkins.plugins.multijob.MultiJobBuilder>
+    <com.tikal.jenkins.plugins.multijob.MultiJobBuilder>
+      <phaseName>RTE reload phase</phaseName>
+      <phaseJobs>
+        <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+          <jobName>Reload_RTE</jobName>
+          <currParams>true</currParams>
+          <exposedSCM>false</exposedSCM>
+          <disableJob>false</disableJob>
+          <parsingRulesPath></parsingRulesPath>
+          <maxRetries>0</maxRetries>
+          <enableRetryStrategy>false</enableRetryStrategy>
+          <enableCondition>true</enableCondition>
+          <abortAllJob>true</abortAllJob>
+          <condition>&quot;${APP4_Deploy}&quot; == &quot;Yes&quot; &amp;&amp; &quot;${APP4_Deploy_ID}&quot; != &quot;&quot;</condition>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters plugin="parameterized-trigger@2.25">
+              <properties>ENV=${ENV}</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+          <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+          <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+        </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+      </phaseJobs>
+      <continuationCondition>SUCCESSFUL</continuationCondition>
+    </com.tikal.jenkins.plugins.multijob.MultiJobBuilder>
+    <com.tikal.jenkins.plugins.multijob.MultiJobBuilder>
+      <phaseName>Automated Sanity Phase</phaseName>
+      <phaseJobs>
+        <com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+          <jobName>Automated_Sanity</jobName>
+          <currParams>true</currParams>
+          <exposedSCM>false</exposedSCM>
+          <disableJob>false</disableJob>
+          <parsingRulesPath></parsingRulesPath>
+          <maxRetries>0</maxRetries>
+          <enableRetryStrategy>false</enableRetryStrategy>
+          <enableCondition>false</enableCondition>
+          <abortAllJob>true</abortAllJob>
+          <condition></condition>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters plugin="parameterized-trigger@2.25">
+              <properties>ENV=${ENV}</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <killPhaseOnJobResultCondition>FAILURE</killPhaseOnJobResultCondition>
+          <buildOnlyIfSCMChanges>false</buildOnlyIfSCMChanges>
+          <applyConditionOnlyIfNoSCMChanges>false</applyConditionOnlyIfNoSCMChanges>
+        </com.tikal.jenkins.plugins.multijob.PhaseJobsConfig>
+      </phaseJobs>
+      <continuationCondition>SUCCESSFUL</continuationCondition>
+    </com.tikal.jenkins.plugins.multijob.MultiJobBuilder>
+    <hudson.tasks.Shell>
+      <command>URL=`echo ${BUILD_URL} | sed s/xx.xx.xxx.xx:8080/jenkins.xxxxx.xx/g`
+JOB_URL=`echo ${URL} | sed s/http/https/g`
+PROM_URL=${JOB_URL}&quot;promotion&quot;
+
+mailx -s &quot;Test_Chandra | Please approve to start SIT deployment in ${SIT_ENV}&quot; chand**.beju***@***.com &lt;&lt;EOF
+Hi,
+
+A new deployment to  stack is completed for Test_Chandra environment ${ENV} and the job is waiting for your approval for promotion on the job to proceed with automated deployment to SIT ${SIT_ENV}.
+
+URL for the job run: ${JOB_URL}
+
+Details of builds being deployed in this run:
+APP1=${APP1_Deploy_ID}
+APP2=${APP2_Deploy_ID}
+APP3=${APP3_Deploy_ID}
+APP4=${APP4_Deploy_ID}
+APP5=${APP5_Deploy_ID}
+APP6=${APP6_Deploy_ID}
+APP7=${APP7_Deploy_ID}
+
+Please visit below URL to approve the promotion for this run with above builds
+
+URL to promote the deployment to SIT: ${PROM_URL}
+EOF</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+  <pollSubjobs>false</pollSubjobs>
+</com.tikal.jenkins.plugins.multijob.MultiJobProject>

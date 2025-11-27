@@ -1,0 +1,201 @@
+def use_agent = "sim"
+def build_node = "bison"
+
+def DEFAULT_WORKSUBDIR="prj"
+def DEFAULT_THROTTLE_CATEGORY="rtl"
+def DEFAULT_TEST_LIST="short"
+def DEFAULT_TURBO=false
+def DEFAULT_BUILD_TYPE="RTL"
+
+if (env.TESTING_MODE) {
+  println "Starting run in mode: ${env.TESTING_MODE}"
+  if (env.TESTING_MODE == "rtlci") {
+    DEFAULT_WORKSUBDIR="prj_rtl_ci"
+    DEFAULT_THROTTLE_CATEGORY="rtl_ci"
+  }
+  if (env.TESTING_MODE == "rtlregression") {
+    DEFAULT_WORKSUBDIR="prj_rtl_regression"
+    DEFAULT_THROTTLE_CATEGORY="rtl"
+    DEFAULT_TEST_LIST="full"
+  }
+  if (env.TESTING_MODE == "netlistregression") {
+    DEFAULT_WORKSUBDIR="prj_netlist_regression"
+    DEFAULT_THROTTLE_CATEGORY="netlist"
+    DEFAULT_TEST_LIST="full"
+    DEFAULT_BUILD_TYPE="NETLIST"
+  }
+
+}
+
+properties([
+// gitLabConnection('git'), /* specifying gitlab connection here causes non-pullrequest builds to freeze on gitlab step */
+  parameters([
+    booleanParam(defaultValue: DEFAULT_TURBO, name: 'TURBO', description: 'Disable OVL and blackbox some things',),
+    string(name: 'HDL_TEST_TIMEOUT',  defaultValue: '60000', description: 'test timeout in seconds (realtime)', ),
+    string(name: 'THROTTLE_CATEGORY', defaultValue: DEFAULT_THROTTLE_CATEGORY, description: 'Category for throttling', ),
+    string(name: 'WORKSUBDIR', defaultValue: DEFAULT_WORKSUBDIR, description: 'Work directory', ),
+    string(defaultValue: 'MSIE', description: 'HDL Elab mode to use', name: 'HDL_ELAB_MODE'),
+    string(defaultValue: DEFAULT_BUILD_TYPE, description: 'CMake Build Type', name: 'CMAKE_BUILD_TYPE'),
+    string(defaultValue: DEFAULT_TEST_LIST, description: 'Regression test list', name: 'HDL_REGRESSION_LIST')
+   ])
+])
+
+def setupscript = "setup_prj_tools.csh"
+
+def throttle_category = "${params.THROTTLE_CATEGORY}"
+WORKDIR = "/home/jenkins/${params.WORKSUBDIR}"
+println "WORKDIR: " + WORKDIR
+def environment = '''#!/bin/csh -fx
+setenv LD_LIBRARY_PATH ""
+setenv MANPATH ""
+setenv IRUN_EXTRA_FLAGS -unbuffered
+source ''' + WORKDIR + '''/environment/''' + setupscript + '''
+'''
+
+tasks = [:]
+tests = [:]
+
+
+/* Seems to decrease the probability of InterruptedException */
+script {
+   System.setProperty("org.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL", "3800");
+}
+
+def generateTaskList(tests) {
+    println tests
+}
+
+/* specifying gitlab connection here as is causes non-pullrequest builds to freeze on gitlab step */
+//gitlabBuilds(builds: [env.TESTING_MODE]) {
+//gitlabCommitStatus(name: env.TESTING_MODE)
+//{
+  stage('Check it out!') {
+      node(build_node) {
+          ws("${WORKDIR}") {
+              /* TODO: Find out a way to check out select submodules here */
+              checkout scm: [
+                  $class: 'GitSCM',
+                  branches: scm.branches,
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions: [[$class: 'SubmoduleOption',
+                      disableSubmodules: false,
+                      parentCredentials: true,
+                      recursiveSubmodules: true,
+                      reference: '',
+                      trackingSubmodules: false]],
+                  submoduleCfg: [],
+                  userRemoteConfigs: scm.userRemoteConfigs
+                  ]
+              sh 'git clean -fdx'
+          }
+      }
+  }
+
+
+
+  stage('Configure') {
+      node(build_node) {
+          ws("${WORKDIR}") {
+              sh 'pwd'
+              sh environment + '''
+              rm -Rf build
+              mkdir build
+              cd build
+              cmake .. \
+                  -DHDL_ELAB_MODE=${HDL_ELAB_MODE} \
+                  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
+                  -DTURBO=${TURBO} \
+                  -DHDL_DISABLE_COLOR=Yes
+              '''
+
+              script {
+                  //TESTLIST = readFile "${WORKDIR}/build/test.list"
+                  //tests = TESTLIST.split("\n");
+                  def teststmp = sh (
+                      script: 'cd build && ctest -N -L ' + HDL_REGRESSION_LIST,
+                      returnStdout: true
+                      ).split("\n")
+                  teststmp.each {
+                          line ->
+                              def matcher = line =~ /.* Test\s+#(\d+): (.+)/
+                              if (matcher.matches()) {
+                                  int num = matcher[0][1] as int
+                                  String name =  matcher[0][2] as String
+                                  tests[name]=num;
+                                  } else {
+                                      print "no match : " + line
+                                  }
+                  }
+                  println "done"
+              }
+          }
+      }
+  }
+
+  stage('Build') {
+      node(build_node) {
+          ws("${WORKDIR}") {
+              sh 'pwd'
+              sh environment + '''
+              cd build
+              make
+              '''
+          }
+      }
+  }
+
+  stage("Touchstone") {
+      node('sim') {
+          ws("${WORKDIR}") {
+              sh 'pwd'
+              sh environment + '''
+              cd build
+              ctest --no-compress-output -T Test -L touchstone --timeout ${HDL_TEST_TIMEOUT}
+
+              '''
+          }
+      }
+  }
+
+
+  println tests
+  println "Collected " + tests.size() + " tests"
+  tests.each { test ->
+      def v = test.key
+      def i = test.value
+      tasks[v] = {
+          node("sim") {
+                  dir(WORKDIR + '/build') {
+                      def cmd = environment;
+                      cmd += 'mkdir ' + i + "\n"
+                      cmd += 'cd ' + i + "\n"
+                      cmd += "cp -f ../CTestCustom.cmake .\n"
+  //                    cmd += "cp -f ../CTestTestfile.cmake .\n"
+                      cmd += "echo 'SUBDIRS(..)' > CTestTestfile.cmake\n"
+  //                    cmd += "cp -f ../DartConfiguration.tcl .\n"
+                      cmd += "ctest --output-on-failure --timeout ${HDL_TEST_TIMEOUT} --no-compress-output -T Test -I  "+ i +"," + i + "  || true\n"
+                      println cmd
+                      sh cmd
+                  }
+          }
+      }
+  }
+
+  stage ("Regression") {
+      throttle([throttle_category]) {
+          parallel tasks
+      }
+  }
+
+
+  stage ("Analysis") {
+      node(use_agent) {
+          ws("${WORKDIR}") {
+              archiveArtifacts artifacts: 'build/Testing/*/*.logs/*.log,build/configuration.txt,build/*.html,build/Testing/*/*.logs/*.html,build/Testing/*/*.logs/*.json,build/test.list', onlyIfSuccessful: true
+              warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Cadence Incisive (with GNU Make)'], [parserName: 'GNU Make + GNU C Compiler (gcc)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
+              xunit testTimeMargin: '3000', thresholdMode: 1, thresholds: [failed(failureNewThreshold: '1', failureThreshold: '2', unstableNewThreshold: '0', unstableThreshold: '1'), skipped()], tools: [CTest(deleteOutputFiles: true, failIfNotNew: true, pattern: 'build*/*/Testing/*/*.xml', skipNoTestFiles: false, stopProcessingIfError: true)]
+          }
+      }
+  }
+//}
+//}

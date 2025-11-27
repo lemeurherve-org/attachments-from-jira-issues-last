@@ -1,0 +1,83 @@
+C:\TexasInstallAgent>java -jar agent.jar -jnlpUrl https://jenkins.server:9090/computer/BASEIT31/slave-agent.jnlp -secret <secret> -workDir "D:\jenkins\work"
+Mõrz 02, 2021 1:59:42 NACHM. org.jenkinsci.remoting.engine.WorkDirManager initializeWorkDir
+INFO: Using D:\jenkins\work\remoting as a remoting work directory
+Mõrz 02, 2021 1:59:42 NACHM. org.jenkinsci.remoting.engine.WorkDirManager setupLogging
+INFO: Both error and output logs will be printed to D:\jenkins\work\remoting
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main createEngine
+INFO: Setting up agent: BASEIT31
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main$CuiListener <init>
+INFO: Jenkins agent is running in headless mode.
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.Engine startEngine
+INFO: Using Remoting version: 4.5
+Mõrz 02, 2021 1:59:43 NACHM. org.jenkinsci.remoting.engine.WorkDirManager initializeWorkDir
+INFO: Using D:\jenkins\work\remoting as a remoting work directory
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Locating server among [https://jenkins.server:9090/]
+Mõrz 02, 2021 1:59:43 NACHM. org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve
+INFO: Remoting server accepts the following protocols: [JNLP4-connect, Ping]
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Agent discovery successful
+  Agent address: jenkins.server
+  Agent port:    45701
+  Identity:      XX:XX:XX:XX
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Handshaking
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connecting to jenkins.server:45701
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Trying protocol: JNLP4-connect
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Remote identity confirmed: XX:XX:XX:XX
+Mõrz 02, 2021 1:59:43 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connected
+Mõrz 02, 2021 2:00:21 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Terminated
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Performing onReconnect operation.
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: onReconnect operation completed.
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Locating server among [https://jenkins.server:9090/]
+Mõrz 02, 2021 2:00:31 NACHM. org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve
+INFO: Remoting server accepts the following protocols: [JNLP4-connect, Ping]
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Agent discovery successful
+  Agent address: jenkins.server
+  Agent port:    45701
+  Identity:      XX:XX:XX:XX
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Handshaking
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connecting to jenkins.server:45701
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Trying protocol: JNLP4-connect
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Remote identity confirmed: XX:XX:XX:XX
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener status
+INFO: Protocol JNLP4-connect encountered an unexpected exception
+java.util.concurrent.ExecutionException: org.jenkinsci.remoting.protocol.impl.ConnectionRefusalException: Remote closed connection without specifying reason
+        at org.jenkinsci.remoting.util.SettableFuture.get(SettableFuture.java:223)
+        at hudson.remoting.Engine.innerRun(Engine.java:744)
+        at hudson.remoting.Engine.run(Engine.java:519)
+Caused by: org.jenkinsci.remoting.protocol.impl.ConnectionRefusalException: Remote closed connection without specifying reason
+        at org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer.onRecvClosed(ConnectionHeadersFilterLayer.java:440)
+        at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecvClosed(ProtocolStack.java:816)
+        at org.jenkinsci.remoting.protocol.FilterLayer.onRecvClosed(FilterLayer.java:288)
+        at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.onRecvClosed(SSLEngineFilterLayer.java:172)
+        at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecvClosed(ProtocolStack.java:816)
+        at org.jenkinsci.remoting.protocol.NetworkLayer.onRecvClosed(NetworkLayer.java:154)
+        at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer.access$1500(BIONetworkLayer.java:48)
+        at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader.run(BIONetworkLayer.java:247)
+        at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+        at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:118)
+        at java.base/java.lang.Thread.run(Unknown Source)
+        Suppressed: java.nio.channels.ClosedChannelException
+                ... 7 more
+
+Mõrz 02, 2021 2:00:31 NACHM. hudson.remoting.jnlp.Main$CuiListener error
+SEVERE: The server rejected the connection: None of the protocols were accepted
+java.lang.Exception: The server rejected the connection: None of the protocols were accepted
+        at hudson.remoting.Engine.onConnectionRejected(Engine.java:829)
+        at hudson.remoting.Engine.innerRun(Engine.java:769)
+        at hudson.remoting.Engine.run(Engine.java:519)

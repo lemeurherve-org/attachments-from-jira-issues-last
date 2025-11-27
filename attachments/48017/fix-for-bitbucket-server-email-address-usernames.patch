@@ -1,0 +1,13 @@
+diff --git a/blueocean-bitbucket-pipeline/src/main/java/io/jenkins/blueocean/blueocean_bitbucket_pipeline/server/BitbucketServerApi.java b/blueocean-bitbucket-pipeline/src/main/java/io/jenkins/blueocean/blueocean_bitbucket_pipeline/server/BitbucketServerApi.java
+index ed661c9..9ac659d 100644
+--- a/blueocean-bitbucket-pipeline/src/main/java/io/jenkins/blueocean/blueocean_bitbucket_pipeline/server/BitbucketServerApi.java
++++ b/blueocean-bitbucket-pipeline/src/main/java/io/jenkins/blueocean/blueocean_bitbucket_pipeline/server/BitbucketServerApi.java
+@@ -101,7 +101,7 @@ public class BitbucketServerApi extends BitbucketApi {
+     @Override
+     public @Nonnull BbServerUser getUser(@Nonnull String userName){
+         try {
+-            InputStream inputStream = request.get(String.format("%s/%s",baseUrl+"users", userName)).getContent();
++            InputStream inputStream = request.get(String.format("%s/%s",baseUrl+"users", userName.replace('@', '_'))).getContent();
+             return om.readValue(inputStream, BbServerUser.class);
+         } catch (IOException e) {
+             throw new ServiceException.UnexpectedErrorException(e.getMessage(), e);

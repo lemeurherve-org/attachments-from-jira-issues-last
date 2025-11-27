@@ -1,0 +1,55 @@
+Gestartet durch Benutzer anonymous
+Starting limited count build: 1
+Baue auf Slave VirtualMachine (Win8_32) in Arbeitsbereich C:\Jenkins\workspace\test
+FATAL: java.io.IOException: Connection aborted: org.jenkinsci.remoting.nio.NioChannelHub$MonoNioTransport@121a5ec[name=VirtualMachine]
+hudson.remoting.RequestAbortedException: java.io.IOException: Connection aborted: org.jenkinsci.remoting.nio.NioChannelHub$MonoNioTransport@121a5ec[name=VirtualMachine]
+	at hudson.remoting.Request.abort(Request.java:297)
+	at hudson.remoting.Channel.terminate(Channel.java:844)
+	at hudson.remoting.Channel$1.terminate(Channel.java:506)
+	at hudson.remoting.AbstractByteArrayCommandTransport$1.terminate(AbstractByteArrayCommandTransport.java:72)
+	at org.jenkinsci.remoting.nio.NioChannelHub$NioTransport.abort(NioChannelHub.java:208)
+	at org.jenkinsci.remoting.nio.NioChannelHub.run(NioChannelHub.java:628)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+	at ......remote call to VirtualMachine(Native Method)
+	at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1413)
+	at hudson.remoting.Request.call(Request.java:172)
+	at hudson.remoting.Channel.call(Channel.java:777)
+	at hudson.FilePath.act(FilePath.java:980)
+	at hudson.FilePath.act(FilePath.java:969)
+	at hudson.FilePath.mkdirs(FilePath.java:1152)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1270)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:610)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:86)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:532)
+	at hudson.model.Run.execute(Run.java:1741)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:408)
+Caused by: java.io.IOException: Connection aborted: org.jenkinsci.remoting.nio.NioChannelHub$MonoNioTransport@121a5ec[name=VirtualMachine]
+	at org.jenkinsci.remoting.nio.NioChannelHub$NioTransport.abort(NioChannelHub.java:208)
+	at org.jenkinsci.remoting.nio.NioChannelHub.run(NioChannelHub.java:628)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.io.IOException: Eine vorhandene Verbindung wurde vom Remotehost geschlossen
+	at sun.nio.ch.SocketDispatcher.read0(Native Method)
+	at sun.nio.ch.SocketDispatcher.read(Unknown Source)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(Unknown Source)
+	at sun.nio.ch.IOUtil.read(Unknown Source)
+	at sun.nio.ch.SocketChannelImpl.read(Unknown Source)
+	at org.jenkinsci.remoting.nio.FifoBuffer$Pointer.receive(FifoBuffer.java:136)
+	at org.jenkinsci.remoting.nio.FifoBuffer.receive(FifoBuffer.java:306)
+	at org.jenkinsci.remoting.nio.NioChannelHub.run(NioChannelHub.java:561)
+	... 7 more
+ERROR: Publisher 'Artefakte archivieren' failed: no workspace for test #63
+Finished: FAILURE

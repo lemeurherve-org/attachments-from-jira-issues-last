@@ -1,0 +1,17 @@
+Index: BuildVariableResolver.java
+===================================================================
+--- BuildVariableResolver.java	(revision 25542)
++++ BuildVariableResolver.java	(working copy)
+@@ -99,6 +99,12 @@
+             if (env.containsKey(key)) {
+                 return env.get(key);
+             }
++
++            EnvVars compEnv = computer.getEnvironment();
++            if (compEnv.containsKey(key)) {
++                return compEnv.get(key);
++            }
++
+         } catch (Exception e) {
+             LOGGER.log(Level.WARNING, "Variable name '" + key
+                        + "' look up failed", e);

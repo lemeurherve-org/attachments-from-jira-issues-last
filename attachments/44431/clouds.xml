@@ -1,0 +1,72 @@
+<clouds>
+  <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@1.12.6">
+    <name>kubernetes</name>
+    <defaultsProviderTemplate></defaultsProviderTemplate>
+    <templates>
+      <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+        <inheritFrom></inheritFrom>
+        <name>kubectl</name>
+        <namespace></namespace>
+        <privileged>false</privileged>
+        <capOnlyOnAlivePods>false</capOnlyOnAlivePods>
+        <alwaysPullImage>false</alwaysPullImage>
+        <instanceCap>2147483647</instanceCap>
+        <slaveConnectTimeout>100</slaveConnectTimeout>
+        <idleMinutes>0</idleMinutes>
+        <activeDeadlineSeconds>0</activeDeadlineSeconds>
+        <label></label>
+        <nodeSelector></nodeSelector>
+        <nodeUsageMode>NORMAL</nodeUsageMode>
+        <customWorkspaceVolumeEnabled>false</customWorkspaceVolumeEnabled>
+        <workspaceVolume class="org.csanchez.jenkins.plugins.kubernetes.volumes.workspace.EmptyDirWorkspaceVolume">
+          <memory>false</memory>
+        </workspaceVolume>
+        <volumes/>
+        <containers>
+          <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+            <name>kubectl</name>
+            <image>vfarcic/kubectl:1.9.0</image>
+            <privileged>false</privileged>
+            <alwaysPullImage>false</alwaysPullImage>
+            <workingDir>/home/jenkins</workingDir>
+            <command>/bin/sh -c</command>
+            <args>cat</args>
+            <ttyEnabled>true</ttyEnabled>
+            <resourceRequestCpu></resourceRequestCpu>
+            <resourceRequestMemory></resourceRequestMemory>
+            <resourceLimitCpu></resourceLimitCpu>
+            <resourceLimitMemory></resourceLimitMemory>
+            <envVars/>
+            <ports/>
+            <livenessProbe>
+              <execArgs></execArgs>
+              <timeoutSeconds>0</timeoutSeconds>
+              <initialDelaySeconds>0</initialDelaySeconds>
+              <failureThreshold>0</failureThreshold>
+              <periodSeconds>0</periodSeconds>
+              <successThreshold>0</successThreshold>
+            </livenessProbe>
+          </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+        </containers>
+        <envVars/>
+        <annotations/>
+        <imagePullSecrets/>
+        <nodeProperties/>
+        <yaml></yaml>
+        <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Default"/>
+      </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+    </templates>
+    <serverUrl>https://1.2.3.4</serverUrl>
+    <skipTlsVerify>true</skipTlsVerify>
+    <addMasterProxyEnvVars>false</addMasterProxyEnvVars>
+    <capOnlyOnAlivePods>false</capOnlyOnAlivePods>
+    <credentialsId>k8s admin</credentialsId>
+    <containerCap>10</containerCap>
+    <retentionTimeout>5</retentionTimeout>
+    <connectTimeout>0</connectTimeout>
+    <readTimeout>0</readTimeout>
+    <usageRestricted>false</usageRestricted>
+    <maxRequestsPerHost>32</maxRequestsPerHost>
+    <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.Never"/>
+  </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
+</clouds>

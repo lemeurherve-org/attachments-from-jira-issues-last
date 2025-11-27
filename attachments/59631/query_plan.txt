@@ -1,0 +1,41 @@
+EXPLAIN select distinct upstream_job.full_name, upstream_build.number
+from JENKINS_JOB as upstream_job
+inner join JENKINS_BUILD as upstream_build on (upstream_job.id = upstream_build.job_id and upstream_job.last_successful_build_number = upstream_build.number)
+inner join GENERATED_MAVEN_ARTIFACT on (upstream_build.id = GENERATED_MAVEN_ARTIFACT.build_id  and GENERATED_MAVEN_ARTIFACT.skip_downstream_triggers = false)
+inner join MAVEN_ARTIFACT on GENERATED_MAVEN_ARTIFACT.artifact_id = MAVEN_ARTIFACT.id
+inner join MAVEN_DEPENDENCY on (MAVEN_DEPENDENCY.artifact_id = MAVEN_ARTIFACT.id and MAVEN_DEPENDENCY.ignore_upstream_triggers = false)
+inner join JENKINS_BUILD as downstream_build on MAVEN_DEPENDENCY.build_id = downstream_build.id
+inner join JENKINS_JOB as downstream_job on downstream_build.job_id = downstream_job.id
+where downstream_job.full_name = 'xxx' and downstream_job.jenkins_master_id = 1 and  downstream_build.number = 248 and upstream_job.jenkins_master_id = 1
+
+Exceution time is several minutes
+
+QUERY PLAN                                                                                                                                            
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Unique  (cost=499.68..499.69 rows=1 width=37)                                                                                                         
+  ->  Sort  (cost=499.68..499.68 rows=1 width=37)                                                                                                     
+        Sort Key: upstream_job.full_name, upstream_build.number                                                                                       
+        ->  Nested Loop  (cost=2.26..499.67 rows=1 width=37)                                                                                          
+              Join Filter: (generated_maven_artifact.artifact_id = maven_artifact.id)                                                                 
+              ->  Nested Loop  (cost=1.84..499.21 rows=1 width=45)                                                                                    
+                    Join Filter: (downstream_build.id = maven_dependency.build_id)                                                                    
+                    ->  Nested Loop  (cost=1.28..143.13 rows=11 width=45)                                                                             
+                          ->  Nested Loop  (cost=0.85..135.19 rows=1 width=45)                                                                        
+                                ->  Nested Loop  (cost=0.57..132.25 rows=4 width=45)                                                                  
+                                      ->  Nested Loop  (cost=0.57..19.82 rows=1 width=4)                                                              
+                                            ->  Index Only Scan using idx_job_nex on jenkins_job downstream_job  (cost=0.28..8.30 rows=1 width=4)     
+                                                  Index Cond: ((full_name = 'xxx'::text) AND (jenkins_master_id = 1))                
+                                            ->  Index Scan using idx_jenkins_build on jenkins_build downstream_build  (cost=0.29..8.31 rows=1 width=8)
+                                                  Index Cond: ((job_id = downstream_job.id) AND (number = 248))                                       
+                                      ->  Seq Scan on jenkins_job upstream_job  (cost=0.00..81.58 rows=3086 width=41)                                 
+                                            Filter: (jenkins_master_id = 1)                                                                           
+                                ->  Index Scan using idx_jenkins_build on jenkins_build upstream_build  (cost=0.29..0.73 rows=1 width=12)             
+                                      Index Cond: ((job_id = upstream_job.id) AND (number = upstream_job.last_successful_build_number))               
+                          ->  Index Scan using idx_generated_build on generated_maven_artifact  (cost=0.42..7.21 rows=73 width=8)                     
+                                Index Cond: (build_id = upstream_build.id)                                                                            
+                                Filter: (NOT skip_downstream_triggers)                                                                                
+                    ->  Index Scan using idx_dependency_artifact on maven_dependency  (cost=0.56..19.91 rows=997 width=8)                             
+                          Index Cond: (artifact_id = generated_maven_artifact.artifact_id)                                                            
+                          Filter: (NOT ignore_upstream_triggers)                                                                                      
+              ->  Index Only Scan using maven_artifact_pkey on maven_artifact  (cost=0.43..0.45 rows=1 width=4)                                       
+                    Index Cond: (id = maven_dependency.artifact_id)                                                                                   

@@ -1,0 +1,74 @@
+        <com.microsoft.azure.AzureVMAgentTemplate>
+          <templateName>wintest</templateName>
+          <templateDesc>windowsy</templateDesc>
+          <labels>wintest</labels>
+          <location>East US</location>
+          <virtualMachineSize>Small</virtualMachineSize>
+          <storageAccountName>xxxxxxxxxxxxxxxxxxxxxxxx</storageAccountName>
+          <noOfParallelJobs>1</noOfParallelJobs>
+          <useAgentAlwaysIfAvail>NORMAL</useAgentAlwaysIfAvail>
+          <shutdownOnIdle>false</shutdownOnIdle>
+          <imageReferenceType>reference</imageReferenceType>
+          <image></image>
+          <osType>Windows</osType>
+          <imagePublisher>MicrosoftWindowsServer</imagePublisher>
+          <imageOffer>WindowsServer</imageOffer>
+          <imageSku>2016-Datacenter</imageSku>
+          <imageVersion>latest</imageVersion>
+          <agentLaunchMethod>JNLP</agentLaunchMethod>
+          <initScript>Set-ExecutionPolicy Unrestricted
+# Jenkins plugin will dynamically pass the server name and vm name.
+# If your jenkins server is configured for security , make sure to edit command for how slave executes
+# You may need to pass credentails or secret in the command , Refer to help by running &quot;java -jar slave.jar --help&quot;
+$jenkinsserverurl = $args[0]
+$vmname = $args[1]
+
+
+# Download the file to a specific location
+Write-Output &quot;Downloading zulu SDK &quot;
+$source = &quot;http://cdn.azul.com/zulu/bin/zulu8.19.0.1-jdk8.0.112-win_x64.zip?jenkins&quot;
+mkdir d:\azurecsdir
+$destination = &quot;d:\azurecsdir\zuluJDK.zip&quot;
+$wc = New-Object System.Net.WebClient
+$wc.DownloadFile($source, $destination)
+
+Write-Output &quot;Unzipping JDK &quot;
+# Unzip the file to specified location
+$shell_app=new-object -com shell.application
+$zip_file = $shell_app.namespace($destination)
+mkdir d:\java
+$destination = $shell_app.namespace(&quot;d:\java&quot;)
+$destination.Copyhere($zip_file.items())
+Write-Output &quot;Successfully downloaded and extracted JDK &quot;
+
+# Downloading jenkins slaves jar
+Write-Output &quot;Downloading jenkins slave jar &quot;
+$slaveSource = $jenkinsserverurl + &quot;jnlpJars/slave.jar&quot;
+$destSource = &quot;d:\java\slave.jar&quot;
+$wc = New-Object System.Net.WebClient
+$wc.DownloadFile($slaveSource, $destSource)
+
+# execute slave
+Write-Output &quot;Executing slave process &quot;
+$java=&quot;d:\java\zulu1.7.0_51-7.3.0.4-win64\bin\java.exe&quot;
+$jar=&quot;-jar&quot;
+$jnlpUrl=&quot;-jnlpUrl&quot;
+$serverURL=$jenkinsserverurl+&quot;computer/&quot; + $vmname + &quot;/slave-agent.jnlp&quot;
+$jnlpCredentialsFlag=&quot;-jnlpCredentials&quot;
+# syntax for credentials username:apitoken or username:password
+# you can get api token by clicking on your username --&gt; configure --&gt; show api token
+$credentials=&quot;directhex:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+&amp; $java $jar $destSource $jnlpCredentialsFlag $credentials $jnlpUrl $serverURL
+</initScript>
+          <credentialsId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</credentialsId>
+          <agentWorkspace>c:\j</agentWorkspace>
+          <retentionTimeInMin>20</retentionTimeInMin>
+          <virtualNetworkName></virtualNetworkName>
+          <subnetName></subnetName>
+          <jvmOptions></jvmOptions>
+          <templateDisabled>false</templateDisabled>
+          <templateStatusDetails></templateStatusDetails>
+          <templateVerified>true</templateVerified>
+          <executeInitScriptAsRoot>false</executeInitScriptAsRoot>
+          <doNotUseMachineIfInitFails>false</doNotUseMachineIfInitFails>
+        </com.microsoft.azure.AzureVMAgentTemplate>

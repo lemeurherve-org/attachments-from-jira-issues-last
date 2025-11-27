@@ -1,0 +1,36 @@
+Index: core/src/main/resources/hudson/matrix/MatrixProject/index.jelly
+===================================================================
+--- core/src/main/resources/hudson/matrix/MatrixProject/index.jelly	(revision 33551)
++++ core/src/main/resources/hudson/matrix/MatrixProject/index.jelly	(working copy)
+@@ -28,13 +28,27 @@
+     <st:include page="sidepanel.jelly" />
+     <l:main-panel>
+       <h1>${%Project} ${it.name}</h1>
+-      <t:editableDescription permission="${app.ADMINISTER}"/>
++      <t:editableDescription permission="${it.CONFIGURE}"/>
+ 
++      <j:if test="${it.disabled}">
++        <div class="warning">
++          <form method="post" action="enable">
++            ${%This project is currently disabled}
++            <l:hasPermission permission="${it.CONFIGURE}">
++              <f:submit value="${%Enable}" />
++            </l:hasPermission>
++          </form>
++        </div>
++      </j:if>
++      
++<!--      <t:editableDescription permission="${app.ADMINISTER}"/>-->
++
+       <st:include page="ajaxMatrix.jelly" />
+ 
+       <p:projectActionFloatingBox/>
+       <st:include page="jobpropertysummaries.jelly" />
+-      <p:upstream-downstream />
++      <st:include page="permalinks.jelly" />
++<!--      <p:upstream-downstream /> -->
+     </l:main-panel>
+   </l:layout>
+-</j:jelly>
+\ No newline at end of file
++</j:jelly>

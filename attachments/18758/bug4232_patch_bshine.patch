@@ -1,0 +1,40 @@
+Index: core/src/main/java/hudson/model/Computer.java
+===================================================================
+--- core/src/main/java/hudson/model/Computer.java	(revision 1174)
++++ core/src/main/java/hudson/model/Computer.java	(working copy)
+@@ -882,6 +882,16 @@
+ 
+             final Hudson app = Hudson.getInstance();
+ 
++            // Look for jobs which are tied to this node; we'll have to
++            // move them to the new node
++            List<AbstractProject> tiedProjects = getTiedJobs();
++//            for (AbstractProject proj : tiedProjects) {
++//                LOGGER.info("Careful; about to modify a node that has at least one tied job on it. Project name '" +
++//                proj.getName() + "'");
++//            }
++//            String oldComputerName = getName();
++
++            // result is a brand new Node matching the configSubmit request just submitted
+             Node result = getNode().getDescriptor().newInstance(req, req.getSubmittedForm());
+ 
+             // replace the old Node object by the new one
+@@ -893,8 +903,16 @@
+                     return;
+                 }
+ 
+-                nodes.set(i,result);
+-                app.setNodes(nodes);
++                nodes.set(i,result);     // This adds the node just created to the local list of nodes
++                app.setNodes(nodes);     // Actually (re) populates hudson.slaves
++
++                // Move the projects that had been tied to the old node onto the new node
++                for (AbstractProject proj : tiedProjects) {
++//                    LOGGER.info("Moving project '" + proj.getName()
++//                            + "' from old computer named '" + oldComputerName
++//                            + "' to new node named '" + result.getNodeName() + "'");
++                    proj.setAssignedLabel( result.getSelfLabel() ); 
++                }
+             }
+ 
+             // take the user back to the slave top page.

@@ -1,0 +1,79 @@
+00:00:00.220 MicrosoftAzureStorage - Container name: builds
+00:00:00.220 MicrosoftAzureStorage - share name: 
+00:00:00.220 MicrosoftAzureStorage - File path: release/build/xxx/**/*
+00:00:00.220 MicrosoftAzureStorage - Virtual path: 
+00:00:00.221 MicrosoftAzureStorage - Exclude path: 
+00:00:00.221 MicrosoftAzureStorage - Uploading files to Microsoft Azure
+00:01:27.432 ERROR: MicrosoftAzureStorage - Error occurred while uploading to Azure - xxx
+00:01:27.432 com.microsoftopentechnologies.windowsazurestorage.exceptions.WAStorageException: Fail to upload individual files to blob
+00:01:27.432 	at com.microsoftopentechnologies.windowsazurestorage.service.UploadToBlobService.uploadIndividuals(UploadToBlobService.java:151)
+00:01:27.432 	at com.microsoftopentechnologies.windowsazurestorage.service.UploadService.execute(UploadService.java:719)
+00:01:27.432 	at com.microsoftopentechnologies.windowsazurestorage.WAStoragePublisher.perform(WAStoragePublisher.java:438)
+00:01:27.432 	at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+00:01:27.432 	at hudson.tasks.BuildStepCompatibilityLayer.perform(BuildStepCompatibilityLayer.java:80)
+00:01:27.432 	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:32)
+00:01:27.432 	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:804)
+00:01:27.433 	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:753)
+00:01:27.433 	at hudson.model.Build$BuildExecution.post2(Build.java:177)
+00:01:27.433 	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:698)
+00:01:27.433 	at hudson.model.Run.execute(Run.java:1932)
+00:01:27.433 	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+00:01:27.433 	at hudson.model.ResourceController.execute(ResourceController.java:97)
+00:01:27.433 	at hudson.model.Executor.run(Executor.java:429)
+00:01:27.433 Caused by: java.io.IOException: java.util.concurrent.ExecutionException: com.microsoftopentechnologies.windowsazurestorage.exceptions.WAStorageException: Failed to upload xxx.zip with error code 400
+00:01:27.433 	at com.microsoftopentechnologies.windowsazurestorage.service.UploadService$UploadOnSlave.invoke(UploadService.java:373)
+00:01:27.433 	at com.microsoftopentechnologies.windowsazurestorage.service.UploadService$UploadOnSlave.invoke(UploadService.java:346)
+00:01:27.433 	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:3122)
+00:01:27.433 	at hudson.remoting.UserRequest.perform(UserRequest.java:211)
+00:01:27.433 	at hudson.remoting.UserRequest.perform(UserRequest.java:54)
+00:01:27.433 	at hudson.remoting.Request$2.run(Request.java:375)
+00:01:27.434 	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:73)
+00:01:27.434 	at java.util.concurrent.FutureTask.run(FutureTask.java:264)
+00:01:27.434 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+00:01:27.434 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+00:01:27.434 	at java.lang.Thread.run(Thread.java:829)
+00:01:27.434 	Suppressed: hudson.remoting.Channel$CallSiteStackTrace: Remote call to builder
+00:01:27.434 		at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1800)
+00:01:27.434 		at hudson.remoting.UserRequest$ExceptionResponse.retrieve(UserRequest.java:357)
+00:01:27.434 		at hudson.remoting.Channel.call(Channel.java:1001)
+00:01:27.434 		at hudson.FilePath.act(FilePath.java:1070)
+00:01:27.434 		at hudson.FilePath.act(FilePath.java:1059)
+00:01:27.434 		at com.microsoftopentechnologies.windowsazurestorage.service.UploadToBlobService.uploadIndividuals(UploadToBlobService.java:142)
+00:01:27.434 		at com.microsoftopentechnologies.windowsazurestorage.service.UploadService.execute(UploadService.java:719)
+00:01:27.434 		at com.microsoftopentechnologies.windowsazurestorage.WAStoragePublisher.perform(WAStoragePublisher.java:438)
+00:01:27.434 		at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+00:01:27.434 		at hudson.tasks.BuildStepCompatibilityLayer.perform(BuildStepCompatibilityLayer.java:80)
+00:01:27.434 		at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:32)
+00:01:27.434 		at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:804)
+00:01:27.434 		at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:753)
+00:01:27.434 		at hudson.model.Build$BuildExecution.post2(Build.java:177)
+00:01:27.434 		at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:698)
+00:01:27.434 		at hudson.model.Run.execute(Run.java:1932)
+00:01:27.435 		at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+00:01:27.435 		at hudson.model.ResourceController.execute(ResourceController.java:97)
+00:01:27.435 		at hudson.model.Executor.run(Executor.java:429)
+00:01:27.435 Caused by: java.util.concurrent.ExecutionException: com.microsoftopentechnologies.windowsazurestorage.exceptions.WAStorageException: Failed to upload xxx.zip with error code 400
+00:01:27.435 	at java.util.concurrent.FutureTask.report(FutureTask.java:122)
+00:01:27.435 	at java.util.concurrent.FutureTask.get(FutureTask.java:191)
+00:01:27.435 	at com.microsoftopentechnologies.windowsazurestorage.service.UploadService$UploadOnSlave.invoke(UploadService.java:370)
+00:01:27.435 	... 10 more
+00:01:27.435 Caused by: com.microsoftopentechnologies.windowsazurestorage.exceptions.WAStorageException: Failed to upload xxx.zip with error code 400
+00:01:27.435 	at com.microsoftopentechnologies.windowsazurestorage.service.UploadService$UploadThread.putBlob(UploadService.java:580)
+00:01:27.435 	at com.microsoftopentechnologies.windowsazurestorage.service.UploadService$UploadThread.call(UploadService.java:482)
+00:01:27.435 	at com.microsoftopentechnologies.windowsazurestorage.service.UploadService$UploadThread.call(UploadService.java:423)
+00:01:27.435 	... 4 more
+00:01:27.435 ERROR: Step ‘Upload artifacts to Microsoft Azure Storage’ aborted due to exception: 
+00:01:27.435 java.io.IOException: MicrosoftAzureStorage - Error occurred while uploading to Azure - xxx
+00:01:27.435 	at com.microsoftopentechnologies.windowsazurestorage.WAStoragePublisher.perform(WAStoragePublisher.java:469)
+00:01:27.435 	at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+00:01:27.435 	at hudson.tasks.BuildStepCompatibilityLayer.perform(BuildStepCompatibilityLayer.java:80)
+00:01:27.435 	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:32)
+00:01:27.435 	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:804)
+00:01:27.435 	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:753)
+00:01:27.435 	at hudson.model.Build$BuildExecution.post2(Build.java:177)
+00:01:27.435 	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:698)
+00:01:27.435 	at hudson.model.Run.execute(Run.java:1932)
+00:01:27.435 	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+00:01:27.435 	at hudson.model.ResourceController.execute(ResourceController.java:97)
+00:01:27.435 	at hudson.model.Executor.run(Executor.java:429)
+00:01:27.458 Finished: FAILURE

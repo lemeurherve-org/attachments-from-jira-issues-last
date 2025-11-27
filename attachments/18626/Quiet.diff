@@ -1,0 +1,524 @@
+Index: src/main/java/hudson/plugins/clearcase/AbstractClearCaseScm.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/AbstractClearCaseScm.java	(revision 18098)
++++ src/main/java/hudson/plugins/clearcase/AbstractClearCaseScm.java	(working copy)
+@@ -76,6 +76,8 @@
+     private final boolean useUpdate;
+     private final boolean removeViewOnRename;
+     private String excludedRegions;
++    private boolean useQuietPeriod;
++    private int quietPeriodValue;
+     
+     protected void setNormalizedViewName(String normalizedViewName) {
+         this.normalizedViewName = normalizedViewName;
+@@ -90,15 +92,20 @@
+                                 final boolean filterOutDestroySubBranchEvent,
+                                 final boolean useUpdate, 
+                                 final boolean rmviewonrename,
+-                                final String excludedRegions) {
++                                final String excludedRegions,
++                                final boolean useQuietPeriod,
++                                final int quietPeriodValue) {
+         this.viewName = viewName;
+         this.mkviewOptionalParam = mkviewOptionalParam;
+         this.filteringOutDestroySubBranchEvent = filterOutDestroySubBranchEvent;
+         this.useUpdate = useUpdate;
+         this.removeViewOnRename = rmviewonrename;
+         this.excludedRegions = excludedRegions;
++        this.useQuietPeriod = useQuietPeriod;
++        this.quietPeriodValue = quietPeriodValue;
+         createAndRegisterListener();
+     }
++
+     
+     /**
+      * Create a CheckOutAction that will be used by the checkout method.
+@@ -316,6 +323,8 @@
+ 			FilePath workspace, TaskListener listener) throws IOException,
+ 			InterruptedException {
+ 
++		// TODO : AntHillPro-style SCM Quiet Period
++		
+ 		Run lastBuild = project.getLastBuild();
+ 		if (lastBuild == null) {
+ 			return true;
+@@ -334,7 +343,8 @@
+ 
+ 		return historyAction.hasChanges(buildTime, normalizedViewName,
+ 				getBranchNames(), getViewPaths(workspace
+-						.child(normalizedViewName)));
++						.child(normalizedViewName)), useQuietPeriod,
++						(useQuietPeriod?quietPeriodValue:0));
+ 	}
+ 
+ 	/**
+@@ -420,6 +430,27 @@
+ 		return useUpdate;
+ 	}
+ 
++    /**
++     * Use a "Quiet Period" approach to be sure one's not in the middle of a
++     *   ClearCase operation.
++	 * 
++	 * @return value indicating whether we are using a quiet period or not
++	 */
++    public boolean isUseQuietPeriod()
++    {
++    	return useQuietPeriod;
++    }
++    /**
++     * Use a "Quiet Period" approach to be sure one's not in the middle of a
++     *   ClearCase operation.
++	 * 
++	 * @return quiet period in seconds
++	 */
++    public int getQuietPeriodValue()
++    {
++    	return quietPeriodValue;
++    }
++    
+     public boolean isRemoveViewOnRename() {
+         return removeViewOnRename;
+     }
+Index: src/main/java/hudson/plugins/clearcase/action/DefaultPollAction.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/action/DefaultPollAction.java	(revision 18098)
++++ src/main/java/hudson/plugins/clearcase/action/DefaultPollAction.java	(working copy)
+@@ -43,24 +43,36 @@
+     
+     private ClearTool cleartool;
+     protected List<Filter> filters;
++    private boolean usingSCMQuietPeriod;
+     
+     public DefaultPollAction(ClearTool cleartool,List<Filter> filters) {
+         this.cleartool = cleartool;
+         this.filters = filters;
+     }
+ 
++    public boolean getChanges(Date time, String viewName, String[] branchNames, String[] viewPaths) throws IOException, InterruptedException {
++    	return getChanges(time,viewName,branchNames,viewPaths,false);
++    }
++    
+     @Override
+-    public boolean getChanges(Date time, String viewName, String[] branchNames, String[] viewPaths) throws IOException, InterruptedException {
++    // Meta-function
++    public boolean getChanges(Date time, String viewName, String[] branchNames, String[] viewPaths, boolean usingSCMQuietPeriod) throws IOException, InterruptedException {
+         boolean hasChanges = false;
++        this.usingSCMQuietPeriod = usingSCMQuietPeriod;
+         ClearToolFormatHandler historyHandler = getHistoryFormatHandler();
+ 
+         for (int i = 0; (i < branchNames.length) && (!hasChanges); i++) {
+             String branchName = branchNames[i];
+ 
+             Reader lshistoryOutput = cleartool.lshistory(historyHandler.getFormat(), time, viewName, branchName, viewPaths);
+-
++            
+             if (parseHistoryOutputForChanges(new BufferedReader(lshistoryOutput))) {
+                 hasChanges = true;
++                
++                if(this.usingSCMQuietPeriod)
++                	cleartool.getLauncher().getListener().getLogger().append("SCM quiet period active. Running again in 5 seconds\nto ensure no current delivery.");
++                else
++                	cleartool.getLauncher().getListener().getLogger().append("SCM quiet period inactive.");
+             }
+             lshistoryOutput.close();
+         } 
+Index: src/main/java/hudson/plugins/clearcase/action/PollAction.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/action/PollAction.java	(revision 18098)
++++ src/main/java/hudson/plugins/clearcase/action/PollAction.java	(working copy)
+@@ -43,5 +43,5 @@
+      * @param viewPaths optional vob paths
+      * @return true, if the ClearCase repository has changes; false, otherwise.
+      */
+-    boolean getChanges(Date time, String viewName, String[] branchNames, String[] viewPaths) throws IOException, InterruptedException;
++    boolean getChanges(Date time, String viewName, String[] branchNames, String[] viewPaths, boolean usingSCMQuietPeriod) throws IOException, InterruptedException;
+ }
+Index: src/main/java/hudson/plugins/clearcase/ClearCaseSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/ClearCaseSCM.java	(revision 18098)
++++ src/main/java/hudson/plugins/clearcase/ClearCaseSCM.java	(working copy)
+@@ -94,10 +94,10 @@
+                             String viewdrive, String mkviewoptionalparam,
+                             boolean filterOutDestroySubBranchEvent,
+                             boolean doNotUpdateConfigSpec, boolean rmviewonrename,
+-                            String excludedRegions) {
++                            String excludedRegions, boolean useQuietPeriod, int quietPeriodValue) {
+ 		super(viewname, mkviewoptionalparam, filterOutDestroySubBranchEvent,
+                       (!usedynamicview) && useupdate, rmviewonrename,
+-                      excludedRegions);
++                      excludedRegions, useQuietPeriod, quietPeriodValue);
+ 		this.branch = branch;
+ 		this.configSpec = configspec;
+ 		this.vobPaths = vobpaths;
+@@ -111,10 +111,11 @@
+                             boolean useupdate, String vobpaths, boolean usedynamicview,
+                             String viewdrive, String mkviewoptionalparam,
+                             boolean filterOutDestroySubBranchEvent,
+-                            boolean doNotUpdateConfigSpec, boolean rmviewonrename) {
++                            boolean doNotUpdateConfigSpec, boolean rmviewonrename,
++                            boolean useQuietPeriod, int quietPeriodValue) {
+             this(branch, configspec, viewname, useupdate, vobpaths, usedynamicview, viewdrive,
+                  mkviewoptionalparam, filterOutDestroySubBranchEvent, doNotUpdateConfigSpec, 
+-                 rmviewonrename, "");
++                 rmviewonrename, "", useQuietPeriod, quietPeriodValue);
+         }
+ 
+ 
+@@ -324,6 +325,10 @@
+ 
+ 		@Override
+ 		public SCM newInstance(StaplerRequest req) throws FormException {
++			String quietPeriodValueString = req.getParameter("cc.quietPeriodValue");
++			int quietPeriodValue = 0;
++			if(quietPeriodValueString != null && !quietPeriodValueString.isEmpty())
++				quietPeriodValue = Integer.parseInt(quietPeriodValueString);
+ 			AbstractClearCaseScm scm = new ClearCaseSCM(
+ 					req.getParameter("cc.branch"),
+ 					req.getParameter("cc.configspec"),
+@@ -336,8 +341,9 @@
+ 					req.getParameter("cc.filterOutDestroySubBranchEvent") != null,
+ 					req.getParameter("cc.doNotUpdateConfigSpec") != null,
+ 					req.getParameter("cc.rmviewonrename") != null,
+-                                        req.getParameter("cc.excludedRegions")
+-                                                                    );			
++                    req.getParameter("cc.excludedRegions"),
++                    req.getParameter("cc.quietperiod") != null,
++                    quietPeriodValue);			
+ 			return scm;
+ 		}
+ 
+Index: src/main/java/hudson/plugins/clearcase/ClearCaseUcmSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/ClearCaseUcmSCM.java	(revision 18098)
++++ src/main/java/hudson/plugins/clearcase/ClearCaseUcmSCM.java	(working copy)
+@@ -72,10 +72,10 @@
+ 	public ClearCaseUcmSCM(String stream, String loadrules, String viewname,
+ 			boolean usedynamicview, String viewdrive,
+ 			String mkviewoptionalparam, boolean filterOutDestroySubBranchEvent,
+-                               boolean useUpdate, boolean rmviewonrename,
+-                               String excludedRegions) {
++               boolean useUpdate, boolean rmviewonrename, String excludedRegions,
++               boolean useQuietPeriod, int quietPeriodValue) {
+ 		super(viewname, mkviewoptionalparam, filterOutDestroySubBranchEvent,
+-                      useUpdate, rmviewonrename, excludedRegions);
++                      useUpdate, rmviewonrename, excludedRegions, useQuietPeriod, quietPeriodValue);
+ 		this.stream = shortenStreamName(stream);
+ 		this.loadRules = loadrules;
+ 		this.useDynamicView = usedynamicview;
+@@ -86,9 +86,10 @@
+ 	public ClearCaseUcmSCM(String stream, String loadrules, String viewname,
+ 			boolean usedynamicview, String viewdrive,
+ 			String mkviewoptionalparam, boolean filterOutDestroySubBranchEvent,
+-                               boolean useUpdate, boolean rmviewonrename) {
++                               boolean useUpdate, boolean rmviewonrename,
++                               boolean useQuietPeriod, int quietPeriodValue) {
+             this(stream, loadrules, viewname, usedynamicview, viewdrive, mkviewoptionalparam,
+-                 filterOutDestroySubBranchEvent, useUpdate, rmviewonrename, "");
++                 filterOutDestroySubBranchEvent, useUpdate, rmviewonrename, "", useQuietPeriod, quietPeriodValue);
+         }
+ 
+ 	/**
+@@ -269,6 +270,10 @@
+ 
+ 		@Override
+ 		public SCM newInstance(StaplerRequest req) throws FormException {
++			String quietPeriodValueString = req.getParameter("ucm.quietperiodvalue");
++			int quietPeriodValue = 0;
++			if(quietPeriodValueString != null && !quietPeriodValueString.isEmpty())
++				quietPeriodValue = Integer.parseInt(quietPeriodValueString);
+ 			ClearCaseUcmSCM scm = new ClearCaseUcmSCM(
+ 					req.getParameter("ucm.stream"),
+ 					req.getParameter("ucm.loadrules"),
+@@ -279,8 +284,9 @@
+ 					req.getParameter("ucm.filterOutDestroySubBranchEvent") != null,
+ 					req.getParameter("ucm.useupdate") != null,
+ 					req.getParameter("ucm.rmviewonrename") != null,
+-                                        req.getParameter("ucm.excludedRegions")
+-                                                                  );
++                    req.getParameter("ucm.excludedRegions"),
++                    req.getParameter("ucm.usequietperiod")!= null,
++                    quietPeriodValue);
+ 			return scm;
+ 		}
+ 	}
+Index: src/main/java/hudson/plugins/clearcase/history/AbstractHistoryAction.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/history/AbstractHistoryAction.java	(revision 18098)
++++ src/main/java/hudson/plugins/clearcase/history/AbstractHistoryAction.java	(working copy)
+@@ -46,6 +46,8 @@
+     protected ClearTool cleartool;
+     protected List<Filter> filters;
+     protected String extendedViewPath;
++    
++    private final int defaultQuietPeriod = 5;
+ 
+     public AbstractHistoryAction(ClearTool cleartool, List<Filter> filters) {
+         this.cleartool = cleartool;
+@@ -53,14 +55,74 @@
+ 
+     }
+     
+-    @Override
+-    public boolean hasChanges(Date time, String viewName, String[] branchNames, String[] viewPaths) throws IOException, InterruptedException {
++    @SuppressWarnings("deprecation")
++	@Override
++    public boolean hasChanges(Date time, String viewName, String[] branchNames, String[] viewPaths, boolean usingSCMQuietPeriod, int quietPeriod) throws IOException, InterruptedException {
++        boolean changesDetected = false;
++        boolean operationHasEnded = false;
+         List<HistoryEntry> entries = runLsHistory(time,viewName,branchNames,viewPaths); 
+         List<HistoryEntry> filtered = filterEntries(entries);
++        
++        final int actualQuietPeriod = (quietPeriod==0?defaultQuietPeriod:quietPeriod);
++        
++        // Short If statement to get the value we want quickly.
++        changesDetected = (filtered.size()==0?false:true);
++        
++        if(usingSCMQuietPeriod && changesDetected == true)
++        {	
++        	cleartool.getLauncher().getListener().getLogger().append("SCM Quiet Period active.\n");
++        	
++        	Date localTime = new Date();
++        	localTime.setSeconds(localTime.getSeconds()-5);
+ 
+-        return filtered.size() > 0;
++        	filtered = getRecentEntries(localTime,viewName,branchNames,viewPaths);
++        	
++        	if(filtered.size()==0)
++        		operationHasEnded = true;
++        	else
++        		cleartool.getLauncher().getListener().getLogger().append("Running again in "+ Integer.toString(actualQuietPeriod) +" seconds to ensure no current delivery.\n");
++        	
++        	while(!operationHasEnded)
++        	{
++        		Thread.sleep(getQuietTimeValue(actualQuietPeriod));
+ 
++            	localTime = new Date();
++            	localTime.setSeconds(localTime.getSeconds()-5);
++
++            	cleartool.getLauncher().getListener().getLogger().append("Awoke. ");
++            	filtered = getRecentEntries(localTime,viewName,branchNames,viewPaths);
++            	
++            	if(filtered.size()!=0)
++                	cleartool.getLauncher().getListener().getLogger().append("Recent/New changes since last polling. Sleeping for " + Integer.toString(actualQuietPeriod) + " seconds.\n");
++        		else
++                	operationHasEnded = true;
++        	}
++        	
++        	if(operationHasEnded)
++            	cleartool.getLauncher().getListener().getLogger().append("No new or recent changes since last polling. Continuing.\n");
++        }
++        else if(usingSCMQuietPeriod && changesDetected == false)
++        	cleartool.getLauncher().getListener().getLogger().append("SCM Quiet Period active. No changes found. Skipping.\n");
++        else
++        	cleartool.getLauncher().getListener().getLogger().append("SCM Quiet Period inactive.\n");
++
++        return changesDetected;
++
+     }
++    
++    private List<HistoryEntry> getRecentEntries(Date time, String viewName, String[] branchNames, String[] viewPaths) throws IOException, InterruptedException {
++    	cleartool.getLauncher().getListener().getLogger().append("Checking if there are any recent/new operations.\n");
++    	
++    	List<HistoryEntry> localEntries = runLsHistory(time,viewName,branchNames,viewPaths); 
++        List<HistoryEntry> localFiltered = filterEntries(localEntries);
++		
++    	return localFiltered;
++    }
++    
++    private int getQuietTimeValue(int quietPeriodSeconds)
++    {
++    	return quietPeriodSeconds*1000;
++    }
+ 
+     @Override
+     public List<? extends Entry> getChanges(Date time, String viewName, String[] branchNames, String[] viewPaths) throws IOException, InterruptedException {
+Index: src/main/java/hudson/plugins/clearcase/history/HistoryAction.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/history/HistoryAction.java	(revision 18098)
++++ src/main/java/hudson/plugins/clearcase/history/HistoryAction.java	(working copy)
+@@ -47,9 +47,11 @@
+      * @param viewName the name of the view
+      * @param branchNames the branch names
+      * @param viewPaths optional vob paths
++     * @param usingSCMQuietPeriod whether we are using a quiet period - or not
++     * @param quietPeriod provided we are using a quiet period, this is our waiting time (in seconds)
+      * @return true, if the ClearCase repository has changes; false, otherwise.
+      */
+-    public boolean hasChanges(Date time, String viewName, String[] branchNames, String[] viewPaths) throws IOException, InterruptedException;
++    public boolean hasChanges(Date time, String viewName, String[] branchNames, String[] viewPaths, boolean usingSCMQuietPeriod, int quietPeriod) throws IOException, InterruptedException;
+ 
+     /**
+      * Returns if the repository has any changes since the specified time
+Index: src/main/java/hudson/plugins/clearcase/ucm/UcmMakeBaselineComposite.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/ucm/UcmMakeBaselineComposite.java	(revision 18098)
++++ src/main/java/hudson/plugins/clearcase/ucm/UcmMakeBaselineComposite.java	(working copy)
+@@ -56,7 +56,6 @@
+  */
+ public class UcmMakeBaselineComposite extends Publisher {
+ 
+-
+     public final static Descriptor<Publisher> DESCRIPTOR = new UcmMakeBaselineDescriptor();
+ 
+     private final String compositeNamePattern;    
+@@ -64,7 +63,6 @@
+     private final String compositeComponentName;
+     private final boolean extractInfoFile;
+     private final String fileName;
+-        
+ 
+ 	public String getCompositeNamePattern(){
+ 		return compositeNamePattern;
+@@ -82,7 +80,6 @@
+         return this.fileName;
+     }	
+ 	
+-    
+     public static final class UcmMakeBaselineDescriptor extends
+             Descriptor<Publisher> {
+ 
+@@ -138,7 +135,6 @@
+ 
+         return true;
+     }
+-        
+ 
+     @SuppressWarnings("unchecked")
+     @Override
+@@ -189,13 +185,10 @@
+ 		return true;
+ 	}
+ 
+-
+     public Descriptor<Publisher> getDescriptor() {
+         return DESCRIPTOR;
+     }
+ 
+-
+-
+     /**
+      * Retrieve all Clearcase UCM component (with pvob suffix) for a stream
+      * 
+@@ -230,7 +223,6 @@
+         return result;
+     }
+     
+-    
+     /**
+ 	 * Pick up a view from a stream
+ 	 * 
+@@ -261,7 +253,6 @@
+         
+     }
+ 
+-    
+     /**
+      * Make a composite baseline 
+      * 
+@@ -324,10 +315,6 @@
+ 
+     }
+ 
+-    
+-    
+-    
+-    
+     /**
+      * Promote the composite baseline
+      * 
+@@ -351,7 +338,6 @@
+         clearToolLauncher.run(cmd.toCommandArray(), null, null, filePath);
+     }   
+     
+-    
+     /**
+      * Retrieve the binding component for the current baseline
+      * @param baseline the current baseline
+@@ -380,8 +366,6 @@
+     		return cleartoolResult;	
+    }  
+ 
+-
+-   
+     /**
+      * Extract Composite baseline information in an external file
+      * @param compositeComponnentName
+@@ -438,5 +422,4 @@
+         
+     }   
+ 
+-    
+ }
+Index: src/main/resources/hudson/plugins/clearcase/ClearCaseSCM/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/clearcase/ClearCaseSCM/config.jelly	(revision 18098)
++++ src/main/resources/hudson/plugins/clearcase/ClearCaseSCM/config.jelly	(working copy)
+@@ -56,6 +56,21 @@
+       <f:entry title="Additional mkview arguments" help="/plugin/clearcase/mkviewoptionalparam.html">
+         <f:expandableTextbox name="cc.mkviewoptionalparam" value="${scm.mkviewOptionalParam}"/>
+       </f:entry>
++      
++	  <!-- <f:entry title="SCM Polling Quiet period" description="${%pollQuietDescription}" help="/plugin/clearcase/pollquiet.html">
++		  <f:checkbox name="cc.quietperiod" checked="${scm.useQuietPeriod}"/>
++	  </f:entry -->
++	  
++	  <f:optionalBlock name="cc.quietperiod" title="SCM Polling Quiet period"
++		help="/plugin/clearcase/pollquiet.html" checked="${h.defaultToFalse(scm.useQuietPeriod)}" >
++          <f:entry title="Quiet period (in seconds)">
++        	<!--<f:textbox name="cc.quietPeriodValue" value="${scm.quietPeriodValue}" />-->
++		    <input class="setting-input" name="cc.quietperiodvalue"
++		      type="text" value="${h.defaulted(scm.quietPeriodValue, '5')}"/>
++          </f:entry>
++	  </f:optionalBlock>
++	  
++	  
+       <f:entry title="Filter 'Destroy sub branch' event" help="/plugin/clearcase/filteroutdestroysubbranchevent.html">
+ 		<f:checkbox name="cc.filterOutDestroySubBranchEvent" checked="${scm.filteringOutDestroySubBranchEvent}"/>
+       			If checked, Hudson will filter out <i>'Destroy sub-branch "BRANCHNAME" of branch'</i> events when polling
+Index: src/main/resources/hudson/plugins/clearcase/ClearCaseUcmSCM/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/clearcase/ClearCaseUcmSCM/config.jelly	(revision 18098)
++++ src/main/resources/hudson/plugins/clearcase/ClearCaseUcmSCM/config.jelly	(working copy)
+@@ -56,6 +56,19 @@
+ 			<f:expandableTextbox name="ucm.mkviewoptionalparam" value="${scm.mkviewOptionalParam}" />
+ 		</f:entry>
+ 		
++	  <!--<f:entry title="SCM Polling Quiet period" description="${%pollQuietDescription}" help="/plugin/clearcase/pollquiet.html">
++	    <f:checkbox name="ucm.quietperiod" checked="${scm.useQuietPeriod}"/>
++	  </f:entry>-->
++	  
++	  <f:optionalBlock name="ucm.usequietperiod" title="SCM Polling Quiet period"
++	    help="/plugin/clearcase/pollquiet.html" checked="${h.defaultToFalse(scm.useQuietPeriod)}" >
++          <f:entry title="Quiet period (in seconds)">
++        	<!--<f:textbox name="ucm.quietperiodvalue" value="${scm.quietPeriodValue}" />-->
++		    <input class="setting-input" name="ucm.quietperiodvalue"
++		      type="text" value="${h.defaulted(scm.quietPeriodValue, '5')}"/>
++          </f:entry>
++	  </f:optionalBlock>
++		
+ 		<f:entry title="Use update">
+ 			<f:checkbox name="ucm.useupdate" checked="${h.defaultToTrue(scm.useUpdate)}"/>
+       		If checked, Hudson will use 'cleartool update' whenever possible, making the build faster.
+Index: src/test/java/hudson/plugins/clearcase/action/DefaultPollActionTest.java
+===================================================================
+--- src/test/java/hudson/plugins/clearcase/action/DefaultPollActionTest.java	(revision 18098)
++++ src/test/java/hudson/plugins/clearcase/action/DefaultPollActionTest.java	(working copy)
+@@ -68,7 +68,7 @@
+         });
+         
+         DefaultPollAction action = new BasePollAction(cleartool,null);
+-        boolean hasChange = action.getChanges(null, "view", new String[]{"branchone", "branchtwo"}, new String[]{"vobpath"});
++        boolean hasChange = action.getChanges(null, "view", new String[]{"branchone", "branchtwo"}, new String[]{"vobpath"},false);
+         assertTrue("The getChanges() method did not report a change", hasChange);        
+         context.assertIsSatisfied();
+     }
+@@ -100,7 +100,7 @@
+         });
+         
+         DefaultPollAction action = new BasePollAction(cleartool,null);
+-        boolean hasChange = action.getChanges(null, "view", new String[]{"branch"}, new String[]{"vobpath"});
++        boolean hasChange = action.getChanges(null, "view", new String[]{"branch"}, new String[]{"vobpath"},false);
+         assertTrue("The getChanges() method did not report a change", hasChange);        
+         context.assertIsSatisfied();
+     }

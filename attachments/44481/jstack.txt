@@ -1,0 +1,195 @@
+2018-09-14 05:17:44
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.171-b11 mixed mode):
+
+"Attach Listener" #16 daemon prio=9 os_prio=64 tid=0x0000000000e42800 nid=0x14 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"pool-1-thread-3" #14 daemon prio=5 os_prio=64 tid=0x0000000000d57000 nid=0x12 waiting for monitor entry [0xfffffd7fe3efd000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at org.jenkinsci.remoting.protocol.FilterLayer.onRecvRemoved(FilterLayer.java:134)
+	- waiting to lock <0x0000000784a00fc0> (a org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.getNextRecv(ProtocolStack.java:929)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecv(ProtocolStack.java:663)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.processRead(SSLEngineFilterLayer.java:369)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.onRecv(SSLEngineFilterLayer.java:117)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecv(ProtocolStack.java:669)
+	at org.jenkinsci.remoting.protocol.NetworkLayer.onRead(NetworkLayer.java:136)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer.access$2200(BIONetworkLayer.java:48)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader.run(BIONetworkLayer.java:283)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:93)
+	at hudson.remoting.Engine$1$$Lambda$5/613009671.run(Unknown Source)
+	at java.lang.Thread.run(Thread.java:748)
+
+"Windows IOHub Watcher for IOHub#1: Selector[keys:0, gen:0] / pool-1-thread-2" #13 daemon prio=5 os_prio=64 tid=0x0000000000cef000 nid=0x11 in Object.wait() [0xfffffd7fe3ffe000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.jenkinsci.remoting.protocol.IOHub$IOHubSelectorWatcher.run(IOHub.java:549)
+	- locked <0x0000000784a08178> (a java.lang.Object)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:93)
+	at hudson.remoting.Engine$1$$Lambda$5/613009671.run(Unknown Source)
+	at java.lang.Thread.run(Thread.java:748)
+
+"IOHub#1: Selector[keys:0, gen:0] / pool-1-thread-1" #12 daemon prio=5 os_prio=64 tid=0x0000000000ceb000 nid=0x10 runnable [0xfffffd7fe43fe000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.DevPollArrayWrapper.poll0(Native Method)
+	at sun.nio.ch.DevPollArrayWrapper.poll(DevPollArrayWrapper.java:223)
+	at sun.nio.ch.DevPollSelectorImpl.doSelect(DevPollSelectorImpl.java:98)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	- locked <0x0000000784a0a678> (a sun.nio.ch.Util$3)
+	- locked <0x0000000784a0a668> (a java.util.Collections$UnmodifiableSet)
+	- locked <0x0000000784a0a530> (a sun.nio.ch.DevPollSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.jenkinsci.remoting.protocol.IOHub.run(IOHub.java:461)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:93)
+	at hudson.remoting.Engine$1$$Lambda$5/613009671.run(Unknown Source)
+	at java.lang.Thread.run(Thread.java:748)
+
+"Thread-2" #11 prio=5 os_prio=64 tid=0x0000000000cd1000 nid=0xf waiting on condition [0xfffffd7fe47fe000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000784a4ac68> (a java.util.concurrent.locks.ReentrantReadWriteLock$NonfairSync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireShared(AbstractQueuedSynchronizer.java:967)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireShared(AbstractQueuedSynchronizer.java:1283)
+	at java.util.concurrent.locks.ReentrantReadWriteLock$ReadLock.lock(ReentrantReadWriteLock.java:727)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.remove(ProtocolStack.java:755)
+	at org.jenkinsci.remoting.protocol.FilterLayer.completed(FilterLayer.java:108)
+	- locked <0x0000000784a00fc0> (a org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer)
+	at org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer.complete(ConnectionHeadersFilterLayer.java:363)
+	at org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer.doSend(ConnectionHeadersFilterLayer.java:499)
+	- locked <0x0000000784a00fc0> (a org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.doSend(ProtocolStack.java:692)
+	at org.jenkinsci.remoting.protocol.ApplicationLayer.write(ApplicationLayer.java:157)
+	at org.jenkinsci.remoting.protocol.impl.ChannelApplicationLayer.start(ChannelApplicationLayer.java:230)
+	at org.jenkinsci.remoting.protocol.ProtocolStack.init(ProtocolStack.java:201)
+	at org.jenkinsci.remoting.protocol.ProtocolStack.access$700(ProtocolStack.java:106)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Builder.build(ProtocolStack.java:554)
+	at org.jenkinsci.remoting.engine.JnlpProtocol4Handler.connect(JnlpProtocol4Handler.java:179)
+	at org.jenkinsci.remoting.engine.JnlpProtocolHandler.connect(JnlpProtocolHandler.java:157)
+	at hudson.remoting.Engine.innerRun(Engine.java:573)
+	at hudson.remoting.Engine.run(Engine.java:474)
+
+"MultiThreadedHttpConnectionManager cleanup" #9 daemon prio=5 os_prio=64 tid=0x0000000000c2c800 nid=0xd in Object.wait() [0xfffffd7ffcaf5000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	- waiting on <0x0000000784aa4f68> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	- locked <0x0000000784aa4f68> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	at shaded.org.apache.commons.httpclient.MultiThreadedHttpConnectionManager$ReferenceQueueThread.run(MultiThreadedHttpConnectionManager.java:1122)
+
+"Service Thread" #7 daemon prio=9 os_prio=64 tid=0x0000000000668000 nid=0xb runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C1 CompilerThread1" #6 daemon prio=9 os_prio=64 tid=0x0000000000666800 nid=0xa waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread0" #5 daemon prio=9 os_prio=64 tid=0x0000000000617000 nid=0x9 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Signal Dispatcher" #4 daemon prio=9 os_prio=64 tid=0x0000000000616000 nid=0x8 runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" #3 daemon prio=8 os_prio=64 tid=0x00000000005d8800 nid=0x7 in Object.wait() [0xfffffd7ffd0fb000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:143)
+	- locked <0x0000000784aa5a90> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:164)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:212)
+
+"Reference Handler" #2 daemon prio=10 os_prio=64 tid=0x00000000005d4000 nid=0x6 in Object.wait() [0xfffffd7ffd1fc000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:502)
+	at java.lang.ref.Reference.tryHandlePending(Reference.java:191)
+	- locked <0x0000000784aa5cc0> (a java.lang.ref.Reference$Lock)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:153)
+
+"main" #1 prio=5 os_prio=64 tid=0x0000000000420000 nid=0x2 in Object.wait() [0xfffffd7fff1be000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	- waiting on <0x0000000784a012c0> (a hudson.remoting.Engine)
+	at java.lang.Thread.join(Thread.java:1252)
+	- locked <0x0000000784a012c0> (a hudson.remoting.Engine)
+	at java.lang.Thread.join(Thread.java:1326)
+	at hudson.remoting.jnlp.Main.main(Main.java:230)
+	at hudson.remoting.jnlp.Main._main(Main.java:223)
+	at hudson.remoting.jnlp.Main.main(Main.java:189)
+	at hudson.plugins.swarm.SwarmClient.connect(SwarmClient.java:316)
+	at hudson.plugins.swarm.Client.run(Client.java:167)
+	at hudson.plugins.swarm.Client.main(Client.java:119)
+
+"VM Thread" os_prio=64 tid=0x00000000005cd000 nid=0x5 runnable 
+
+"GC task thread#0 (ParallelGC)" os_prio=64 tid=0x0000000000432000 nid=0x3 runnable 
+
+"GC task thread#1 (ParallelGC)" os_prio=64 tid=0x0000000000433800 nid=0x4 runnable 
+
+"VM Periodic Task Thread" os_prio=64 tid=0x000000000066e800 nid=0xc waiting on condition 
+
+JNI global references: 242
+
+
+Found one Java-level deadlock:
+=============================
+"pool-1-thread-3":
+  waiting to lock monitor 0x0000000000d12970 (object 0x0000000784a00fc0, a org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer),
+  which is held by "Thread-2"
+"Thread-2":
+  waiting for ownable synchronizer 0x0000000784a4ac68, (a java.util.concurrent.locks.ReentrantReadWriteLock$NonfairSync),
+  which is held by "pool-1-thread-3"
+
+Java stack information for the threads listed above:
+===================================================
+"pool-1-thread-3":
+	at org.jenkinsci.remoting.protocol.FilterLayer.onRecvRemoved(FilterLayer.java:134)
+	- waiting to lock <0x0000000784a00fc0> (a org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.getNextRecv(ProtocolStack.java:929)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecv(ProtocolStack.java:663)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.processRead(SSLEngineFilterLayer.java:369)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.onRecv(SSLEngineFilterLayer.java:117)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecv(ProtocolStack.java:669)
+	at org.jenkinsci.remoting.protocol.NetworkLayer.onRead(NetworkLayer.java:136)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer.access$2200(BIONetworkLayer.java:48)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader.run(BIONetworkLayer.java:283)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:93)
+	at hudson.remoting.Engine$1$$Lambda$5/613009671.run(Unknown Source)
+	at java.lang.Thread.run(Thread.java:748)
+"Thread-2":
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000784a4ac68> (a java.util.concurrent.locks.ReentrantReadWriteLock$NonfairSync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireShared(AbstractQueuedSynchronizer.java:967)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireShared(AbstractQueuedSynchronizer.java:1283)
+	at java.util.concurrent.locks.ReentrantReadWriteLock$ReadLock.lock(ReentrantReadWriteLock.java:727)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.remove(ProtocolStack.java:755)
+	at org.jenkinsci.remoting.protocol.FilterLayer.completed(FilterLayer.java:108)
+	- locked <0x0000000784a00fc0> (a org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer)
+	at org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer.complete(ConnectionHeadersFilterLayer.java:363)
+	at org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer.doSend(ConnectionHeadersFilterLayer.java:499)
+	- locked <0x0000000784a00fc0> (a org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.doSend(ProtocolStack.java:692)
+	at org.jenkinsci.remoting.protocol.ApplicationLayer.write(ApplicationLayer.java:157)
+	at org.jenkinsci.remoting.protocol.impl.ChannelApplicationLayer.start(ChannelApplicationLayer.java:230)
+	at org.jenkinsci.remoting.protocol.ProtocolStack.init(ProtocolStack.java:201)
+	at org.jenkinsci.remoting.protocol.ProtocolStack.access$700(ProtocolStack.java:106)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Builder.build(ProtocolStack.java:554)
+	at org.jenkinsci.remoting.engine.JnlpProtocol4Handler.connect(JnlpProtocol4Handler.java:179)
+	at org.jenkinsci.remoting.engine.JnlpProtocolHandler.connect(JnlpProtocolHandler.java:157)
+	at hudson.remoting.Engine.innerRun(Engine.java:573)
+	at hudson.remoting.Engine.run(Engine.java:474)
+
+Found 1 deadlock.
+

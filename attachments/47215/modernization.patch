@@ -1,0 +1,172 @@
+diff --git a/pom.xml b/pom.xml
+index 74534ae..97f9988 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -4,7 +4,7 @@
+     <parent>
+         <groupId>org.jenkins-ci.plugins</groupId>
+         <artifactId>plugin</artifactId>
+-        <version>1.480</version>
++        <version>3.43</version>
+     </parent>
+ 
+     <artifactId>darcs</artifactId>
+@@ -92,6 +92,7 @@
+     <properties>
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+         <compileTarget>1.6</compileTarget>
++        <java.level>8</java.level>
+     </properties>
+ 
+     <repositories>
+@@ -118,8 +119,8 @@
+     <dependencies>
+         <dependency>
+             <groupId>org.mockito</groupId>
+-            <artifactId>mockito-all</artifactId>
+-            <version>1.8.5</version>
++            <artifactId>mockito-core</artifactId>
++            <version>2.27.0</version>
+             <scope>test</scope>
+         </dependency>
+     </dependencies>
+@@ -163,6 +164,7 @@
+                     <logViolationsToConsole>true</logViolationsToConsole>
+                     <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                 </configuration>
++                <version>2.17</version>
+             </plugin>
+             <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+@@ -372,5 +374,5 @@
+                 </configuration>
+             </plugin>
+         </plugins>
+-    </build>
++      </build>
+ </project>
+diff --git a/src/main/java/org/jenkinsci/plugins/darcs/DarcsScm.java b/src/main/java/org/jenkinsci/plugins/darcs/DarcsScm.java
+index ff7b122..f2ec58e 100644
+--- a/src/main/java/org/jenkinsci/plugins/darcs/DarcsScm.java
++++ b/src/main/java/org/jenkinsci/plugins/darcs/DarcsScm.java
+@@ -12,7 +12,7 @@ package org.jenkinsci.plugins.darcs;
+ import org.jenkinsci.plugins.darcs.browsers.DarcsRepositoryBrowser;
+ import hudson.EnvVars;
+ import hudson.FilePath;
+-import hudson.FilePath.FileCallable;
++import jenkins.MasterToSlaveFileCallable;
+ import hudson.Launcher;
+ import hudson.Launcher.LocalLauncher;
+ import hudson.init.InitMilestone;
+@@ -299,7 +299,7 @@ public class DarcsScm extends SCM implements Serializable {
+     public boolean checkout(final AbstractBuild<?, ?> build, final Launcher launcher, final FilePath workspace,
+             final BuildListener listener, final File changelogFile) throws IOException, InterruptedException {
+         final FilePath localPath = createLocalPath(workspace);
+-        final boolean existsRepoinWorkspace = localPath.act(new FileCallable<Boolean>() {
++        final boolean existsRepoinWorkspace = localPath.act(new MasterToSlaveFileCallable<Boolean>() {
+             private static final long serialVersionUID = 1L;
+ 
+             public Boolean invoke(File ws, VirtualChannel channel) throws IOException {
+diff --git a/src/main/resources/index.jelly b/src/main/resources/index.jelly
+index f23fdbb..c47f82a 100644
+--- a/src/main/resources/index.jelly
++++ b/src/main/resources/index.jelly
+@@ -7,6 +7,8 @@
+     this stuff. If we meet some day, and you think this stuff is worth it,
+     you can buy me a beer in return.
+ -->
++
++<?jelly escape-by-default='true'?>
+ <div>
+     This plugin integrates the <a href="http://darcs.net/">Darcs</a> SCM into hudson.
+ </div>
+\ No newline at end of file
+diff --git a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsChangeSetList/digest.jelly b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsChangeSetList/digest.jelly
+index 279e8e9..f48685d 100644
+--- a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsChangeSetList/digest.jelly
++++ b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsChangeSetList/digest.jelly
+@@ -13,6 +13,8 @@
+   when a build history link (or number) is followed
+   e.g http://<hudson server>/job/<project>/<build number>/
+ -->
++
++<?jelly escape-by-default='true'?>
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+     <j:set var="browser" value="${it.build.parent.scm.effectiveBrowser}"/>
+diff --git a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsChangeSetList/index.jelly b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsChangeSetList/index.jelly
+index 3f79227..4c69f26 100644
+--- a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsChangeSetList/index.jelly
++++ b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsChangeSetList/index.jelly
+@@ -8,6 +8,7 @@
+     you can buy me a beer in return.
+ -->
+ 
++<?jelly escape-by-default='true'?>
+ <!--
+   Displays Darcs change log.
+ -->
+diff --git a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/config.jelly b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/config.jelly
+index 7f1c2be..8affa5a 100644
+--- a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/config.jelly
++++ b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/config.jelly
+@@ -7,6 +7,8 @@
+     this stuff. If we meet some day, and you think this stuff is worth it,
+     you can buy me a beer in return.
+ -->
++
++<?jelly escape-by-default='true'?>
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+     <f:entry title="${%Repository URL}" help="/plugin/darcs/help.html">
+diff --git a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/global.jelly b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/global.jelly
+index 586e3b9..0199cc4 100644
+--- a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/global.jelly
++++ b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/global.jelly
+@@ -7,6 +7,8 @@
+     this stuff. If we meet some day, and you think this stuff is worth it,
+     you can buy me a beer in return.
+ -->
++
++<?jelly escape-by-default='true'?>
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+     <f:section title="Darcs">
+         <f:entry title="darcs executable" help="/plugin/darcs/darcsexe.html">
+diff --git a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/project-changes.jelly b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/project-changes.jelly
+index 25195a3..0dcb505 100644
+--- a/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/project-changes.jelly
++++ b/src/main/resources/org/jenkinsci/plugins/darcs/DarcsScm/project-changes.jelly
+@@ -8,6 +8,7 @@
+     you can buy me a beer in return.
+ -->
+ 
++<?jelly escape-by-default='true'?>
+ <!--
+   This view is used to render the project change list like /job/<jobname>/changes
+ 
+diff --git a/src/main/resources/org/jenkinsci/plugins/darcs/browsers/DarcsWeb/config.jelly b/src/main/resources/org/jenkinsci/plugins/darcs/browsers/DarcsWeb/config.jelly
+index 692fa5e..c6c9bde 100644
+--- a/src/main/resources/org/jenkinsci/plugins/darcs/browsers/DarcsWeb/config.jelly
++++ b/src/main/resources/org/jenkinsci/plugins/darcs/browsers/DarcsWeb/config.jelly
+@@ -7,6 +7,8 @@
+     this stuff. If we meet some day, and you think this stuff is worth it,
+     you can buy me a beer in return.
+ -->
++
++<?jelly escape-by-default='true'?>
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+     <f:entry title="URL" help="/plugin/darcs/help/browsers/darcsweb/url.html">
+diff --git a/src/main/resources/org/jenkinsci/plugins/darcs/browsers/Darcsden/config.jelly b/src/main/resources/org/jenkinsci/plugins/darcs/browsers/Darcsden/config.jelly
+index fad10f1..04a98bf 100644
+--- a/src/main/resources/org/jenkinsci/plugins/darcs/browsers/Darcsden/config.jelly
++++ b/src/main/resources/org/jenkinsci/plugins/darcs/browsers/Darcsden/config.jelly
+@@ -7,6 +7,8 @@
+     this stuff. If we meet some day, and you think this stuff is worth it,
+     you can buy me a beer in return.
+ -->
++
++<?jelly escape-by-default='true'?>
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+     <f:entry title="URL" help="/plugin/darcs/help/browsers/darcsden/url.html">

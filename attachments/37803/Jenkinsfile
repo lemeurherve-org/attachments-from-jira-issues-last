@@ -1,0 +1,131 @@
+final registry = 'https://docker.host'
+
+final devopsBulkUpgadeVersion = '8.5.005.08'
+final containerBulkUpgradePrefix = '/devops_bulk_upgrade'
+final containerCodeBase          = "$containerBulkUpgradePrefix/scripts/g_hotfix"
+final containerLogs              = "$containerBulkUpgradePrefix/logs"
+final containerStorage           = "$containerBulkUpgradePrefix/storage"
+
+stage ('checkout') {
+  node ('master'){
+      def hg = tool 'mercurial'
+      checkout scm
+      stash excludes: '.hg/**,Jenkinsfile', name: 'module_cbu'
+  }
+}
+
+
+node('docker'){
+  final imageName = "devbu:${devopsBulkUpgadeVersion}"
+  final workspace = pwd()
+  final codeBase
+  final logs
+  final storage
+  final testReports
+  final coverageReports
+  final containerOpts
+  
+  stage('Prepare workspace') {
+    dir('code'){
+      deleteDir()
+      codeBase = pwd()
+      unstash 'module_cbu'
+    } 
+
+    dir('output'){
+      sh """
+        chmod ugo+w,g+s .
+        mkdir -p logs
+        mkdir -p storage
+        mkdir -p coverage-reports
+        mkdir -p test-reports
+      """ 
+      
+      dir('logs'){
+        logs = pwd()
+      }
+      dir('storage'){
+        storage = pwd() 
+      }
+      dir('coverage-reports'){
+        coverageReports = pwd()
+      }
+      dir('test-reports'){
+        testReports = pwd()
+      }
+    }
+    
+    containerOpts = """
+      -u 'root'
+      -v $codeBase/procedures:$containerCodeBase/components/module:ro
+      -v $logs:$containerLogs 
+      -v $storage:$containerStorage
+    """
+  }
+    
+    
+  try{
+    docker.withRegistry(registry){
+      docker.image(imageName).inside(containerOpts){
+        stage('Prepare container'){
+          sh """
+            pip install -U pytest
+            pip install pytest-cov
+          """
+        }
+        stage('Unit Test'){
+          sh """
+             umask 000
+             PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$containerCodeBase:$containerCodeBase/lib:$containerCodeBase/components/module pytest \\
+             --junit-prefix=ut --junit-xml=$testReports/TEST-ut.xml \\
+             --cov=$containerCodeBase/components/module --cov-report html:$coverageReports/ut --cov-report xml:$coverageReports/ut-coverage.xml \\
+             $codeBase/ut
+          """
+        }
+        stage('CLI Integration Test'){
+          sh """
+             umask 000
+             PYTHONDONTWRITEBYTECODE=1 py.test \\
+             --junit-xml=$testReports/TEST-it.cli.xml \\
+             --cov=$containerCodeBase/components/module --cov-report html:$coverageReports/it --cov-report xml:$coverageReports/it-coverage.xml \\
+             $codeBase/it/cli
+          """
+        }
+      }
+    }
+  }finally{
+    stage('Publish Test results'){
+      //junit publisher doesn't work with absolute paths for some reasons
+      junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: "output/test-reports/TEST-*.xml" 
+    }
+    stage('SonarQube analysis') {
+      //create sonar-project.properties
+      writeFile file: "sonar-project.properties", text: """
+      sonar.projectKey=com.glab.module:cbu
+      sonar.projectName=cbu
+      sonar.projectVersion=1.0
+      sonar.sources=code/procedures
+      sonar.language=py
+      sonar.python.coveragePlugin=cobertura
+      sonar.python.coverage.reportPath=output/coverage-reports/ut-coverage.xml
+      sonar.python.coverage.itReportPath=output/coverage-reports/it-coverage.xml
+      sonar.python.coverage.overallReportPath=output/coverage-repors/*-coverage.xml
+      """
+      //patch coverage reports to have valid relative paths, Sonnar runner ignores <source></source> section with prefix,
+      // so add prefix to all filename attributes using sed
+      sh '''
+        sed -i 's/filename="\\(.*\\)"/filename="code\\/procedures\\/\\1"/g' output/coverage-reports/ut-coverage.xml
+        sed -i 's/filename="\\(.*\\)"/filename="code\\/procedures\\/\\1"/g' output/coverage-reports/it-coverage.xml
+        #sed -i 's/\\/devbu\\/scripts\\/g_hotfix\\/components\\/module/code\\/procedures/g' output/coverage-reports/ut-coverage.xml
+        #sed -i 's/\\/devbu\\/scripts\\/g_hotfix\\/components\\/module/code\\/procedures/g' output/coverage-reports/it-coverage.xml
+      '''
+      // requires SonarQube Scanner 2.8+
+      def scannerHome = tool 'SonarQube Scanner 3';
+      env.JAVA_HOME="/home/jenkins/jdk"
+      sh 'echo j=$JAVA_HOME'
+      withSonarQubeEnv('SonarQube@moduleci-vm15') {
+        sh "${scannerHome}/bin/sonar-scanner -X"
+      }    
+    }
+  }//finally
+}

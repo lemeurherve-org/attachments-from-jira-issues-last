@@ -1,0 +1,120 @@
+Dec 07, 2016 5:47:16 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+INFO: Excess workload after pending Spot instances: 1
+--> GET https://192.168.99.100:8443/api/v1/namespaces/default/pods?labelSelector=jenkins%3Dslave HTTP/1.1
+Host: 192.168.99.100:8443
+Connection: Keep-Alive
+Accept-Encoding: gzip
+User-Agent: okhttp/2.7.5
+--> END GET
+<-- HTTP/1.1 200 OK (22ms)
+Content-Type: application/json
+Date: Wed, 07 Dec 2016 19:47:17 GMT
+Content-Length: 133
+OkHttp-Sent-Millis: 1481140037523
+OkHttp-Received-Millis: 1481140037542
+
+{"kind":"PodList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/default/pods","resourceVersion":"145133"},"items":[]}
+
+<-- END HTTP (133-byte body)
+--> GET https://192.168.99.100:8443/api/v1/namespaces/default/pods?labelSelector=jenkins%3Dslave,jenkins/mypod%3Dtrue HTTP/1.1
+Host: 192.168.99.100:8443
+Connection: Keep-Alive
+Accept-Encoding: gzip
+User-Agent: okhttp/2.7.5
+--> END GET
+<-- HTTP/1.1 200 OK (4ms)
+Content-Type: application/json
+Date: Wed, 07 Dec 2016 19:47:17 GMT
+Content-Length: 133
+OkHttp-Sent-Millis: 1481140037873
+OkHttp-Received-Millis: 1481140037877
+
+{"kind":"PodList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/default/pods","resourceVersion":"145133"},"items":[]}
+
+<-- END HTTP (133-byte body)
+Dec 07, 2016 5:47:17 PM hudson.slaves.NodeProvisioner$StandardStrategyImpl apply
+INFO: Started provisioning Kubernetes Pod Template from kubernetes with 1 executors. Remaining excess workload: 0
+--> POST https://192.168.99.100:8443/api/v1/namespaces/default/pods HTTP/1.1
+Content-Type: application/json; charset=utf-8
+Content-Length: 2147
+Host: 192.168.99.100:8443
+Connection: Keep-Alive
+Accept-Encoding: gzip
+User-Agent: okhttp/2.7.5
+
+{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"jenkins":"slave","jenkins/mypod":"true"},"name":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},"spec":{"containers":[{"args":[],"command":["cat"],"env":[{"name":"JENKINS_SECRET","value":"0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f"},{"name":"JENKINS_NAME","value":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},{"name":"JENKINS_LOCATION_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_JNLP_URL","value":"http://172.28.229.87:8080/computer/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295/slave-agent.jnlp"},{"name":"HOME","value":"/home/jenkins"}],"image":"maven:3.3.9-jdk-8-alpine","imagePullPolicy":"IfNotPresent","name":"maven","ports":[],"resources":{"limits":{},"requests":{}},"securityContext":{"privileged":false},"tty":true,"volumeMounts":[{"mountPath":"/home/jenkins","name":"workspace-volume","readOnly":false}],"workingDir":"/home/jenkins"},{"args":["0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f","kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"],"command":[],"env":[{"name":"JENKINS_SECRET","value":"0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f"},{"name":"JENKINS_NAME","value":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},{"name":"JENKINS_LOCATION_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_JNLP_URL","value":"http://172.28.229.87:8080/computer/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295/slave-agent.jnlp"},{"name":"HOME","value":"/home/jenkins"}],"image":"jenkinsci/jnlp-slave","imagePullPolicy":"IfNotPresent","name":"jnlp","ports":[],"resources":{"limits":{},"requests":{}},"securityContext":{"privileged":false},"tty":false,"volumeMounts":[{"mountPath":"/home/jenkins","name":"workspace-volume","readOnly":false}],"workingDir":"/home/jenkins"}],"imagePullSecrets":[],"nodeSelector":{},"restartPolicy":"Never","volumes":[{"emptyDir":{"medium":""},"name":"workspace-volume"}]}}
+--> END POST (2147-byte body)
+<-- HTTP/1.1 201 Created (115ms)
+Content-Type: application/json
+Date: Wed, 07 Dec 2016 19:47:18 GMT
+Transfer-Encoding: chunked
+OkHttp-Sent-Millis: 1481140038549
+OkHttp-Received-Millis: 1481140038664
+
+{"kind":"Pod","apiVersion":"v1","metadata":{"name":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295","namespace":"default","selfLink":"/api/v1/namespaces/default/pods/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295","uid":"f618ce63-bcb5-11e6-8f64-76b319782aed","resourceVersion":"145135","creationTimestamp":"2016-12-07T19:47:18Z","labels":{"jenkins":"slave","jenkins/mypod":"true"}},"spec":{"volumes":[{"name":"workspace-volume","emptyDir":{}},{"name":"default-token-6qrzy","secret":{"secretName":"default-token-6qrzy","defaultMode":420}}],"containers":[{"name":"maven","image":"maven:3.3.9-jdk-8-alpine","command":["cat"],"workingDir":"/home/jenkins","env":[{"name":"JENKINS_SECRET","value":"0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f"},{"name":"JENKINS_NAME","value":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},{"name":"JENKINS_LOCATION_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_JNLP_URL","value":"http://172.28.229.87:8080/computer/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295/slave-agent.jnlp"},{"name":"HOME","value":"/home/jenkins"}],"resources":{},"volumeMounts":[{"name":"workspace-volume","mountPath":"/home/jenkins"},{"name":"default-token-6qrzy","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false},"tty":true},{"name":"jnlp","image":"jenkinsci/jnlp-slave","args":["0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f","kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"],"workingDir":"/home/jenkins","env":[{"name":"JENKINS_SECRET","value":"0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f"},{"name":"JENKINS_NAME","value":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},{"name":"JENKINS_LOCATION_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_JNLP_URL","value":"http://172.28.229.87:8080/computer/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295/slave-agent.jnlp"},{"name":"HOME","value":"/home/jenkins"}],"resources":{},"volumeMounts":[{"name":"workspace-volume","mountPath":"/home/jenkins"},{"name":"default-token-6qrzy","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false}}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","serviceAccountName":"default","serviceAccount":"default","securityContext":{}},"status":{"phase":"Pending"}}
+
+<-- END HTTP (2753-byte body)
+Dec 07, 2016 5:47:18 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback call
+INFO: Created Pod: kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295
+Dec 07, 2016 5:47:18 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback call
+INFO: Waiting for Pod to be scheduled (0/100): kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295
+Dec 07, 2016 5:47:22 PM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #1 from /172.28.229.87:52648
+--> GET https://192.168.99.100:8443/api/v1/namespaces/default/pods/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295 HTTP/1.1
+Host: 192.168.99.100:8443
+Connection: Keep-Alive
+Accept-Encoding: gzip
+User-Agent: okhttp/2.7.5
+--> END GET
+<-- HTTP/1.1 200 OK (14ms)
+Content-Type: application/json
+Date: Wed, 07 Dec 2016 19:47:24 GMT
+Transfer-Encoding: chunked
+OkHttp-Sent-Millis: 1481140044675
+OkHttp-Received-Millis: 1481140044689
+
+{"kind":"Pod","apiVersion":"v1","metadata":{"name":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295","namespace":"default","selfLink":"/api/v1/namespaces/default/pods/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295","uid":"f618ce63-bcb5-11e6-8f64-76b319782aed","resourceVersion":"145147","creationTimestamp":"2016-12-07T19:47:18Z","labels":{"jenkins":"slave","jenkins/mypod":"true"}},"spec":{"volumes":[{"name":"workspace-volume","emptyDir":{}},{"name":"default-token-6qrzy","secret":{"secretName":"default-token-6qrzy","defaultMode":420}}],"containers":[{"name":"maven","image":"maven:3.3.9-jdk-8-alpine","command":["cat"],"workingDir":"/home/jenkins","env":[{"name":"JENKINS_SECRET","value":"0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f"},{"name":"JENKINS_NAME","value":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},{"name":"JENKINS_LOCATION_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_JNLP_URL","value":"http://172.28.229.87:8080/computer/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295/slave-agent.jnlp"},{"name":"HOME","value":"/home/jenkins"}],"resources":{},"volumeMounts":[{"name":"workspace-volume","mountPath":"/home/jenkins"},{"name":"default-token-6qrzy","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false},"tty":true},{"name":"jnlp","image":"jenkinsci/jnlp-slave","args":["0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f","kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"],"workingDir":"/home/jenkins","env":[{"name":"JENKINS_SECRET","value":"0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f"},{"name":"JENKINS_NAME","value":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},{"name":"JENKINS_LOCATION_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_JNLP_URL","value":"http://172.28.229.87:8080/computer/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295/slave-agent.jnlp"},{"name":"HOME","value":"/home/jenkins"}],"resources":{},"volumeMounts":[{"name":"workspace-volume","mountPath":"/home/jenkins"},{"name":"default-token-6qrzy","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false}}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","serviceAccountName":"default","serviceAccount":"default","nodeName":"minikube","securityContext":{}},"status":{"phase":"Running","conditions":[{"type":"Initialized","status":"True","lastProbeTime":null,"lastTransitionTime":"2016-12-07T19:47:18Z"},{"type":"Ready","status":"True","lastProbeTime":null,"lastTransitionTime":"2016-12-07T19:47:20Z"},{"type":"PodScheduled","status":"True","lastProbeTime":null,"lastTransitionTime":"2016-12-07T19:47:18Z"}],"hostIP":"192.168.99.100","podIP":"172.17.0.5","startTime":"2016-12-07T19:47:18Z","containerStatuses":[{"name":"jnlp","state":{"running":{"startedAt":"2016-12-07T19:47:20Z"}},"lastState":{},"ready":true,"restartCount":0,"image":"jenkinsci/jnlp-slave","imageID":"docker://sha256:d7731d944ad71f945da710fe5c01573296c9a70eb4664c58a816ad2e6e602bdc","containerID":"docker://e2d4e6703861b452346bdb34014c225122c04a2aaa266871c6672e0d2daba841"},{"name":"maven","state":{"running":{"startedAt":"2016-12-07T19:47:19Z"}},"lastState":{},"ready":true,"restartCount":0,"image":"maven:3.3.9-jdk-8-alpine","imageID":"docker://sha256:7cf563330eba4a9b5742bf7c294b7e7e1a6930497c2e82553c7a52e63b3db790","containerID":"docker://01da908c92b9bf5323d245eb3e73235cdbcc9c9226ce89033e3018e328d4097d"}]}}
+
+<-- END HTTP (3870-byte body)
+Dec 07, 2016 5:47:24 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback call
+INFO: Waiting for slave to connect (0/100): kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295
+Dec 07, 2016 5:47:25 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback call
+INFO: Waiting for slave to connect (1/100): kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295
+Dec 07, 2016 5:47:35 PM hudson.slaves.NodeProvisioner$2 run
+INFO: Kubernetes Pod Template provisioning successfully completed. We have now 2 computer(s)
+Dec 07, 2016 5:48:07 PM io.fabric8.kubernetes.client.dsl.internal.ExecWebSocketListener onFailure
+SEVERE: Exec Failure: HTTP:404. Message:Not Found
+java.net.ProtocolException: Expected HTTP 101 response but was '404 Not Found'
+    at com.squareup.okhttp.ws.WebSocketCall.createWebSocket(WebSocketCall.java:123)
+    at com.squareup.okhttp.ws.WebSocketCall.access$000(WebSocketCall.java:40)
+    at com.squareup.okhttp.ws.WebSocketCall$1.onResponse(WebSocketCall.java:98)
+    at com.squareup.okhttp.Call$AsyncCall.execute(Call.java:177)
+    at com.squareup.okhttp.internal.NamedRunnable.run(NamedRunnable.java:33)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+    at java.lang.Thread.run(Thread.java:745)
+
+Dec 07, 2016 5:48:07 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesSlave _terminate
+INFO: Terminating Kubernetes instance for slave kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295
+--> DELETE https://192.168.99.100:8443/api/v1/namespaces/default/pods/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295 HTTP/1.1
+Host: 192.168.99.100:8443
+Connection: Keep-Alive
+Accept-Encoding: gzip
+User-Agent: okhttp/2.7.5
+--> END DELETE
+Dec 07, 2016 5:48:07 PM org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+INFO: kubernetes-plugin-pipeline-example #7 completed: FAILURE
+<-- HTTP/1.1 200 OK (372ms)
+Content-Type: application/json
+Date: Wed, 07 Dec 2016 19:48:08 GMT
+Transfer-Encoding: chunked
+OkHttp-Sent-Millis: 1481140087810
+OkHttp-Received-Millis: 1481140088182
+
+{"kind":"Pod","apiVersion":"v1","metadata":{"name":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295","namespace":"default","selfLink":"/api/v1/namespaces/default/pods/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295","uid":"f618ce63-bcb5-11e6-8f64-76b319782aed","resourceVersion":"145198","creationTimestamp":"2016-12-07T19:47:18Z","deletionTimestamp":"2016-12-07T19:48:38Z","deletionGracePeriodSeconds":30,"labels":{"jenkins":"slave","jenkins/mypod":"true"}},"spec":{"volumes":[{"name":"workspace-volume","emptyDir":{}},{"name":"default-token-6qrzy","secret":{"secretName":"default-token-6qrzy","defaultMode":420}}],"containers":[{"name":"maven","image":"maven:3.3.9-jdk-8-alpine","command":["cat"],"workingDir":"/home/jenkins","env":[{"name":"JENKINS_SECRET","value":"0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f"},{"name":"JENKINS_NAME","value":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},{"name":"JENKINS_LOCATION_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_JNLP_URL","value":"http://172.28.229.87:8080/computer/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295/slave-agent.jnlp"},{"name":"HOME","value":"/home/jenkins"}],"resources":{},"volumeMounts":[{"name":"workspace-volume","mountPath":"/home/jenkins"},{"name":"default-token-6qrzy","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false},"tty":true},{"name":"jnlp","image":"jenkinsci/jnlp-slave","args":["0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f","kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"],"workingDir":"/home/jenkins","env":[{"name":"JENKINS_SECRET","value":"0a1b92ec69f27bb8906f5e6e61ff69ae93e652dd2107811b311ef5a91da3374f"},{"name":"JENKINS_NAME","value":"kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295"},{"name":"JENKINS_LOCATION_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_URL","value":"http://172.28.229.87:8080/"},{"name":"JENKINS_JNLP_URL","value":"http://172.28.229.87:8080/computer/kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295/slave-agent.jnlp"},{"name":"HOME","value":"/home/jenkins"}],"resources":{},"volumeMounts":[{"name":"workspace-volume","mountPath":"/home/jenkins"},{"name":"default-token-6qrzy","readOnly":true,"mountPath":"/var/run/secrets/kubernetes.io/serviceaccount"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent","securityContext":{"privileged":false}}],"restartPolicy":"Never","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","serviceAccountName":"default","serviceAccount":"default","nodeName":"minikube","securityContext":{}},"status":{"phase":"Running","conditions":[{"type":"Initialized","status":"True","lastProbeTime":null,"lastTransitionTime":"2016-12-07T19:47:18Z"},{"type":"Ready","status":"True","lastProbeTime":null,"lastTransitionTime":"2016-12-07T19:47:20Z"},{"type":"PodScheduled","status":"True","lastProbeTime":null,"lastTransitionTime":"2016-12-07T19:47:18Z"}],"hostIP":"192.168.99.100","podIP":"172.17.0.5","startTime":"2016-12-07T19:47:18Z","containerStatuses":[{"name":"jnlp","state":{"running":{"startedAt":"2016-12-07T19:47:20Z"}},"lastState":{},"ready":true,"restartCount":0,"image":"jenkinsci/jnlp-slave","imageID":"docker://sha256:d7731d944ad71f945da710fe5c01573296c9a70eb4664c58a816ad2e6e602bdc","containerID":"docker://e2d4e6703861b452346bdb34014c225122c04a2aaa266871c6672e0d2daba841"},{"name":"maven","state":{"running":{"startedAt":"2016-12-07T19:47:19Z"}},"lastState":{},"ready":true,"restartCount":0,"image":"maven:3.3.9-jdk-8-alpine","imageID":"docker://sha256:7cf563330eba4a9b5742bf7c294b7e7e1a6930497c2e82553c7a52e63b3db790","containerID":"docker://01da908c92b9bf5323d245eb3e73235cdbcc9c9226ce89033e3018e328d4097d"}]}}
+
+<-- END HTTP (3945-byte body)
+Dec 07, 2016 5:48:08 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesSlave _terminate
+INFO: Terminated Kubernetes instance for slave kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295
+Dec 07, 2016 5:48:08 PM org.csanchez.jenkins.plugins.kubernetes.KubernetesSlave _terminate
+INFO: Disconnected computer kubernetes-f914ee7f49c44f7eaa182af5fda74c93-60beb1f2a295

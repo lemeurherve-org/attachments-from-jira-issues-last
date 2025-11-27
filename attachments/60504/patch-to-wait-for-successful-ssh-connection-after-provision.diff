@@ -1,0 +1,48 @@
+diff --git a/src/main/java/com/oracle/cloud/baremetal/jenkins/BaremetalCloud.java b/src/main/java/com/oracle/cloud/baremetal/jenkins/BaremetalCloud.java
+index bb0a269..ea60309 100644
+--- a/src/main/java/com/oracle/cloud/baremetal/jenkins/BaremetalCloud.java
++++ b/src/main/java/com/oracle/cloud/baremetal/jenkins/BaremetalCloud.java
+@@ -65,6 +65,10 @@ import jenkins.model.Jenkins;
+ import static java.lang.Math.toIntExact;
+ import org.kohsuke.stapler.AncestorInPath;
+ 
++import com.cloudbees.jenkins.plugins.sshcredentials.SSHUserPrivateKey;
++import static com.oracle.cloud.baremetal.jenkins.ssh.SshComputerLauncher.DEFAULT_SSH_PUBLIC_KEY;
++import static com.oracle.cloud.baremetal.jenkins.ssh.SshComputerLauncher.DEFAULT_SSH_USER;
++
+ 
+ public class BaremetalCloud extends AbstractCloudImpl{
+ 
+@@ -283,7 +288,7 @@ public class BaremetalCloud extends AbstractCloudImpl{
+                 client.waitForInstanceProvisioningToComplete(instance.getId());
+                 Ip = client.getInstanceIp(template, instance.getId());
+                 LOGGER.info("Provisioned instance " + instanceName + " with ip " + Ip);
+-                awaitInstanceSshAvailable(Ip, template.getSshConnectTimeoutMillis(), timeoutHelper);
++                awaitInstanceSshAvailable(Ip, template.getSshConnectTimeoutMillis(), timeoutHelper, template.sshCredentialsId);
+                 template.setTemplateSleep(false);
+                 template.resetFailureCount();
+             } catch (BmcGenericWaiter.WaitConditionFailedException | IOException | RuntimeException ex) {
+@@ -633,12 +638,20 @@ public class BaremetalCloud extends AbstractCloudImpl{
+         return toIntExact(count);
+     }
+     // make sure the instance if available before launch agent on it.
+-    private void awaitInstanceSshAvailable(String host, int connectTimeoutMillis, TimeoutHelper timeoutHelper) throws IOException, InterruptedException {
++    private void awaitInstanceSshAvailable(String host, int connectTimeoutMillis, TimeoutHelper timeoutHelper, String sshCredentialsId) throws IOException, InterruptedException {
++        final SSHUserPrivateKey sshCredentials = (SSHUserPrivateKey) BaremetalCloud.matchCredentials(SSHUserPrivateKey.class, sshCredentialsId);
++        final char[] privateKey = (sshCredentials != null ? sshCredentials.getPrivateKey() : DEFAULT_SSH_PUBLIC_KEY).toCharArray();
++        final String sshUser = sshCredentials != null ? sshCredentials.getUsername() : DEFAULT_SSH_USER;
+         do {
+             Connection connection = SshConnector.createConnection(host, 22);
+             try {
+-                SshConnector.connect(connection, connectTimeoutMillis,"No Verification");
+-                return;
++                SshConnector.connect(connection, connectTimeoutMillis, "No Verification");
++                final boolean authenticated = connection.authenticateWithPublicKey(sshUser, privateKey, null);
++                if (authenticated) {
++                    LOGGER.log(Level.FINER, "SSH connection to provisioned instance was successful");
++                    return;
++                }
++                LOGGER.log(Level.FINER, "SSH authentication failed during provision");
+             } catch (IOException e) {
+                 LOGGER.log(Level.FINER, "Ignoring exception connecting to SSH during provision", e);
+             } finally {

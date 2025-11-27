@@ -1,0 +1,73 @@
+From 1d8636aca3c77a3cf002ab8a36e33407652294bf Mon Sep 17 00:00:00 2001
+From: Andrew Schurman <arcticwaters@gmail.com>
+Date: Tue, 26 Mar 2013 13:36:53 -0700
+Subject: [PATCH] 17348: Use last build parameters with branch specifier when
+ fast-remote polling
+
+---
+ src/main/java/hudson/plugins/git/GitSCM.java     |    2 +-
+ src/test/java/hudson/plugins/git/GitSCMTest.java |   27 ++++++++++++++++++++++
+ 2 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/src/main/java/hudson/plugins/git/GitSCM.java b/src/main/java/hudson/plugins/git/GitSCM.java
+index 075cc93..b442f95 100644
+--- a/src/main/java/hudson/plugins/git/GitSCM.java
++++ b/src/main/java/hudson/plugins/git/GitSCM.java
+@@ -659,7 +659,7 @@ public class GitSCM extends SCM implements Serializable {
+                                .getClient();
+ 
+             String gitRepo = getParamExpandedRepos(lastBuild).get(0).getURIs().get(0).toString();
+-            ObjectId head = git.getHeadRev(gitRepo, getBranches().get(0).getName());
++            ObjectId head = git.getHeadRev(gitRepo, getParameterString(getBranches().get(0).getName(), lastBuild));
+ 
+             if (head != null && buildData.lastBuild.getRevision().getSha1().name().equals(head.name())) {
+                 return PollingResult.NO_CHANGES;
+diff --git a/src/test/java/hudson/plugins/git/GitSCMTest.java b/src/test/java/hudson/plugins/git/GitSCMTest.java
+index 689ae75..a52edb8 100644
+--- a/src/test/java/hudson/plugins/git/GitSCMTest.java
++++ b/src/test/java/hudson/plugins/git/GitSCMTest.java
+@@ -9,7 +9,9 @@ import hudson.model.FreeStyleBuild;
+ import hudson.model.FreeStyleProject;
+ import hudson.model.Hudson;
+ import hudson.model.Node;
++import hudson.model.ParametersDefinitionProperty;
+ import hudson.model.Result;
++import hudson.model.StringParameterDefinition;
+ import hudson.model.User;
+ import hudson.plugins.git.GitSCM.BuildChooserContextImpl;
+ import hudson.plugins.git.util.BuildChooserContext;
+@@ -656,6 +658,31 @@ public class GitSCMTest extends AbstractGitTestCase {
+         assertEquals(p.toString(), s.getChannel().call(new BuildChooserContextTestCallable(c)));
+     }
+ 
++    @Bug(17348)
++    public void testPollWithBuildParameter() throws Exception {
++        FreeStyleProject project = setupProject("$BRANCH", false, null, null, null, true, null);
++        project.addProperty(new ParametersDefinitionProperty(new StringParameterDefinition("BRANCH", "master")));
++
++        // create initial commit and then run the build against it:
++        final String commitFile1 = "commitFile1";
++        commit(commitFile1, johnDoe, "Commit number 1");
++        build(project, Result.SUCCESS, commitFile1);
++
++        assertFalse("scm polling should not detect any more changes after build", project.poll(listener).hasChanges());
++
++        final String commitFile2 = "commitFile2";
++        commit(commitFile2, janeDoe, "Commit number 2");
++        assertTrue("scm polling did not detect commit2 change", project.poll(listener).hasChanges());
++        // ... and build it...
++        final FreeStyleBuild build2 = build(project, Result.SUCCESS, commitFile2);
++        final Set<User> culprits = build2.getCulprits();
++         assertEquals("The build should have only one culprit", 1, culprits.size());
++        assertEquals("", janeDoe.getName(), culprits.iterator().next().getFullName());
++        assertTrue(build2.getWorkspace().child(commitFile2).exists());
++        assertBuildStatusSuccess(build2);
++        assertFalse("scm polling should not detect any more changes after build", project.poll(listener).hasChanges());
++    }
++
+     private static class BuildChooserContextTestCallable implements Callable<String,IOException> {
+         private final BuildChooserContext c;
+ 
+-- 
+1.7.10.4
+

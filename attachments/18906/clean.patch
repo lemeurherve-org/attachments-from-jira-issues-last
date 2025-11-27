@@ -1,0 +1,53 @@
+Index: src/main/java/hudson/plugins/mercurial/MercurialSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/mercurial/MercurialSCM.java	(revision 23700)
++++ src/main/java/hudson/plugins/mercurial/MercurialSCM.java	(working copy)
+@@ -345,11 +345,16 @@
+                 listener.error("Failed to clobber local modifications");
+                 return false;
+             }
+-            if (launcher.launch().cmds(findHgExe(listener), "--config", "extensions.purge=", "clean", "--all")
+-                    .envs(build.getEnvironment(listener)).stdout(listener).pwd(workspace).join() != 0) {
+-                listener.error("Failed to clean unversioned files");
+-                return false;
+-            }
++            if(!forest){
++		if(!cleanRepository(build, launcher, workspace, listener, workspace.toString()))
++		    return false;
++	    }
++	    else{
++		for(String tree : getTrees(build, launcher, workspace, listener)){
++		    if(!cleanRepository(build, launcher, workspace, listener, tree))
++			return false;
++		}
++	    }
+         }
+         FilePath hgBundle = new FilePath(workspace, "hg.bundle");
+ 
+@@ -516,6 +521,26 @@
+         return createEmptyChangeLog(changelogFile, listener, "changelog");
+     }
+ 
++    private String[] getTrees(AbstractBuild<?,?> build, Launcher launcher, FilePath workspace, TaskListener listener) throws InterruptedException, IOException {
++	ByteBuffer bb = new ByteBuffer();
++        ArgumentListBuilder args = new ArgumentListBuilder();
++        args.add(findHgExe(listener), "ftrees");
++	if(launcher.launch().cmds(args).envs(build.getEnvironment(listener)).pwd(workspace).stdout(bb).join()!=0){
++	    listener.error("Failed to get trees");
++	    return null;
++        }
++        return bb.toString().trim().split("[\\r\\n]+");
++    }
++
++    private boolean cleanRepository(AbstractBuild<?,?> build, Launcher launcher, FilePath workspace, TaskListener listener, String repository) throws InterruptedException, IOException {
++	if (launcher.launch().cmds(findHgExe(listener), "-R", repository, "--config", "extensions.purge=", "clean", "--all")
++	    .envs(build.getEnvironment(listener)).pwd(workspace).stdout(listener).join() != 0) {
++		listener.error("Failed to clean unversioned files in repository " + repository);
++		return false;
++	}
++	return true;
++    }
++
+     @Override
+     public void buildEnvVars(AbstractBuild build, Map<String, String> env) {
+         MercurialTagAction a = build.getAction(MercurialTagAction.class);

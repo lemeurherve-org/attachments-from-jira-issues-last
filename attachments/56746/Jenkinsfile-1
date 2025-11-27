@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    environment {
+        AWS_DEFAULT_REGION    = 'us-west-2'
+        AWS_ACCESS_KEY_ID     = credentials('my_aws_access_key_id')
+        AWS_SECRET_ACCESS_KEY = credentials('my_aws_secret_access_key')
+    }
+    stages {
+        stage('Build') {
+            steps {
+                cleanWs()
+                checkout scm
+                nodejs(nodeJSInstallationName: 'node 16.9.0') {
+                    sh 'yarn install --network-timeout 100000'
+                    sh 'yarn build'
+                    dir('shell') {
+                        sh 'yarn dev-publish'
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir('shell') {
+                    sh 'aws s3 sync --delete --acl public-read --cache-control no-cache dist s3://---redacted---'
+                }
+            }
+        }
+    }
+}
+

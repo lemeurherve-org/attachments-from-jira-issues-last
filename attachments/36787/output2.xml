@@ -1,0 +1,1063 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20170324 18:30:20.779" generator="Robot 3.0 (Python 2.7.6 on linux2)">
+<suite source="/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios" id="s1" name="Genbios">
+<suite source="/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/valid_conf.robot" id="s1-s1" name="Valid Conf">
+<test id="s1-s1-t1" name="V4-1">
+<kw type="setup" name="Clear Temp Folder">
+<kw name="Remove File" library="OperatingSystem">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}*</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.812" html="yes" level="INFO">File '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/*"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/*&lt;/a&gt;' does not exist.</msg>
+<status status="PASS" endtime="20170324 18:30:20.812" starttime="20170324 18:30:20.811"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.812" starttime="20170324 18:30:20.811"></status>
+</kw>
+<kw name="Generate BIOS">
+<arguments>
+<arg>${TEST NAME}</arg>
+<arg>FGTEST3A16099999</arg>
+</arguments>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}lic-${id}.conf</arg>
+</arguments>
+<assign>
+<var>${config}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.813" level="INFO">${config} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1.conf</msg>
+<status status="PASS" endtime="20170324 18:30:20.813" starttime="20170324 18:30:20.813"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}snlist-${sn}.csv</arg>
+</arguments>
+<assign>
+<var>${snlist}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.813" level="INFO">${snlist} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv</msg>
+<status status="PASS" endtime="20170324 18:30:20.813" starttime="20170324 18:30:20.813"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${config} ${snlist} ${TEMP_FOLDER}${/}t.csv ${TEMP_FOLDER}${/}t.txt</arg>
+</arguments>
+<assign>
+<var>${run_args}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.814" level="INFO">${run_args} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv /var/lib/Jen...</msg>
+<status status="PASS" endtime="20170324 18:30:20.814" starttime="20170324 18:30:20.813"></status>
+</kw>
+<kw name="Run Process" library="Process">
+<doc>Runs a process and waits for it to complete.</doc>
+<arguments>
+<arg>${GENBIOS} ${run_args}</arg>
+<arg>cwd=/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios</arg>
+<arg>shell=True</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.814" level="INFO">Starting process:
+../../genbios /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt</msg>
+<msg timestamp="20170324 18:30:20.817" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20170324 18:30:20.819" level="INFO">Process completed.</msg>
+<msg timestamp="20170324 18:30:20.819" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.819" starttime="20170324 18:30:20.814"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result.stdout}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.820" level="INFO">Version 4.0 Build 9
+Current stack limit: 8388608, max: 18446744073709551615
+New stack limit: 67108864
+BIOS_buffer: conf-&gt;SN_prefix = FGTEST3A160
+Prepared BIOS header v4
+BIOS chip_size = 256 KB
+Prepared cert/bios header
+CERT Item (primary) - embedded 4 files, total len 12119.
+OK - Embed item 1 type=1 @ 0x0
+CERT Item - embedded 3 files, total len 7368.
+OK - Embed item 2 type=1 @ 0x20000
+BIOS_CSUM: 03C68E32 ((nil)-0x40000)</msg>
+<status status="PASS" endtime="20170324 18:30:20.820" starttime="20170324 18:30:20.819"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.820" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.820" starttime="20170324 18:30:20.820"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}${sn}.rom</arg>
+</arguments>
+<assign>
+<var>${bios}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.821" level="INFO">${bios} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom</msg>
+<status status="PASS" endtime="20170324 18:30:20.821" starttime="20170324 18:30:20.820"></status>
+</kw>
+<kw name="File Should Exist" library="OperatingSystem">
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<arguments>
+<arg>${bios}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.821" html="yes" level="INFO">File '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom&lt;/a&gt;' exists.</msg>
+<status status="PASS" endtime="20170324 18:30:20.821" starttime="20170324 18:30:20.821"></status>
+</kw>
+<kw name="Diff Files" library="DiffLibrary">
+<doc>Diff two text files</doc>
+<arguments>
+<arg>${bios}</arg>
+<arg>${ROM_FOLDER}${/}${sn}-${id}-expected.rom</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.822" level="INFO">file1: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom</msg>
+<msg timestamp="20170324 18:30:20.822" level="INFO">file2: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGTEST3A16099999-V4-1-expected.rom</msg>
+<msg timestamp="20170324 18:30:20.822" level="INFO">diff --strip-trailing-cr "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom" "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGTEST3A16099999-V4-1-expected.rom"</msg>
+<status status="PASS" endtime="20170324 18:30:20.824" starttime="20170324 18:30:20.821"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.825" starttime="20170324 18:30:20.812"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.825" critical="yes" starttime="20170324 18:30:20.811"></status>
+</test>
+<test id="s1-s1-t2" name="V4-1-8Kgran">
+<kw type="setup" name="Clear Temp Folder">
+<kw name="Remove File" library="OperatingSystem">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}*</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.826" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:20.826" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:20.826" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv&lt;/a&gt;'.</msg>
+<status status="PASS" endtime="20170324 18:30:20.826" starttime="20170324 18:30:20.826"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.827" starttime="20170324 18:30:20.825"></status>
+</kw>
+<kw name="Generate BIOS">
+<arguments>
+<arg>${TEST NAME}</arg>
+<arg>FGTEST3A16099999</arg>
+</arguments>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}lic-${id}.conf</arg>
+</arguments>
+<assign>
+<var>${config}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.827" level="INFO">${config} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1-8Kgran.conf</msg>
+<status status="PASS" endtime="20170324 18:30:20.827" starttime="20170324 18:30:20.827"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}snlist-${sn}.csv</arg>
+</arguments>
+<assign>
+<var>${snlist}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.828" level="INFO">${snlist} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv</msg>
+<status status="PASS" endtime="20170324 18:30:20.828" starttime="20170324 18:30:20.828"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${config} ${snlist} ${TEMP_FOLDER}${/}t.csv ${TEMP_FOLDER}${/}t.txt</arg>
+</arguments>
+<assign>
+<var>${run_args}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.828" level="INFO">${run_args} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1-8Kgran.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv /var/...</msg>
+<status status="PASS" endtime="20170324 18:30:20.828" starttime="20170324 18:30:20.828"></status>
+</kw>
+<kw name="Run Process" library="Process">
+<doc>Runs a process and waits for it to complete.</doc>
+<arguments>
+<arg>${GENBIOS} ${run_args}</arg>
+<arg>cwd=/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios</arg>
+<arg>shell=True</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.829" level="INFO">Starting process:
+../../genbios /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1-8Kgran.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt</msg>
+<msg timestamp="20170324 18:30:20.830" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20170324 18:30:20.832" level="INFO">Process completed.</msg>
+<msg timestamp="20170324 18:30:20.833" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.833" starttime="20170324 18:30:20.829"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result.stdout}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.834" level="INFO">Version 4.0 Build 9
+Current stack limit: 8388608, max: 18446744073709551615
+New stack limit: 67108864
+BIOS_buffer: conf-&gt;SN_prefix = FGTEST3A160
+Prepared BIOS header v4
+BIOS chip_size = 256 KB
+Prepared cert/bios header
+CERT Item (primary) - embedded 4 files, total len 12119.
+OK - Embed item 1 type=1 @ 0x0
+CERT Item - embedded 3 files, total len 7368.
+OK - Embed item 2 type=1 @ 0x20000
+BIOS_CSUM: 03C68E61 ((nil)-0x40000)</msg>
+<status status="PASS" endtime="20170324 18:30:20.834" starttime="20170324 18:30:20.833"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.834" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.834" starttime="20170324 18:30:20.834"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}${sn}.rom</arg>
+</arguments>
+<assign>
+<var>${bios}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.835" level="INFO">${bios} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom</msg>
+<status status="PASS" endtime="20170324 18:30:20.835" starttime="20170324 18:30:20.835"></status>
+</kw>
+<kw name="File Should Exist" library="OperatingSystem">
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<arguments>
+<arg>${bios}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.836" html="yes" level="INFO">File '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom&lt;/a&gt;' exists.</msg>
+<status status="PASS" endtime="20170324 18:30:20.836" starttime="20170324 18:30:20.835"></status>
+</kw>
+<kw name="Diff Files" library="DiffLibrary">
+<doc>Diff two text files</doc>
+<arguments>
+<arg>${bios}</arg>
+<arg>${ROM_FOLDER}${/}${sn}-${id}-expected.rom</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.836" level="INFO">file1: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom</msg>
+<msg timestamp="20170324 18:30:20.836" level="INFO">file2: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGTEST3A16099999-V4-1-8Kgran-expected.rom</msg>
+<msg timestamp="20170324 18:30:20.836" level="INFO">diff --strip-trailing-cr "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom" "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGTEST3A16099999-V4-1-8Kgran-expected.rom"</msg>
+<status status="PASS" endtime="20170324 18:30:20.839" starttime="20170324 18:30:20.836"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.839" starttime="20170324 18:30:20.827"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.840" critical="yes" starttime="20170324 18:30:20.825"></status>
+</test>
+<test id="s1-s1-t3" name="V4-1-endian">
+<kw type="setup" name="Clear Temp Folder">
+<kw name="Remove File" library="OperatingSystem">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}*</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.842" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:20.842" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:20.842" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv&lt;/a&gt;'.</msg>
+<status status="PASS" endtime="20170324 18:30:20.842" starttime="20170324 18:30:20.841"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.842" starttime="20170324 18:30:20.841"></status>
+</kw>
+<kw name="Generate BIOS">
+<arguments>
+<arg>${TEST NAME}</arg>
+<arg>FGTEST3A16099999</arg>
+</arguments>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}lic-${id}.conf</arg>
+</arguments>
+<assign>
+<var>${config}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.843" level="INFO">${config} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1-endian.conf</msg>
+<status status="PASS" endtime="20170324 18:30:20.844" starttime="20170324 18:30:20.843"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}snlist-${sn}.csv</arg>
+</arguments>
+<assign>
+<var>${snlist}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.844" level="INFO">${snlist} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv</msg>
+<status status="PASS" endtime="20170324 18:30:20.845" starttime="20170324 18:30:20.844"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${config} ${snlist} ${TEMP_FOLDER}${/}t.csv ${TEMP_FOLDER}${/}t.txt</arg>
+</arguments>
+<assign>
+<var>${run_args}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.845" level="INFO">${run_args} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1-endian.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv /var/...</msg>
+<status status="PASS" endtime="20170324 18:30:20.845" starttime="20170324 18:30:20.845"></status>
+</kw>
+<kw name="Run Process" library="Process">
+<doc>Runs a process and waits for it to complete.</doc>
+<arguments>
+<arg>${GENBIOS} ${run_args}</arg>
+<arg>cwd=/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios</arg>
+<arg>shell=True</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.846" level="INFO">Starting process:
+../../genbios /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-1-endian.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt</msg>
+<msg timestamp="20170324 18:30:20.848" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20170324 18:30:20.851" level="INFO">Process completed.</msg>
+<msg timestamp="20170324 18:30:20.851" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.851" starttime="20170324 18:30:20.846"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result.stdout}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.852" level="INFO">Version 4.0 Build 9
+Current stack limit: 8388608, max: 18446744073709551615
+New stack limit: 67108864
+BIOS_buffer: conf-&gt;SN_prefix = FGTEST3A160
+Prepared BIOS header v4
+BIOS chip_size = 256 KB
+Prepared cert/bios header
+Endian swapping data area
+Byte swapping 262144 bites [(nil) - 0x40000]
+CERT Item (primary) - embedded 4 files, total len 12119.
+Byte swapping 12120 bites [(nil) - 0x2f58]
+OK - Embed item 1 type=1 @ 0x0
+CERT Item - embedded 3 files, total len 7368.
+Byte swapping 7368 bites [0x20000 - 0x21cc8]
+OK - Embed item 2 type=1 @ 0x20000
+Endian swapping: BIOS_MAC
+Byte swapping 16 bites [0x3ff80 - 0x3ff90]
+Endian swapping: BIOS_SERIAL
+Byte swapping 16 bites [0x3ff90 - 0x3ffa0]
+Endian swapping: BIOS_LICENSE
+Byte swapping 16 bites [0x3ffd0 - 0x3ffe0]
+Endian swapping: BIOS_OEM_SN
+Byte swapping 16 bites [0x3ffe0 - 0x3fff0]
+BIOS_CSUM: 03C68E32 ((nil)-0x40000)
+Endian swapping: BIOS_CSUM: 03C68E32
+Byte swapping 4 bites [0x3fef0 - 0x3fef4]</msg>
+<status status="PASS" endtime="20170324 18:30:20.852" starttime="20170324 18:30:20.851"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.853" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.853" starttime="20170324 18:30:20.852"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}${sn}.rom</arg>
+</arguments>
+<assign>
+<var>${bios}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.854" level="INFO">${bios} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom</msg>
+<status status="PASS" endtime="20170324 18:30:20.854" starttime="20170324 18:30:20.853"></status>
+</kw>
+<kw name="File Should Exist" library="OperatingSystem">
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<arguments>
+<arg>${bios}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.854" html="yes" level="INFO">File '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom&lt;/a&gt;' exists.</msg>
+<status status="PASS" endtime="20170324 18:30:20.855" starttime="20170324 18:30:20.854"></status>
+</kw>
+<kw name="Diff Files" library="DiffLibrary">
+<doc>Diff two text files</doc>
+<arguments>
+<arg>${bios}</arg>
+<arg>${ROM_FOLDER}${/}${sn}-${id}-expected.rom</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.855" level="INFO">file1: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom</msg>
+<msg timestamp="20170324 18:30:20.855" level="INFO">file2: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGTEST3A16099999-V4-1-endian-expected.rom</msg>
+<msg timestamp="20170324 18:30:20.855" level="INFO">diff --strip-trailing-cr "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom" "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGTEST3A16099999-V4-1-endian-expected.rom"</msg>
+<status status="PASS" endtime="20170324 18:30:20.858" starttime="20170324 18:30:20.855"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.858" starttime="20170324 18:30:20.842"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.859" critical="yes" starttime="20170324 18:30:20.840"></status>
+</test>
+<test id="s1-s1-t4" name="V4-2">
+<kw type="setup" name="Clear Temp Folder">
+<kw name="Remove File" library="OperatingSystem">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}*</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.860" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:20.860" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:20.860" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv&lt;/a&gt;'.</msg>
+<status status="PASS" endtime="20170324 18:30:20.860" starttime="20170324 18:30:20.860"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.861" starttime="20170324 18:30:20.859"></status>
+</kw>
+<kw name="Generate BIOS">
+<arguments>
+<arg>${TEST NAME}</arg>
+<arg>FGTEST3A16099999</arg>
+</arguments>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}lic-${id}.conf</arg>
+</arguments>
+<assign>
+<var>${config}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.861" level="INFO">${config} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-2.conf</msg>
+<status status="PASS" endtime="20170324 18:30:20.861" starttime="20170324 18:30:20.861"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}snlist-${sn}.csv</arg>
+</arguments>
+<assign>
+<var>${snlist}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.862" level="INFO">${snlist} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv</msg>
+<status status="PASS" endtime="20170324 18:30:20.862" starttime="20170324 18:30:20.862"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${config} ${snlist} ${TEMP_FOLDER}${/}t.csv ${TEMP_FOLDER}${/}t.txt</arg>
+</arguments>
+<assign>
+<var>${run_args}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.862" level="INFO">${run_args} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-2.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv /var/lib/Jen...</msg>
+<status status="PASS" endtime="20170324 18:30:20.863" starttime="20170324 18:30:20.862"></status>
+</kw>
+<kw name="Run Process" library="Process">
+<doc>Runs a process and waits for it to complete.</doc>
+<arguments>
+<arg>${GENBIOS} ${run_args}</arg>
+<arg>cwd=/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios</arg>
+<arg>shell=True</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.863" level="INFO">Starting process:
+../../genbios /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-V4-2.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGTEST3A16099999.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt</msg>
+<msg timestamp="20170324 18:30:20.865" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20170324 18:30:20.867" level="INFO">Process completed.</msg>
+<msg timestamp="20170324 18:30:20.867" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.867" starttime="20170324 18:30:20.863"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result.stdout}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.868" level="INFO">Version 4.0 Build 9
+Current stack limit: 8388608, max: 18446744073709551615
+New stack limit: 67108864
+BIOS_buffer: conf-&gt;SN_prefix = FGTEST3A160
+Prepared BIOS header v4
+BIOS chip_size = 256 KB
+Prepared cert/bios header
+CERT Item (primary) - embedded 4 files, total len 12119.
+OK - Embed item 1 type=1 @ 0x0
+CERT Item - embedded 4 files, total len 12119.
+OK - Embed item 2 type=1 @ 0x20000
+BIOS_CSUM: 03BA1B13 ((nil)-0x40000)</msg>
+<status status="PASS" endtime="20170324 18:30:20.868" starttime="20170324 18:30:20.867"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.868" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.868" starttime="20170324 18:30:20.868"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}${sn}.rom</arg>
+</arguments>
+<assign>
+<var>${bios}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.869" level="INFO">${bios} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom</msg>
+<status status="PASS" endtime="20170324 18:30:20.869" starttime="20170324 18:30:20.869"></status>
+</kw>
+<kw name="File Should Exist" library="OperatingSystem">
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<arguments>
+<arg>${bios}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.870" html="yes" level="INFO">File '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom&lt;/a&gt;' exists.</msg>
+<status status="PASS" endtime="20170324 18:30:20.870" starttime="20170324 18:30:20.869"></status>
+</kw>
+<kw name="Diff Files" library="DiffLibrary">
+<doc>Diff two text files</doc>
+<arguments>
+<arg>${bios}</arg>
+<arg>${ROM_FOLDER}${/}${sn}-${id}-expected.rom</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.870" level="INFO">file1: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom</msg>
+<msg timestamp="20170324 18:30:20.870" level="INFO">file2: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGTEST3A16099999-V4-2-expected.rom</msg>
+<msg timestamp="20170324 18:30:20.870" level="INFO">diff --strip-trailing-cr "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom" "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGTEST3A16099999-V4-2-expected.rom"</msg>
+<status status="PASS" endtime="20170324 18:30:20.873" starttime="20170324 18:30:20.870"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.873" starttime="20170324 18:30:20.861"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.874" critical="yes" starttime="20170324 18:30:20.859"></status>
+</test>
+<test id="s1-s1-t5" name="500D-V4-1">
+<kw type="setup" name="Clear Temp Folder">
+<kw name="Remove File" library="OperatingSystem">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}*</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.875" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:20.876" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGTEST3A16099999.rom&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:20.876" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv&lt;/a&gt;'.</msg>
+<status status="PASS" endtime="20170324 18:30:20.876" starttime="20170324 18:30:20.875"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:20.876" starttime="20170324 18:30:20.875"></status>
+</kw>
+<kw name="Generate BIOS">
+<arguments>
+<arg>${TEST NAME}</arg>
+<arg>FGT5HD3915802778</arg>
+</arguments>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}lic-${id}.conf</arg>
+</arguments>
+<assign>
+<var>${config}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.877" level="INFO">${config} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-500D-V4-1.conf</msg>
+<status status="PASS" endtime="20170324 18:30:20.877" starttime="20170324 18:30:20.876"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}snlist-${sn}.csv</arg>
+</arguments>
+<assign>
+<var>${snlist}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.878" level="INFO">${snlist} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGT5HD3915802778.csv</msg>
+<status status="PASS" endtime="20170324 18:30:20.878" starttime="20170324 18:30:20.877"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${config} ${snlist} ${TEMP_FOLDER}${/}t.csv ${TEMP_FOLDER}${/}t.txt</arg>
+</arguments>
+<assign>
+<var>${run_args}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.878" level="INFO">${run_args} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-500D-V4-1.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGT5HD3915802778.csv /var/li...</msg>
+<status status="PASS" endtime="20170324 18:30:20.878" starttime="20170324 18:30:20.878"></status>
+</kw>
+<kw name="Run Process" library="Process">
+<doc>Runs a process and waits for it to complete.</doc>
+<arguments>
+<arg>${GENBIOS} ${run_args}</arg>
+<arg>cwd=/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios</arg>
+<arg>shell=True</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.879" level="INFO">Starting process:
+../../genbios /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-500D-V4-1.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGT5HD3915802778.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt</msg>
+<msg timestamp="20170324 18:30:20.881" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20170324 18:30:20.989" level="INFO">Process completed.</msg>
+<msg timestamp="20170324 18:30:20.989" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.989" starttime="20170324 18:30:20.879"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result.stdout}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.991" level="INFO">Version 4.0 Build 9
+Current stack limit: 8388608, max: 18446744073709551615
+New stack limit: 67108864
+BIOS_buffer: conf-&gt;SN_prefix = FGT5HD
+Prepared BIOS header v4
+BIOS chip_size = 8192 KB
+Prepared cert/bios header
+CERT Item (primary) - embedded 4 files, total len 12581.
+OK - Embed item 1 type=1 @ 0x720000
+CERT Item - embedded 3 files, total len 7368.
+OK - Embed item 2 type=1 @ 0x728000
+BIOS_CSUM: 06D128B7 (0x700000-0x800000)</msg>
+<status status="PASS" endtime="20170324 18:30:20.991" starttime="20170324 18:30:20.990"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.991" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:20.991" starttime="20170324 18:30:20.991"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}${sn}.rom</arg>
+</arguments>
+<assign>
+<var>${bios}</var>
+</assign>
+<msg timestamp="20170324 18:30:20.992" level="INFO">${bios} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom</msg>
+<status status="PASS" endtime="20170324 18:30:20.992" starttime="20170324 18:30:20.991"></status>
+</kw>
+<kw name="File Should Exist" library="OperatingSystem">
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<arguments>
+<arg>${bios}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.992" html="yes" level="INFO">File '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom&lt;/a&gt;' exists.</msg>
+<status status="PASS" endtime="20170324 18:30:20.992" starttime="20170324 18:30:20.992"></status>
+</kw>
+<kw name="Diff Files" library="DiffLibrary">
+<doc>Diff two text files</doc>
+<arguments>
+<arg>${bios}</arg>
+<arg>${ROM_FOLDER}${/}${sn}-${id}-expected.rom</arg>
+</arguments>
+<msg timestamp="20170324 18:30:20.993" level="INFO">file1: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom</msg>
+<msg timestamp="20170324 18:30:20.993" level="INFO">file2: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGT5HD3915802778-500D-V4-1-expected.rom</msg>
+<msg timestamp="20170324 18:30:20.993" level="INFO">diff --strip-trailing-cr "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom" "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGT5HD3915802778-500D-V4-1-expected.rom"</msg>
+<status status="PASS" endtime="20170324 18:30:20.999" starttime="20170324 18:30:20.992"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.000" starttime="20170324 18:30:20.876"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.000" critical="yes" starttime="20170324 18:30:20.874"></status>
+</test>
+<test id="s1-s1-t6" name="500D-V4-2">
+<kw type="setup" name="Clear Temp Folder">
+<kw name="Remove File" library="OperatingSystem">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}*</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.002" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:21.002" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:21.003" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom&lt;/a&gt;'.</msg>
+<status status="PASS" endtime="20170324 18:30:21.003" starttime="20170324 18:30:21.001"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.003" starttime="20170324 18:30:21.001"></status>
+</kw>
+<kw name="Generate BIOS">
+<arguments>
+<arg>${TEST NAME}</arg>
+<arg>FGT5HD3915802778</arg>
+</arguments>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}lic-${id}.conf</arg>
+</arguments>
+<assign>
+<var>${config}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.004" level="INFO">${config} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-500D-V4-2.conf</msg>
+<status status="PASS" endtime="20170324 18:30:21.004" starttime="20170324 18:30:21.004"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}snlist-${sn}.csv</arg>
+</arguments>
+<assign>
+<var>${snlist}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.005" level="INFO">${snlist} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGT5HD3915802778.csv</msg>
+<status status="PASS" endtime="20170324 18:30:21.005" starttime="20170324 18:30:21.004"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${config} ${snlist} ${TEMP_FOLDER}${/}t.csv ${TEMP_FOLDER}${/}t.txt</arg>
+</arguments>
+<assign>
+<var>${run_args}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.005" level="INFO">${run_args} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-500D-V4-2.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGT5HD3915802778.csv /var/li...</msg>
+<status status="PASS" endtime="20170324 18:30:21.005" starttime="20170324 18:30:21.005"></status>
+</kw>
+<kw name="Run Process" library="Process">
+<doc>Runs a process and waits for it to complete.</doc>
+<arguments>
+<arg>${GENBIOS} ${run_args}</arg>
+<arg>cwd=/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios</arg>
+<arg>shell=True</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.006" level="INFO">Starting process:
+../../genbios /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-500D-V4-2.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FGT5HD3915802778.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt</msg>
+<msg timestamp="20170324 18:30:21.008" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20170324 18:30:21.118" level="INFO">Process completed.</msg>
+<msg timestamp="20170324 18:30:21.118" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:21.118" starttime="20170324 18:30:21.005"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result.stdout}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.119" level="INFO">Version 4.0 Build 9
+Current stack limit: 8388608, max: 18446744073709551615
+New stack limit: 67108864
+BIOS_buffer: conf-&gt;SN_prefix = FGT5HD
+Prepared BIOS header v4
+BIOS chip_size = 8192 KB
+Prepared cert/bios header
+CERT Item (primary) - embedded 4 files, total len 12585.
+OK - Embed item 1 type=1 @ 0x720000
+CERT Item - embedded 4 files, total len 12581.
+OK - Embed item 2 type=1 @ 0x728000
+BIOS_CSUM: 06C364CF (0x700000-0x800000)</msg>
+<status status="PASS" endtime="20170324 18:30:21.119" starttime="20170324 18:30:21.118"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.119" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:21.119" starttime="20170324 18:30:21.119"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}${sn}.rom</arg>
+</arguments>
+<assign>
+<var>${bios}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.120" level="INFO">${bios} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom</msg>
+<status status="PASS" endtime="20170324 18:30:21.120" starttime="20170324 18:30:21.120"></status>
+</kw>
+<kw name="File Should Exist" library="OperatingSystem">
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<arguments>
+<arg>${bios}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.120" html="yes" level="INFO">File '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom&lt;/a&gt;' exists.</msg>
+<status status="PASS" endtime="20170324 18:30:21.120" starttime="20170324 18:30:21.120"></status>
+</kw>
+<kw name="Diff Files" library="DiffLibrary">
+<doc>Diff two text files</doc>
+<arguments>
+<arg>${bios}</arg>
+<arg>${ROM_FOLDER}${/}${sn}-${id}-expected.rom</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.121" level="INFO">file1: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom</msg>
+<msg timestamp="20170324 18:30:21.121" level="INFO">file2: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGT5HD3915802778-500D-V4-2-expected.rom</msg>
+<msg timestamp="20170324 18:30:21.121" level="INFO">diff --strip-trailing-cr "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom" "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FGT5HD3915802778-500D-V4-2-expected.rom"</msg>
+<status status="PASS" endtime="20170324 18:30:21.127" starttime="20170324 18:30:21.121"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.128" starttime="20170324 18:30:21.003"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.128" critical="yes" starttime="20170324 18:30:21.000"></status>
+</test>
+<test id="s1-s1-t7" name="80D-V1">
+<kw type="setup" name="Clear Temp Folder">
+<kw name="Remove File" library="OperatingSystem">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}*</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.130" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:21.130" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:21.131" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FGT5HD3915802778.rom&lt;/a&gt;'.</msg>
+<status status="PASS" endtime="20170324 18:30:21.131" starttime="20170324 18:30:21.129"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.131" starttime="20170324 18:30:21.129"></status>
+</kw>
+<kw name="Generate BIOS">
+<arguments>
+<arg>${TEST NAME}</arg>
+<arg>FG080D3915000901</arg>
+</arguments>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}lic-${id}.conf</arg>
+</arguments>
+<assign>
+<var>${config}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.132" level="INFO">${config} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-80D-V1.conf</msg>
+<status status="PASS" endtime="20170324 18:30:21.132" starttime="20170324 18:30:21.132"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}snlist-${sn}.csv</arg>
+</arguments>
+<assign>
+<var>${snlist}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.133" level="INFO">${snlist} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FG080D3915000901.csv</msg>
+<status status="PASS" endtime="20170324 18:30:21.133" starttime="20170324 18:30:21.133"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${config} ${snlist} ${TEMP_FOLDER}${/}t.csv ${TEMP_FOLDER}${/}t.txt</arg>
+</arguments>
+<assign>
+<var>${run_args}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.133" level="INFO">${run_args} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-80D-V1.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FG080D3915000901.csv /var/lib/J...</msg>
+<status status="PASS" endtime="20170324 18:30:21.133" starttime="20170324 18:30:21.133"></status>
+</kw>
+<kw name="Run Process" library="Process">
+<doc>Runs a process and waits for it to complete.</doc>
+<arguments>
+<arg>${GENBIOS} ${run_args}</arg>
+<arg>cwd=/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios</arg>
+<arg>shell=True</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.134" level="INFO">Starting process:
+../../genbios /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-80D-V1.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FG080D3915000901.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt</msg>
+<msg timestamp="20170324 18:30:21.136" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20170324 18:30:21.136" level="INFO">Process completed.</msg>
+<msg timestamp="20170324 18:30:21.137" level="INFO">${result} = &lt;result object with rc 1&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:21.137" starttime="20170324 18:30:21.134"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result.stdout}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.139" level="INFO">Version 4.0 Build 9
+Current stack limit: 8388608, max: 18446744073709551615
+New stack limit: 67108864</msg>
+<status status="PASS" endtime="20170324 18:30:21.139" starttime="20170324 18:30:21.137"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.139" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20170324 18:30:21.139" level="FAIL">1 != 0</msg>
+<status status="FAIL" endtime="20170324 18:30:21.139" starttime="20170324 18:30:21.139"></status>
+</kw>
+<status status="FAIL" endtime="20170324 18:30:21.139" starttime="20170324 18:30:21.132"></status>
+</kw>
+<status status="FAIL" endtime="20170324 18:30:21.140" critical="yes" starttime="20170324 18:30:21.128">1 != 0</status>
+</test>
+<test id="s1-s1-t8" name="80D-V3-2">
+<kw type="setup" name="Clear Temp Folder">
+<kw name="Remove File" library="OperatingSystem">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}*</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.141" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt&lt;/a&gt;'.</msg>
+<msg timestamp="20170324 18:30:21.141" html="yes" level="INFO">Removed file '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv&lt;/a&gt;'.</msg>
+<status status="PASS" endtime="20170324 18:30:21.141" starttime="20170324 18:30:21.140"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.141" starttime="20170324 18:30:21.140"></status>
+</kw>
+<kw name="Generate BIOS">
+<arguments>
+<arg>${TEST NAME}</arg>
+<arg>FG080D3915000901</arg>
+</arguments>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}lic-${id}.conf</arg>
+</arguments>
+<assign>
+<var>${config}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.142" level="INFO">${config} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-80D-V3-2.conf</msg>
+<status status="PASS" endtime="20170324 18:30:21.142" starttime="20170324 18:30:21.142"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${CONF_FOLDER}${/}snlist-${sn}.csv</arg>
+</arguments>
+<assign>
+<var>${snlist}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.142" level="INFO">${snlist} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FG080D3915000901.csv</msg>
+<status status="PASS" endtime="20170324 18:30:21.142" starttime="20170324 18:30:21.142"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${config} ${snlist} ${TEMP_FOLDER}${/}t.csv ${TEMP_FOLDER}${/}t.txt</arg>
+</arguments>
+<assign>
+<var>${run_args}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.143" level="INFO">${run_args} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-80D-V3-2.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FG080D3915000901.csv /var/lib...</msg>
+<status status="PASS" endtime="20170324 18:30:21.143" starttime="20170324 18:30:21.142"></status>
+</kw>
+<kw name="Run Process" library="Process">
+<doc>Runs a process and waits for it to complete.</doc>
+<arguments>
+<arg>${GENBIOS} ${run_args}</arg>
+<arg>cwd=/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios</arg>
+<arg>shell=True</arg>
+</arguments>
+<assign>
+<var>${result}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.143" level="INFO">Starting process:
+../../genbios /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/lic-80D-V3-2.conf /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/conf/snlist-FG080D3915000901.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.csv /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/t.txt</msg>
+<msg timestamp="20170324 18:30:21.145" level="INFO">Waiting for process to complete.</msg>
+<msg timestamp="20170324 18:30:21.146" level="INFO">Process completed.</msg>
+<msg timestamp="20170324 18:30:21.146" level="INFO">${result} = &lt;result object with rc 0&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:21.146" starttime="20170324 18:30:21.143"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${result.stdout}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.147" level="INFO">Version 4.0 Build 9
+Current stack limit: 8388608, max: 18446744073709551615
+New stack limit: 67108864
+BIOS_buffer: conf-&gt;SN_prefix = FG080D39150
+Prepared cert header v2
+Prepared cert header v3
+BIOS chip_size = 16 KB
+Prepared cert/bios header
+Embedded 1st cert info @ 0x200
+Embedded 2nd cert info @ 0x2000
+BIOS_CSUM: 0016552A ((nil)-0x4000)</msg>
+<status status="PASS" endtime="20170324 18:30:21.147" starttime="20170324 18:30:21.146"></status>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${result.rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.147" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20170324 18:30:21.147" starttime="20170324 18:30:21.147"></status>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${TEMP_FOLDER}${/}${sn}.rom</arg>
+</arguments>
+<assign>
+<var>${bios}</var>
+</assign>
+<msg timestamp="20170324 18:30:21.148" level="INFO">${bios} = /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FG080D3915000901.rom</msg>
+<status status="PASS" endtime="20170324 18:30:21.148" starttime="20170324 18:30:21.147"></status>
+</kw>
+<kw name="File Should Exist" library="OperatingSystem">
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<arguments>
+<arg>${bios}</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.148" html="yes" level="INFO">File '&lt;a href="file:///var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FG080D3915000901.rom"&gt;/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FG080D3915000901.rom&lt;/a&gt;' exists.</msg>
+<status status="PASS" endtime="20170324 18:30:21.148" starttime="20170324 18:30:21.148"></status>
+</kw>
+<kw name="Diff Files" library="DiffLibrary">
+<doc>Diff two text files</doc>
+<arguments>
+<arg>${bios}</arg>
+<arg>${ROM_FOLDER}${/}${sn}-${id}-expected.rom</arg>
+</arguments>
+<msg timestamp="20170324 18:30:21.149" level="INFO">file1: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FG080D3915000901.rom</msg>
+<msg timestamp="20170324 18:30:21.149" level="INFO">file2: /var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FG080D3915000901-80D-V3-2-expected.rom</msg>
+<msg timestamp="20170324 18:30:21.149" level="INFO">diff --strip-trailing-cr "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/temp/FG080D3915000901.rom" "/var/lib/Jenkins_Backup/jenkins/jobs/GenBIOS/workspace/test/genbios/rom/FG080D3915000901-80D-V3-2-expected.rom"</msg>
+<status status="PASS" endtime="20170324 18:30:21.151" starttime="20170324 18:30:21.148"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.151" starttime="20170324 18:30:21.141"></status>
+</kw>
+<status status="PASS" endtime="20170324 18:30:21.152" critical="yes" starttime="20170324 18:30:21.140"></status>
+</test>
+<status status="FAIL" endtime="20170324 18:30:21.152" starttime="20170324 18:30:20.797"></status>
+</suite>
+<metadata>
+<item name="Build">9</item>
+<item name="Version">4.0</item>
+</metadata>
+<status status="FAIL" endtime="20170324 18:30:21.154" starttime="20170324 18:30:20.780"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="1" pass="7">Critical Tests</stat>
+<stat fail="1" pass="7">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="1" id="s1" name="Genbios" pass="7">Genbios</stat>
+<stat fail="1" id="s1-s1" name="Valid Conf" pass="7">Genbios.Valid Conf</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

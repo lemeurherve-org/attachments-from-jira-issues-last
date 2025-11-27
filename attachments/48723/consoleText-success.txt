@@ -1,0 +1,55 @@
+Started by user Timothy Klopotoski
+Running in Durability level: MAX_SURVIVABILITY
+Loading library timski@master
+Attempting to resolve master from remote references...
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials description: github-shared-secret
+ > git ls-remote -h https://github.com/skinitimski/library.parent # timeout=10
+Found match: refs/heads/master revision 37e0fa2400d0463571abc632be68c5a70538168f
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/skinitimski/library.parent # timeout=10
+Fetching without tags
+Fetching upstream changes from https://github.com/skinitimski/library.parent
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials description: github-shared-secret
+ > git fetch --no-tags --progress https://github.com/skinitimski/library.parent +refs/heads/*:refs/remotes/origin/*
+Checking out Revision 37e0fa2400d0463571abc632be68c5a70538168f (master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 37e0fa2400d0463571abc632be68c5a70538168f
+Commit message: "We don't even need to make two calls here, if the calls are in the child it still fails"
+ > git rev-list --no-walk 37e0fa2400d0463571abc632be68c5a70538168f # timeout=10
+[Pipeline] echo
+step: stepFromParent
+[Pipeline] echo
+step: stepFromParent
+[Pipeline] library
+Loading library child@master
+Examining skinitimski/library.child
+Attempting to resolve master as a branch
+Resolved master as branch master at revision caaa78c5c23af5042131088ac1ffcf501a72c8bc
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/skinitimski/library.child.git # timeout=10
+Fetching without tags
+Fetching upstream changes from https://github.com/skinitimski/library.child.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials description: github-shared-secret
+ > git fetch --no-tags --progress https://github.com/skinitimski/library.child.git +refs/heads/master:refs/remotes/origin/master
+Checking out Revision caaa78c5c23af5042131088ac1ffcf501a72c8bc (master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f caaa78c5c23af5042131088ac1ffcf501a72c8bc
+Commit message: "Try calling sibling step twice in a row"
+ > git rev-list --no-walk caaa78c5c23af5042131088ac1ffcf501a72c8bc # timeout=10
+[Pipeline] echo
+entering stepFromChildOther
+[Pipeline] echo
+entering stepFromChildOther
+[Pipeline] echo
+entering stepFromChild
+[Pipeline] echo
+entering stepFromChildOther
+[Pipeline] echo
+entering stepFromChildOther
+[Pipeline] End of Pipeline
+Finished: SUCCESS

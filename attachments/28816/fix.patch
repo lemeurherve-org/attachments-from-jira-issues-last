@@ -1,0 +1,26 @@
+diff --git a/src/main/java/org/jenkinsci/plugins/testresultsanalyzer/result/data/ClassResultData.java b/src/main/java/org/jenkinsci/plugins/testresultsanalyzer/result/data/ClassResultData.java
+index 39cbfb5..9a94dca 100644
+--- a/src/main/java/org/jenkinsci/plugins/testresultsanalyzer/result/data/ClassResultData.java
++++ b/src/main/java/org/jenkinsci/plugins/testresultsanalyzer/result/data/ClassResultData.java
+@@ -8,7 +8,7 @@ public class ClassResultData extends ResultData {
+ 	public ClassResultData(ClassResult classResult) {
+ 
+ 		setName(classResult.getName());
+-		setPassed(classResult.isPassed());
++		setPassed(classResult.getFailCount()==0);
+ 		setSkipped(classResult.getSkipCount() == classResult.getTotalCount());
+ 		setTotalTests(classResult.getTotalCount());
+ 		setTotalFailed(classResult.getFailCount());
+diff --git a/src/main/java/org/jenkinsci/plugins/testresultsanalyzer/result/data/PackageResultData.java b/src/main/java/org/jenkinsci/plugins/testresultsanalyzer/result/data/PackageResultData.java
+index 503d22d..d346f28 100644
+--- a/src/main/java/org/jenkinsci/plugins/testresultsanalyzer/result/data/PackageResultData.java
++++ b/src/main/java/org/jenkinsci/plugins/testresultsanalyzer/result/data/PackageResultData.java
+@@ -8,7 +8,7 @@ public class PackageResultData extends ResultData{
+ 	
+ 	public PackageResultData(PackageResult packageResult){
+ 		setName(packageResult.getName());
+-		setPassed(packageResult.isPassed());
++		setPassed(packageResult.getFailCount()==0);
+ 		setSkipped(packageResult.getSkipCount() == packageResult.getTotalCount());
+ 		setTotalTests(packageResult.getTotalCount());
+ 		setTotalFailed(packageResult.getFailCount());

@@ -1,0 +1,131 @@
+diff --git a/src/main/java/hudson/plugins/logparser/LogParserColumn.java b/src/main/java/hudson/plugins/logparser/LogParserColumn.java
+new file mode 100644
+index 0000000..ab96511
+--- /dev/null
++++ b/src/main/java/hudson/plugins/logparser/LogParserColumn.java
+@@ -0,0 +1,60 @@
++package hudson.plugins.logparser;
++
++import hudson.Extension;
++import hudson.model.Job;
++import hudson.model.Run;
++import hudson.views.ListViewColumn;
++import hudson.views.ListViewColumnDescriptor;
++import net.sf.json.JSONObject;
++import org.kohsuke.stapler.StaplerRequest;
++
++public class LogParserColumn extends ListViewColumn {
++    public int[] getResult(Job job) {
++        if (job == null) {
++            return null;
++        }
++	Run build = job.getLastCompletedBuild();
++        if (build == null) {
++            return null;
++        }
++        LogParserAction action = build.getAction(LogParserAction.class);
++	if (action == null) {
++            return null;
++	}
++        LogParserResult result = action.getResult();
++	if (result == null) {
++            return null;
++	}
++
++	return new int[]{result.getTotalErrors(), result.getTotalWarnings(), result.getTotalInfos(), result.getTotalDebugs()};
++    }
++
++    public String getUrl(Job job) {
++        if (job == null) {
++            return null;
++        }
++        Run build = job.getLastCompletedBuild();
++        if (build == null) {
++            return null;
++        }
++        return build.getUrl() + LogParserAction.getUrlNameStat();
++    }
++
++    @Extension
++    public static class LogParserColumnDescriptor extends ListViewColumnDescriptor {
++        @Override
++        public ListViewColumn newInstance(StaplerRequest req, JSONObject formData) throws FormException {
++            return new LogParserColumn();
++        }
++
++        @Override
++        public String getDisplayName() {
++            return Messages.LogParserColumn_Header();
++        }
++
++        @Override
++        public boolean shownByDefault() {
++            return false;
++        }
++    }
++}
+diff --git a/src/main/resources/hudson/plugins/logparser/LogParserColumn/column.jelly b/src/main/resources/hudson/plugins/logparser/LogParserColumn/column.jelly
+new file mode 100644
+index 0000000..34e3a2a
+--- /dev/null
++++ b/src/main/resources/hudson/plugins/logparser/LogParserColumn/column.jelly
+@@ -0,0 +1,21 @@
++<j:jelly xmlns:j="jelly:core">
++  <j:set var="result" value="${it.getResult(job)}"/>
++  <j:set var="url" value="${it.getUrl(job)}"/>
++  <td style="font-weight: bold">
++    <j:choose>
++      <j:when test="${url == null}">
++      </j:when>
++      <j:when test="${result == null}">
++        -
++      </j:when>
++      <j:otherwise>
++        <a href="${rootURL}/${url}">
++          <span style="color: ${%Error.color}">${%Error}${result[0]};</span> 
++          <span style="color: ${%Warning.color}">${%Warning}${result[1]};</span> 
++          <span style="color: ${%Info.color}">${%Info}${result[2]};</span> 
++          <span style="color: ${%Debug.color}">${%Debug}${result[3]}</span>
++        </a>
++      </j:otherwise>
++    </j:choose>
++  </td>
++</j:jelly>
+diff --git a/src/main/resources/hudson/plugins/logparser/LogParserColumn/column.properties b/src/main/resources/hudson/plugins/logparser/LogParserColumn/column.properties
+new file mode 100644
+index 0000000..8a21831
+--- /dev/null
++++ b/src/main/resources/hudson/plugins/logparser/LogParserColumn/column.properties
+@@ -0,0 +1,9 @@
++Error=E: 
++Warning=W: 
++Info=I: 
++Debug=D: 
++
++Error.color=red
++Warning.color=orange
++Info.color=green
++Debug.color=gray
+diff --git a/src/main/resources/hudson/plugins/logparser/LogParserColumn/columnHeader.jelly b/src/main/resources/hudson/plugins/logparser/LogParserColumn/columnHeader.jelly
+new file mode 100644
+index 0000000..61b2e11
+--- /dev/null
++++ b/src/main/resources/hudson/plugins/logparser/LogParserColumn/columnHeader.jelly
+@@ -0,0 +1,3 @@
++<j:jelly xmlns:j="jelly:core">
++  <th>${%LogParserColumn.Header}</th>
++</j:jelly>
+diff --git a/src/main/resources/hudson/plugins/logparser/LogParserColumn/columnHeader.properties b/src/main/resources/hudson/plugins/logparser/LogParserColumn/columnHeader.properties
+new file mode 100644
+index 0000000..86998e6
+--- /dev/null
++++ b/src/main/resources/hudson/plugins/logparser/LogParserColumn/columnHeader.properties
+@@ -0,0 +1 @@
++LogParserColumn.Header=Log parser
+diff --git a/src/main/resources/hudson/plugins/logparser/Messages.properties b/src/main/resources/hudson/plugins/logparser/Messages.properties
+new file mode 100644
+index 0000000..86998e6
+--- /dev/null
++++ b/src/main/resources/hudson/plugins/logparser/Messages.properties
+@@ -0,0 +1 @@
++LogParserColumn.Header=Log parser

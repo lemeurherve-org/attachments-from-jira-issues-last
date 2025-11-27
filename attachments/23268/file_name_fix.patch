@@ -1,0 +1,30 @@
+From 1515671039082546ba42a2739f3d079c556ac5c7 Mon Sep 17 00:00:00 2001
+From: Pedro Rodriguez <vondiefinsternis@gmail.com>
+Date: Mon, 4 Mar 2013 14:16:37 -0500
+Subject: [PATCH] Fixed bug that caused all files to be saved as *.tar.gz even
+ is ZIPPED was selected
+
+---
+ .../plugins/cloneworkspace/CloneWorkspaceUtil.java |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/cloneworkspace/CloneWorkspaceUtil.java b/src/main/java/hudson/plugins/cloneworkspace/CloneWorkspaceUtil.java
+index 1acff77..4ac5712 100644
+--- a/src/main/java/hudson/plugins/cloneworkspace/CloneWorkspaceUtil.java
++++ b/src/main/java/hudson/plugins/cloneworkspace/CloneWorkspaceUtil.java
+@@ -95,9 +95,10 @@ public class CloneWorkspaceUtil {
+ 
+     public static String getFileNameForMethod(String method)
+     {
+-        if (method == "ZIP") {
++        if (method.equals("ZIP")) {
+             return "workspace.zip";
+-        } else {
++        }
++        else {
+             return "workspace.tar.gz";
+         }
+     }
+-- 
+1.7.4.4
+

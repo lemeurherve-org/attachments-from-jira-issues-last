@@ -1,0 +1,200 @@
+Index: src/test/java/hudson/plugins/mercurial/MercurialSCMTest.java
+===================================================================
+--- src/test/java/hudson/plugins/mercurial/MercurialSCMTest.java	(revision 35337)
++++ src/test/java/hudson/plugins/mercurial/MercurialSCMTest.java	(working copy)
+@@ -68,7 +68,7 @@
+     @Bug(1099)
+     public void testPollingLimitedToModules() throws Exception {
+         FreeStyleProject p = createFreeStyleProject();
+-        p.setScm(new MercurialSCM(hgInstallation, repo.getPath(), null, "dir1 dir2", null, null, false, false));
++        p.setScm(new MercurialSCM(hgInstallation, repo.getPath(), null, "dir1.*|dir2.*", null, null, false, false));
+         hg(repo, "init");
+         touchAndCommit(repo, "dir1/f");
+         buildAndCheck(p, "dir1/f");
+@@ -94,7 +94,7 @@
+     @Bug(6337)
+     public void testPollingLimitedToModules2() throws Exception {
+         FreeStyleProject p = createFreeStyleProject();
+-        p.setScm(new MercurialSCM(hgInstallation, repo.getPath(), null, "dir1", null, null, false, false));
++        p.setScm(new MercurialSCM(hgInstallation, repo.getPath(), null, "dir1.*", null, null, false, false));
+         hg(repo, "init");
+         touchAndCommit(repo, "starter");
+         pollSCMChanges(p);
+@@ -120,7 +120,7 @@
+         ChangeLogSet.Entry entry = it.next();
+         assertEquals(Collections.singleton("dir2/f1"), new HashSet<String>(entry.getAffectedPaths()));
+         assertFalse(it.hasNext());
+-        p.setScm(new MercurialSCM(hgInstallation, repo.getPath(), null, "dir1 extra", null, null, false, false));
++        p.setScm(new MercurialSCM(hgInstallation, repo.getPath(), null, "dir1.*|extra.*", null, null, false, false));
+         // dir2/f2 change should be ignored.
+         touchAndCommit(repo, "dir1/f2");
+         touchAndCommit(repo, "dir2/f2");
+Index: src/main/java/hudson/plugins/mercurial/MercurialSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/mercurial/MercurialSCM.java	(revision 35337)
++++ src/main/java/hudson/plugins/mercurial/MercurialSCM.java	(working copy)
+@@ -76,13 +76,20 @@
+     private final String source;
+ 
+     /**
++     * Compatibility field.
+      * Prefixes of files within the repository which we're dependent on.
+      * Storing as member variable so as to only parse the dependencies string once.
+-     * Will be either null (use whole repo), or nonempty list of subdir names.
++     * Null/blank (use whole repo), or nonempty list of subdir names.
+      */
+-    private transient Set<String> _modules;
+-    // Same thing, but not parsed for jelly.
+-    private final String modules;
++    private String modules; // here for compatibility only
++    /**
++     * Null/blank or regexp of files to poll for changes in and display in changelog.
++     */
++    private String includes;
++    /**
++     * {@link #includes} but preparsed, or null.
++     */
++    private transient Pattern includePattern;
+ 
+     /**
+      * In-repository branch to follow. Null indicates "default".
+@@ -98,25 +105,26 @@
+     private HgBrowser browser;
+ 
+     @DataBoundConstructor
+-    public MercurialSCM(String installation, String source, String branch, String modules, String subdir, HgBrowser browser, boolean clean, boolean forest) {
++    public MercurialSCM(String installation, String source, String branch, String includes, String subdir, HgBrowser browser, boolean clean, boolean forest) {
+         this.installation = installation;
+         this.source = source;
+-        this.modules = Util.fixNull(modules);
+         this.subdir = Util.fixEmptyAndTrim(subdir);
+         this.clean = clean;
+         this.forest = forest;
+-        parseModules();
+         branch = Util.fixEmpty(branch);
+         if (branch != null && branch.equals("default")) {
+             branch = null;
+         }
+         this.branch = branch;
+         this.browser = browser;
++        readResolve();
+     }
+ 
+-    private void parseModules() {
+-        if (modules.trim().length() > 0) {
+-            _modules = new HashSet<String>();
++    private Object readResolve() {
++        String _modules = Util.fixEmptyAndTrim(modules);
++        if (_modules != null) {
++            modules = null;
++            StringBuilder b = null;
+             // split by commas and whitespace, except "\ "
+             for (String r : modules.split("(?<!\\\\)[ \\r\\n,]+")) {
+                 if (r.length() == 0) { // initial spaces should be ignored
+@@ -130,15 +138,22 @@
+                 }
+                 // Use unix file path separators
+                 r = r.replace('\\', '/');
+-                _modules.add(r);
++                if (b == null) {
++                    b = new StringBuilder();
++                } else {
++                    b.append('|');
++                }
++                b.append(Pattern.quote(r)).append(".*");
+             }
+-        } else {
+-            _modules = null;
++            if (b != null) {
++                includes = b.toString();
++            }
+         }
+-    }
+-
+-    private Object readResolve() {
+-        parseModules();
++        String _includes = Util.fixEmpty(includes);
++        if (_includes != null) {
++            includePattern = Pattern.compile(_includes);
++            System.err.println("XXX includePattern=" + includePattern);
++        }
+         return this;
+     }
+ 
+@@ -321,7 +336,7 @@
+      * Filter out the given file name list by picking up changes that are in the modules we care about.
+      */
+     private Set<String> dependentChanges(Set<String> changedFileNames) {
+-        if (_modules == null) {
++        if (includePattern == null) {
+             // Old project created before this feature was added.
+             return changedFileNames;
+         }
+@@ -329,13 +344,11 @@
+         Set<String> affecting = new HashSet<String>();
+ 
+         for (String changedFile : changedFileNames) {
+-            for (String dependency : _modules) {
+-                if (changedFile.startsWith(dependency)) {
+-                    affecting.add(changedFile);
+-                    break;
+-                }
++            if (includePattern.matcher(changedFile).matches()) {
++                affecting.add(changedFile);
+             }
+         }
++        System.err.println("XXX includePattern=" + includePattern + " changedFileNames=" + changedFileNames + " affecting=" + affecting);
+ 
+         return affecting;
+     }
+@@ -609,7 +622,7 @@
+ 
+     @Override
+     public ChangeLogParser createChangeLogParser() {
+-        return new MercurialChangeLogParser(_modules);
++        return new MercurialChangeLogParser(includePattern);
+     }
+ 
+     @Override
+Index: src/main/java/hudson/plugins/mercurial/MercurialChangeLogParser.java
+===================================================================
+--- src/main/java/hudson/plugins/mercurial/MercurialChangeLogParser.java	(revision 35337)
++++ src/main/java/hudson/plugins/mercurial/MercurialChangeLogParser.java	(working copy)
+@@ -11,7 +11,7 @@
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.Iterator;
+-import java.util.Set;
++import java.util.regex.Pattern;
+ 
+ /**
+  * Parses the changelog.xml.
+@@ -20,9 +20,9 @@
+  */
+ public class MercurialChangeLogParser extends ChangeLogParser {
+ 
+-    private final Set<String> modules;
++    private final Pattern modules;
+ 
+-    public MercurialChangeLogParser(Set<String> modules) {
++    public MercurialChangeLogParser(Pattern modules) {
+         this.modules = modules;
+     }
+ 
+@@ -53,12 +53,10 @@
+             Iterator<MercurialChangeSet> it = r.iterator();
+             while (it.hasNext()) {
+                 boolean include = false;
+-                INCLUDE: for (String path : it.next().getAffectedPaths()) {
+-                    for (String module : modules) {
+-                        if (path.startsWith(module)) {
+-                            include = true;
+-                            break INCLUDE;
+-                        }
++                for (String path : it.next().getAffectedPaths()) {
++                    if (modules.matcher(path).matches()) {
++                        include = true;
++                        break;
+                     }
+                 }
+                 if (!include) {

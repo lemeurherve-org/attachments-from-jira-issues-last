@@ -1,0 +1,327 @@
+Started by an SCM change
+Building remotely on MPABEPRD201
+[SMR] $ si projectinfo --quiet --batch --status=none --project=d:/MKSprojects/ACE/SMR/project.pj
+[MKS] Current Revision: 1.33
+[MKS] Next Revision: 1.34
+[SMR] $ si rlog --recurse --batch --noHeaderFormat --noTrailerFormat --rfilter=anyspecial --format=~@@~{membername}~@~{author}~@~{revision}~@~{date}~@~{cpid}~@~{description} --rfilter=branch::current "--rfilter=daterange:'Feb 29, 2012 08:22:21 AM'-" --project=d:/MKSprojects/ACE/SMR/project.pj
+[SMR] $ si sandboxinfo --quiet --batch --status=none --sandbox=/abe/jenkins/workspace/SMR/project.pj --cwd=/abe/jenkins/workspace/SMR
+
+===================== Building a Continuous Integration Build ============================
+
+[MKS] Changes has been detected.
+[MKS] MKS Sandbox already exists for the "SMR" application.
+[MKS] Synchronizing existing MKS Sandbox.
+[MKS] Project Name: "d:/MKSprojects/ACE/SMR/project.pj"
+[SMR] $ si resync --recurse --yes --quiet --batch --overwriteChanged --overwriteIfPending --sandbox=/abe/jenkins/workspace/SMR/project.pj --cwd=/abe/jenkins/workspace/SMR
+[MKS] Existing Sandbox synchronized successful.
+
+===================== Shared Library Sandbox Info ============================
+
+[SMR] $ si sandboxinfo --quiet --batch --status=none --sandbox=/abe/sharedlib/project.pj --cwd=/abe/sharedlib
+
+===================== Synchronize Shared Library ============================
+
+[SMR] $ si resync --recurse --yes --quiet --batch --overwriteChanged --overwriteIfPending --sandbox=/abe/sharedlib/project.pj --cwd=/abe/sharedlib
+
+===================== Validate Shared Library ============================
+
+ Did not found any lib.properties files to validate.
+
+
+[copy-to-slave] Copying 'buildResult/**/*.*', excluding '**/release/*.*', from 'file:/abe/jenkins/jobs/SMR/workspace/' on the master to 'file:/abe/jenkins/workspace/SMR/' on 'MPABEPRD201'.
+[config] $ ant -file build.xml -DCHECKPOINT_NUMBER= -DTESTABILITY_REPORT=false -DHUDSON_BUILD_TRIGGER=BUILD_TRIGGER_CHANDE -DJAVADOC=false -DCOBERTURA_REPORT=true "-DBUILD_TYPE=AdHoc Build" -DCHECKSTYLE_REPORT=false -DCHECKPOINT_LABEL= -DCLEAN_SANDBOX=false -DPMD_REPORT=false -DAPPSCAN_REPORT=false -DFINDBUGS_REPORT=false -DHUDSON_BUILD_RESULT=SUCCESS -DCRAP4J_REPORT=false -DJSLINT_REPORT=false -DSONAR_REPORT=false -Djavac.source=1.6 -Djavadoc.verbose=false -Djavac.compiler=javac1.6 -Djavac.encoding=iso-8859-1 -Djavac.executable= -Djavac.fork=no -Djavac.verbose=false -Djavac.target=1.6 "-Dappscan.notification.email.to=STIP-ABE-ADMIN@unionbank.com, David.Mattox@unionbank.com, Robert.Tu@unionbank.com, Gary.Tang@unionbank.com" -Dappscan.container.name=JBoss -Dappscan.jdk.name=1.6 -Djavadoc.source=1.6 -Dapp.dist.dir=dist
+Buildfile: build.xml
+
+validate:
+     [echo] MKS RESULT: SUCCESS
+
+build:
+     [echo] 
+     [echo] ================ ABE System Info =========================
+     [echo] 
+     [echo] Operating System: Linux (2.6.9-100.ELsmp)
+     [echo] 
+     [echo] java.version: 1.6.0_24
+     [echo] java.runtime.version: 1.6.0_24-b07
+     [echo] java.vm.version: 19.1-b02
+     [echo] 
+     [echo] ant.version: Apache Ant version 1.7.1 compiled on June 27 2008
+     [echo] ant.java.version: 1.6
+     [echo] 
+     [echo] ======== Compiler Options set by ABE =====================
+     [echo] 
+     [echo] javac.source: 1.6
+     [echo] javac.target: 1.6
+     [echo] javac.compiler: javac1.6
+     [echo] javac.fork: no
+     [echo] javac.executable: 
+     [echo] javac.encoding: iso-8859-1
+     [echo] javac.verbose: false
+     [echo] javac.debug: on
+     [echo] javac.debuglevel: source,lines,vars
+     [echo] javac.deprecation: on
+     [echo] javac.includeantruntime: false
+     [echo] javac.xlint: all
+     [echo] 
+     [echo] ============= JavaDoc Options set by ABE =================
+     [echo] 
+     [echo] javadoc.source: 1.6
+     [echo] javadoc.executable: /usr/java/jdk1.6.0_20/bin/javadoc
+     [echo] javadoc.verbose: false
+     [echo] 
+     [echo] ===================== Build Parameters ===================
+     [echo] 
+     [echo] BUILD_TYPE: AdHoc Build
+     [echo] CHECKPOINT_NUMBER:
+     [echo] CHECKPOINT_LABEL:
+     [echo] JAVADOC: false
+     [echo] FINDBUGS_REPORT: false
+     [echo] APPSCAN_REPORT: false
+     [echo] PMD_REPORT: false
+     [echo] CRAP4J_REPORT: false
+     [echo] CHECKSTYLE_REPORT: false
+     [echo] JSLINT_REPORT: false
+
+[ABE]clean-old-artifacts:
+   [delete] Deleting directory /abe/jenkins/workspace/SMR/buildResult/release
+     [echo] 
+     [echo] ================= Shared Library =========================
+     [echo] 
+     [echo] Shared Library Path: /abe/sharedlib
+     [echo] 
+     [echo] 
+     [echo] ============== Build SMR Application =================
+     [echo] 
+
+build:
+
+clean_SmartJava:
+
+init_SmartJava:
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/dist/SmartJava
+     [copy] Copying 17 files to /abe/jenkins/workspace/SMR/dist/SmartJava
+     [copy] Copying 2 files to /abe/jenkins/workspace/SMR/dist/SmartJava
+
+compile_SmartJava:
+    [javac] Compiling 218 source files to /abe/jenkins/workspace/SMR/dist/SmartJava
+    [javac] Note: Some input files use unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+
+jar_SmartJava:
+      [jar] Building jar: /abe/jenkins/workspace/SMR/dist/SmartJava.jar
+
+copy_3rd_party_lib:
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/dist/lib
+     [copy] Copying 1 file to /abe/jenkins/workspace/SMR/dist/lib
+     [copy] Copying 1 file to /abe/jenkins/workspace/SMR/dist/lib
+     [copy] Copying 1 file to /abe/jenkins/workspace/SMR/dist/lib
+
+clean_SMARTWeb:
+
+init_SMARTWeb:
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/dist/SMARTWeb
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/dist/SMARTWeb/WEB-INF/classes
+     [copy] Copying 785 files to /abe/jenkins/workspace/SMR/dist/SMARTWeb
+     [copy] Copying 91 files to /abe/jenkins/workspace/SMR/dist/SMARTWeb/WEB-INF/classes
+
+compile_SMARTWeb:
+    [javac] Compiling 1266 source files to /abe/jenkins/workspace/SMR/dist/SMARTWeb/WEB-INF/classes
+    [javac] Note: Some input files use unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+
+war_SMARTWeb:
+      [war] Building war: /abe/jenkins/workspace/SMR/dist/SMARTWeb.war
+   [delete] Deleting directory /abe/jenkins/workspace/SMR/dist/SMARTWeb
+   [delete] Deleting directory /abe/jenkins/workspace/SMR/dist/lib
+
+clean_SMARTStaticWeb:
+
+init_SMARTStaticWeb:
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/dist/SMARTStaticWeb
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/dist/SMARTStaticWeb/WEB-INF/classes
+     [copy] Copying 565 files to /abe/jenkins/workspace/SMR/dist/SMARTStaticWeb
+
+compile_SMARTStaticWeb:
+
+init_cobertura:
+   [delete] Deleting directory /abe/jenkins/workspace/SMR/SmartJ2EE/cobertura-report
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/SmartJ2EE/cobertura-report/instrumented
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/SmartJ2EE/cobertura-report/cobertura-xml
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/SmartJ2EE/cobertura-report/cobertura-html
+
+instrument:
+   [delete] Deleting: /abe/jenkins/workspace/SMR/SmartJ2EE/cobertura.ser
+   [delete] Deleting directory /abe/jenkins/workspace/SMR/SmartJ2EE/cobertura-report/instrumented
+[cobertura-instrument] Cobertura 1.9 - GNU GPL License (NO WARRANTY) - See COPYRIGHT file
+[cobertura-instrument] Instrumenting 218 files to /abe/jenkins/workspace/SMR/SmartJ2EE/cobertura-report/instrumented
+[cobertura-instrument] Cobertura: Saved information on 218 classes.
+[cobertura-instrument] Instrument time: 2171ms
+
+war_SMARTStaticWeb:
+   [delete] Deleting directory /abe/jenkins/workspace/SMR/dist/SmartJava
+      [war] Building war: /abe/jenkins/workspace/SMR/dist/SMARTStaticWeb.war
+   [delete] Deleting directory /abe/jenkins/workspace/SMR/dist/SMARTStaticWeb
+
+cobertura-coverage-report:
+[cobertura-report] Cobertura 1.9 - GNU GPL License (NO WARRANTY) - See COPYRIGHT file
+[cobertura-report] Cobertura: Loaded information on 218 classes.
+[cobertura-report] Report time: 5250ms
+
+cobertura-alternate-coverage-report:
+[cobertura-report] Cobertura 1.9 - GNU GPL License (NO WARRANTY) - See COPYRIGHT file
+[cobertura-report] Cobertura: Loaded information on 218 classes.
+[cobertura-report] Report time: 4270ms
+
+coberturaReports:
+
+ear_abe:
+      [ear] Building ear: /abe/jenkins/workspace/SMR/dist/SMART.ear
+   [delete] Deleting: /abe/jenkins/workspace/SMR/dist/SmartJava.jar
+   [delete] Deleting: /abe/jenkins/workspace/SMR/dist/SMARTWeb.war
+   [delete] Deleting: /abe/jenkins/workspace/SMR/dist/SMARTStaticWeb.war
+
+[ABE]package-artifacts:
+
+[ABE]package-artifacts:
+     [echo] 
+     [echo] ================ ABE packaging all artifacts... =========================
+     [echo] 
+    [mkdir] Created dir: /abe/jenkins/temp/SMR/release
+
+[ABE]cp-rp:
+     [echo] Find and copy all artifacts from /abe/jenkins/workspace/SMR/dist to the release directory.
+     [copy] Copying 1 file to /abe/jenkins/temp/SMR/release
+   [delete] Deleting directory /abe/jenkins/workspace/SMR/dist
+
+[ABE]process-artifacts:
+
+[ABE]run-reports:
+    [mkdir] Created dir: /abe/jenkins/workspace/SMR/buildResult/release
+     [copy] Copying 1 file to /abe/jenkins/workspace/SMR/buildResult/release
+
+[ABE]clean-old-artifacts:
+   [delete] Deleting directory /abe/jenkins/temp/SMR/release
+
+[ABE]-validate-report-files:
+
+BUILD SUCCESSFUL
+Total time: 42 seconds
+[CHECKSTYLE] Collecting checkstyle analysis files...
+[CHECKSTYLE] Parsing 1 files in /abe/jenkins/workspace/SMR
+[CHECKSTYLE] Successfully parsed file /abe/jenkins/workspace/SMR/buildResult/reports/checkstyle/checkstyle-report.xml of module  with 12021 warnings.
+[CHECKSTYLE] Computing warning deltas based on reference build #376
+[FINDBUGS] Collecting findbugs analysis files...
+[FINDBUGS] Parsing 1 files in /abe/jenkins/workspace/SMR
+[FINDBUGS] Successfully parsed file /abe/jenkins/workspace/SMR/buildResult/reports/findbugs/findbugs-report.xml of module  with 1177 warnings.
+[FINDBUGS] Computing warning deltas based on reference build #376
+[PMD] Collecting PMD analysis files...
+[PMD] Parsing 1 files in /abe/jenkins/workspace/SMR
+[PMD] Successfully parsed file /abe/jenkins/workspace/SMR/buildResult/reports/pmd/pmd-report.xml of module  with 5950 warnings.
+[PMD] Computing warning deltas based on reference build #376
+[DRY] Collecting duplicate code analysis files...
+[DRY] Parsing 1 files in /abe/jenkins/workspace/SMR
+[DRY] Parsing of file /abe/jenkins/workspace/SMR/buildResult/reports/pmd/cpd-report.xml failed due to an exception:
+
+java.io.IOException: No parser found for duplicated code results file /abe/jenkins/workspace/SMR/buildResult/reports/pmd/cpd-report.xml
+	at hudson.plugins.dry.parser.DuplicationParserRegistry.parse(DuplicationParserRegistry.java:80)
+	at hudson.plugins.analysis.core.FilesParser.parseFile(FilesParser.java:358)
+	at hudson.plugins.analysis.core.FilesParser.parseFiles(FilesParser.java:317)
+	at hudson.plugins.analysis.core.FilesParser.invoke(FilesParser.java:266)
+	at hudson.plugins.analysis.core.FilesParser.invoke(FilesParser.java:31)
+	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:2030)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:287)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:441)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+
+[DRY] Computing warning deltas based on reference build #376
+[WARNINGS] Parsing warnings in console log with parsers [Java Compiler]
+[WARNINGS] Java Compiler : Found 0 warnings.
+[WARNINGS] Java Compiler : Found 0 warnings.
+[WARNINGS] Computing warning deltas based on reference build #376
+[TASKS] Scanning folder '/abe/jenkins/workspace/SMR' for files matching the pattern '**/*.java' - excludes: 
+[TASKS] Found 2389 files to scan for tasks
+[TASKS] Found 54 open tasks.
+[TASKS] Computing warning deltas based on reference build #376
+[ANALYSIS-COLLECTOR] Computing warning deltas based on reference build #376
+[IBM APPSCAN] Not changing build status, since no threshold has been exceeded.
+Archiving artifacts
+[JSLINT] Not changing build status, since no threshold has been exceeded.
+[LIBRARIES] Collecting Libraries Report ...
+[LIBRARIES] Searching for the lib.properties or POM files...
+[LIBRARIES] Searching of Jar Files ...
+[LIBRARIES] <<<.ear>>> found SMART.ear file to process....
+[LIBRARIES] <<<.war>>> file found smartstaticweb.war file to process....
+[LIBRARIES] <<<.war>>> file found smartweb.war file to process....
+[LIBRARIES] JAR File found com.ibm.mqjms.jar
+[LIBRARIES] JAR File found commons-discovery-0.2.jar
+[LIBRARIES] JAR File found commons-lang-2.3.jar
+[LIBRARIES] JAR File found UBOC-DB-1.4-RELEASE.jar
+[LIBRARIES] JAR File found UBOC-HOST-1.5.2-RELEASE.jar
+[LIBRARIES] JAR File found UBOC-LDAP-1.3-RELEASE.jar
+[LIBRARIES] JAR File found UBOC-MONITOR-1.1-RELEASE.jar
+[LIBRARIES] JAR File found axis-1.4.jar
+[LIBRARIES] JAR File found clarify-webservice-client.jar
+[LIBRARIES] JAR File found com.ibm.mq.jar
+[LIBRARIES] JAR File found commons-dbcp-1.3.jar
+[LIBRARIES] JAR File found commons-fileupload-1.1.1.jar
+[LIBRARIES] JAR File found commons-io-1.1.jar
+[LIBRARIES] JAR File found commons-pool-1.5.6.jar
+[LIBRARIES] JAR File found ibmjndi.jar
+[LIBRARIES] JAR File found jaxrpc.jar
+[LIBRARIES] JAR File found jdom.jar
+[LIBRARIES] JAR File found jspellEvolutionServer.jar
+[LIBRARIES] JAR File found log4j-1.2.14.jar
+[LIBRARIES] JAR File found webservices.jar
+[LIBRARIES] JAR File found wss4j-1.5.2.jar
+[LIBRARIES] JAR File found xmlsec.jar
+[LIBRARIES] JAR File found SmartJava.jar
+[UB PMD] Not changing build status, since no threshold has been exceeded.
+Performing Post build task...
+Match found for :BUILD : True
+Logical operation result is TRUE
+Running script  : si thaw --recurse --yes --quiet --batch --forceConfirm=yes --status=none --project=d:/MKSprojects/ACE/SMR/project.pj
+[SMR] $ /bin/sh -xe /tmp/hudson4680981232459084476.sh
++ si thaw --recurse --yes --quiet --batch --forceConfirm=yes --status=none --project=d:/MKSprojects/ACE/SMR/project.pj
+POST BUILD TASK : SUCCESS
+END OF POST BUILD TASK : 0
+Publishing Cobertura coverage report...
+Publishing Cobertura coverage results...
+Publishing Javadoc
+Recording fingerprints
+Build step 'Report Violations' changed build result to UNSTABLE
+Sending e-mails to: STIP-ABE-ADMIN David.Mattox@unionbank.com Robert.Tu@unionbank.com Gary.Tang@unionbank.com Wai.Yan@unionbank.com Bryant.Kwon@unionbank.com Akhilesh.Dwivedi@unionbank.com
+[ci-game] evaluating rule: Build result
+[ci-game] evaluating rule: Increased number of failed tests
+[ci-game] evaluating rule: Increased number of passed tests
+[ci-game] evaluating rule: Decreased number of failed tests
+[ci-game] evaluating rule: Decreased number of passed tests
+[ci-game] evaluating rule: Open HIGH priority tasks
+[ci-game] evaluating rule: Open NORMAL priority tasks
+[ci-game] evaluating rule: Open LOW priority tasks
+[ci-game] evaluating rule: PMD violation
+[ci-game] evaluating rule: pylint violation
+[ci-game] evaluating rule: CPD violation
+[ci-game] evaluating rule: Checkstyle violation
+[ci-game] evaluating rule: FindBugs violation
+[ci-game] evaluating rule: FXCop violation
+[ci-game] evaluating rule: Simian violation
+[ci-game] evaluating rule: StyleCop violation
+[ci-game] evaluating rule: HIGH priority PMD warnings
+[ci-game] evaluating rule: NORMAL priority PMD warnings
+[ci-game] evaluating rule: LOW priority PMD warnings
+[ci-game] evaluating rule: New HIGH priority Findbugs warnings
+[ci-game] evaluating rule: New NORMAL priority Findbugs warnings
+[ci-game] evaluating rule: New LOW priority Findbugs warnings
+[ci-game] evaluating rule: Fixed HIGH priority Findbugs warnings
+[ci-game] evaluating rule: Fixed NORMAL priority Findbugs warnings
+[ci-game] evaluating rule: Fixed LOW priority Findbugs warnings
+[ci-game] evaluating rule: Changed number of compiler warnings
+[ci-game] evaluating rule: Changed number of checkstyle warnings
+[copy-to-slave] Copying 'buildResult/**/*.*', excluding '**/release/*.*', from 'file:/abe/jenkins/workspace/SMR/' on 'hudson.slaves.DumbSlave@5c5fbaf2' to 'file:/abe/jenkins/jobs/SMR/workspace/' on the master.
+Finished: UNSTABLE

@@ -1,0 +1,44 @@
+Branch indexing
+ > git rev-parse --is-inside-work-tree # timeout=10
+Setting origin to USERNAME@BITBUCKET_URL/scm/sw/our_repository.git
+ > git config remote.origin.url USERNAME@BITBUCKET_URL/scm/sw/our_repository.git # timeout=10
+Fetching & pruning origin...
+Listing remote references...
+ > git config --get remote.origin.url # timeout=10
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials 
+ > git ls-remote -h -- USERNAME@BITBUCKET_URL/scm/sw/our_repository.git # timeout=10
+Fetching upstream changes from origin
+ > git config --get remote.origin.url # timeout=10
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --progress --prune -- origin +refs/heads/*:refs/remotes/origin/* # timeout=10
+Checking branches...
+  Checking branch bugfix/our_branch_name
+    Met criteria
+Processed 323 branches (query complete)
+Checking out git USERNAME@BITBUCKET_URL/scm/sw/our_repository.git into C:\jenkins\branch_name_dir@script to read build/jenkins/compile/Jenkinsfile
+using credential 27cc7c94-f898-4cf8-ad4a-51e5cdb95c0f
+Cloning the remote Git repository
+Using shallow clone with depth 1
+Avoid fetching tags
+Honoring refspec on initial clone
+Cloning repository USERNAME@BITBUCKET_URL/scm/sw/our_repository.git
+ > git init C:\jenkins\branch_name_dir@script # timeout=10
+Fetching upstream changes from USERNAME@BITBUCKET_URL/scm/sw/our_repository.git
+ > git --version # timeout=10
+using GIT_ASKPASS to set credentials 
+ > git fetch --no-tags --progress --depth=1 -- USERNAME@BITBUCKET_URL/scm/sw/our_repository.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url USERNAME@BITBUCKET_URL/scm/sw/our_repository.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url USERNAME@BITBUCKET_URL/scm/sw/our_repository.git # timeout=10
+Using shallow fetch with depth 1
+Fetching upstream changes from USERNAME@BITBUCKET_URL/scm/sw/our_repository.git
+using GIT_ASKPASS to set credentials 
+ > git fetch --no-tags --progress --depth=1 -- USERNAME@BITBUCKET_URL/scm/sw/our_repository.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+Checking out Revision 2128fdcf2c96b67e3fb3d37bf0ab6e1964db8155 (bugfix/our_branch_name)
+Posting build status of INPROGRESS to Bitbucket > git config core.sparsecheckout # timeout=10
+ > git checkout -f 2128fdcf2c96b67e3fb3d37bf0ab6e1964db8155 # timeout=10
+Commit message: "SD-1964 Master merge."
+First time build. Skipping changelog.
+ > git --version # timeout=10
+Running in Durability level: MAX_SURVIVABILITY

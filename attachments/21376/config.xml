@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>&lt;p style=&quot;font-size:120%&quot;&gt;Builds (compiles) the SDA stand-alone product. Publishes to network location. Runs nightly, or upon demand.&lt;/p&gt;&#xd;
+&lt;!-- &lt;p style=&quot;font-size:120%&quot;&gt;&lt;span style=&quot;background-color: yellow;&quot;&gt;SciSoft builds are suspended due to the move of /dls_sw/apps - DO NOT RE-ENABLE.&lt;/span&gt; (MW Fri 10/Jun/2011)&lt;/p&gt; --&gt;</description>
+  <logRotator>
+    <daysToKeep>10</daysToKeep>
+    <numToKeep>10</numToKeep>
+    <artifactDaysToKeep>10</artifactDaysToKeep>
+    <artifactNumToKeep>3</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <permission>hudson.model.Item.Build:anonymous</permission>
+      <permission>hudson.model.Item.Workspace:anonymous</permission>
+      <permission>hudson.model.Item.Read:anonymous</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <hudson.queueSorter.PrioritySorterJobProperty>
+      <priority>200</priority>
+    </hudson.queueSorter.PrioritySorterJobProperty>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.diamond.ac.uk/subversion/gda/trunk/builder</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <browser class="hudson.plugins.trac.TracRepositoryBrowser"/>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.UpdateWithCleanUpdater"/>
+  </scm>
+  <quietPeriod>30</quietPeriod>
+  <assignedNode>g18-sc-serv-02</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector">
+    <hudson.triggers.TimerTrigger>
+      <spec># Run overnight (avoid except from 3-5am, which is reserved for Jenkins housekeeping jobs).
+# 12 2 * * 2-6</spec>
+    </hudson.triggers.TimerTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>${JENKINS_WORKSPACE_PARENT}/${JOB_NAME}</customWorkspace>
+  <builders>
+    <hudson.tasks.Shell>
+      <command># build and (optionally) publish
+. builder/hudson/job_scripts/SDA.build_step_1.sh</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>SDA-client*.zip</artifacts>
+      <latestOnly>false</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.plugins.descriptionsetter.DescriptionSetterPublisher>
+      <regexp>(?:.*)==Description-for-Jenkins-START==(.+?)(?:==Description-for-Jenkins-END==|$).*</regexp>
+      <regexpForFailed>(?:.*)==Description-for-Jenkins-START==(.+?)(?:==Description-for-Jenkins-END==|$).*</regexpForFailed>
+      <description>\1</description>
+      <descriptionForFailed>\1</descriptionForFailed>
+      <setForMatrix>false</setForMatrix>
+    </hudson.plugins.descriptionsetter.DescriptionSetterPublisher>
+    <hudson.tasks.Mailer>
+      <recipients>Matthew.Webber@diamond.ac.uk Mark.Basham@diamond.ac.uk</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <timeoutMinutes>60</timeoutMinutes>
+      <failBuild>true</failBuild>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuildWrapper>
+      <info>
+        <propertiesContent>branchTagPath=trunk</propertiesContent>
+        <populateTriggerCause>false</populateTriggerCause>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuildWrapper>
+  </buildWrappers>
+</project>

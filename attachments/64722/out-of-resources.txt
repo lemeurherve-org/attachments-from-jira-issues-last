@@ -1,0 +1,43 @@
+WARNING: Unable to create pod: kubernetes <namespace>/<pod-name> because kubernetes resource quota exceeded. 
+Failure executing: POST at: https://<ip-address>/api/v1/namespaces/<namespace>/pods. Message: pods "<pod-name>" is forbidden: exceeded quota: resource-quota, requested: limits.cpu=4,requests.cpu=2, used: limits.cpu=16,requests.cpu=8, limited: limits.cpu=16,requests.cpu=8. Received status: Status(apiVersion=v1, code=403, details=StatusDetails(causes=[], group=null, kind=pods, name=<pod-name>, retryAfterSeconds=null, uid=null, additionalProperties={}), kind=Status, message=pods "<pod-name>" is forbidden: exceeded quota: resource-quota, requested: limits.cpu=4,requests.cpu=2, used: limits.cpu=16,requests.cpu=8, limited: limits.cpu=16,requests.cpu=8, metadata=ListMeta(_continue=null, remainingItemCount=null, resourceVersion=null, selfLink=null, additionalProperties={}), reason=Forbidden, status=Failure, additionalProperties={}).
+Retrying...
+
+ERROR: Failed to launch <pod-name>
+io.fabric8.kubernetes.client.KubernetesClientException: Failure executing: POST at: https://<ip-address>/api/v1/namespaces/<namespace>/pods. Message: pods "<pod-name>" is forbidden: exceeded quota: resource-quota, requested: limits.cpu=4,requests.cpu=2, used: limits.cpu=16,requests.cpu=8, limited: limits.cpu=16,requests.cpu=8. Received status: Status(apiVersion=v1, code=403, details=StatusDetails(causes=[], group=null, kind=pods, name=<pod-name>, retryAfterSeconds=null, uid=null, additionalProperties={}), kind=Status, message=pods "<pod-name>" is forbidden: exceeded quota: resource-quota, requested: limits.cpu=4,requests.cpu=2, used: limits.cpu=16,requests.cpu=8, limited: limits.cpu=16,requests.cpu=8, metadata=ListMeta(_continue=null, remainingItemCount=null, resourceVersion=null, selfLink=null, additionalProperties={}), reason=Forbidden, status=Failure, additionalProperties={}).
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.OperationSupport.requestFailure(OperationSupport.java:660)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.OperationSupport.requestFailure(OperationSupport.java:640)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.OperationSupport.assertResponseCode(OperationSupport.java:589)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.OperationSupport.lambda$handleResponse$0(OperationSupport.java:549)
+	at java.base/java.util.concurrent.CompletableFuture$UniApply.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.complete(Unknown Source)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.http.StandardHttpClient.lambda$completeOrCancel$10(StandardHttpClient.java:143)
+	at java.base/java.util.concurrent.CompletableFuture.uniWhenComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.complete(Unknown Source)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.http.ByteArrayBodyHandler.onBodyDone(ByteArrayBodyHandler.java:52)
+	at java.base/java.util.concurrent.CompletableFuture.uniWhenComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(Unknown Source)
+	at java.base/java.util.concurrent.CompletableFuture.complete(Unknown Source)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.okhttp.OkHttpClientImpl$OkHttpAsyncBody.doConsume(OkHttpClientImpl.java:137)
+Caused: io.fabric8.kubernetes.client.KubernetesClientException: Failure executing: POST at: https://<ip-address>/api/v1/namespaces/<namespace>/pods. Message: pods "<pod-name>" is forbidden: exceeded quota: resource-quota, requested: limits.cpu=4,requests.cpu=2, used: limits.cpu=16,requests.cpu=8, limited: limits.cpu=16,requests.cpu=8. Received status: Status(apiVersion=v1, code=403, details=StatusDetails(causes=[], group=null, kind=pods, name=<pod-name>, retryAfterSeconds=null, uid=null, additionalProperties={}), kind=Status, message=pods "<pod-name>" is forbidden: exceeded quota: resource-quota, requested: limits.cpu=4,requests.cpu=2, used: limits.cpu=16,requests.cpu=8, limited: limits.cpu=16,requests.cpu=8, metadata=ListMeta(_continue=null, remainingItemCount=null, resourceVersion=null, selfLink=null, additionalProperties={}), reason=Forbidden, status=Failure, additionalProperties={}).
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.KubernetesClientException.copyAsCause(KubernetesClientException.java:238)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.OperationSupport.waitForResult(OperationSupport.java:507)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.OperationSupport.handleResponse(OperationSupport.java:524)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.OperationSupport.handleCreate(OperationSupport.java:340)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.BaseOperation.handleCreate(BaseOperation.java:753)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.BaseOperation.handleCreate(BaseOperation.java:97)
+	at PluginClassLoader for kubernetes-client-api//io.fabric8.kubernetes.client.dsl.internal.CreateOnlyResourceOperation.create(CreateOnlyResourceOperation.java:42)
+	at PluginClassLoader for kubernetes//org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher.launch(KubernetesLauncher.java:164)
+	at hudson.slaves.SlaveComputer.lambda$_connect$0(SlaveComputer.java:297)
+	at jenkins.util.ContextResettingExecutorService$2.call(ContextResettingExecutorService.java:46)
+	at jenkins.security.ImpersonatingExecutorService$2.call(ImpersonatingExecutorService.java:80)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+WARNING: Unable to create pod: kubernetes <namespace>/<next-pod-name> because kubernetes resource quota exceeded. 
+Failure executing: POST at: https://<ip-address>/api/v1/namespaces/<namespace>/pods. Message: pods "<next-pod-name>" is forbidden: exceeded quota: resource-quota, requested: limits.cpu=4,requests.cpu=2, used: limits.cpu=16,requests.cpu=8, limited: limits.cpu=16,requests.cpu=8. Received status: Status(apiVersion=v1, code=403, details=StatusDetails(causes=[], group=null, kind=pods, name=<next-pod-name>, retryAfterSeconds=null, uid=null, additionalProperties={}), kind=Status, message=pods "<next-pod-name>" is forbidden: exceeded quota: resource-quota, requested: limits.cpu=4,requests.cpu=2, used: limits.cpu=16,requests.cpu=8, limited: limits.cpu=16,requests.cpu=8, metadata=ListMeta(_continue=null, remainingItemCount=null, resourceVersion=null, selfLink=null, additionalProperties={}), reason=Forbidden, status=Failure, additionalProperties={}).
+Retrying...

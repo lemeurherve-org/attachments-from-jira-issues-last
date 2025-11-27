@@ -1,0 +1,987 @@
+[rafael@localhost swarm]$ java -Djava.util.logging.config.file='logging.properties' -jar swarm-client-3.17.jar -master  https://undisclosed:40033/jenkins/tools/ -mode exclusive -labels "test" -username rafael -password [hidden] -executors 1 -disableSslVerification
+2019-10-16 09:43:03 INFO hudson.plugins.swarm.Client logArguments Client invoked with: -disableSslVerification true -executors 1 -labels [test] -master https://undisclosed:40033/jenkins/tools/ -mode exclusive -password ***** -username *****
+2019-10-16 09:43:03 CONFIG hudson.plugins.swarm.SwarmClient hash hash() invoked
+2019-10-16 09:43:03 INFO hudson.plugins.swarm.Client run Discovering Jenkins master
+2019-10-16 09:43:03 CONFIG hudson.plugins.swarm.SwarmClient discoverFromMasterUrl discoverFromMasterUrl() invoked
+2019-10-16 09:43:03 CONFIG hudson.plugins.swarm.SwarmClient discoverFromMasterUrl Connecting to https://undisclosed:40033/jenkins/tools/ to configure swarm client.
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.SwarmClient createHttpClient createHttpClient() invoked
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.SwarmClient createHttpClientContext createHttpClientContext() invoked
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.SwarmClient createHttpClientContext Setting HttpClient credentials based on options passed
+2019-10-16 09:43:03 FINE shaded.org.apache.http.client.protocol.RequestAddCookies process CookieSpec selected: default
+2019-10-16 09:43:03 FINE shaded.org.apache.http.client.protocol.RequestAuthCache doPreemptiveAuth Re-using cached 'basic' auth scheme for https://undisclosed:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager requestConnection Connection request: [route: {s}->https://undisclosed:40033][total kept alive: 0; route allocated: 0 of 5; total allocated: 0 of 10]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager leaseConnection Connection leased: [id: 0][route: {s}->https://undisclosed:40033][total kept alive: 0; route allocated: 1 of 5; total allocated: 1 of 10]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Opening connection {s}->https://undisclosed:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.DefaultHttpClientConnectionOperator connect Connecting to undisclosed/10.42.29.152:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory connectSocket Connecting socket to undisclosed/10.42.29.152:40033 with timeout 0
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory createLayeredSocket Enabled protocols: [TLSv1, TLSv1.1, TLSv1.2]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory createLayeredSocket Enabled cipher suites:[TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384, TLS_RSA_WITH_AES_256_CBC_SHA256, TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384, TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384, TLS_DHE_RSA_WITH_AES_256_CBC_SHA256, TLS_DHE_DSS_WITH_AES_256_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_RSA_WITH_AES_256_CBC_SHA, TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDH_RSA_WITH_AES_256_CBC_SHA, TLS_DHE_RSA_WITH_AES_256_CBC_SHA, TLS_DHE_DSS_WITH_AES_256_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256, TLS_DHE_RSA_WITH_AES_128_CBC_SHA256, TLS_DHE_DSS_WITH_AES_128_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA, TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDH_RSA_WITH_AES_128_CBC_SHA, TLS_DHE_RSA_WITH_AES_128_CBC_SHA, TLS_DHE_DSS_WITH_AES_128_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384, TLS_DHE_RSA_WITH_AES_256_GCM_SHA384, TLS_DHE_DSS_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256, TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, TLS_DHE_DSS_WITH_AES_128_GCM_SHA256, TLS_EMPTY_RENEGOTIATION_INFO_SCSV]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory createLayeredSocket Starting handshake
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname Secure session established
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  negotiated protocol: TLSv1.2
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  negotiated cipher suite: TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  peer principal: CN=undisclosed, CN=Machine, CN=PKI, DC=Company, DC=com
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  peer alternative names: [undisclosed]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  issuer principal: CN=Company-CA1-DE, CN=PKI, DC=Company, DC=com
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.DefaultHttpClientConnectionOperator connect Connection established 10.60.89.255:57894<->10.42.29.152:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Executing request GET /jenkins/tools/plugin/swarm/slaveInfo HTTP/1.1
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Target auth state: UNCHALLENGED
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Proxy auth state: UNCHALLENGED
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-0 >> GET /jenkins/tools/plugin/swarm/slaveInfo HTTP/1.1
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-0 >> Connection: close
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-0 >> Host: undisclosed:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-0 >> User-Agent: Apache-HttpClient/4.5.8 (Java/1.8.0_102)
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-0 >> Accept-Encoding: gzip,deflate
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-0 >> Authorization: Basic cmFyNnNpOjExZTZjMmM5ZjNkMjczZGNlYzBlMTVmNjNmMzM5YmQ5M2M=
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 >> "GET /jenkins/tools/plugin/swarm/slaveInfo HTTP/1.1[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 >> "Connection: close[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 >> "Host: undisclosed:40033[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 >> "User-Agent: Apache-HttpClient/4.5.8 (Java/1.8.0_102)[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 >> "Accept-Encoding: gzip,deflate[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 >> "Authorization: Basic cmFyNnNpOjExZTZjMmM5ZjNkMjczZGNlYzBlMTVmNjNmMzM5YmQ5M2M=[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 >> "[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "HTTP/1.1 200 OK[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "Connection: close[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "Date: Wed, 16 Oct 2019 07:43:03 GMT[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "X-Content-Type-Options: nosniff[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "Content-Type: text/xml[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "Content-Encoding: gzip[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "Content-Length: 88[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "Server: Jetty(9.4.z-SNAPSHOT)[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-0 << "[0x1f][0x8b][0x8][0x0][0x0][0x0][0x0][0x0][0x0][0xff][0xb3])[0xce]I,K[0xf5][0xcc]K[0xcb][0xb7][0xb3]).O,[0xca][\r]NM.J-[0xb1]3O46L15I[0xd2]5HNN[0xd1]512J[0xd4][0xb5]434[0xd2]MN4O260J[0xb2]H10[0xb6][0xd1]G[0xd6][0x1][0xe4][0xc1][0x8d][0x2][0x0]:_[0xd2][0x86]V[0x0][0x0][0x0]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-0 << HTTP/1.1 200 OK
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-0 << Connection: close
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-0 << Date: Wed, 16 Oct 2019 07:43:03 GMT
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-0 << X-Content-Type-Options: nosniff
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-0 << Content-Type: text/xml
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-0 << Content-Encoding: gzip
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-0 << Content-Length: 88
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-0 << Server: Jetty(9.4.z-SNAPSHOT)
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection close http-outgoing-0: Close connection
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.ConnectionHolder releaseConnection Connection discarded
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager releaseConnection Connection released: [id: 0][route: {s}->https://undisclosed:40033][total kept alive: 0; route allocated: 0 of 5; total allocated: 0 of 10]
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient getChildElementString getChildElementString() invoked
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.Candidate <init> Candidate constructed with url: https://undisclosed:40033/jenkins/tools/, secret: 7a31d54b-0ccd-422a-9612-ca7b302b8d03
+2019-10-16 09:43:03 INFO hudson.plugins.swarm.Client run Attempting to connect to https://undisclosed:40033/jenkins/tools/ 7a31d54b-0ccd-422a-9612-ca7b302b8d03 with ID 81e2930f
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.SwarmClient createSwarmSlave createSwarmSlave() invoked
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.SwarmClient createHttpClient createHttpClient() invoked
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.SwarmClient createHttpClientContext createHttpClientContext() invoked
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.SwarmClient createHttpClientContext Setting HttpClient credentials based on options passed
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient param param() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient encode encode() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient param param() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient param param() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient encode encode() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient param param() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient encode encode() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient param param() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient encode encode() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient param param() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient encode encode() invoked
+2019-10-16 09:43:03 FINER hudson.plugins.swarm.SwarmClient getCsrfCrumb getCsrfCrumb() invoked
+2019-10-16 09:43:03 FINE shaded.org.apache.http.client.protocol.RequestAddCookies process CookieSpec selected: default
+2019-10-16 09:43:03 FINE shaded.org.apache.http.client.protocol.RequestAuthCache doPreemptiveAuth Re-using cached 'basic' auth scheme for https://undisclosed:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager requestConnection Connection request: [route: {s}->https://undisclosed:40033][total kept alive: 0; route allocated: 0 of 5; total allocated: 0 of 10]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager leaseConnection Connection leased: [id: 1][route: {s}->https://undisclosed:40033][total kept alive: 0; route allocated: 1 of 5; total allocated: 1 of 10]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Opening connection {s}->https://undisclosed:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.DefaultHttpClientConnectionOperator connect Connecting to undisclosed/10.42.29.152:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory connectSocket Connecting socket to undisclosed/10.42.29.152:40033 with timeout 0
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory createLayeredSocket Enabled protocols: [TLSv1, TLSv1.1, TLSv1.2]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory createLayeredSocket Enabled cipher suites:[TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384, TLS_RSA_WITH_AES_256_CBC_SHA256, TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384, TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384, TLS_DHE_RSA_WITH_AES_256_CBC_SHA256, TLS_DHE_DSS_WITH_AES_256_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_RSA_WITH_AES_256_CBC_SHA, TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDH_RSA_WITH_AES_256_CBC_SHA, TLS_DHE_RSA_WITH_AES_256_CBC_SHA, TLS_DHE_DSS_WITH_AES_256_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256, TLS_DHE_RSA_WITH_AES_128_CBC_SHA256, TLS_DHE_DSS_WITH_AES_128_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA, TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDH_RSA_WITH_AES_128_CBC_SHA, TLS_DHE_RSA_WITH_AES_128_CBC_SHA, TLS_DHE_DSS_WITH_AES_128_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384, TLS_DHE_RSA_WITH_AES_256_GCM_SHA384, TLS_DHE_DSS_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256, TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, TLS_DHE_DSS_WITH_AES_128_GCM_SHA256, TLS_EMPTY_RENEGOTIATION_INFO_SCSV]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory createLayeredSocket Starting handshake
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname Secure session established
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  negotiated protocol: TLSv1.2
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  negotiated cipher suite: TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  peer principal: CN=undisclosed, CN=Machine, CN=PKI, DC=Company, DC=com
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  peer alternative names: [undisclosed]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.conn.ssl.SSLConnectionSocketFactory verifyHostname  issuer principal: CN=Company-CA1-DE, CN=PKI, DC=Company, DC=com
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.DefaultHttpClientConnectionOperator connect Connection established 10.60.89.255:57896<->10.42.29.152:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Executing request GET /jenkins/tools/crumbIssuer/api/xml?xpath=concat%28%2F%2FcrumbRequestField%2C%22%3A%22%2C%2F%2Fcrumb%29 HTTP/1.1
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Target auth state: UNCHALLENGED
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Proxy auth state: UNCHALLENGED
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> GET /jenkins/tools/crumbIssuer/api/xml?xpath=concat%28%2F%2FcrumbRequestField%2C%22%3A%22%2C%2F%2Fcrumb%29 HTTP/1.1
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Host: undisclosed:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Connection: Keep-Alive
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> User-Agent: Apache-HttpClient/4.5.8 (Java/1.8.0_102)
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Accept-Encoding: gzip,deflate
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Authorization: Basic cmFyNnNpOjExZTZjMmM5ZjNkMjczZGNlYzBlMTVmNjNmMzM5YmQ5M2M=
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "GET /jenkins/tools/crumbIssuer/api/xml?xpath=concat%28%2F%2FcrumbRequestField%2C%22%3A%22%2C%2F%2Fcrumb%29 HTTP/1.1[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Host: undisclosed:40033[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Connection: Keep-Alive[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "User-Agent: Apache-HttpClient/4.5.8 (Java/1.8.0_102)[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Accept-Encoding: gzip,deflate[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Authorization: Basic cmFyNnNpOjExZTZjMmM5ZjNkMjczZGNlYzBlMTVmNjNmMzM5YmQ5M2M=[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "HTTP/1.1 200 OK[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Date: Wed, 16 Oct 2019 07:43:03 GMT[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "X-Content-Type-Options: nosniff[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "X-Jenkins: 2.176.3[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "X-Jenkins-Session: 9cec2db1[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Set-Cookie: JSESSIONID.4ecf7e21=node0iithtk6gq90ft8v95fsstunu8758.node0;Path=/jenkins/tools;Secure;HttpOnly[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Expires: Thu, 01 Jan 1970 00:00:00 GMT[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Content-Encoding: gzip[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Content-Type: text/plain;charset=utf-8[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Content-Length: 66[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Server: Jetty(9.4.z-SNAPSHOT)[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "[0x1f][0x8b][0x8][0x0][0x0][0x0][0x0][0x0][0x0][0xff][0xf3]J[0xcd][0xcb][0xce][0xcc]+[0xd6]u.*[0xcd]M[0xb2]JN40[0xb3]033H[0xb3]403736724JL104[0xb4]H3INIKM[0x5][0x0]|[0x9c][0xb9]t.[0x0][0x0][0x0]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << HTTP/1.1 200 OK
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Date: Wed, 16 Oct 2019 07:43:03 GMT
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << X-Content-Type-Options: nosniff
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << X-Jenkins: 2.176.3
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << X-Jenkins-Session: 9cec2db1
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Set-Cookie: JSESSIONID.4ecf7e21=node0iithtk6gq90ft8v95fsstunu8758.node0;Path=/jenkins/tools;Secure;HttpOnly
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Expires: Thu, 01 Jan 1970 00:00:00 GMT
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Content-Encoding: gzip
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Content-Type: text/plain;charset=utf-8
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Content-Length: 66
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Server: Jetty(9.4.z-SNAPSHOT)
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Connection can be kept alive indefinitely
+2019-10-16 09:43:03 FINE shaded.org.apache.http.client.protocol.ResponseProcessCookies processCookies Cookie accepted [JSESSIONID.4ecf7e21="node0iithtk6gq90ft8v95fsstunu8758.node0", version:0, domain:undisclosed, path:/jenkins/tools, expiry:null]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager releaseConnection Connection [id: 1][route: {s}->https://undisclosed:40033] can be kept alive indefinitely
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection setSocketTimeout http-outgoing-1: set socket timeout to 0
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager releaseConnection Connection released: [id: 1][route: {s}->https://undisclosed:40033][total kept alive: 1; route allocated: 1 of 5; total allocated: 1 of 10]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.client.protocol.RequestAddCookies process CookieSpec selected: default
+2019-10-16 09:43:03 FINE shaded.org.apache.http.client.protocol.RequestAddCookies process Cookie [version: 0][name: JSESSIONID.4ecf7e21][value: node0iithtk6gq90ft8v95fsstunu8758.node0][domain: undisclosed][path: /jenkins/tools][expiry: null] match [(secure)undisclosed:40033/jenkins/tools/plugin/swarm/createSlave]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.client.protocol.RequestAuthCache doPreemptiveAuth Re-using cached 'basic' auth scheme for https://undisclosed:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager requestConnection Connection request: [route: {s}->https://undisclosed:40033][total kept alive: 1; route allocated: 1 of 5; total allocated: 1 of 10]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager leaseConnection Connection leased: [id: 1][route: {s}->https://undisclosed:40033][total kept alive: 0; route allocated: 1 of 5; total allocated: 1 of 10]
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection setSocketTimeout http-outgoing-1: set socket timeout to 0
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Executing request POST /jenkins/tools/plugin/swarm/createSlave?name=undisclosed&executors=1&remoteFsRoot=%2Fhome%2Flocal%2FDE%2Frafael%2Fswarm%2F.&labels=test&secret=7a31d54b-0ccd-422a-9612-ca7b302b8d03&mode=EXCLUSIVE&hash=81e2930f&deleteExistingClients=false HTTP/1.1
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Target auth state: UNCHALLENGED
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.MainClientExec execute Proxy auth state: UNCHALLENGED
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> POST /jenkins/tools/plugin/swarm/createSlave?name=undisclosed&executors=1&remoteFsRoot=%2Fhome%2Flocal%2FDE%2Frafael%2Fswarm%2F.&labels=test&secret=7a31d54b-0ccd-422a-9612-ca7b302b8d03&mode=EXCLUSIVE&hash=81e2930f&deleteExistingClients=false HTTP/1.1
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Connection: close
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Jenkins-Crumb: ca068660f9067637212ad0118f4cdfee
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Content-Length: 0
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Host: undisclosed:40033
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> User-Agent: Apache-HttpClient/4.5.8 (Java/1.8.0_102)
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Cookie: JSESSIONID.4ecf7e21=node0iithtk6gq90ft8v95fsstunu8758.node0
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Accept-Encoding: gzip,deflate
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onRequestSubmitted http-outgoing-1 >> Authorization: Basic cmFyNnNpOjExZTZjMmM5ZjNkMjczZGNlYzBlMTVmNjNmMzM5YmQ5M2M=
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "POST /jenkins/tools/plugin/swarm/createSlave?name=undisclosed&executors=1&remoteFsRoot=%2Fhome%2Flocal%2FDE%2Frafael%2Fswarm%2F.&labels=test&secret=7a31d54b-0ccd-422a-9612-ca7b302b8d03&mode=EXCLUSIVE&hash=81e2930f&deleteExistingClients=false HTTP/1.1[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Connection: close[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Jenkins-Crumb: ca068660f9067637212ad0118f4cdfee[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Content-Length: 0[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Host: undisclosed:40033[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "User-Agent: Apache-HttpClient/4.5.8 (Java/1.8.0_102)[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Cookie: JSESSIONID.4ecf7e21=node0iithtk6gq90ft8v95fsstunu8758.node0[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Accept-Encoding: gzip,deflate[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "Authorization: Basic cmFyNnNpOjExZTZjMmM5ZjNkMjczZGNlYzBlMTVmNjNmMzM5YmQ5M2M=[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 >> "[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "HTTP/1.1 200 OK[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Connection: close[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Date: Wed, 16 Oct 2019 07:43:03 GMT[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "X-Content-Type-Options: nosniff[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Content-Type: text/plain;charset=iso-8859-1[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Content-Length: 70[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "Server: Jetty(9.4.z-SNAPSHOT)[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "[\r][\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "#[\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "#Wed Oct 16 09:43:03 CEST 2019[\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.Wire wire http-outgoing-1 << "name=undisclosed-81e2930f[\n]"
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << HTTP/1.1 200 OK
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Connection: close
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Date: Wed, 16 Oct 2019 07:43:03 GMT
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << X-Content-Type-Options: nosniff
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Content-Type: text/plain;charset=iso-8859-1
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Content-Length: 70
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection onResponseReceived http-outgoing-1 << Server: Jetty(9.4.z-SNAPSHOT)
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.LoggingManagedHttpClientConnection close http-outgoing-1: Close connection
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.execchain.ConnectionHolder releaseConnection Connection discarded
+2019-10-16 09:43:03 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager releaseConnection Connection released: [id: 1][route: {s}->https://undisclosed:40033][total kept alive: 0; route allocated: 0 of 5; total allocated: 0 of 10]
+2019-10-16 09:43:03 FINE hudson.plugins.swarm.SwarmClient connect connect() invoked
+2019-10-16 09:43:03 FINEST sun.net.www.protocol.http.HttpURLConnection plainConnect0 ProxySelector Request for https://undisclosed:40033/jenkins/tools/computer/undisclosed-81e2930f/slave-agent.jnlp
+2019-10-16 09:43:03 FINEST sun.net.www.protocol.https.HttpsClient New Looking for HttpClient for URL https://undisclosed:40033/jenkins/tools/computer/undisclosed-81e2930f/slave-agent.jnlp and proxy value of DIRECT
+2019-10-16 09:43:03 FINEST sun.net.www.protocol.https.HttpsClient <init> Creating new HttpsClient with url:https://undisclosed:40033/jenkins/tools/computer/undisclosed-81e2930f/slave-agent.jnlp and proxy:DIRECT with connect timeout:-1
+2019-10-16 09:43:03 FINEST sun.net.www.protocol.http.HttpURLConnection plainConnect0 Proxy used: DIRECT
+2019-10-16 09:43:03 FINE sun.net.www.protocol.http.HttpURLConnection writeRequests sun.net.www.MessageHeader@5a4aa2f26 pairs: {GET /jenkins/tools/computer/undisclosed-81e2930f/slave-agent.jnlp HTTP/1.1: null}{Authorization: Basic cmFyNnNpOjExZTZjMmM5ZjNkMjczZGNlYzBlMTVmNjNmMzM5YmQ5M2M=}{User-Agent: Java/1.8.0_102}{Host: undisclosed:40033}{Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2}{Connection: keep-alive}
+2019-10-16 09:43:03 FINEST sun.net.www.http.HttpClient logFinest KeepAlive stream used: https://undisclosed:40033/jenkins/tools/computer/undisclosed-81e2930f/slave-agent.jnlp
+2019-10-16 09:43:03 FINE sun.net.www.protocol.http.HttpURLConnection getInputStream0 sun.net.www.MessageHeader@6591f5176 pairs: {null: HTTP/1.1 200 OK}{Date: Wed, 16 Oct 2019 07:43:03 GMT}{X-Content-Type-Options: nosniff}{Content-Type: application/x-java-jnlp-file}{Content-Length: 870}{Server: Jetty(9.4.z-SNAPSHOT)}
+2019-10-16 09:43:03 INFO hudson.remoting.jnlp.Main createEngine Setting up agent: undisclosed-81e2930f
+2019-10-16 09:43:03 INFO hudson.remoting.jnlp.Main$CuiListener <init> Jenkins agent is running in headless mode.
+2019-10-16 09:43:03 INFO hudson.remoting.Engine startEngine Using Remoting version: 3.30
+2019-10-16 09:43:03 WARNING hudson.remoting.Engine startEngine No Working Directory. Using the legacy JAR Cache location: /home/local/DE/rafael/.jenkins/cache/jars
+2019-10-16 09:43:03 FINE hudson.remoting.Engine startEngine Using standard File System JAR Cache. Root Directory is /home/local/DE/rafael/.jenkins/cache/jars
+2019-10-16 09:43:03 FINE org.jenkinsci.remoting.protocol.IOHub create Staring an additional Selector wakeup thread. See JENKINS-47965 for more info
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.IOHub processScheduledTasks 0 scheduled tasks to process
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.IOHub$IOHubSelectorWatcher run Windows IOHub Watcher for IOHub#1: Selector[keys:0, gen:0] / pool-1-thread-2: Started
+2019-10-16 09:43:03 INFO hudson.remoting.jnlp.Main$CuiListener status Locating server among [https://undisclosed:40033/jenkins/tools/]
+2019-10-16 09:43:03 FINEST sun.net.www.protocol.http.HttpURLConnection plainConnect0 ProxySelector Request for https://undisclosed:40033/jenkins/tools/tcpSlaveAgentListener/
+2019-10-16 09:43:03 FINEST sun.net.www.protocol.https.HttpsClient New Looking for HttpClient for URL https://undisclosed:40033/jenkins/tools/tcpSlaveAgentListener/ and proxy value of DIRECT
+2019-10-16 09:43:03 FINEST sun.net.www.protocol.https.HttpsClient New KeepAlive stream retrieved from the cache, sun.net.www.protocol.https.HttpsClient(https://undisclosed:40033/jenkins/tools/computer/undisclosed-81e2930f/slave-agent.jnlp)
+2019-10-16 09:43:03 FINEST sun.net.www.protocol.http.HttpURLConnection plainConnect0 Proxy used: DIRECT
+2019-10-16 09:43:03 FINE sun.net.www.protocol.http.HttpURLConnection writeRequests sun.net.www.MessageHeader@526938076 pairs: {GET /jenkins/tools/tcpSlaveAgentListener/ HTTP/1.1: null}{Authorization: Basic cmFyNnNpOjExZTZjMmM5ZjNkMjczZGNlYzBlMTVmNjNmMzM5YmQ5M2M=}{User-Agent: Java/1.8.0_102}{Host: undisclosed:40033}{Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2}{Connection: keep-alive}
+2019-10-16 09:43:03 FINEST sun.net.www.http.HttpClient logFinest KeepAlive stream used: https://undisclosed:40033/jenkins/tools/tcpSlaveAgentListener/
+2019-10-16 09:43:03 FINE sun.net.www.protocol.http.HttpURLConnection getInputStream0 sun.net.www.MessageHeader@69edc0b411 pairs: {null: HTTP/1.1 200 OK}{Date: Wed, 16 Oct 2019 07:43:03 GMT}{X-Content-Type-Options: nosniff}{Content-Type: text/plain;charset=utf-8}{X-Hudson-JNLP-Port: 44244}{X-Jenkins-JNLP-Port: 44244}{X-Instance-Identity: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAihjmf4DDYWVKDnRj06bCAUDRJcM6rmhtTjbYEOvkMleq/1y9BUpr7Zopqlcez6LiZKyi69S7U6HHrZ+I799TqI4YqAGjstqUKMqtK3LvpNI9YCFQe6Zfj1OQXLq48ti14UYJDr9TXnngkYRM3G8cVh+jHX+XpxVPkthAiWohLK5VBljhbV+Q6qO1y/KsZx6Pucf1h/nFz78pYppOK8S2wN6Gnb75PtbKvD+BxOLTh8Bpj78y5+zzLuNgMa5H/pkI1mh23f9Cbe3Pm52kLYhScxIS6oMm5adShoOUAhWGTty2wLSAS1wuh2FZuqupmiOVYl933RW4oY65q2bOR/qtvQIDAQAB}{X-Jenkins-Agent-Protocols: JNLP-connect, JNLP2-connect, JNLP4-connect, Ping}{X-Remoting-Minimum-Version: 3.4}{Content-Length: 12}{Server: Jetty(9.4.z-SNAPSHOT)}
+2019-10-16 09:43:03 INFO org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve Remoting server accepts the following protocols: [JNLP4-connect, JNLP-connect, Ping, JNLP2-connect]
+2019-10-16 09:43:03 FINE org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve TCP Agent Listener Port availability check passed
+2019-10-16 09:43:03 INFO hudson.remoting.jnlp.Main$CuiListener status Agent discovery successful
+  Agent address: undisclosed
+  Agent port:    44244
+  Identity:      5b:35:6e:db:78:a4:88:c0:dd:05:41:24:8c:6b:4f:67
+2019-10-16 09:43:03 INFO hudson.remoting.jnlp.Main$CuiListener status Handshaking
+2019-10-16 09:43:03 INFO hudson.remoting.jnlp.Main$CuiListener status Connecting to undisclosed:44244
+2019-10-16 09:43:03 INFO hudson.remoting.jnlp.Main$CuiListener status Trying protocol: JNLP4-connect
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.ProtocolStack init [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Initializing
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.ProtocolStack init [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Starting
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.NetworkLayer start [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Starting
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.NetworkLayer start [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Started
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Reader thread started
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 24 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 5 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.FilterLayer completed [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Completed
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer start JNLP4-connect connection to undisclosed/10.42.29.152:44244 Starting NOT_HANDSHAKING
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 0 bytes plus 0 retained
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE ENCODE: 0 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_WRAP engine result: Status = BUFFER_OVERFLOW HandshakeStatus = NEED_WRAP
+bytesConsumed = 0 bytesProduced = 0
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE ENCODE: 0 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE SEND: 274 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_WRAP engine result: Status = OK HandshakeStatus = NEED_UNWRAP
+bytesConsumed = 0 bytesProduced = 274
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_UNWRAP engine result: Status = BUFFER_UNDERFLOW HandshakeStatus = NEED_UNWRAP
+bytesConsumed = 0 bytesProduced = 0
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer doSend [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Sending 129 bytes of headers
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 5 bytes
+2019-10-16 09:43:03 FINE org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer doSend [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Headers sent
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 274 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 1,299 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 1,299 bytes plus 0 retained
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_UNWRAP engine result: Status = OK HandshakeStatus = NEED_TASK
+bytesConsumed = 1299 bytesProduced = 0
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.ProtocolStack init [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Started
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE ENCODE: 0 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE SEND: 75 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 75 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.FilterLayer completed [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Completed
+2019-10-16 09:43:03 FINE org.jenkinsci.remoting.protocol.impl.AckFilterLayer complete [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Acknowledgement exchange completed
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_WRAP engine result: Status = OK HandshakeStatus = NEED_WRAP
+bytesConsumed = 0 bytesProduced = 75
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE ENCODE: 0 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE SEND: 6 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 6 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_WRAP engine result: Status = OK HandshakeStatus = NEED_WRAP
+bytesConsumed = 0 bytesProduced = 6
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE ENCODE: 0 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] HANDSHAKE SEND: 101 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 101 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_WRAP engine result: Status = OK HandshakeStatus = NEED_UNWRAP
+bytesConsumed = 0 bytesProduced = 101
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_UNWRAP engine result: Status = BUFFER_UNDERFLOW HandshakeStatus = NEED_UNWRAP
+bytesConsumed = 0 bytesProduced = 0
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 256 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 256 bytes plus 0 retained
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_UNWRAP engine result: Status = OK HandshakeStatus = NEED_UNWRAP
+bytesConsumed = 6 bytesProduced = 0
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NEED_UNWRAP engine result: Status = OK HandshakeStatus = FINISHED
+bytesConsumed = 101 bytesProduced = 0
+2019-10-16 09:43:03 FINE org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processHandshakeCompleted [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake completed
+2019-10-16 09:43:03 INFO hudson.remoting.jnlp.Main$CuiListener status Remote identity confirmed: 5b:35:6e:db:78:a4:88:c0:dd:05:41:24:8c:6b:4f:67
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 129 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 129 bytesProduced = 213
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 213 bytes
+2019-10-16 09:43:03 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 213 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 149 bytesProduced = 79
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 79 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Expecting 77 bytes of headers
+2019-10-16 09:43:04 FINER org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Received headers "{"Cookie":"f19bf922246de5aae5c54d3a0badfb02f605ff99ce9d35978d593231da91e187"}"
+2019-10-16 09:43:04 FINE org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Received headers {Cookie=f19bf922246de5aae5c54d3a0badfb02f605ff99ce9d35978d593231da91e187}
+2019-10-16 09:43:04 FINE org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Accepting headers from remote
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Sending 4 bytes of response
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 4 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 4 bytesProduced = 85
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 250 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 250 bytes plus 0 retained
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 4
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 4 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Expecting 2 bytes of response
+2019-10-16 09:43:04 FINE org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Received response "OK"
+2019-10-16 09:43:04 FINE org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Local headers accepted by remote
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 86 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 86 bytesProduced = 165
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 165 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 165 bytes
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.FilterLayer completed [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Completed
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:04 FINE org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer complete [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Connection header exchange completed
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 165 bytesProduced = 86
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 86 bytes
+2019-10-16 09:43:04 FINE hudson.remoting.ClassFilter createDefaultInstance Using default in built class blacklisting
+2019-10-16 09:43:04 FINEST org.jenkinsci.remoting.protocol.IOHub processScheduledTasks 1 scheduled tasks to process
+2019-10-16 09:43:05 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager shutdown Connection manager is shutting down
+2019-10-16 09:43:05 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager shutdown Connection manager shut down
+2019-10-16 09:43:05 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager shutdown Connection manager is shutting down
+2019-10-16 09:43:05 FINE shaded.org.apache.http.impl.conn.PoolingHttpClientConnectionManager shutdown Connection manager shut down
+2019-10-16 09:43:05 INFO hudson.remoting.jnlp.Main$CuiListener status Connected
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,890 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,890 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2805 bytesProduced = 2722
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,722 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received UserRequest:hudson.slaves.SlaveComputer$SlaveVersion@5b496e5
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command UserRequest:hudson.slaves.SlaveComputer$SlaveVersion@5b496e5. It took 1ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.slaves.SlaveComputer$SlaveVersion)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 583 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 583 bytesProduced = 661
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 4,090 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 4,090 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 4005 bytesProduced = 3931
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 3,931 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.slaves.SlaveComputer$SlaveVersion -> hudson.slaves.SlaveComputer$1
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.slaves.SlaveComputer$SlaveVersion -> jenkins.security.MasterToSlaveCallable
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.slaves.SlaveComputer$SlaveVersion -> hudson.remoting.Launcher
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.slaves.SlaveComputer$SlaveVersion -> hudson.slaves.SlaveComputer
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send UserRequest:RPCRequest:hudson.remoting.IChannel.waitForProperty[java.lang.Object](1)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 6,393 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 6393 bytesProduced = 6469
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 6,469 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 6,469 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 4,906 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 4,906 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 4821 bytesProduced = 4736
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 4,736 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(hudson.remoting.UserRequest$NormalResponse)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:UserRequest:RPCRequest:hudson.remoting.IChannel.waitForProperty[java.lang.Object](1)(hudson.remoting.UserRequest$NormalResponse). It took 0ms
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send UserRequest:UserRPCRequest:hudson.remoting.JarLoader.notifyJarPresence[long,long](3)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 6,428 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 6428 bytesProduced = 6501
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 6,501 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 6,501 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.ResourceImageDirect resolve hudson/slaves/SlaveComputer$SlaveVersion.class image is direct
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(jenkins.security.MasterToSlaveCallable) -> prefetch hit
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.slaves.SlaveComputer$1) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.slaves.SlaveComputer) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.model.Computer)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 564 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 564 bytesProduced = 645
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 645 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 645 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,106 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,106 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2021 bytesProduced = 1941
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 1,941 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(hudson.remoting.UserRequest$NormalResponse)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:UserRequest:UserRPCRequest:hudson.remoting.JarLoader.notifyJarPresence[long,long](3)(hudson.remoting.UserRequest$NormalResponse). It took 0ms
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 8,192 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 8,192 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = BUFFER_UNDERFLOW HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 0 bytesProduced = 0
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 1,044 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 1,044 bytes plus 8,107 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 8277 bytesProduced = 8192
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 8,192 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 789 bytesProduced = 707
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 707 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.apache.commons.lang.StringUtils
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.Messages
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.XStream2
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.kohsuke.stapler.HttpRedirect
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.WorkspaceList
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.RunList
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.NodeProperty
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.AbstractCIBase
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> jenkins.util.ContextResettingExecutorService
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> javax.servlet.RequestDispatcher
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> jenkins.model.Jenkins
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.TransientComputerActionFactory
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.security.PermissionScope
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> net.sf.json.JSONObject
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.ComputerPanelBox
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$DumpExportTableTask
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.jvnet.localizer.Localizable
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.kohsuke.stapler.HttpResponses$HttpResponseException
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.kohsuke.stapler.StaplerRequest
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.remoting.Future
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Actionable
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.DaemonThreadFactory
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.BuildTimelineWidget
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> javax.servlet.http.HttpServletRequest
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Queue
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.security.ACL
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.queue.WorkUnit
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$TerminationRequest
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Api
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> jenkins.util.SystemProperties
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> jenkins.model.Nodes
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.Util
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$2
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.remoting.Callable
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$1
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.acegisecurity.Authentication
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$4
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$3
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.remoting.Channel
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.RSS
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.kohsuke.stapler.HttpResponses
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Descriptor
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.OfflineCause$ByCLI
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.kohsuke.stapler.StaplerResponse
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$DisplayExecutor
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.OfflineCause
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.NamingThreadFactory
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.ExceptionCatchingThreadFactory
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.kohsuke.stapler.Stapler
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.security.AccessControlled
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Slave
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.ComputerListener
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$ListPossibleNames
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.RemotingDiagnostics$HeapDump
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.LoadStatistics
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> javax.servlet.ServletException
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.FeedAdapter
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Executor
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Computer$GetFallbackName
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.DescribableList
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> jenkins.security.ImpersonatingExecutorService
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.kohsuke.stapler.HttpResponse
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.labels.LabelAtom
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.RetentionStrategy
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.EditDistance
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.security.PermissionGroup
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Node
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Run
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> org.kohsuke.args4j.CmdLineException
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.remoting.VirtualChannel
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Descriptor$FormException
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.security.Permission
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> javax.servlet.ServletInputStream
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Queue$Task
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Messages
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.console.AnnotatedLargeText
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.OfflineCause$UserCause
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> javax.servlet.ServletOutputStream
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.security.AuthorizationStrategy
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.EnvVars
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.User
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.ExecutorListener
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.TaskListener
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.OneOffExecutor
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> javax.servlet.http.HttpServletResponse
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.RemotingDiagnostics
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.util.Futures
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.ComputerPinger
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.ComputerSet
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.node_monitors.NodeMonitor
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Job
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.Queue$BuildableItem
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.slaves.Cloud
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.model.DescriptorByNameOwner
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.Computer -> hudson.ExtensionList
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.security.AccessControlled) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.model.ExecutorListener) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.model.DescriptorByNameOwner) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.model.ModelObject)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 567 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 567 bytesProduced = 645
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 645 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 645 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,490 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,490 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2405 bytesProduced = 2329
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,329 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.model.Actionable) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(jenkins.model.ModelObjectWithContextMenu)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 583 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 583 bytesProduced = 661
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,794 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,794 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2709 bytesProduced = 2631
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,631 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch jenkins.model.ModelObjectWithContextMenu -> jenkins.model.ModelObjectWithContextMenu$ContextMenuVisibility
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch jenkins.model.ModelObjectWithContextMenu -> jenkins.model.ModelObjectWithContextMenu$MenuItem
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch jenkins.model.ModelObjectWithContextMenu -> jenkins.model.ModelObjectWithContextMenu$ContextMenu
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.model.AbstractModelObject)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 575 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 575 bytesProduced = 645
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 645 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 645 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,842 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,842 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2757 bytesProduced = 2681
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,681 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 1ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.AbstractModelObject -> hudson.search.SearchIndexBuilder
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.AbstractModelObject -> hudson.search.SearchableModelObject
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.AbstractModelObject -> hudson.search.SearchIndex
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.AbstractModelObject -> hudson.search.SearchFactory
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.model.AbstractModelObject -> hudson.search.Search
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.search.SearchableModelObject) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.search.SearchItem)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 567 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 567 bytesProduced = 645
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 645 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 645 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 85 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,405 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,405 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2405 bytesProduced = 2329
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,329 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.slaves.SlaveComputer$SlaveLogFetcher)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 586 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 586 bytesProduced = 661
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,666 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,666 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2581 bytesProduced = 2499
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,499 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.slaves.SlaveComputer$SlaveLogFetcher -> hudson.slaves.SlaveComputer$LogHolder
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.slaves.SlaveComputer$SlaveLogFetcher -> hudson.util.RingBufferLogHandler
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.slaves.SlaveComputer$SlaveInitializer)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 587 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 587 bytesProduced = 661
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 85 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,501 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,501 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2501 bytesProduced = 2428
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,428 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.slaves.SlaveComputer$SlaveInitializer -> hudson.remoting.ChannelClosedException
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.slaves.SlaveComputer$LogHolder) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.slaves.SlaveComputer$DetectDefaultCharset)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 591 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 591 bytesProduced = 661
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 85 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,437 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,437 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2437 bytesProduced = 2353
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,353 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.slaves.SlaveComputer$AbsolutePath)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 583 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 583 bytesProduced = 661
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,506 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,506 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2421 bytesProduced = 2345
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,345 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.slaves.SlaveComputer$DetectOS)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 579 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 579 bytesProduced = 661
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,506 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,506 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2421 bytesProduced = 2341
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,341 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send Response:UserRequest:hudson.slaves.SlaveComputer$SlaveVersion@5b496e5(hudson.remoting.UserRequest$NormalResponse)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 1,587 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 1587 bytesProduced = 1669
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 1,669 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 1,669 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,874 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,874 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2789 bytesProduced = 2715
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,715 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received UserRequest:hudson.slaves.SlaveComputer$DetectOS@5ebc2059
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command UserRequest:hudson.slaves.SlaveComputer$DetectOS@5ebc2059. It took 0ms
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send Response:UserRequest:hudson.slaves.SlaveComputer$DetectOS@5ebc2059(hudson.remoting.UserRequest$NormalResponse)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 1,629 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 1629 bytesProduced = 1701
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 1,701 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 1,701 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,906 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,906 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2821 bytesProduced = 2739
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,739 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received UserRequest:hudson.slaves.SlaveComputer$DetectDefaultCharset@6f2be377
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command UserRequest:hudson.slaves.SlaveComputer$DetectDefaultCharset@6f2be377. It took 0ms
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send Response:UserRequest:hudson.slaves.SlaveComputer$DetectDefaultCharset@6f2be377(hudson.remoting.UserRequest$NormalResponse)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 1,588 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 1588 bytesProduced = 1669
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 1,669 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 1,669 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,922 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,922 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2837 bytesProduced = 2752
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,752 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received UserRequest:hudson.slaves.SlaveComputer$SlaveInitializer@57f4331a
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command UserRequest:hudson.slaves.SlaveComputer$SlaveInitializer@57f4331a. It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.util.RingBufferLogHandler) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send Response:UserRequest:hudson.slaves.SlaveComputer$SlaveInitializer@57f4331a(hudson.remoting.UserRequest$NormalResponse)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 1,581 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 1581 bytesProduced = 1653
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 1,653 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 1,653 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 3,194 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 3,194 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 3109 bytesProduced = 3030
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 3,030 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received UserRequest:hudson.logging.LogRecorder$SetLevel@3436c528
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command UserRequest:hudson.logging.LogRecorder$SetLevel@3436c528. It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.logging.LogRecorder$SetLevel)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 578 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 578 bytesProduced = 661
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 661 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,570 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 2,570 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2485 bytesProduced = 2407
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2,407 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received Response(java.util.HashMap)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command Response:RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)(java.util.HashMap). It took 0ms
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass prefetch hudson.logging.LogRecorder$SetLevel -> hudson.logging.LogRecorder
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send Response:UserRequest:hudson.logging.LogRecorder$SetLevel@3436c528(hudson.remoting.UserRequest$NormalResponse)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 1,581 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 1581 bytesProduced = 1653
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 1,653 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 1,653 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass findClass(hudson.logging.LogRecorder) -> prefetch hit
+2019-10-16 09:43:05 FINER hudson.remoting.FileSystemJarCache lookInCache Jar file cache hit E479F7983362B7351D6E583BD18A7721
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 3,178 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer onRecv [JNLP4-connect connection to undisclosed/10.42.29.152:44244] RECV: 3,178 bytes plus 0 retained
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 85 bytesProduced = 2
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 2 bytes
+2019-10-16 09:43:05 FINER hudson.remoting.RemoteClassLoader findClass fetch3(hudson.model.Saveable)
+2019-10-16 09:43:05 FINE hudson.remoting.Channel send Send RPCRequest:hudson.remoting.RemoteClassLoader$IClassLoader.fetch3[java.lang.String](2)
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processResult [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 3093 bytesProduced = 3013
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processRead [JNLP4-connect connection to undisclosed/10.42.29.152:44244] DECODE: 3,013 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 2 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Handshake status: NOT_HANDSHAKING engine result: Status = OK HandshakeStatus = NOT_HANDSHAKING
+bytesConsumed = 2 bytesProduced = 85
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP SEND: 85 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer write [JNLP4-connect connection to undisclosed/10.42.29.152:44244] SEND: 85 bytes
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Received UserRequest:hudson.logging.LogRecorder$SetLevel@39af974c
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer processWrite [JNLP4-connect connection to undisclosed/10.42.29.152:44244] APP ENCODE: 564 bytes
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread started
+2019-10-16 09:43:05 FINEST org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Writer run [JNLP4-connect connection to undisclosed/10.42.29.152:44244] Writer thread stopped
+2019-10-16 09:43:05 FINE hudson.remoting.Channel$1 handle Completed command UserRequest:hudson.logging.LogRecorder$SetLevel@39af974c. It took 0ms

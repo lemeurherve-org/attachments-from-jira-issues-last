@@ -1,0 +1,75 @@
+Channel reader thread: channel
+
+"Channel reader thread: channel" Id=9 Group=main RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:220)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	-  locked java.io.BufferedInputStream@52e9a74c
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Command.readFrom(Command.java:92)
+	at hudson.remoting.ClassicCommandTransport.read(ClassicCommandTransport.java:59)
+	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:48)
+
+java -Xms2048m -Xmx2048m -Dsonar.dynamicAnalysis=reuseReports -Dm3plugin.lib=/slavejenkins/workspace/artifactory-plugin/2.1.4 -cp /slavejenkins/maven3-agent.jar:/cis/maven/maven/boot/plexus-classworlds-2.4.jar org.jvnet.hudson.maven3.agent.Maven3Main /cis/maven/maven /slavejenkins/slave.jar /slavejenkins/maven3-interceptor.jar 42310: stdout copier
+
+"java -Xms2048m -Xmx2048m -Dsonar.dynamicAnalysis=reuseReports -Dm3plugin.lib=/slavejenkins/workspace/artifactory-plugin/2.1.4 -cp /slavejenkins/maven3-agent.jar:/cis/maven/maven/boot/plexus-classworlds-2.4.jar org.jvnet.hudson.maven3.agent.Maven3Main /cis/maven/maven /slavejenkins/slave.jar /slavejenkins/maven3-interceptor.jar 42310: stdout copier" Id=2084 Group=main RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:220)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:256)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:317)
+	-  locked java.io.BufferedInputStream@5a76f1ed
+	at java.io.FilterInputStream.read(FilterInputStream.java:90)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:60)
+
+java -Xmx2048m -Dsonar.dynamicAnalysis=reuseReports -Dm3plugin.lib=/slavejenkins/workspace/artifactory-plugin/2.1.4 -cp /slavejenkins/maven3-agent.jar:/cis/maven/maven/boot/plexus-classworlds-2.4.jar org.jvnet.hudson.maven3.agent.Maven3Main /cis/maven/maven /slavejenkins/slave.jar /slavejenkins/maven3-interceptor.jar 35562: stdout copier
+
+"java -Xmx2048m -Dsonar.dynamicAnalysis=reuseReports -Dm3plugin.lib=/slavejenkins/workspace/artifactory-plugin/2.1.4 -cp /slavejenkins/maven3-agent.jar:/cis/maven/maven/boot/plexus-classworlds-2.4.jar org.jvnet.hudson.maven3.agent.Maven3Main /cis/maven/maven /slavejenkins/slave.jar /slavejenkins/maven3-interceptor.jar 35562: stdout copier" Id=2086 Group=main RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:220)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:256)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:317)
+	-  locked java.io.BufferedInputStream@2a880653
+	at java.io.FilterInputStream.read(FilterInputStream.java:90)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:60)
+
+main
+
+"main" Id=1 Group=main WAITING on hudson.remoting.Channel@2321ab80
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.remoting.Channel@2321ab80
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.Channel.join(Channel.java:800)
+	at hudson.remoting.Launcher.main(Launcher.java:481)
+	at hudson.remoting.Launcher.runWithStdinStdout(Launcher.java:427)
+	at hudson.remoting.Launcher.run(Launcher.java:221)
+	at hudson.remoting.Launcher.main(Launcher.java:180)
+
+Ping thread for channel hudson.remoting.Channel@2321ab80:channel
+
+"Ping thread for channel hudson.remoting.Channel@2321ab80:channel" Id=10 Group=main TIMED_WAITING
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+Pipe writer thread: channel
+
+"Pipe writer thread: channel" Id=12 Group=main RUNNABLE (in native)
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:92)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:124)
+	at hudson.remoting.SocketOutputStream.write(SocketOutputStream.java:54)
+	at hudson.remoting.ProxyOutputStream$Chunk$1.run(ProxyOutputStream.java:216)
+	at hudson.remoting.PipeWriter$1.run(PipeWriter.java:152)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:441)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+
+	Number of locked synchronizers = 1
+	- java.util.concurrent.locks.ReentrantLock$NonfairSync@2e24538e

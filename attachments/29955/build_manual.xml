@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.ParametersAction>
+      <parameters>
+        <hudson.model.StringParameterValue>
+          <name>BaseImageUser</name>
+          <description>Generic user injected by OpenStack.</description>
+          <value>ubuntu</value>
+        </hudson.model.StringParameterValue>
+        <com.cloudbees.plugins.credentials.CredentialsParameterValue plugin="credentials@1.22">
+          <name>BaseImageKey</name>
+          <description>Optional SSH Certificate for the OpenStack base image access.</description>
+          <value>635da131-af58-4882-9e75-20ad108cbbc4</value>                       <!-- ID of the credentials resource -->
+          <isDefaultValue>false</isDefaultValue>
+        </com.cloudbees.plugins.credentials.CredentialsParameterValue>
+        <hudson.model.StringParameterValue>
+          <name>Target</name>
+          <description>Host/Environment to provision.&lt;br /&gt;</description>
+          <value>server11.example.com</value>
+        </hudson.model.StringParameterValue>
+        <hudson.model.BooleanParameterValue>
+          <name>Inventory</name>
+          <description>Whether or not to use the inventory file.</description>
+          <value>false</value>
+        </hudson.model.BooleanParameterValue>
+      </parameters>
+    </hudson.model.ParametersAction>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserIdCause>
+          <userId>doru.cailean</userId>
+        </hudson.model.Cause_-UserIdCause>
+      </causes>
+    </hudson.model.CauseAction>
+    <hudson.plugins.git.util.BuildData plugin="git@2.3.5">
+      <buildsByBranchName>
+        <entry>
+          <string>origin/infrastructure</string>
+          <hudson.plugins.git.util.Build>
+            <marked plugin="git-client@1.17.1">
+              <sha1>fec785d5a21d3acff504455cea60a0199d04f094</sha1>
+              <branches class="list">
+                <hudson.plugins.git.Branch>
+                  <sha1 reference="../../../sha1"/>
+                  <name>origin/infrastructure</name>
+                </hudson.plugins.git.Branch>
+              </branches>
+            </marked>
+            <revision reference="../marked"/>
+            <hudsonBuildNumber>44</hudsonBuildNumber>
+          </hudson.plugins.git.util.Build>
+        </entry>
+      </buildsByBranchName>
+      <lastBuild reference="../buildsByBranchName/entry/hudson.plugins.git.util.Build"/>
+      <remoteUrls>
+        <string>git@git_server.org:user/repo.git</string>
+      </remoteUrls>
+    </hudson.plugins.git.util.BuildData>
+    <hudson.plugins.git.GitTagAction plugin="git@2.3.5">
+      <tags class="hudson.util.CopyOnWriteMap$Tree">
+        <entry>
+          <string>origin/infrastructure</string>
+          <list/>
+        </entry>
+      </tags>
+      <ws>/usr/share/tomcat7/.jenkins/jobs/PuppetProvision/workspace</ws>
+    </hudson.plugins.git.GitTagAction>
+    <hudson.scm.SCMRevisionState_-None/>
+  </actions>
+  <queueId>2526</queueId>
+  <timestamp>1434370369894</timestamp>
+  <startTime>1434370369895</startTime>
+  <result>SUCCESS</result>
+  <duration>16395</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/usr/share/tomcat7/.jenkins/jobs/PuppetProvision/workspace</workspace>
+  <hudsonVersion>1.616</hudsonVersion>
+  <scm class="hudson.plugins.git.GitChangeLogParser" plugin="git@2.3.5">
+    <authorOrCommitter>false</authorOrCommitter>
+  </scm>
+  <culprits class="com.google.common.collect.EmptyImmutableSortedSet"/>
+</build>

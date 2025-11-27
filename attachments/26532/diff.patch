@@ -1,0 +1,83 @@
+diff --git a/models/services/get_jenkins_projects.rb b/models/services/get_jenkins_projects.rb
+index 23b95a7..4e53389 100644
+--- a/models/services/get_jenkins_projects.rb
++++ b/models/services/get_jenkins_projects.rb
+@@ -24,6 +24,16 @@ module GitlabWebHook
+       end
+     end
+ 
++    def from_params(details)
++      projects = []
++      old_authentication_level = elevate_priviledges
++      details.parameters[:jobs].split(",").each do |job|
++        projects << Project.new(Java.jenkins.model.Jenkins.instance.getItemByFullName(job,AbstractProject.java_class))
++      end
++      revert_priviledges(old_authentication_level)
++      projects
++    end
++
+     def exactly_matching(details)
+       matching(details, true)
+     end
+@@ -67,4 +77,4 @@ module GitlabWebHook
+       SecurityContextHolder.getContext().setAuthentication(old_authentication_level) if old_authentication_level
+     end
+   end
+-end
+\ No newline at end of file
++end
+diff --git a/models/services/parse_request.rb b/models/services/parse_request.rb
+index e76969b..9d81d92 100644
+--- a/models/services/parse_request.rb
++++ b/models/services/parse_request.rb
+@@ -9,7 +9,7 @@ module GitlabWebHook
+       return details if details.valid?
+ 
+       body = read_request_body(request)
+-      details = PayloadRequestDetails.new(JSON.parse(body))
++      details = PayloadRequestDetails.new(JSON.parse(body),parameters)
+       throw_bad_request_exception(body, parameters) unless details.valid?
+       details
+     end
+diff --git a/models/use_cases/process_commit.rb b/models/use_cases/process_commit.rb
+index e55a9d6..d7448f8 100644
+--- a/models/use_cases/process_commit.rb
++++ b/models/use_cases/process_commit.rb
+@@ -22,15 +22,17 @@ module GitlabWebHook
+     private
+ 
+     def get_projects_to_process(details)
++      projects = []
++      projects = @get_jenkins_projects.from_params(details)
+       if Settings.automatic_project_creation?
+-        projects = @get_jenkins_projects.exactly_matching(details)
++        projects = @get_jenkins_projects.exactly_matching(details) if projects.empty?
+         projects << @create_project_for_branch.with(details) if projects.empty?
+       else
+-        projects = @get_jenkins_projects.matching(details)
++        projects = @get_jenkins_projects.matching(details) if projects.empty?
+       end
+       raise NotFoundException.new('no project references the given repo url and commit branch') if projects.empty?
+ 
+       projects
+     end
+   end
+-end
+\ No newline at end of file
++end
+diff --git a/models/values/payload_request_details.rb b/models/values/payload_request_details.rb
+index 5a2693f..15b7127 100644
+--- a/models/values/payload_request_details.rb
++++ b/models/values/payload_request_details.rb
+@@ -2,8 +2,10 @@ require_relative 'request_details'
+ 
+ module GitlabWebHook
+   class PayloadRequestDetails < RequestDetails
+-    def initialize(payload)
++    attr_reader :parameters
++    def initialize(payload,parameters)
+       @payload = payload || raise(ArgumentError.new("request payload is required"))
++      @parameters = parameters || raise(ArgumentError.new("request parameters are required"))
+     end
+ 
+     def repository_url

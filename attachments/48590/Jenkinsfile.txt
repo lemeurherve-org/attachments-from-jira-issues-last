@@ -1,0 +1,35 @@
+properties(
+	[buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '30', numToKeepStr: '30')), 
+	[$class: 'ScannerJobProperty', doNotScan: false], disableResume(), durabilityHint('PERFORMANCE_OPTIMIZED'), 
+	[$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false], 
+	parameters([
+		string(defaultValue: 'http://<SVN_SERVER_ADDRESS>:80/um/branches/rel/10.5.0.x/', description: 'svn repository url', name: 'branch', trim: true),
+		string(defaultValue: 'HEAD', description: 'checkout revision', name: 'revision', trim: true),			
+	]),
+	[$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: false, throttleOption: 'project']]
+)
+def branchID = "${params.branch}".tokenize("/").last()
+def branchParent = "${params.branch}".tokenize("/")[-2]
+
+def preconfiguredRevision = "${params.revision}"
+def templatesRevision = ""
+if (preconfiguredRevision != "HEAD") {
+	templatesRevision = "@" + preconfiguredRevision
+	println "Jenkins template functions will check out revision: " + templatesRevision
+}
+
+def versionHelper = library(identifier: "templates@branches/${branchParent}/${branchID}/build/change-management/jenkinsfiles/templates${templatesRevision}", retriever: modernSCM([$class: 'SubversionSCMSource', remoteBase: 'http://<SVN_SERVER_ADDRESS>/um', credentialsId: '<USER_HERE>'])).com.softwareag.jenkins.VersionPropertiesHelper.new()
+
+stage('Run SonarQube Checks on C++') {
+	antJobBuilder {
+		buildMajor = versionHelper.getVersionMajorNumber(this)
+		buildMinor = versionHelper.getVersionMinorNumber(this)		
+		nodeLabels = 'sonar && windows'
+		antBuildFile = 'build/change-management/sonar.xml'
+		antExtraArgs = 'sonar-cpp'
+		skipJunitXmlFiles = 'true'
+		coverageDirectory = "prod/cpp"
+		coverageHtmlFileName = 'CodeCoverageReport.html'
+		enableJobLevelCoverage = 'false'
+	}
+}

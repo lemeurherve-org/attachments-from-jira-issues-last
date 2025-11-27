@@ -1,0 +1,44 @@
+diff --git a/src/main/java/com/cloudbees/jenkins/plugins/bitbucket/BitbucketSCMSource.java b/src/main/java/com/cloudbees/jenkins/plugins/bitbucket/BitbucketSCMSource.java
+index 0d4dd39..f3fb259 100644
+--- a/src/main/java/com/cloudbees/jenkins/plugins/bitbucket/BitbucketSCMSource.java
++++ b/src/main/java/com/cloudbees/jenkins/plugins/bitbucket/BitbucketSCMSource.java
+@@ -636,30 +636,16 @@ public class BitbucketSCMSource extends SCMSource {
+                     } else {
+                         branchName = "PR-" + pull.getId() + "-" + strategy.name().toLowerCase(Locale.ENGLISH);
+                     }
+-                    PullRequestSCMHead head;
+-                    if (originBitbucket instanceof BitbucketCloudApiClient) {
+-                        head = new PullRequestSCMHead(branchName,
+-                                pullRepoOwner,
+-                                pullRepository,
+-                                repositoryType,
+-                                pull.getSource().getBranch().getName(),
+-                                pull,
+-                                originOf(pullRepoOwner, pullRepository),
+-                                strategy
+-                        );
+-                    } else {
+-                        head = new PullRequestSCMHead(branchName,
+-                                repoOwner,
+-                                repository,
+-                                repositoryType,
+-                                branchName,
+-                                pull,
+-                                originOf(pullRepoOwner, pullRepository),
+-                                strategy
+-                        );
+-                    }
+                     if (request.process(
+-                            head,
++                            new PullRequestSCMHead(branchName,
++                                    pullRepoOwner,
++                                    pullRepository,
++                                    repositoryType,
++                                    pull.getSource().getBranch().getName(),
++                                    pull,
++                                    originOf(pullRepoOwner, pullRepository),
++                                    strategy
++                            ),
+                             new SCMSourceRequest.IntermediateLambda<String>() {
+                                 @Nullable
+                                 @Override

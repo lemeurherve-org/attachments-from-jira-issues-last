@@ -1,0 +1,35 @@
+Index: src/main/java/com/michelin/cio/hudson/plugins/clearcaseucmbaseline/ClearCaseUcmBaselineParameterValue.java
+===================================================================
+--- src/main/java/com/michelin/cio/hudson/plugins/clearcaseucmbaseline/ClearCaseUcmBaselineParameterValue.java	(revision 29370)
++++ src/main/java/com/michelin/cio/hudson/plugins/clearcaseucmbaseline/ClearCaseUcmBaselineParameterValue.java	(working copy)
+@@ -127,23 +127,15 @@
+         // HUDSON-5877: let's ensure the job has no publishers/notifiers coming
+         // from the ClearCase plugin
+         DescribableList<Publisher, Descriptor<Publisher>> publishersList = build.getProject().getPublishersList();
+-        if(publishersList.contains(UcmMakeBaseline.DESCRIPTOR)) {
+-            if(fatalErrorMessage.length() > 0) {
+-                fatalErrorMessage.append('\n');
+-            }
+-            fatalErrorMessage.append("This job is set up to use a '")
+-                    .append(UcmMakeBaseline.DESCRIPTOR.getDisplayName())
+-                    .append("' publisher which is not compatible with the ClearCase UCM baseline SCM mode. Please remove this publisher.");
+-        }
+-        if(publishersList.contains(UcmMakeBaselineComposite.DESCRIPTOR)) {
+-            if(fatalErrorMessage.length() > 0) {
+-                fatalErrorMessage.append('\n');
++        for (Publisher publisher : publishersList) {
++            if(publisher instanceof UcmMakeBaseline || publisher instanceof UcmMakeBaselineComposite) {
++                if(fatalErrorMessage.length() > 0) {
++                    fatalErrorMessage.append('\n');
++                }
++                fatalErrorMessage.append("This job is set up to use a '").append(publisher.getDescriptor().getDisplayName()).append(
++                        "' publisher which is not compatible with the ClearCase UCM baseline SCM mode. Please remove this publisher.");
+             }
+-            fatalErrorMessage.append("This job is set up to use a '")
+-                    .append(UcmMakeBaselineComposite.DESCRIPTOR.getDisplayName())
+-                    .append("' publisher which is not compatible with the ClearCase UCM baseline SCM mode. Please remove this publisher.");
+         }
+-
+         if(fatalErrorMessage.length() > 0) {
+             return new BuildWrapper() {
+                 /**

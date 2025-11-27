@@ -1,0 +1,81 @@
+See <https://***.com/jenkins/job/Selenium-Tests/30/>
+
+------------------------------------------
+Started by user anonymous
+Building on master in workspace <https://***.com/jenkins/job/Selenium-Tests/ws/>
+Checking out a fresh workspace because <https://***.com/jenkins/job/Selenium-Tests/ws/Engineering> doesn't exist
+Cleaning local Directory Engineering
+Checking out https://***.com/svn/gmen_internal/Engineering
+ERROR: Failed to check out https://***.com/svn/gmen_internal/Engineering
+org.tmatesoft.svn.core.SVNException: svn: OPTIONS /svn/gmen_internal/Engineering failed
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:298)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:283)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:271)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.exchangeCapabilities(DAVConnection.java:533)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.open(DAVConnection.java:98)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVRepository.openConnection(DAVRepository.java:1011)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVRepository.getLatestRevision(DAVRepository.java:180)
+	at org.tmatesoft.svn.core.wc.SVNBasicClient.getRevisionNumber(SVNBasicClient.java:482)
+	at org.tmatesoft.svn.core.wc.SVNBasicClient.getLocations(SVNBasicClient.java:876)
+	at org.tmatesoft.svn.core.wc.SVNBasicClient.createRepository(SVNBasicClient.java:534)
+	at org.tmatesoft.svn.core.wc.SVNUpdateClient.doCheckout(SVNUpdateClient.java:901)
+	at hudson.scm.subversion.CheckoutUpdater$1.perform(CheckoutUpdater.java:84)
+	at hudson.scm.subversion.WorkspaceUpdater$UpdateTask.delegateTo(WorkspaceUpdater.java:136)
+	at hudson.scm.subversion.WorkspaceUpdater$UpdateTask.delegateTo(WorkspaceUpdater.java:144)
+	at hudson.scm.subversion.UpdateUpdater$TaskImpl.perform(UpdateUpdater.java:121)
+	at hudson.scm.subversion.WorkspaceUpdater$UpdateTask.delegateTo(WorkspaceUpdater.java:136)
+	at hudson.scm.SubversionSCM$CheckOutTask.perform(SubversionSCM.java:788)
+	at hudson.scm.SubversionSCM$CheckOutTask.invoke(SubversionSCM.java:769)
+	at hudson.scm.SubversionSCM$CheckOutTask.invoke(SubversionSCM.java:753)
+	at hudson.FilePath.act(FilePath.java:842)
+	at hudson.FilePath.act(FilePath.java:824)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:743)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:685)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1245)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:589)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:88)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:494)
+	at hudson.model.Run.execute(Run.java:1488)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:236)
+Caused by: org.tmatesoft.svn.core.SVNErrorMessage: svn: OPTIONS /svn/gmen_internal/Engineering failed
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:200)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:146)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:89)
+	... 31 more
+Caused by: org.tmatesoft.svn.core.SVNAuthenticationException: svn: OPTIONS request failed on '/svn/gmen_internal/Engineering'
+svn: OPTIONS of /svn/gmen_internal/Engineering: 403 Forbidden (https://***.com)
+	at org.tmatesoft.svn.core.internal.wc.SVNErrorManager.error(SVNErrorManager.java:62)
+	at org.tmatesoft.svn.core.internal.wc.SVNErrorManager.error(SVNErrorManager.java:51)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection._request(HTTPConnection.java:656)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:292)
+	... 30 more
+Caused by: org.tmatesoft.svn.core.SVNErrorMessage: svn: OPTIONS request failed on '/svn/gmen_internal/Engineering'
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:200)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:146)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:89)
+	at org.tmatesoft.svn.core.SVNErrorMessage.wrap(SVNErrorMessage.java:366)
+	... 32 more
+Caused by: org.tmatesoft.svn.core.SVNErrorMessage: svn: OPTIONS of /svn/gmen_internal/Engineering: 403 Forbidden (https://***.com)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:200)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:181)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:133)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPRequest.createDefaultErrorMessage(HTTPRequest.java:444)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPRequest.dispatch(HTTPRequest.java:189)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection._request(HTTPConnection.java:379)
+	... 31 more
+FATAL: null
+java.lang.NullPointerException
+	at java.util.ArrayList.addAll(ArrayList.java:530)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:743)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:685)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1245)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:589)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:88)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:494)
+	at hudson.model.Run.execute(Run.java:1488)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:236)
+

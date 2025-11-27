@@ -1,0 +1,57 @@
+Started by user Alexandr
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] stage
+[Pipeline] { (Preparing machines)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] parallel
+[Pipeline] [agent-windows0] { (Branch: agent-windows0)
+[Pipeline] [agent-windows1] { (Branch: agent-windows1)
+[Pipeline] [agent-redhat0] { (Branch: agent-redhat0)
+[Pipeline] [agent-redhat1] { (Branch: agent-redhat1)
+[Pipeline] [agent-windows0] stage
+[Pipeline] [agent-windows0] { (agent-windows0 preparation)
+[Pipeline] [agent-windows1] stage
+[Pipeline] [agent-windows1] { (agent-windows1 preparation)
+[Pipeline] [agent-redhat0] stage
+[Pipeline] [agent-redhat0] { (agent-redhat0 preparation)
+[Pipeline] [agent-redhat1] stage
+[Pipeline] [agent-redhat1] { (agent-redhat1 preparation)
+[Pipeline] [agent-windows0] build (Building Preparation � agent-windows0)
+[agent-windows0] Scheduling project: Preparation » agent-windows0
+[Pipeline] [agent-windows1] build (Building Preparation � agent-windows1)
+[agent-windows1] Scheduling project: Preparation » agent-windows1
+[Pipeline] [agent-redhat0] build (Building Preparation � agent-redhat0)
+[agent-redhat0] Scheduling project: Preparation » agent-redhat0
+[Pipeline] [agent-redhat1] build (Building Preparation � agent-redhat1)
+[agent-redhat1] Scheduling project: Preparation » agent-redhat1
+[agent-windows0] Starting building: Preparation » agent-windows0 #48
+[agent-windows1] Starting building: Preparation » agent-windows1 #48
+[agent-redhat0] Starting building: Preparation » agent-redhat0 #92
+[agent-redhat1] Starting building: Preparation » agent-redhat1 #90
+[Pipeline] [agent-redhat1] }
+[Pipeline] [agent-redhat1] // stage
+[Pipeline] [agent-redhat1] }
+[agent-redhat1] Failed in branch agent-redhat1
+[Pipeline] [agent-windows1] echo
+[agent-windows1] Job with machine agent-windows1 successfully done!
+[Pipeline] [agent-windows1] }
+[Pipeline] [agent-windows1] // stage
+[Pipeline] [agent-windows1] }
+[Pipeline] [agent-redhat0] }
+[Pipeline] [agent-windows0] echo
+[agent-windows0] Job with machine agent-windows0 successfully done!
+[Pipeline] [agent-windows0] }
+[Pipeline] [agent-redhat0] // stage
+[Pipeline] [agent-redhat0] }
+[agent-redhat0] Failed in branch agent-redhat0
+[Pipeline] [agent-windows0] // stage
+[Pipeline] [agent-windows0] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] End of Pipeline
+ERROR: Preparation » agent-redhat1 #90 completed with status FAILURE (propagate: false to ignore)
+Finished: FAILURE

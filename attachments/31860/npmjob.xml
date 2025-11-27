@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <actions/>
+  <description>&lt;p&gt;Job is managed by &lt;a href="https://www.mediawiki.org/wiki/CI/JJB"&gt;Jenkins Job Builder&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This job is triggered by Zuul&lt;/p&gt;
+&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>true</concurrentBuild>
+  <assignedNode>ci-jessie-wikimedia</assignedNode>
+  <canRoam>false</canRoam>
+  <logRotator>
+    <daysToKeep>30</daysToKeep>
+    <numToKeep>-1</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <properties>
+    <org.jenkinsci.plugins.ZMQEventPublisher.HudsonNotificationProperty>
+      <enabled>true</enabled>
+    </org.jenkinsci.plugins.ZMQEventPublisher.HudsonNotificationProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_UUID</name>
+          <description>Zuul provided key to link builds with Gerrit events</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>UUID</name>
+          <description>Zuul provided key to link builds with Gerrit events (deprecated use ZUUL_UUID instead)</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_PIPELINE</name>
+          <description>Zuul pipeline triggering this job</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_URL</name>
+          <description>URL of Zuul's git repos accessible to workers</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_PROJECT</name>
+          <description>Branch name of triggering project</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_BRANCH</name>
+          <description>Branch name of triggering change</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_CHANGES</name>
+          <description>List of dependent changes to merge</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_REF</name>
+          <description>Reference for the merged commit(s) to use</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_COMMIT</name>
+          <description>The commit SHA1 at the head of ZUUL_REF</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_CHANGE_IDS</name>
+          <description>List of included changes</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_CHANGE</name>
+          <description>ID of triggering change</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ZUUL_PATCHSET</name>
+          <description>Patchset of triggering change</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>origin</name>
+        <refspec>$ZUUL_REF</refspec>
+        <url>$ZUUL_URL/$ZUUL_PROJECT</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>$ZUUL_COMMIT</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <excludedUsers/>
+    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <authorOrCommitter>false</authorOrCommitter>
+    <wipeOutWorkspace>false</wipeOutWorkspace>
+    <pruneBranches>false</pruneBranches>
+    <remotePoll>false</remotePoll>
+    <gitTool>Default</gitTool>
+    <submoduleCfg class="list"/>
+    <relativeTargetDir/>
+    <reference/>
+    <gitConfigName/>
+    <gitConfigEmail/>
+    <skipTag>false</skipTag>
+    <scmName/>
+    <useShallowClone>false</useShallowClone>
+    <ignoreNotifyCommit>false</ignoreNotifyCommit>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.CleanCheckout/>
+      <hudson.plugins.git.extensions.impl.SubmoduleOption>
+        <disableSubmodules>false</disableSubmodules>
+        <recursiveSubmodules>false</recursiveSubmodules>
+        <trackingSubmodules>false</trackingSubmodules>
+        <timeout>10</timeout>
+      </hudson.plugins.git.extensions.impl.SubmoduleOption>
+    </extensions>
+  </scm>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash -e -u
+NODE_VERSION=`node --version`
+
+if ( echo "$NODE_VERSION" | grep "^v4[.]3[.]" &gt; /dev/null )
+then
+    echo "Node version $NODE_VERSION matches '^v4[.]3[.]'"
+else
+    echo "Assertion error: node version $NODE_VERSION does not match '^v4[.]3[.]'"
+    exit 1
+fi
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command># castor-load
+# Load cache from central repository
+
+# WARN: copy pasted in castor-save
+# Replace slashes with dashes:
+ZUUL_PROJECT=${ZUUL_PROJECT////-}
+ZUUL_BRANCH=${ZUUL_BRANCH////-}
+# Ex: mediawiki-core/REL1_26/tox-jessie
+CASTOR_NAMESPACE="${ZUUL_PROJECT}/${ZUUL_BRANCH}/${JOB_NAME}"
+
+echo "Syncing..."
+rsync \
+  --archive \
+  --compress \
+  --contimeout 3 \
+  rsync://castor.integration.eqiad.wmflabs:/caches/${CASTOR_NAMESPACE}/ $HOME \
+  || :
+echo -e "\nDone"
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command># For archiving build artifacts
+mkdir -p "$WORKSPACE/log"
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>. /srv/deployment/integration/slave-scripts/bin/npm-setup.sh
+rm -f npm-oid.env
+
+case "deploy" in
+"source")
+    NPM_SET_PATH="."
+    echo "Running npm install"
+    rm -rf node_modules
+    npm install
+    ;;
+"deploy")
+    NPM_SET_PATH="./src"
+    # All modules should already be in the deploy repo, no npm install
+
+    # grunt.loadNpmTasks() does not honor NODE_PATH so fake it
+    # https://github.com/gruntjs/grunt-cli/pull/18
+    # https://phabricator.wikimedia.org/T92369
+    ln -fs "$WORKSPACE/node_modules" "$NPM_SET_PATH/node_modules"
+    ;;
+*)
+    echo "JJB {repository} parameter 'deploy' is not recognized."
+    exit 1
+    ;;
+esac
+echo "NPM_SET_PATH=$NPM_SET_PATH" &gt;&gt; npm-oid.env
+echo 'NODE_PATH=$NODE_PATH:'"$WORKSPACE/node_modules" &gt;&gt; npm-oid.env
+echo 'PATH=$PATH:'"$WORKSPACE/node_modules/.bin" &gt;&gt; npm-oid.env
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>. /srv/deployment/integration/slave-scripts/bin/npm-set-env.sh
+# node_modules is not purged, taken care of by setup-npm-oid
+
+node --version
+npm --version
+. npm-oid.env
+
+echo "Injecting dev dependencies from source repo into deploy node_modules"
+/srv/deployment/integration/slave-scripts/bin/npm-install-dev.py
+
+cd "$NPM_SET_PATH"  # for deploy: ./src
+npm test
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>log/*</artifacts>
+      <latestOnly>false</latestOnly>
+      <allowEmptyArchive>true</allowEmptyArchive>
+    </hudson.tasks.ArtifactArchiver>
+    <org.jenkinsci.plugins.postbuildscript.PostBuildScript>
+      <buildSteps>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+              <configs>
+                <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+                <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+                  <properties>TRIGGERED_JOB_NAME=$JOB_NAME
+TRIGGERED_SSH_CONNECTION=$SSH_CONNECTION
+</properties>
+                </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+              </configs>
+              <projects>castor-save</projects>
+              <condition>ALWAYS</condition>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+              <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+              <block/>
+            </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+      </buildSteps>
+      <scriptOnlyIfSuccess>true</scriptOnlyIfSuccess>
+      <scriptOnlyIfFailure>false</scriptOnlyIfFailure>
+    </org.jenkinsci.plugins.postbuildscript.PostBuildScript>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>30</timeoutMinutes>
+      </strategy>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper/>
+  </buildWrappers>
+</project>

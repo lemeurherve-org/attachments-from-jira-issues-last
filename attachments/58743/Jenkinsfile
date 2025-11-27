@@ -1,0 +1,17 @@
+@Library('test-shared-library') _
+pipeline {
+    environment {
+        ENVIRONMENT='build'
+        JOB_PREFIX="myprojects/k8s/${ENVIRONMENT}/integration"
+    }
+    stages {
+        stage('Test') {
+            steps {
+                script {
+                    def descr = getBuildDescription(project: "${env.JOB_PREFIX}/${params.Branch}", buildNum: "${params.Build}")
+                    echo descr
+                }
+            }
+        }
+    }
+}

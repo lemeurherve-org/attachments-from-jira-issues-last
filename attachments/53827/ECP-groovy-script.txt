@@ -1,0 +1,55 @@
+import org.boon.Boon;
+ 
+def jsonEditorOptions = Boon.fromJson(/{
+        disable_edit_json: true,
+        disable_properties: true,
+        no_additional_properties: true,
+        disable_collapse: true,
+        disable_array_add: true,
+        disable_array_delete: true,
+        disable_array_reorder: true,
+        theme: "bootstrap3",
+        iconlib:"fontawesome4",
+        schema: {
+          "type": "object",
+          "title": "Application Name",
+          "properties": {
+            "Prefix_project": {
+              "title": "Prefix project",
+              "type": "string",
+              "propertyOrder" : 1,
+	      "readOnly": "true"
+            },
+            "App_name": {
+              "title": "Application name",
+              "type": "string",
+              "propertyOrder" : 2
+            },
+            "Suffix_env": {
+              "title": "Suffix environment",
+	      "propertyOrder" : 3,
+              "type": "string",
+              "enum": ["apm","dev","int","for","rec","ppr","pprex","poc","other"],
+              "default": "apm"
+            },
+            "Final_project_name": {
+              "title": "Final project name",
+              "type": "string",
+              "propertyOrder" : 4,
+              "template": "{{prefix}}-{{app}}-{{suffix}}",
+              "watch": {
+                "app": "App_name",
+                "suffix": "Suffix_env",
+                "prefix": "Prefix_project"
+
+              }
+            }
+          }
+        },
+        startval: {
+            "Prefix_project" : "spb",
+            "App_name" : "",
+            "Suffix_env" : "env",
+            "Final_project_name" : ""
+        }
+}/);

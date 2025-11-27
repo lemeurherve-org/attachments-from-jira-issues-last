@@ -1,0 +1,38 @@
+Branch indexing
+Connecting to https://api.github.com using project/****** (project-account)
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from 2 remote Git repositories
+ > git config remote.origin.url https://github.com/myproject.git # timeout=10
+Fetching upstream changes from https://github.com/myproject.git
+ > git --version # timeout=10
+using .gitcredentials to set credentials
+ > git config --local credential.username myproject-service # timeout=10
+ > git config --local credential.helper store --file=/tmp/git2897979878798.credentials # timeout=10
+ > git -c core.askpass=true fetch --tags --progress https://github.com/myproject.git +refs/heads/*:refs/remotes/origin/*
+ > git config --local --remove-section credential # timeout=10
+ERROR: Error fetching remote repo 'origin'
+hudson.plugins.git.GitException: Failed to fetch from https://github.com/myproject.git
+	at hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:799)
+	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1055)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1086)
+	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:109)
+	at org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition.create(CpsScmFlowDefinition.java:108)
+	at org.jenkinsci.plugins.workflow.multibranch.SCMBinder.create(SCMBinder.java:85)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:206)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:410)
+Caused by: hudson.plugins.git.GitException: Command "git -c core.askpass=true fetch --tags --progress https://github.com/myproject.git +refs/heads/*:refs/remotes/origin/*" returned status code 128:
+stdout:
+stderr: fatal: Reference directory conflict: refs/heads/
+
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1740)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:1476)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.access$300(CliGitAPIImpl.java:63)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$1.execute(CliGitAPIImpl.java:314)
+	at hudson.plugins.git.GitSCM.fetchFrom(GitSCM.java:797)
+	... 8 more
+
+GitHub has been notified of this commit’s build result
+
+ERROR: null
+Finished: FAILURE

@@ -1,0 +1,687 @@
+Started by user admin
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] stage
+[Pipeline] { (Parallel EC2 Agents)
+[Pipeline] node
+Still waiting to schedule task
+All nodes of label ‘ec2’ are offline
+Running on EC2 (EC2) -  (i-0157e66fa38ad02f9) in /home/ec2-user/workspace/test
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
++ docker inspect -f . python:3.9.0-buster
+
+Error: No such object: python:3.9.0-buster
+[Pipeline] isUnix
+[Pipeline] sh
++ docker pull python:3.9.0-buster
+3.9.0-buster: Pulling from library/python
+756975cb9c7e: Pulling fs layer
+d77915b4e630: Pulling fs layer
+5f37a0a41b6b: Pulling fs layer
+96b2c1e36db5: Pulling fs layer
+c495e8de12d2: Pulling fs layer
+33382189822a: Pulling fs layer
+414ebfa5f45b: Pulling fs layer
+dd860911922e: Pulling fs layer
+ac1f7f2faf6e: Pulling fs layer
+33382189822a: Waiting
+414ebfa5f45b: Waiting
+dd860911922e: Waiting
+ac1f7f2faf6e: Waiting
+96b2c1e36db5: Waiting
+c495e8de12d2: Waiting
+d77915b4e630: Verifying Checksum
+d77915b4e630: Download complete
+5f37a0a41b6b: Verifying Checksum
+5f37a0a41b6b: Download complete
+756975cb9c7e: Verifying Checksum
+756975cb9c7e: Download complete
+96b2c1e36db5: Verifying Checksum
+96b2c1e36db5: Download complete
+33382189822a: Verifying Checksum
+33382189822a: Download complete
+dd860911922e: Verifying Checksum
+dd860911922e: Download complete
+414ebfa5f45b: Verifying Checksum
+414ebfa5f45b: Download complete
+ac1f7f2faf6e: Verifying Checksum
+ac1f7f2faf6e: Download complete
+c495e8de12d2: Verifying Checksum
+c495e8de12d2: Download complete
+756975cb9c7e: Pull complete
+d77915b4e630: Pull complete
+5f37a0a41b6b: Pull complete
+96b2c1e36db5: Pull complete
+c495e8de12d2: Pull complete
+33382189822a: Pull complete
+414ebfa5f45b: Pull complete
+dd860911922e: Pull complete
+ac1f7f2faf6e: Pull complete
+Digest: sha256:33171280c751c76aa49fc9a11cc958288b2b297922512ffb1022ccc9c6363e90
+Status: Downloaded newer image for python:3.9.0-buster
+[Pipeline] withDockerContainer
+EC2 (EC2) -  (i-0157e66fa38ad02f9) does not seem to be running inside a container
+$ docker run -t -d -u 1000:1000 -w /home/ec2-user/workspace/test -v /home/ec2-user/workspace/test:/home/ec2-user/workspace/test:rw,z -v /home/ec2-user/workspace/test@tmp:/home/ec2-user/workspace/test@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
+$ docker top dc9a880c5c6bcbb6ae8464ce6aa14405bc95c1fdb61eaaffc783ffdc2a40aeb5 -eo pid,comm
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Parallel EC2 Inner Stage)
+[Pipeline] parallel
+[Pipeline] { (Branch: A - 1)
+[Pipeline] { (Branch: A - 2)
+[Pipeline] { (Branch: A - 3)
+[Pipeline] { (Branch: A - 4)
+[Pipeline] stage
+[Pipeline] { (A - 1)
+[Pipeline] stage
+[Pipeline] { (A - 2)
+[Pipeline] stage
+[Pipeline] { (A - 3)
+[Pipeline] stage
+[Pipeline] { (A - 4)
+[Pipeline] sh
+[Pipeline] sh
++ python --version --version
+Python 3.9.0 (default, Nov 18 2020, 13:28:38)
+[GCC 8.3.0]
+[Pipeline] sh
+[Pipeline] sh
+[Pipeline] sh
++ python --version --version
+Python 3.9.0 (default, Nov 18 2020, 13:28:38)
+[GCC 8.3.0]
++ python --version --version
+Python 3.9.0 (default, Nov 18 2020, 13:28:38)
+[GCC 8.3.0]
++ python --version --version
+Python 3.9.0 (default, Nov 18 2020, 13:28:38)
+[GCC 8.3.0]
+[Pipeline] sh
+[Pipeline] sh
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A1 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A1 - /home/ec2-user/workspace/test
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A2 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A2 - /home/ec2-user/workspace/test
+[Pipeline] sh
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 02:58:20 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A3 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:20 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A3 - /home/ec2-user/workspace/test
+[Pipeline] sh
+[Pipeline] sh
++ sleep 10
+[Pipeline] sh
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 02:58:21 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A4 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:21 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A4 - /home/ec2-user/workspace/test
++ sleep 10
+[Pipeline] sh
++ sleep 10
++ sleep 10
+[Pipeline] sh
++ cat the_file
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A1 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A2 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:20 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A3 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:21 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A4 - /home/ec2-user/workspace/test
+[Pipeline] sh
+[Pipeline] }
+[Pipeline] sh
++ cat the_file
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A1 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A2 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:20 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A3 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:21 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A4 - /home/ec2-user/workspace/test
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] sh
+[Pipeline] }
+[Pipeline] // stage
++ cat the_file
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A1 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A2 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:20 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A3 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:21 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A4 - /home/ec2-user/workspace/test
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
++ cat the_file
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A1 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A2 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:20 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A3 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:21 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A4 - /home/ec2-user/workspace/test
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+$ docker stop --time=1 dc9a880c5c6bcbb6ae8464ce6aa14405bc95c1fdb61eaaffc783ffdc2a40aeb5
+$ docker rm -f dc9a880c5c6bcbb6ae8464ce6aa14405bc95c1fdb61eaaffc783ffdc2a40aeb5
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Matrix Docker Agents)
+[Pipeline] parallel
+[Pipeline] { (Branch: Matrix - FIRST_AXIS = 'B', SECOND_AXIS = '1')
+[Pipeline] { (Branch: Matrix - FIRST_AXIS = 'B', SECOND_AXIS = '2')
+[Pipeline] { (Branch: Matrix - FIRST_AXIS = 'B', SECOND_AXIS = '3')
+[Pipeline] { (Branch: Matrix - FIRST_AXIS = 'B', SECOND_AXIS = '4')
+[Pipeline] stage
+[Pipeline] { (Matrix - FIRST_AXIS = 'B', SECOND_AXIS = '1')
+[Pipeline] stage
+[Pipeline] { (Matrix - FIRST_AXIS = 'B', SECOND_AXIS = '2')
+[Pipeline] stage
+[Pipeline] { (Matrix - FIRST_AXIS = 'B', SECOND_AXIS = '3')
+[Pipeline] stage
+[Pipeline] { (Matrix - FIRST_AXIS = 'B', SECOND_AXIS = '4')
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] node
+[Pipeline] node
+[Pipeline] node
+[Pipeline] node
+Running on docker-0004xjs5h6p38 on docker in /home/jenkins/agent/workspace/test
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
+Running on docker-0004xjskvop18 on docker in /home/jenkins/agent/workspace/test
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
+Running on docker-0004xjsl01fj0 on docker in /home/jenkins/agent/workspace/test
++ docker inspect -f . python:3.9.0-buster
+.
+[Pipeline] {
+[Pipeline] withDockerContainer
+docker-0004xjs5h6p38 on docker seems to be running inside container ddf7331350c765a1146c4d691b3d49a1fe5c2dfd7a21b87844d6c34abd697d5f
+$ docker run -t -d -u 1000:1000 -w /home/jenkins/agent/workspace/test --volumes-from ddf7331350c765a1146c4d691b3d49a1fe5c2dfd7a21b87844d6c34abd697d5f -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
++ docker inspect -f . python:3.9.0-buster
+.
+$ docker top 0899b38b2464c22d15f996e1a736abd03e00a9952be2643e55bebafff99cba1e -eo pid,comm
+[Pipeline] {
+[Pipeline] withDockerContainer
+docker-0004xjskvop18 on docker seems to be running inside container bb292510941a5ade11dc818f4f80ff1d68204ad69e682e15d6d65c193125b91b
+$ docker run -t -d -u 1000:1000 -w /home/jenkins/agent/workspace/test --volumes-from bb292510941a5ade11dc818f4f80ff1d68204ad69e682e15d6d65c193125b91b -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
+$ docker top 27105893eb33143037d6edbfca2e469e3ec133c0de19cc8397a1e7f275884fa3 -eo pid,comm
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
+[Pipeline] stage
+[Pipeline] { (Test This)
+[Pipeline] stage
+[Pipeline] { (Test This)
+[Pipeline] sh
+[Pipeline] sh
++ docker inspect -f . python:3.9.0-buster
+.
+[Pipeline] withDockerContainer
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 02:58:46 UTC 2020 -- 1 -- docker-0004xjs5h6p38 -- 0 -- we are here in B1 - /home/jenkins/agent/workspace/test
+Sat Nov 21 02:58:46 UTC 2020 -- 1 -- docker-0004xjs5h6p38 -- 0 -- we are here in B1 - /home/jenkins/agent/workspace/test
++ tee --append+  the_file
+date
++ pwd
++ echo Sat Nov 21 02:58:46 UTC 2020 -- 1 -- docker-0004xjskvop18 -- 0 -- we are here in B3 - /home/jenkins/agent/workspace/test
+Sat Nov 21 02:58:46 UTC 2020 -- 1 -- docker-0004xjskvop18 -- 0 -- we are here in B3 - /home/jenkins/agent/workspace/test
+docker-0004xjsl01fj0 on docker seems to be running inside container a2d44c3aba1f50efd584c9a9b1ba2a43f1582623b6df4087e4896463aff1b8ac
+$ docker run -t -d -u 1000:1000 -w /home/jenkins/agent/workspace/test --volumes-from a2d44c3aba1f50efd584c9a9b1ba2a43f1582623b6df4087e4896463aff1b8ac -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
+$ docker top 78b5715cfa508a59066df215f14caacd9970d776beac5e4316305c4d0c200a9b -eo pid,comm
+[Pipeline] {
+[Pipeline] sh
+[Pipeline] sh
+[Pipeline] stage
+[Pipeline] { (Test This)
+[Pipeline] sh
++ sleep 10
++ sleep 10
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 02:58:47 UTC 2020 -- 1 -- docker-0004xjsl01fj0 -- 0 -- we are here in B2 - /home/jenkins/agent/workspace/test
+Sat Nov 21 02:58:47 UTC 2020 -- 1 -- docker-0004xjsl01fj0 -- 0 -- we are here in B2 - /home/jenkins/agent/workspace/test
+[Pipeline] sh
++ sleep 10
+Running on docker-0004xjvpsex59 on docker in /home/jenkins/agent/workspace/test
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
++ docker inspect -f . python:3.9.0-buster
+.
+[Pipeline] withDockerContainer
+docker-0004xjvpsex59 on docker seems to be running inside container b19d07802681ca8351ddcc1ddea169711778c1e4949238a34ba0e35e302a43da
+$ docker run -t -d -u 1000:1000 -w /home/jenkins/agent/workspace/test --volumes-from b19d07802681ca8351ddcc1ddea169711778c1e4949238a34ba0e35e302a43da -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
+$ docker top 1ce2dbef7c17bbc0e23ae9808aa71e38bb1b9d2a7b45ae1d408329152420673d -eo pid,comm
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Test This)
+[Pipeline] sh
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 02:58:51 UTC 2020 -- 1 -- docker-0004xjvpsex59 -- 0 -- we are here in B4 - /home/jenkins/agent/workspace/test
+Sat Nov 21 02:58:51 UTC 2020 -- 1 -- docker-0004xjvpsex59 -- 0 -- we are here in B4 - /home/jenkins/agent/workspace/test
+[Pipeline] sh
++ sleep 10
+[Pipeline] sh
+[Pipeline] sh
++ cat the_file
+Sat Nov 21 02:58:46 UTC 2020 -- 1 -- docker-0004xjs5h6p38 -- 0 -- we are here in B1 - /home/jenkins/agent/workspace/test
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+$ docker stop --time=1 0899b38b2464c22d15f996e1a736abd03e00a9952be2643e55bebafff99cba1e
++ cat the_file
+Sat Nov 21 02:58:46 UTC 2020 -- 1 -- docker-0004xjskvop18 -- 0 -- we are here in B3 - /home/jenkins/agent/workspace/test
+$ docker rm -f 0899b38b2464c22d15f996e1a736abd03e00a9952be2643e55bebafff99cba1e
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] }
+[Pipeline] sh
+[Pipeline] // node
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] }
+$ docker stop --time=1 27105893eb33143037d6edbfca2e469e3ec133c0de19cc8397a1e7f275884fa3
++ cat the_file
+Sat Nov 21 02:58:47 UTC 2020 -- 1 -- docker-0004xjsl01fj0 -- 0 -- we are here in B2 - /home/jenkins/agent/workspace/test
+$ docker rm -f 27105893eb33143037d6edbfca2e469e3ec133c0de19cc8397a1e7f275884fa3
+[Pipeline] // withEnv
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] // node
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+$ docker stop --time=1 78b5715cfa508a59066df215f14caacd9970d776beac5e4316305c4d0c200a9b
+$ docker rm -f 78b5715cfa508a59066df215f14caacd9970d776beac5e4316305c4d0c200a9b
+[Pipeline] // withEnv
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] }
+[Pipeline] sh
+[Pipeline] // stage
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
++ cat the_file
+Sat Nov 21 02:58:51 UTC 2020 -- 1 -- docker-0004xjvpsex59 -- 0 -- we are here in B4 - /home/jenkins/agent/workspace/test
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+$ docker stop --time=1 1ce2dbef7c17bbc0e23ae9808aa71e38bb1b9d2a7b45ae1d408329152420673d
+$ docker rm -f 1ce2dbef7c17bbc0e23ae9808aa71e38bb1b9d2a7b45ae1d408329152420673d
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Matrix EC2 Agents)
+[Pipeline] parallel
+[Pipeline] { (Branch: Matrix - FIRST_AXIS = 'C', SECOND_AXIS = '1')
+[Pipeline] { (Branch: Matrix - FIRST_AXIS = 'C', SECOND_AXIS = '2')
+[Pipeline] { (Branch: Matrix - FIRST_AXIS = 'C', SECOND_AXIS = '3')
+[Pipeline] { (Branch: Matrix - FIRST_AXIS = 'C', SECOND_AXIS = '4')
+[Pipeline] stage
+[Pipeline] { (Matrix - FIRST_AXIS = 'C', SECOND_AXIS = '1')
+[Pipeline] stage
+[Pipeline] { (Matrix - FIRST_AXIS = 'C', SECOND_AXIS = '2')
+[Pipeline] stage
+[Pipeline] { (Matrix - FIRST_AXIS = 'C', SECOND_AXIS = '3')
+[Pipeline] stage
+[Pipeline] { (Matrix - FIRST_AXIS = 'C', SECOND_AXIS = '4')
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] node
+[Pipeline] node
+Running on EC2 (EC2) -  (i-0157e66fa38ad02f9) in /home/ec2-user/workspace/test
+[Pipeline] node
+[Pipeline] node
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
+Running on EC2 (EC2) -  (i-037939ab0a1152bca) in /home/ec2-user/workspace/test
+Running on EC2 (EC2) -  (i-07c8db7127b6ec49f) in /home/ec2-user/workspace/test
+Running on EC2 (EC2) -  (i-09dbb5bb19a4d6daf) in /home/ec2-user/workspace/test
+[Pipeline] {
+[Pipeline] {
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
++ docker inspect -f . python:3.9.0-buster
+.
+[Pipeline] isUnix
+[Pipeline] sh
++ docker inspect -f . python:3.9.0-buster
+
+Error: No such object: python:3.9.0-buster
+[Pipeline] isUnix
+[Pipeline] sh
++ docker inspect -f . python:3.9.0-buster
+
+Error: No such object: python:3.9.0-buster
+[Pipeline] withDockerContainer
+EC2 (EC2) -  (i-0157e66fa38ad02f9) does not seem to be running inside a container
++ docker inspect -f . python:3.9.0-buster
+$ docker run -t -d -u 1000:1000 -w /home/ec2-user/workspace/test -v /home/ec2-user/workspace/test:/home/ec2-user/workspace/test:rw,z -v /home/ec2-user/workspace/test@tmp:/home/ec2-user/workspace/test@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
+
+Error: No such object: python:3.9.0-buster
+$ docker top b1700ba5a433d0202a9a0697aa1daaf8c1317be32669405bc4c61766316ee2ae -eo pid,comm
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] isUnix
+[Pipeline] sh
+[Pipeline] sh
++ docker pull python:3.9.0-buster
+[Pipeline] isUnix
+[Pipeline] sh
++ docker pull python:3.9.0-buster
+3.9.0-buster: Pulling from library/python
+756975cb9c7e: Pulling fs layer
+d77915b4e630: Pulling fs layer
+5f37a0a41b6b: Pulling fs layer
+96b2c1e36db5: Pulling fs layer
+c495e8de12d2: Pulling fs layer
+33382189822a: Pulling fs layer
+414ebfa5f45b: Pulling fs layer
+dd860911922e: Pulling fs layer
+ac1f7f2faf6e: Pulling fs layer
+96b2c1e36db5: Waiting
+c495e8de12d2: Waiting
+33382189822a: Waiting
+414ebfa5f45b: Waiting
+dd860911922e: Waiting
+ac1f7f2faf6e: Waiting
+3.9.0-buster: Pulling from library/python
+756975cb9c7e: Pulling fs layer
+d77915b4e630: Pulling fs layer
+5f37a0a41b6b: Pulling fs layer
+96b2c1e36db5: Pulling fs layer
+c495e8de12d2: Pulling fs layer
+33382189822a: Pulling fs layer
+414ebfa5f45b: Pulling fs layer
+dd860911922e: Pulling fs layer
+ac1f7f2faf6e: Pulling fs layer
+33382189822a: Waiting
+414ebfa5f45b: Waiting
+dd860911922e: Waiting
+ac1f7f2faf6e: Waiting
+96b2c1e36db5: Waiting
+c495e8de12d2: Waiting
+[Pipeline] stage
+[Pipeline] { (Test This)
+[Pipeline] sh
++ docker pull python:3.9.0-buster
+3.9.0-buster: Pulling from library/python
+756975cb9c7e: Pulling fs layer
+d77915b4e630: Pulling fs layer
+5f37a0a41b6b: Pulling fs layer
+96b2c1e36db5: Pulling fs layer
+c495e8de12d2: Pulling fs layer
+33382189822a: Pulling fs layer
+414ebfa5f45b: Pulling fs layer
+dd860911922e: Pulling fs layer
+ac1f7f2faf6e: Pulling fs layer
+96b2c1e36db5: Waiting
+c495e8de12d2: Waiting
+33382189822a: Waiting
+414ebfa5f45b: Waiting
+dd860911922e: Waiting
+ac1f7f2faf6e: Waiting
+d77915b4e630: Verifying Checksum
+d77915b4e630: Download complete
+5f37a0a41b6b: Verifying Checksum
+5f37a0a41b6b: Download complete
+5f37a0a41b6b: Verifying Checksum
+5f37a0a41b6b: Download complete
+d77915b4e630: Verifying Checksum
+d77915b4e630: Download complete
+756975cb9c7e: Verifying Checksum
+756975cb9c7e: Download complete
+d77915b4e630: Verifying Checksum
+d77915b4e630: Download complete
+5f37a0a41b6b: Verifying Checksum
+5f37a0a41b6b: Download complete
+756975cb9c7e: Verifying Checksum
+756975cb9c7e: Download complete
+33382189822a: Verifying Checksum
+33382189822a: Download complete
+96b2c1e36db5: Verifying Checksum
+96b2c1e36db5: Download complete
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 02:59:40 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in C2 - /home/ec2-user/workspace/test
+Sat Nov 21 02:59:40 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in C2 - /home/ec2-user/workspace/test
+33382189822a: Verifying Checksum
+33382189822a: Download complete
+96b2c1e36db5: Verifying Checksum
+96b2c1e36db5: Download complete
+dd860911922e: Verifying Checksum
+dd860911922e: Download complete
+[Pipeline] sh
+756975cb9c7e: Verifying Checksum
+756975cb9c7e: Download complete
+96b2c1e36db5: Verifying Checksum
+96b2c1e36db5: Download complete
+dd860911922e: Verifying Checksum
+dd860911922e: Download complete
+414ebfa5f45b: Verifying Checksum
+414ebfa5f45b: Download complete
+ac1f7f2faf6e: Verifying Checksum
+ac1f7f2faf6e: Download complete
+414ebfa5f45b: Verifying Checksum
+414ebfa5f45b: Download complete
+ac1f7f2faf6e: Verifying Checksum
+ac1f7f2faf6e: Download complete
+33382189822a: Verifying Checksum
+33382189822a: Download complete
+dd860911922e: Verifying Checksum
+dd860911922e: Download complete
+414ebfa5f45b: Verifying Checksum
+414ebfa5f45b: Download complete
++ sleep 10
+ac1f7f2faf6e: Verifying Checksum
+ac1f7f2faf6e: Download complete
+c495e8de12d2: Verifying Checksum
+c495e8de12d2: Download complete
+c495e8de12d2: Verifying Checksum
+c495e8de12d2: Download complete
+c495e8de12d2: Verifying Checksum
+c495e8de12d2: Download complete
+756975cb9c7e: Pull complete
+756975cb9c7e: Pull complete
+d77915b4e630: Pull complete
+d77915b4e630: Pull complete
+5f37a0a41b6b: Pull complete
+5f37a0a41b6b: Pull complete
+756975cb9c7e: Pull complete
+d77915b4e630: Pull complete
+5f37a0a41b6b: Pull complete
+96b2c1e36db5: Pull complete
+96b2c1e36db5: Pull complete
+96b2c1e36db5: Pull complete
+[Pipeline] sh
++ cat the_file
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A1 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:19 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A2 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:20 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A3 - /home/ec2-user/workspace/test
+Sat Nov 21 02:58:21 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in A4 - /home/ec2-user/workspace/test
+Sat Nov 21 02:59:40 UTC 2020 -- 1 -- EC2 (EC2) - (i-0157e66fa38ad02f9) -- 0 -- we are here in C2 - /home/ec2-user/workspace/test
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+$ docker stop --time=1 b1700ba5a433d0202a9a0697aa1daaf8c1317be32669405bc4c61766316ee2ae
+$ docker rm -f b1700ba5a433d0202a9a0697aa1daaf8c1317be32669405bc4c61766316ee2ae
+c495e8de12d2: Pull complete
+33382189822a: Pull complete
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+c495e8de12d2: Pull complete
+33382189822a: Pull complete
+414ebfa5f45b: Pull complete
+dd860911922e: Pull complete
+ac1f7f2faf6e: Pull complete
+Digest: sha256:33171280c751c76aa49fc9a11cc958288b2b297922512ffb1022ccc9c6363e90
+Status: Downloaded newer image for python:3.9.0-buster
+[Pipeline] withDockerContainer
+c495e8de12d2: Pull complete
+33382189822a: Pull complete
+414ebfa5f45b: Pull complete
+dd860911922e: Pull complete
+ac1f7f2faf6e: Pull complete
+Digest: sha256:33171280c751c76aa49fc9a11cc958288b2b297922512ffb1022ccc9c6363e90
+Status: Downloaded newer image for python:3.9.0-buster
+414ebfa5f45b: Pull complete
+dd860911922e: Pull complete
+EC2 (EC2) -  (i-037939ab0a1152bca) does not seem to be running inside a container
+ac1f7f2faf6e: Pull complete
+Digest: sha256:33171280c751c76aa49fc9a11cc958288b2b297922512ffb1022ccc9c6363e90
+Status: Downloaded newer image for python:3.9.0-buster
+$ docker run -t -d -u 1000:1000 -w /home/ec2-user/workspace/test -v /home/ec2-user/workspace/test:/home/ec2-user/workspace/test:rw,z -v /home/ec2-user/workspace/test@tmp:/home/ec2-user/workspace/test@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
+$ docker top 6ca8c5c9e2bc8ae9650129fc3dab2062a06cf949b3986bd69c70fc71818626be -eo pid,comm
+[Pipeline] {
+[Pipeline] withDockerContainer
+EC2 (EC2) -  (i-07c8db7127b6ec49f) does not seem to be running inside a container
+$ docker run -t -d -u 1000:1000 -w /home/ec2-user/workspace/test -v /home/ec2-user/workspace/test:/home/ec2-user/workspace/test:rw,z -v /home/ec2-user/workspace/test@tmp:/home/ec2-user/workspace/test@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
+$ docker top faeea90f2b87deb85a5449ab377ee4d972964459809b5d8fde04ac820984773f -eo pid,comm
+[Pipeline] {
+[Pipeline] withDockerContainer
+EC2 (EC2) -  (i-09dbb5bb19a4d6daf) does not seem to be running inside a container
+$ docker run -t -d -u 1000:1000 -w /home/ec2-user/workspace/test -v /home/ec2-user/workspace/test:/home/ec2-user/workspace/test:rw,z -v /home/ec2-user/workspace/test@tmp:/home/ec2-user/workspace/test@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** python:3.9.0-buster cat
+$ docker top 917539c020c23ea96a1c7cad8107dfa8529ffaecbe61ce086f47b327c66bcf97 -eo pid,comm
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Test This)
+[Pipeline] stage
+[Pipeline] { (Test This)
+[Pipeline] stage
+[Pipeline] { (Test This)
+[Pipeline] sh
+[Pipeline] sh
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 03:00:10 UTC 2020 -- 1 -- EC2 (EC2) - (i-037939ab0a1152bca) -- 0 -- we are here in C1 - /home/ec2-user/workspace/test
+Sat Nov 21 03:00:10 UTC 2020 -- 1 -- EC2 (EC2) - (i-037939ab0a1152bca) -- 0 -- we are here in C1 - /home/ec2-user/workspace/test
+[Pipeline] sh
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 03:00:11 UTC 2020 -- 1 -- EC2 (EC2) - (i-07c8db7127b6ec49f) -- 0 -- we are here in C3 - /home/ec2-user/workspace/test
+Sat Nov 21 03:00:11 UTC 2020 -- 1 -- EC2 (EC2) - (i-07c8db7127b6ec49f) -- 0 -- we are here in C3 - /home/ec2-user/workspace/test
+[Pipeline] sh
+[Pipeline] sh
++ sleep 10
++ tee --append the_file
++ date
++ pwd
++ echo Sat Nov 21 03:00:12 UTC 2020 -- 1 -- EC2 (EC2) - (i-09dbb5bb19a4d6daf) -- 0 -- we are here in C4 - /home/ec2-user/workspace/test
+Sat Nov 21 03:00:12 UTC 2020 -- 1 -- EC2 (EC2) - (i-09dbb5bb19a4d6daf) -- 0 -- we are here in C4 - /home/ec2-user/workspace/test
+[Pipeline] sh
++ sleep 10
++ sleep 10
+[Pipeline] sh
+[Pipeline] sh
++ cat the_file
+Sat Nov 21 03:00:10 UTC 2020 -- 1 -- EC2 (EC2) - (i-037939ab0a1152bca) -- 0 -- we are here in C1 - /home/ec2-user/workspace/test
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+$ docker stop --time=1 6ca8c5c9e2bc8ae9650129fc3dab2062a06cf949b3986bd69c70fc71818626be
++ cat the_file
+Sat Nov 21 03:00:11 UTC 2020 -- 1 -- EC2 (EC2) - (i-07c8db7127b6ec49f) -- 0 -- we are here in C3 - /home/ec2-user/workspace/test
+$ docker rm -f 6ca8c5c9e2bc8ae9650129fc3dab2062a06cf949b3986bd69c70fc71818626be
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] }
+[Pipeline] sh
+[Pipeline] // node
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] }
+$ docker stop --time=1 faeea90f2b87deb85a5449ab377ee4d972964459809b5d8fde04ac820984773f
++ cat the_file
+Sat Nov 21 03:00:12 UTC 2020 -- 1 -- EC2 (EC2) - (i-09dbb5bb19a4d6daf) -- 0 -- we are here in C4 - /home/ec2-user/workspace/test
+$ docker rm -f faeea90f2b87deb85a5449ab377ee4d972964459809b5d8fde04ac820984773f
+[Pipeline] // withEnv
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] // node
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+$ docker stop --time=1 917539c020c23ea96a1c7cad8107dfa8529ffaecbe61ce086f47b327c66bcf97
+$ docker rm -f 917539c020c23ea96a1c7cad8107dfa8529ffaecbe61ce086f47b327c66bcf97
+[Pipeline] // withEnv
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] End of Pipeline
+Finished: SUCCESS

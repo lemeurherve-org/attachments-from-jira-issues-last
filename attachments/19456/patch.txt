@@ -1,0 +1,32 @@
+Index: SvnTagPlugin.java
+===================================================================
+--- SvnTagPlugin.java	(revision 30741)
++++ SvnTagPlugin.java	(working copy)
+@@ -23,6 +23,7 @@
+ import java.io.*;
+ import java.net.URI;
+ import java.net.URISyntaxException;
++import java.net.URLEncoder;
+ import java.util.Arrays;
+ import java.util.HashMap;
+ import java.util.List;
+@@ -135,7 +136,8 @@
+ 
+             URI repoURI;
+             try {
+-                repoURI = new URI(ml.remote);
++                // repoURI = new URI(ml.remote);
++                repoURI = new URI(URLEncoder.encode(ml.remote));
+             } catch (URISyntaxException e) {
+                 logger.println("Failed to parse SVN repo URL. " +
+                         e.getLocalizedMessage());
+@@ -145,7 +147,8 @@
+             SVNURL parsedTagBaseURL = null;
+             try {
+                 parsedTagBaseURL = SVNURL.parseURIEncoded(
+-                        repoURI.resolve(evaledTagBaseURLStr).toString());
++                        // repoURI.resolve(evaledTagBaseURLStr).toString());
++                        repoURI.resolve(evaledTagBaseURLStr.replace(" ", "%20")).toString());
+                 logger.println(
+                         "Tag Base URL: '" + parsedTagBaseURL.toString() + "'.");
+             } catch (SVNException e) {

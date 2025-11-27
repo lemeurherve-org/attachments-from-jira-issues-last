@@ -1,0 +1,52 @@
+PROJECT_NAME           = Gromacs
+PROJECT_NUMBER         = 4.6-dev
+OUTPUT_DIRECTORY       = doxygen-doc
+INPUT                  = /var/lib/jenkins/workspace/Build_Doxygen/src \
+                         /var/lib/jenkins/workspace/Build_Doxygen/share/template
+EXAMPLE_PATH           = /var/lib/jenkins/workspace/Build_Doxygen
+RECURSIVE              = YES
+EXCLUDE                = /var/lib/jenkins/workspace/Build_Doxygen/src/contrib \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/external  \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_x86_64_sse \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_power6 \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_ia64_single \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_sse2_double \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_adress_c \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_f77_double \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_ia32_sse2 \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_x86_64_sse2 \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_ppc_altivec \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_ia32_sse \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_sse2_single \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_bluegene \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_ia64_double \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/gmxlib/nonbonded/nb_kernel_f77_single
+EXCLUDE_SYMBOLS        = YY* yy* _gmx_sel_yy*
+FULL_PATH_NAMES        = YES
+STRIP_FROM_PATH        = /var/lib/jenkins/workspace/Build_Doxygen
+STRIP_FROM_INC_PATH    = /var/lib/jenkins/workspace/Build_Doxygen/src
+INCLUDE_PATH           = /var/lib/jenkins/workspace/Build_Doxygen/src \
+                         /var/lib/jenkins/workspace/Build_Doxygen/src/gromacs/legacyheaders
+HAVE_DOT               = NO
+DOT_PATH               = 
+
+ENABLED_SECTIONS       = libapi internal
+INTERNAL_DOCS          = YES
+HIDE_UNDOC_CLASSES     = YES
+WARN_LOGFILE           = doxygen-doc/doxygen.log
+
+JAVADOC_AUTOBRIEF      = YES
+BUILTIN_STL_SUPPORT    = YES
+INLINE_INHERITED_MEMB  = NO  # Makes it easier to go through all documentation
+SORT_BY_SCOPE_NAME     = YES
+ALPHABETICAL_INDEX     = YES
+SHOW_DIRECTORIES       = YES
+HTML_DYNAMIC_SECTIONS  = YES
+GENERATE_LATEX         = NO
+
+ALIASES               += inpublicapi="\ingroup group_publicapi"
+ALIASES               += inlibraryapi="\ingroup group_libraryapi"
+ALIASES               += addtopublicapi="\addtogroup group_publicapi"
+ALIASES               += addtolibraryapi="\addtogroup group_libraryapi"
+ALIASES               += libinternal=
+ALIASES               += endlibinternal=

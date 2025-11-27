@@ -1,0 +1,17 @@
+stage("example stage") 
+{
+    node("windows_node")
+    {
+        ws("E:/workspace/directory")
+        {
+            def _img = docker.image("mcr.microsoft.com/windows/servercore:ltsc2016")
+            _img.pull()
+            String _ws = workspace.replace("\\", "/") + "/"
+            echo "expected command: 'docker run -d -t -w ${_ws} -v ${_ws}:${_ws} -v ${_ws}@tmp:${_ws}@tmp'"
+            _img.inside()
+            {
+                echo bat("dir")
+            }
+        }
+    }
+}

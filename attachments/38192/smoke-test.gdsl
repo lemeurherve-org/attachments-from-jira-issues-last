@@ -1,0 +1,54 @@
+node {
+    def rama = params.Rama == '' ? 'develop' : params.Rama.replace(':selected', '')
+    def tests = params.Tests
+    if (tests == '') {
+        def txt = sh (script: "ssh git@desarrollo.fccma.com lista rds ${rama} smoke-test", returnStdout: true)
+        def t = txt.tokenize('\n')
+        tests = []
+        for (int i = 0; i < t.size(); i++)
+            if (t[i].endsWith('.sikuli'))
+                tests.add(t[i].replace('.sikuli', ''))
+        tests = tests.sort()
+    } else
+        tests = tests.split(',')
+
+    stage('git') {
+        sh "git clean -fd"
+        sh "git reset --hard"
+        sh "git fetch"
+        sh "git checkout origin/${rama}"
+    }
+
+    withEnv(['DISPLAY=:91']) {
+        stage('Preparación') {
+            if (sh(script: 'pgrep icewm', returnStatus: true) != 0) {
+                // icewm es 1 gestor de ventanas simple.  Hace falta por esto:
+                // http://stackoverflow.com/questions/34443779/wmctrl-not-executable-while-running-sikulix-script-in-headless-mode
+                echo 'Detectado que icewm no se estaba ejecutando.  Lanzandolo.'
+                // No esperar a que acabe
+                sh 'icewm&'
+                Thread.sleep 500
+            }
+        }
+        def buenos = 0
+        def fallados = []
+        for (int i = 0; i < tests.size(); i++) {
+            def test = tests[i]
+            stage(test) {
+                try {
+                    sh "${System.getProperty("user.home")}/tools/sikuli/runsikulix -c -r smoke-test/${test}.sikuli --args ${params.Entorno.replace(':selected', '')}"
+                    buenos++
+                } catch (e) {
+                    fallados << test
+                }
+            }
+        }
+        stage('Resumen') {
+            def numFallos = tests.size()-buenos
+            if (numFallos == 0)
+                echo "Ejecutados ${buenos} tests con éxito."
+            else
+                error "Ejecutados ${buenos} tests con éxito y ${numFallos} con fallo."
+        }
+    }
+}

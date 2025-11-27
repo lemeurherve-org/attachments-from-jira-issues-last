@@ -1,0 +1,37 @@
+Index: src/main/java/hudson/scm/SubversionSCM.java
+===================================================================
+--- src/main/java/hudson/scm/SubversionSCM.java	(revision 40533)
++++ src/main/java/hudson/scm/SubversionSCM.java	(working copy)
+@@ -40,6 +40,7 @@
+ import hudson.Util;
+ import hudson.XmlFile;
+ import hudson.model.BuildListener;
++import hudson.model.Environment;
+ import hudson.model.Item;
+ import hudson.model.TaskListener;
+ import hudson.model.AbstractBuild;
+@@ -63,6 +64,7 @@
+ import hudson.scm.subversion.WorkspaceUpdater;
+ import hudson.scm.subversion.WorkspaceUpdater.UpdateTask;
+ import hudson.scm.subversion.WorkspaceUpdaterDescriptor;
++import hudson.slaves.NodeProperty;
+ import hudson.util.EditDistance;
+ import hudson.util.FormValidation;
+ import hudson.util.LogTaskListener;
+@@ -1092,8 +1094,16 @@
+ 
+         AbstractBuild<?,?> lastCompletedBuild = project.getLastCompletedBuild();
+ 
++        
++        
+         if (lastCompletedBuild!=null) {
+             EnvVars env = lastCompletedBuild.getEnvironment(listener);
++            for (NodeProperty nodeProperty: Hudson.getInstance().getGlobalNodeProperties()) {
++                Environment environment = nodeProperty.setUp(lastCompletedBuild, launcher, null);
++                if (environment != null) {
++                    environment.buildEnvVars(env);
++                }
++            }
+             EnvVarsUtils.overrideAll(env, lastCompletedBuild.getBuildVariables());
+             if (repositoryLocationsNoLongerExist(lastCompletedBuild, listener, env)) {
+                 // Disable this project, see HUDSON-763

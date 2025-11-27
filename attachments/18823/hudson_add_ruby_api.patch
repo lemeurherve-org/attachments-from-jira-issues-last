@@ -1,0 +1,17 @@
+Index: hudson/main/core/src/main/java/hudson/model/Api.java
+===================================================================
+--- hudson/main/core/src/main/java/hudson/model/Api.java	(revision 21797)
++++ hudson/main/core/src/main/java/hudson/model/Api.java	(working copy)
+@@ -182,5 +182,12 @@
+         rsp.serveExposedBean(req,bean, Flavor.PYTHON);
+     }
+ 
++    /**
++     * Exposes the bean as Ruby literal.
++     */
++    public void doRuby(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
++        rsp.serveExposedBean(req,bean, Flavor.RUBY);
++    }
++
+     private static final ModelBuilder MODEL_BUILDER = new ModelBuilder();
+ }

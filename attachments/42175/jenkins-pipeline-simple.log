@@ -1,0 +1,27 @@
+Started by user admin
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/Test
+[Pipeline] {
+[Pipeline] git
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url my_repository # timeout=10
+Fetching upstream changes from my_repository
+ > git --version # timeout=10
+using GIT_SSH to set credentials
+ > git fetch --tags --progress my_repository +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision ffa235243dc671586e64355b5b8e1a1bdf183b35 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f ffa235243dc671586e64355b5b8e1a1bdf183b35
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D master # timeout=10
+ > git checkout -b master ffa235243dc671586e64355b5b8e1a1bdf183b35
+Commit message: "Actualizamos las credenciales en Jenkins."
+ > git rev-list --no-walk ffa235243dc671586e64355b5b8e1a1bdf183b35 # timeout=10
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

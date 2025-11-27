@@ -1,0 +1,111 @@
+diff --git a/pom.xml b/pom.xml
+index 936ff93..2f0beb6 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -4,7 +4,7 @@
+   <parent>
+     <groupId>org.jenkins-ci.plugins</groupId>
+     <artifactId>plugin</artifactId>
+-    <version>1.424</version>
++    <version>1.537</version>
+   </parent>
+   
+   <name>Naginator</name>
+diff --git a/src/main/java/com/chikli/hudson/plugin/naginator/NaginatorCause.java b/src/main/java/com/chikli/hudson/plugin/naginator/NaginatorCause.java
+index 98e5ed6..e6c2c31 100644
+--- a/src/main/java/com/chikli/hudson/plugin/naginator/NaginatorCause.java
++++ b/src/main/java/com/chikli/hudson/plugin/naginator/NaginatorCause.java
+@@ -1,15 +1,15 @@
+ package com.chikli.hudson.plugin.naginator;
+ 
+-import hudson.model.Cause;
++import hudson.model.Cause.UserIdCause;
+ 
+ /**
+  * {@link Cause} for builds triggered by this plugin.
+  * @author Alan.Harder@sun.com
+  */
+-public class NaginatorCause extends Cause {
++public class NaginatorCause extends UserIdCause {
+ 
+     @Override
+     public String getShortDescription() {
+-        return Messages.NaginatorCause_Description();
++        return "Started by Naginator";
+     }
+ }
+diff --git a/src/main/java/com/chikli/hudson/plugin/naginator/NaginatorListener.java b/src/main/java/com/chikli/hudson/plugin/naginator/NaginatorListener.java
+index 2b4b10c..cf4fe2f 100644
+--- a/src/main/java/com/chikli/hudson/plugin/naginator/NaginatorListener.java
++++ b/src/main/java/com/chikli/hudson/plugin/naginator/NaginatorListener.java
+@@ -1,7 +1,10 @@
+ package com.chikli.hudson.plugin.naginator;
+ 
++import hudson.EnvVars;
++import hudson.Launcher;
+ import hudson.model.*;
+ import hudson.model.listeners.RunListener;
++import hudson.model.BuildListener;
+ 
+ import java.io.BufferedReader;
+ import java.io.File;
+@@ -20,6 +23,7 @@ import static hudson.model.Result.SUCCESS;
+ public class NaginatorListener extends RunListener<AbstractBuild<?,?>> {
+ 
+ 
++ 
+     @Override
+     public void onCompleted(AbstractBuild<?, ?> build, TaskListener listener) {
+         if (build.getResult() == SUCCESS) {
+@@ -69,11 +73,42 @@ public class NaginatorListener extends RunListener<AbstractBuild<?,?>> {
+             LOGGER.log(Level.FINE, "max number of schedules for this build");
+         }
+     }
++    
++    @Override
++    public Environment setUpEnvironment(AbstractBuild build, Launcher launcher, BuildListener listener)  {
++
++        EnvVars envVars = new EnvVars();
++        try {
++			envVars = build.getEnvironment(listener);
++		} catch (IOException e) {
++				e.printStackTrace();
++		} catch (InterruptedException e) {
++				e.printStackTrace();
++		}
++        NaginatorPublisher naginator = (NaginatorPublisher) build.getProject().getPublishersList().get(NaginatorPublisher.class);
++        // JENKINS-13791
++        if (naginator == null) {
++            return Environment.create(envVars);
++        }
++        envVars.put("NAGINATORMAXCOUNT",Integer.toString(naginator.getMaxSchedule()));
++        envVars.put("NAGINATORCOUNT",Integer.toString(currentCount(build,naginator)));
++        return Environment.create(envVars);
+ 
++    }
+     public boolean canSchedule(Run build, NaginatorPublisher naginator) {
+         Run r = build;
+         int max = naginator.getMaxSchedule();
+         if (max <=0) return true;
++        int n = currentCount(build,naginator);
++
++        
++
++        return n < max;
++    }
++
++    public int currentCount(Run build, NaginatorPublisher naginator) {
++        Run r = build;
++        int max = naginator.getMaxSchedule();
+         int n = 0;
+ 
+         while (r != null && r.getAction(NaginatorAction.class) != null) {
+@@ -82,7 +117,7 @@ public class NaginatorListener extends RunListener<AbstractBuild<?,?>> {
+             n++;
+         }
+ 
+-        return n < max;
++        return n;
+     }
+ 
+     /**

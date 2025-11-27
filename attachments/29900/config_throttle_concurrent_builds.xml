@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project plugin="matrix-project@1.4.1">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.periodicreincarnation.JobLocalConfiguration plugin="periodic-reincarnation@1.9">
+      <isLocallyConfigured>false</isLocallyConfigured>
+      <isLocallyDeactivated>false</isLocallyDeactivated>
+    </org.jenkinsci.plugins.periodicreincarnation.JobLocalConfiguration>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.24">
+      <autoRebuild>false</autoRebuild>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@1.8.4">
+      <maxConcurrentPerNode>1</maxConcurrentPerNode>
+      <maxConcurrentTotal>1</maxConcurrentTotal>
+      <throttleEnabled>true</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <matrixOptions>
+        <throttleMatrixBuilds>false</throttleMatrixBuilds>
+        <throttleMatrixConfigurations>true</throttleMatrixConfigurations>
+      </matrixOptions>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <hudson.matrix.LabelAxis>
+      <name>label</name>
+      <values>
+        <string>market_CHINA</string>
+        <string>market_EU</string>
+        <string>market_JAPAN</string>
+        <string>market_NAR</string>
+        <string>market_ROW</string>
+        <string>market_TW</string>
+      </values>
+    </hudson.matrix.LabelAxis>
+    <hudson.matrix.TextAxis>
+      <name>BRANCH</name>
+      <values>
+        <string>work</string>
+        <string>main</string>
+        <string>release</string>
+      </values>
+    </hudson.matrix.TextAxis>
+  </axes>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>sleep 5</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>false</runSequentially>
+  </executionStrategy>
+</matrix-project>

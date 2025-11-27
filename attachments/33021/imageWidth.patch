@@ -1,0 +1,15 @@
+diff --git a/src/main/java/org/jenkinsci/plugins/imagegallery/imagegallery/ArchivedImagesGalleryBuildAction.java b/src/main/java/org/jenkinsci/plugins/imagegallery/imagegallery/ArchivedImagesGalleryBuildAction.java
+index 9a5ec0d..95c19bf 100644
+--- a/src/main/java/org/jenkinsci/plugins/imagegallery/imagegallery/ArchivedImagesGalleryBuildAction.java
++++ b/src/main/java/org/jenkinsci/plugins/imagegallery/imagegallery/ArchivedImagesGalleryBuildAction.java
+@@ -136,8 +136,8 @@ public class ArchivedImagesGalleryBuildAction implements Action, Serializable {
+ 	}
+ 
+     public Object readResolve() {
+-        String width = 
+-                (imageWidth != null && imageWidth > 0) ? Integer.toString(imageWidth) : "0";
++		String width = (imageWidth != null && imageWidth > 0) ? Integer.toString(imageWidth) : imageWidthText;
++
+         return new ArchivedImagesGalleryBuildAction(
+                 title,
+                 images,

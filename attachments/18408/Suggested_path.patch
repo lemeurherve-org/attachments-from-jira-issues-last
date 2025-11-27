@@ -1,0 +1,120 @@
+Index: src/main/resources/hudson/plugins/accurev/AccurevSCM/global.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/accurev/AccurevSCM/global.jelly	(revision 20103)
++++ src/main/resources/hudson/plugins/accurev/AccurevSCM/global.jelly	Fri Jul 24 17:02:32 CEST 2009
+@@ -26,6 +26,10 @@
+                             <input class="setting-input number" type="text"
+                                    name="server.port" value="${h.ifThenElse(server==null,5050,server.port)}"/>
+                         </f:entry>
++                        <f:entry title="Suggested Path" help="/plugin/accurev/help/suggestedPath.html">
++                            <input class="setting-input" type="text"
++                                   name="server.pathSuggestion" value="${server.pathSuggestion}"/>
++                        </f:entry>
+                     </f:advanced>
+ 
+                 </table>
+Index: src/main/webapp/help/suggestedPath.html
+===================================================================
+--- src/main/webapp/help/suggestedPath.html	Mon Jul 27 12:52:23 CEST 2009
++++ src/main/webapp/help/suggestedPath.html	Mon Jul 27 12:52:23 CEST 2009
+@@ -0,0 +1,42 @@
++<div>
++    <p>
++        By default, the AccuRev-plugin will search for the executable in the following PATH on non windows systems
++    </p>
++    <ul>
++        <li>/usr/local/bin/accurev</li>
++        <li>/usr/bin/accurev</li>
++        <li>/bin/accurev</li>
++        <li>/local/bin/accurev</li>
++    </ul>
++
++    and on windows systems
++    <ul>
++        <li>C:\\Program Files\\AccuRev\\bin\\accurev.exe</li>
++        <li>C:\\Program Files (x86)\\AccuRev\\bin\\accurev.exe</li>
++    </ul>
++
++    <p>
++        However, there may be situations when the use of another path is preferred.
++        If you want to use a different path you will need to manually enter a PATH to the executable
++
++    </p>
++
++    <p>On a non windows system you specify the absolute path to the executable, like this</p>
++    <ul>
++        <li>
++            /usr/local/bin/accurev
++        </li>
++    </ul>
++
++    <p>On a windows system you also specify the absolute path to the executable but you also need to use an extra \
++        before every backslash, like this
++    <ul>
++        <li>
++            C:\\Program Files\\AccuRev\\bin\\accurev.exe
++        </li>
++    </ul>
++   <p>
++       Note that the PATH specified here is only treated as a suggestion by the plugin,
++       and that it reads the default paths before searching the suggested path.
++   </p>
++</div>
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/accurev/AccurevSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/accurev/AccurevSCM.java	(revision 20103)
++++ src/main/java/hudson/plugins/accurev/AccurevSCM.java	Mon Jul 27 11:35:59 CEST 2009
+@@ -1071,6 +1071,7 @@
+         private String password;
+         private transient List<String> winCmdLocations;
+         private transient List<String> nixCmdLocations;
++        private String pathSuggestion;
+ 
+         /**
+          * The default search paths for Windows clients.
+@@ -1097,7 +1098,7 @@
+         }
+ 
+         @DataBoundConstructor
+-        public AccurevServer(String name, String host, int port, String username, String password) {
++        public AccurevServer(String name, String host, int port, String username, String password, String pathSuggestion) {
+             this.name = name;
+             this.host = host;
+             this.port = port;
+@@ -1105,6 +1106,10 @@
+             this.password = Password.obfuscate(password);
+             winCmdLocations = new ArrayList<String>(DEFAULT_WIN_CMD_LOCATIONS);
+             nixCmdLocations = new ArrayList<String>(DEFAULT_NIX_CMD_LOCATIONS);
++            this.pathSuggestion = pathSuggestion;
++            
++            winCmdLocations.add(pathSuggestion);
++            nixCmdLocations.add(pathSuggestion);
+         }
+ 
+         /**
+@@ -1186,8 +1191,23 @@
+             return winCmdLocations.toArray(new String[winCmdLocations.size()]);
+         }
+ 
++        /**
++         *
++         * @param pathSuggestion the path to where the accurev executable is to be found
++         */
++        public void setPathSuggestion(String pathSuggestion){
++            this.pathSuggestion = pathSuggestion;
+-    }
++        }
+ 
++        /**
++         *
++         * @return the path to where the accurev executable is to be found
++         */
++        public String getPathSuggestion(){
++            return pathSuggestion;
++        }
++    }
++
+     private static final class PurgeWorkspaceContents implements FilePath.FileCallable<Boolean> {
+ 
+         private final TaskListener listener;

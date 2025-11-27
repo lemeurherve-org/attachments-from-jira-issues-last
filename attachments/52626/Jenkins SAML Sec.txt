@@ -1,0 +1,49 @@
+ <securityRealm class="org.jenkinsci.plugins.saml.SamlSecurityRealm" plugin="saml@1.1.6">
+    <displayNameAttributeName>http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name</displayNameAttributeName>
+    <groupsAttributeName>http://schemas.xmlsoap.org/claims/Group</groupsAttributeName>
+    <maximumAuthenticationLifetime>86400</maximumAuthenticationLifetime>
+    <emailAttributeName>iv-groups</emailAttributeName>
+    <usernameCaseConversion>none</usernameCaseConversion>
+    <usernameAttributeName>iv-user</usernameAttributeName>
+    <binding>urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect</binding>
+    <encryptionData>
+      <keystorePath>JenkinSAML.jks</keystorePath>
+      <keystorePasswordSecret>{AQAAABAAAAAQ7g5Zn93RFqNCVTmYV2lq26G3o4miax/9ql+y6hA6DcI=}</keystorePasswordSecret>
+      <privateKeyPasswordSecret>{AQAAABAAAAAQqUf75IZXnypFQJe03ApQyyS+dcnJ9JCxLgs7lsSWzpM=}</privateKeyPasswordSecret>
+      <privateKeyAlias>jenkinsSAML</privateKeyAlias>
+      <forceSignRedirectBindingAuthnRequest>true</forceSignRedirectBindingAuthnRequest>
+    </encryptionData>
+    <advancedConfiguration>
+      <forceAuthn>true</forceAuthn>
+    </advancedConfiguration>
+    <idpMetadataConfiguration>
+      <xml>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;EntityDescriptor xmlns=&quot;urn:oasis:names:tc:SAML:2.0:metadata&quot; ID=&quot;I1990aa3c2e1fca43&quot; xmlns:saml=&quot;urn:oasis:names:tc:SAML:2.0:assertion&quot; xmlns:ds=&quot;http://www.w3.org/2000/09/xmldsig#&quot; entityID=&quot;https://federationbes.cdl.af.mil/saml/idp/profile/redirectpost/sso&quot;&gt;
+	&lt;IDPSSODescriptor protocolSupportEnumeration=&quot;urn:oasis:names:tc:SAML:2.0:protocol&quot;&gt;
+		&lt;KeyDescriptor&gt;
+			&lt;ds:KeyInfo&gt;
+				&lt;ds:X509Data&gt;
+					&lt;ds:X509Certificate&gt;MIIEnjCCA4agAwIBAgIDKMzJMA0GCSqGSIb3DQEBCwUAMFoxCzAJBgNVBAYTAlVTMRgwFgYDVQQKDA9VLlMuIEdvdmVybm1lbnQxDDAKBgNVBAsMA0RvRDEMMAoGA1UECwwDUEtJMRUwEwYDVQQDDAxET0QgU1cgQ0EtNTMwHhcNMjAwMTE3MTU1MTExWhcNMjIxMTIzMTM1MDM1WjB1MQswCQYDVQQGEwJVUzEYMBYGA1UECgwPVS5TLiBHb3Zlcm5tZW50MQwwCgYDVQQLDANEb0QxDDAKBgNVBAsMA1BLSTENMAsGA1UECwwEVVNBRjEhMB8GA1UEAwwYZmVkZXJhdGlvbmJlcy5jZGwuYWYubWlsMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsY6hZcBS0OOTBuCg+RuqqohMmPB24xpFxbc76fWhl6XL2QU5tM1cR8dmQ2Y3tVnd0wuT0H9U2xa/l+Yy3kV6/AM/z+T/xPQlFaFsiC1DUomQFV5/aLlBvunKJ2PAPOPKpKFJqt9pJtTZs+Av6AciD7f0YYlWD6vs+svrgduUv7FADfJ/uArZIGBTUuRbmPrzBwaiKt8JiQwXZVId106JDvWfE0htL68WFOyiAmGT/AF9by3Zzgz2bYjHQbPRLMQhM1LORX5YZ/1dIMxJ5oUblYglCCyZL8WJGf1fih6xm4dc2NsiepYR97gPMBD4E4GFOnEUEGeAUJC419dmC67cRwIDAQABo4IBUDCCAUwwHwYDVR0jBBgwFoAUUcSLM5mUwH67Nh3j4joFvTJ0nVMwZQYIKwYBBQUHAQEEWTBXMDMGCCsGAQUFBzAChidodHRwOi8vY3JsLmRpc2EubWlsL3NpZ24vRE9EU1dDQV81My5jZXIwIAYIKwYBBQUHMAGGFGh0dHA6Ly9vY3NwLmRpc2EubWlsMA4GA1UdDwEB/wQEAwIFoDA3BgNVHR8EMDAuMCygKqAohiZodHRwOi8vY3JsLmRpc2EubWlsL2NybC9ET0RTV0NBXzUzLmNybDAjBgNVHREEHDAaghhmZWRlcmF0aW9uYmVzLmNkbC5hZi5taWwwFgYDVR0gBA8wDTALBglghkgBZQIBCyQwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMB0GA1UdDgQWBBTtNOUq7WGJNKI6drpSq1ByaWq3LTANBgkqhkiG9w0BAQsFAAOCAQEAZ3PEOwNoL+B23bkYUaBnIkq8xy508RQIYDK2pQNJzXSzxgx5E6Zb5L+rvHl+NEwjKfJWuWcO4LhLjtv98uiP9Bk8M4a40bWJdF9dTDRnWTHQJADfnPjn83BXfvEruko7CSdXZqFClIzclwI96lVl9+Onnh4P9h+SWTdCTVoqHrO/n0Uw8I2djm7rYpwxWKdzVKy9Xyftoc6Mrz+itoFGRYwP/6KMLLG1uE+vckpNSz0lBSl3k1W+xJFIuJTyHylm7deoorSkiacoqzdesQaDFdzWnnwEutQ/8ssk7Sl6niGDde59jMyVwYAwIZpIjksP2S4dU8KoQGyMGcADuDMB/A==&lt;/ds:X509Certificate&gt;
+				&lt;/ds:X509Data&gt;
+			&lt;/ds:KeyInfo&gt;
+		&lt;/KeyDescriptor&gt;
+		&lt;SingleLogoutService Binding=&quot;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST&quot; Location=&quot;https://federationbes.cdl.af.mil/saml/idp/profile/post/sls&quot; ResponseLocation=&quot;https://federationbes.cdl.af.mil/saml/idp/profile/post/slr&quot;&gt;
+		&lt;/SingleLogoutService&gt;
+		&lt;SingleLogoutService Binding=&quot;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect&quot; Location=&quot;https://federationbes.cdl.af.mil/saml/idp/profile/redirect/sls&quot; ResponseLocation=&quot;https://federationbes.cdl.af.mil/saml/idp/profile/redirect/slr&quot;&gt;
+		&lt;/SingleLogoutService&gt;
+		&lt;NameIDFormat&gt;urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified&lt;/NameIDFormat&gt;
+		&lt;SingleSignOnService Binding=&quot;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST&quot; Location=&quot;https://federationbes.cdl.af.mil/saml/idp/profile/redirectorpost/sso&quot;&gt;
+		&lt;/SingleSignOnService&gt;
+		&lt;SingleSignOnService Binding=&quot;urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect&quot; Location=&quot;https://federationbes.cdl.af.mil/saml/idp/profile/redirectorpost/sso&quot;&gt;
+		&lt;/SingleSignOnService&gt;
+		&lt;saml:Attribute NameFormat=&quot;urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified&quot; Name=&quot;iv-groups&quot;&gt;
+		&lt;/saml:Attribute&gt;
+		&lt;saml:Attribute NameFormat=&quot;urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified&quot; Name=&quot;iv-user&quot;&gt;
+		&lt;/saml:Attribute&gt;
+	&lt;/IDPSSODescriptor&gt;
+&lt;/EntityDescriptor&gt;</xml>
+      <url></url>
+      <period>0</period>
+    </idpMetadataConfiguration>
+  </securityRealm>
+ 

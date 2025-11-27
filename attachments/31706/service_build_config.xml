@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+    <actions/>
+    <description>Executes build workflows for a service</description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <com.coravy.hudson.plugins.github.GithubProjectProperty>
+            <projectUrl>https://github.com/anthony-hobbs/devops-toolkit/</projectUrl>
+        </com.coravy.hudson.plugins.github.GithubProjectProperty>
+        <hudson.model.ParametersDefinitionProperty>
+            <parameterDefinitions>
+                <hudson.model.StringParameterDefinition>
+                    <name>SERVICE</name>
+                    <defaultValue/>
+                    <description>Name of the service</description>
+                </hudson.model.StringParameterDefinition>
+                <hudson.model.StringParameterDefinition>
+                    <name>BRANCH</name>
+                    <defaultValue>develop</defaultValue>
+                    <description>Git branch</description>
+                </hudson.model.StringParameterDefinition>
+                <hudson.model.StringParameterDefinition>
+                    <name>ENVIRONMENT</name>
+                    <defaultValue/>
+                    <description>build environment</description>
+                </hudson.model.StringParameterDefinition>
+            </parameterDefinitions>
+        </hudson.model.ParametersDefinitionProperty>
+    </properties>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers class="vector"/>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <hudson.tasks.Shell>
+            <command>if [ -z "$ENVIRONMENT" ]; then echo "ENVIRONMENT is unset"; exit 1; fi</command>
+        </hudson.tasks.Shell>
+        <hudson.tasks.Shell>
+            <command>mkdir build || true; chown jenkins:jenkins build</command>
+        </hudson.tasks.Shell>
+        <hudson.tasks.Shell>
+            <command>python services/$SERVICE/jenkins/build_artifacts.py</command>
+        </hudson.tasks.Shell>
+        <hudson.tasks.Shell>
+            <command>python services/$SERVICE/jenkins/validate_artifacts.py</command>
+        </hudson.tasks.Shell>
+        <hudson.tasks.Shell>
+            <command>python services/$SERVICE/jenkins/deploy_artifacts.py</command>
+        </hudson.tasks.Shell>
+        <hudson.plugins.parameterizedtrigger.TriggerBuilder>
+            <configs>
+                <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+                    <projects>service_deploy</projects>
+                    <condition>ALWAYS</condition>
+                    <triggerWithNoParameters>false</triggerWithNoParameters>
+                    <configs>
+                        <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
+                    </configs>
+                    <block>
+                        <buildStepFailureThreshold>
+                            <name>FAILURE</name>
+                            <ordinal>2</ordinal>
+                            <color>RED</color>
+                            <completeBuild>true</completeBuild>
+                        </buildStepFailureThreshold>
+                        <unstableThreshold>
+                            <name>UNSTABLE</name>
+                            <ordinal>1</ordinal>
+                            <color>YELLOW</color>
+                            <completeBuild>true</completeBuild>
+                        </unstableThreshold>
+                        <failureThreshold>
+                            <name>FAILURE</name>
+                            <ordinal>2</ordinal>
+                            <color>RED</color>
+                            <completeBuild>true</completeBuild>
+                        </failureThreshold>
+                    </block>
+                </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+            </configs>
+        </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+    </builders>
+    <publishers/>
+    <buildWrappers>
+        <hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+            <colorMapName>xterm</colorMapName>
+        </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+        <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+            <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+                <timeoutMinutes>15</timeoutMinutes>
+            </strategy>
+            <operationList/>
+        </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    </buildWrappers>
+    <displayName>Service Build</displayName>
+    <scm class="hudson.plugins.git.GitSCM">
+        <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+                <url>git@github.com:anthony-hobbs/devops-toolkit.git</url>
+                <credentialsId>Jenkins</credentialsId>
+            </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+            <hudson.plugins.git.BranchSpec>
+                <name>$BRANCH</name>
+            </hudson.plugins.git.BranchSpec>
+        </branches>
+        <configVersion>2</configVersion>
+        <disableSubmodules>false</disableSubmodules>
+        <recursiveSubmodules>false</recursiveSubmodules>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <authorOrCommitter>false</authorOrCommitter>
+        <clean>false</clean>
+        <wipeOutWorkspace>false</wipeOutWorkspace>
+        <pruneBranches>false</pruneBranches>
+        <remotePoll>false</remotePoll>
+        <ignoreNotifyCommit>false</ignoreNotifyCommit>
+        <gitTool>Default</gitTool>
+        <localBranch>$BRANCH</localBranch>
+        <skipTag>true</skipTag>
+        <browser class="hudson.plugins.git.browser.GithubWeb">
+            <url>https://github.com/anthony-hobbs/devops-toolkit/</url>
+        </browser>
+    </scm>
+</project>

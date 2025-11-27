@@ -1,0 +1,60 @@
+Started by user anonymous
+Building in workspace /home/sam/Downloads/jervis-dsl/jobs/_jervis_creator/workspace
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url git@github.com:samrocketman/jervis.git # timeout=10
+Fetching upstream changes from git@github.com:samrocketman/jervis.git
+ > git --version # timeout=10
+ > git -c core.askpass=true fetch --tags --progress git@github.com:samrocketman/jervis.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 5226863a2c32964709ad94270115eb8fadb7ba52 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 5226863a2c32964709ad94270115eb8fadb7ba52
+ > git rev-list 5226863a2c32964709ad94270115eb8fadb7ba52 # timeout=10
+Processing DSL script firstjob.dsl.groovy
+Warning: @Grab support is deprecated (workspace://_jervis_creator/jobs/firstjob.dsl.groovy, line 1)
+The current working directory is: /home/sam/Downloads/.
+null
+Generating jobs for GitHub project samrocketman/jervis.
+Creating folder samrocketman
+Creating project samrocketman/jervis
+FATAL: Unable to run script
+java.io.IOException: Unable to run script
+	at javaposse.jobdsl.dsl.DslScriptLoader.runDslEngineForParent(DslScriptLoader.java:77)
+	at javaposse.jobdsl.dsl.DslScriptLoader.runDslEngine(DslScriptLoader.java:92)
+	at javaposse.jobdsl.plugin.ExecuteDslScripts.perform(ExecuteDslScripts.java:203)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:761)
+	at hudson.model.Build$BuildExecution.build(Build.java:199)
+	at hudson.model.Build$BuildExecution.doRun(Build.java:160)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:536)
+	at hudson.model.Run.execute(Run.java:1718)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:89)
+	at hudson.model.Executor.run(Executor.java:240)
+Caused by: jervis.exceptions.JervisException: fatal: Not a git repository (or any of the parent directories): .git
+
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+	at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:77)
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:102)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:54)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:182)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:190)
+	at jervis.tools.scmGit.setRoot(scmGit.groovy:55)
+	at jervis.tools.scmGit.<init>(scmGit.groovy:32)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+	at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:77)
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:102)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:54)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:182)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:186)
+	at firstjob.dsl.run(firstjob.dsl.groovy:46)
+	at javaposse.jobdsl.dsl.DslScriptLoader.runDslEngineForParent(DslScriptLoader.java:72)
+	... 11 more

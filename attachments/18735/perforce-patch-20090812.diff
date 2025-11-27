@@ -1,0 +1,16 @@
+Index: src/main/java/hudson/plugins/perforce/PerforceSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/perforce/PerforceSCM.java	(revision 20625)
++++ src/main/java/hudson/plugins/perforce/PerforceSCM.java	(working copy)
+@@ -871,8 +871,10 @@
+          */
+         public FormValidation doCheckProjectPath(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+             String views = Util.fixEmptyAndTrim(req.getParameter("value"));
++            if (views == null)
++                views = "";
+             for (String view : views.split("\n")) {
+-                if (Pattern.matches("\\/\\/\\S+ \\/\\/\\S+", view))
++                if (!Pattern.matches("//\\S+\\s+//\\S+", view))
+                     return FormValidation.error("Invalid view:" + view);
+             }
+             return FormValidation.ok();

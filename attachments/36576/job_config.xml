@@ -1,0 +1,78 @@
+
+<?xml version='1.0' encoding='UTF-8'?>
+<org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject plugin="workflow-multibranch@2.14">
+  <actions/>
+  <description></description>
+  <properties>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.config.FolderConfig plugin="pipeline-model-definition@1.1.1">
+      <dockerLabel></dockerLabel>
+      <registry plugin="docker-commons@1.6"/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.config.FolderConfig>
+  </properties>
+  <folderViews class="jenkins.branch.MultiBranchProjectViewHolder" plugin="branch-api@2.0.8">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </folderViews>
+  <healthMetrics>
+    <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric plugin="cloudbees-folder@6.0.2">
+      <nonRecursive>false</nonRecursive>
+    </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+  </healthMetrics>
+  <icon class="jenkins.branch.MetadataActionFolderIcon" plugin="branch-api@2.0.8">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </icon>
+  <orphanedItemStrategy class="com.cloudbees.hudson.plugins.folder.computed.DefaultOrphanedItemStrategy" plugin="cloudbees-folder@6.0.2">
+    <pruneDeadBranches>true</pruneDeadBranches>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>0</numToKeep>
+  </orphanedItemStrategy>
+  <triggers>
+    <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger plugin="cloudbees-folder@6.0.2">
+      <spec>* * * * *</spec>
+      <interval>60000</interval>
+    </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
+  </triggers>
+  <sources class="jenkins.branch.MultiBranchProject$BranchSourceList" plugin="branch-api@2.0.8">
+    <data>
+      <jenkins.branch.BranchSource>
+        <source class="jenkins.plugins.git.GitSCMSource" plugin="git@3.1.0">
+          <id>a4a3bd69-d999-4558-8a28-48232cd21bae</id>
+          <remote>ssh://git@stash.intranet.acme.com:7999/devops/example-hello-world.git</remote>
+          <credentialsId></credentialsId>
+          <remoteName>origin</remoteName>
+          <rawRefSpecs>+refs/heads/*:refs/remotes/origin/*</rawRefSpecs>
+          <includes>master release/* feature/* bugfix/*</includes>
+          <excludes></excludes>
+          <ignoreOnPushNotifications>false</ignoreOnPushNotifications>
+          <browser class="hudson.plugins.git.browser.Stash">
+            <url>https://stash.intranet.acme.com/stash/projects/DEVOPS/repos/example-hello-world-dependant</url>
+          </browser>
+        </source>
+        <strategy class="jenkins.branch.DefaultBranchPropertyStrategy">
+          <properties class="empty-list"/>
+        </strategy>
+      </jenkins.branch.BranchSource>
+      <jenkins.branch.BranchSource>
+        <source class="com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMSource" plugin="cloudbees-bitbucket-branch-source@2.1.1">
+          <id>a563c628-53ef-4c1f-885e-a8d37cae88c0</id>
+          <credentialsId>stash_api_user</credentialsId>
+          <checkoutCredentialsId>stash_access_key</checkoutCredentialsId>
+          <repoOwner>DEVOPS</repoOwner>
+          <repository>example-hello-world</repository>
+          <includes>master release/* feature/* bugfix/*</includes>
+          <excludes></excludes>
+          <autoRegisterHook>false</autoRegisterHook>
+          <bitbucketServerUrl>https://stash.intranet.acme.com/stash</bitbucketServerUrl>
+          <sshPort>7999</sshPort>
+          <repositoryType>GIT</repositoryType>
+        </source>
+        <strategy class="jenkins.branch.DefaultBranchPropertyStrategy">
+          <properties class="empty-list"/>
+        </strategy>
+      </jenkins.branch.BranchSource>
+    </data>
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </sources>
+  <factory class="org.jenkinsci.plugins.workflow.multibranch.WorkflowBranchProjectFactory">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </factory>
+</org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject>

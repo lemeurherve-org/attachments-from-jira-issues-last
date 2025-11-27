@@ -1,0 +1,66 @@
+2018-11-15 16:29:48,945 [4804] [4] ERROR HP.PC.Web.API.Behaviors.PcApiErrorHandler - Exception type is not a descendant of PcApiBaseException. Print the exception that was caught to log and return a general exception [Context: fae75be8-a028-4472-866a-001bd541492d] [FullContext: QCServer:http://nym-entalm1-cj:8080/qcbin UserName:skasarla Domain:Enterprise_Technology Project:Enterprise_Technology]
+PCRemoteException output START
+Message:
+ exception code: InternalServerError , the error was Server Error
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="/qcbin/rest-exception/rest-exception.css"/>
+		<script type="text/javascript" src="/qcbin/rest-exception/rest-exception.js"></script>
+	</head>
+	
+	<body>
+		<div id="banner">
+			<img src="/qcbin/rest-exception/hp-logo.png" id="banner-logo"/>
+			<h3 id="banner-title">HP Application Lifecycle Management</h3>
+		</div>
+		
+		<div id="content-holder">
+			<h1></h1>
+			<div>
+				<tr>
+					<td><a id="exception-id-title">Exception Id:</a></td>
+					<td>qccore.general-error</td>
+				</tr>
+			</div>
+			<a id="more-details-label" style="display:none" href="#" onClick="javascript:toggleDetails()">
+				<h3>Show Details</h3>
+			</a>
+			<div id="details-holder" style="display:none">
+				<div style="display:none">
+					<h4>Exception Properties:</h4>
+					<div></div>
+				</div>
+				<div style="display:none">
+					<h4>Stack Trace:</h4>
+					<div></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+ 
+StatusCode:
+ InternalServerError 
+Stacktrace:
+    at HP.PC.Rest.RestProxy.ExecuteRequest(String httpMethod, Byte[] bodyData, HttpWebRequest request, FillStreamDelegate fillStream)
+   at HP.PC.Rest.RestProxy.ExecuteRequest(String httpMethod, Byte[] bodyData, HttpWebRequest request)
+   at HP.PC.Rest.AuthenticatedProxy.ExecuteCommand(String command, IRestResource commandRequest, HttpWebRequest request, IRestResource commandResponse)
+   at HP.PC.Rest.ResourceProxy`1.ExecuteCommand(Int32 id, String command, IRestResource commandRequest, IRestResource commandResponse)
+   at HP.PC.BL.QC.Api.CommandBL`1.Execute(String command, Object input, Object output, Int32 id)
+   at HP.PC.BL.QC.TestInstances.TestInstanceBL.StartRun(IStartRunData data, Int32 id)
+   at HP.PC.Web.Presentation.Impl.Presenter.HP.PC.Web.Presentation.Api.ITestSetPresenter.StartRun(Int32 testInstanceId, Int32 testId, Int32 reservationId, Int32 duration, PostRunActionEnum postRunAction, Boolean isVUDsMode, Int32 vudsAmount, String topologyName, String topologyID, Nullable`1 AUTEnvironmentConfigurationID)
+   at HP.PC.API.Impl.LoadTestExecutionManager.ExecuteLoadTest(RunRequest run)
+   at HP.PC.API.Impl.LoadTestExecutionManager.StartRun(String domainName, String project, RunRequest run)
+   at HP.PC.API.PcApiEngine.ExecuteLoadTest(String domainName, String project, RunRequest run)
+   at HP.PC.Web.API.API_Controllers.RunsController.PostRunData(String domain, String project, RunRequest run)
+   at lambda_method(Closure , Object , Object[] )
+   at System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.<>c__DisplayClass13.<GetExecutor>b__c(Object instance, Object[] methodParameters)
+   at System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionExecutor.Execute(Object instance, Object[] arguments)
+   at System.Web.Http.Controllers.ReflectedHttpActionDescriptor.<>c__DisplayClass5.<ExecuteAsync>b__4()
+   at System.Threading.Tasks.TaskHelpers.RunSynchronously[TResult](Func`1 func, CancellationToken cancellationToken) 
+	Printing data members start:
+	[client_requiest_info]:The requested uri was: http://nym-entalm1-cj:8080/qcbin/rest/domains/Enterprise_Technology/projects/Enterprise_Technology/test-instances/1052/startrun,the method was: POST,the content type was: application/xml
+	Printing data members end:
+PCRemoteException output END

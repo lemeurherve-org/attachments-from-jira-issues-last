@@ -1,0 +1,23 @@
+node() {
+  checkout scm
+
+  //check out an additional library from "somewhere"
+  checkout([$class: 'SubversionSCM',
+    additionalCredentials: [],
+    excludedCommitMessages: '',
+    excludedRegions: '',
+    excludedRevprop: '',
+    excludedUsers: '',
+    filterChangelog: false,
+    ignoreDirPropChanges: false,
+    includedRegions: '',
+    locations: [[
+      credentialsId: 'svn-credentials',
+      depthOption: 'infinity',
+      ignoreExternalsOption: true,
+      local: '.',
+      remote: 'https://192.168.0.31/svn/base/branches/personal/jamie/jenkins-bug-repro/other-lib']],
+    workspaceUpdater: [$class: 'UpdateUpdater']])
+
+  step([$class: 'WsCleanup'])
+}

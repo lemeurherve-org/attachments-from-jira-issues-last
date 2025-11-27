@@ -1,0 +1,141 @@
+Started by user Marcus Cobden (mcobden)
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url git@github.com:leth/jenkins-pipeline-scm-test.git # timeout=10
+Fetching upstream changes from git@github.com:leth/jenkins-pipeline-scm-test.git
+ > git --version # timeout=10
+using GIT_SSH to set credentials mcobden test key for jenkins bug
+ > git fetch --tags --progress git@github.com:leth/jenkins-pipeline-scm-test.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 3489a34fb58d770136a8743042a062fe5eac6877 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 3489a34fb58d770136a8743042a062fe5eac6877
+ > git rev-list 6884ded67d07f96460190d3288ca585e1619cb69 # timeout=10
+[Pipeline] stage
+[Pipeline] { (Check before)
+[Pipeline] node
+Running on node-8188 in /home/ubuntu/workspace/Job dsl experiments/mcobden-test
+[Pipeline] {
+[Pipeline] dir
+Running in /home/ubuntu/workspace/Job dsl experiments/mcobden-test/before
+[Pipeline] {
+[Pipeline] checkout
+Cloning the remote Git repository
+Cloning repository git@github.com:leth/jenkins-pipeline-scm-test.git
+ > git init /home/ubuntu/workspace/Job dsl experiments/mcobden-test/before # timeout=10
+Fetching upstream changes from git@github.com:leth/jenkins-pipeline-scm-test.git
+ > git --version # timeout=10
+using GIT_SSH to set credentials mcobden test key for jenkins bug
+ > git fetch --tags --progress git@github.com:leth/jenkins-pipeline-scm-test.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url git@github.com:leth/jenkins-pipeline-scm-test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@github.com:leth/jenkins-pipeline-scm-test.git # timeout=10
+Fetching upstream changes from git@github.com:leth/jenkins-pipeline-scm-test.git
+using GIT_SSH to set credentials mcobden test key for jenkins bug
+ > git fetch --tags --progress git@github.com:leth/jenkins-pipeline-scm-test.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 3489a34fb58d770136a8743042a062fe5eac6877 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 3489a34fb58d770136a8743042a062fe5eac6877
+[Pipeline] sh
+[before] Running shell script
++ cat date.txt
+Fri Nov  4 14:12:30 UTC 2016
+[Pipeline] readFile
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Update)
+[Pipeline] node
+Running on node-8188 in /home/ubuntu/workspace/Job dsl experiments/mcobden-test
+[Pipeline] {
+[Pipeline] dir
+Running in /home/ubuntu/workspace/Job dsl experiments/mcobden-test/update
+[Pipeline] {
+[Pipeline] checkout
+Cloning the remote Git repository
+Cloning repository git@github.com:leth/jenkins-pipeline-scm-test.git
+ > git init /home/ubuntu/workspace/Job dsl experiments/mcobden-test/update # timeout=10
+Fetching upstream changes from git@github.com:leth/jenkins-pipeline-scm-test.git
+ > git --version # timeout=10
+using GIT_SSH to set credentials mcobden test key for jenkins bug
+ > git fetch --tags --progress git@github.com:leth/jenkins-pipeline-scm-test.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url git@github.com:leth/jenkins-pipeline-scm-test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@github.com:leth/jenkins-pipeline-scm-test.git # timeout=10
+Fetching upstream changes from git@github.com:leth/jenkins-pipeline-scm-test.git
+using GIT_SSH to set credentials mcobden test key for jenkins bug
+ > git fetch --tags --progress git@github.com:leth/jenkins-pipeline-scm-test.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 3489a34fb58d770136a8743042a062fe5eac6877 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 3489a34fb58d770136a8743042a062fe5eac6877
+[Pipeline] sh
+[update] Running shell script
++ git config --global user.email you@example.com
++ git config --global user.name Your Name
++ chmod go-rwx id_rsa
++ date
++ cat date.txt
++ git commit -am test commit Tue Nov  8 18:23:05 UTC 2016
+[detached HEAD 63118f0] test commit Tue Nov  8 18:23:05 UTC 2016
+ 1 file changed, 1 insertion(+), 1 deletion(-)
++ GIT_SSH_COMMAND=ssh -i id_rsa git push git@github.com:leth/jenkins-pipeline-scm-test.git HEAD:master
+To git@github.com:leth/jenkins-pipeline-scm-test.git
+   3489a34..63118f0  HEAD -> master
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Check after)
+[Pipeline] node
+Running on node-8188 in /home/ubuntu/workspace/Job dsl experiments/mcobden-test
+[Pipeline] {
+[Pipeline] dir
+Running in /home/ubuntu/workspace/Job dsl experiments/mcobden-test/after
+[Pipeline] {
+[Pipeline] checkout
+Cloning the remote Git repository
+Cloning repository git@github.com:leth/jenkins-pipeline-scm-test.git
+ > git init /home/ubuntu/workspace/Job dsl experiments/mcobden-test/after # timeout=10
+Fetching upstream changes from git@github.com:leth/jenkins-pipeline-scm-test.git
+ > git --version # timeout=10
+using GIT_SSH to set credentials mcobden test key for jenkins bug
+ > git fetch --tags --progress git@github.com:leth/jenkins-pipeline-scm-test.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url git@github.com:leth/jenkins-pipeline-scm-test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@github.com:leth/jenkins-pipeline-scm-test.git # timeout=10
+Fetching upstream changes from git@github.com:leth/jenkins-pipeline-scm-test.git
+using GIT_SSH to set credentials mcobden test key for jenkins bug
+ > git fetch --tags --progress git@github.com:leth/jenkins-pipeline-scm-test.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 63118f0b46ee9a0031b56b092b3a9d4df344ca26 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 63118f0b46ee9a0031b56b092b3a9d4df344ca26
+ > git rev-list 6884ded67d07f96460190d3288ca585e1619cb69 # timeout=10
+[Pipeline] sh
+[after] Running shell script
++ cat date.txt
+Tue Nov  8 18:23:05 UTC 2016
+[Pipeline] readFile
+[Pipeline] error
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] End of Pipeline
+ERROR: dates do not match
+Finished: FAILURE

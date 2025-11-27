@@ -1,0 +1,59 @@
+Index: src/test/java/hudson/plugins/clearcase/ClearToolExecTest.java
+===================================================================
+--- src/test/java/hudson/plugins/clearcase/ClearToolExecTest.java	(revision 30613)
++++ src/test/java/hudson/plugins/clearcase/ClearToolExecTest.java	(working copy)
+@@ -169,6 +169,35 @@
+         assertNotNull("Returned console reader can not be null", reader);
+         context.assertIsSatisfied();
+     }
++    
++    @Test
++    public void testLsHistoryBranchNotFound() throws Exception {
++        workspace.child("viewName").mkdirs();
++        final Calendar mockedCalendar = Calendar.getInstance();
++        mockedCalendar.set(2007, 10, 18, 15, 05, 25);
++        SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy.HH:mm:ss'UTC'+0000", Locale.US);
++        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
++        final String formattedDate = formatter.format(mockedCalendar.getTime()).toLowerCase();
++        context.checking(new Expectations() {
++                {
++                    one(launcher).getWorkspace();
++                    will(returnValue(workspace));
++                    allowing(launcher).getLauncher();
++                    will(returnValue(new Launcher.LocalLauncher(null)));
++                    one(launcher).run(
++                                      with(equal(new String[] { "lshistory", "-all", "-since", formattedDate,
++                                                                "-fmt", "FORMAT", "-branch", "brtype:branch", "-nco",
++                                                                "vob1", "vob2", "\"vob 3\"" })), (InputStream) with(anything()),
++                                      (OutputStream) with(an(OutputStream.class)), with(aNonNull(FilePath.class)));
++                    will(doAll(new StreamCopyAction(2, ClearToolExecTest.class.getResourceAsStream("ct-lshistory-1.log")),
++                               throwException(new IOException())));
++                }
++            });
++        Reader reader = clearToolExec.lshistory("FORMAT",
++                                                mockedCalendar.getTime(), "viewName","branch", new String[]{ "vob1", "vob2\n", "vob 3"});
++        assertNotNull("Returned console reader can not be null", reader);
++        context.assertIsSatisfied();
++    }
+ 
+     @Test
+     public void testCatConfigSpec() throws Exception {
+Index: src/main/java/hudson/plugins/clearcase/ClearToolExec.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/ClearToolExec.java	(revision 30613)
++++ src/main/java/hudson/plugins/clearcase/ClearToolExec.java	(working copy)
+@@ -91,9 +91,12 @@
+         }
+         Reader returnReader = null;
+         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+-        if (launcher.run(cmd.toCommandArray(), null, baos, viewPath)) {
+-            returnReader = new InputStreamReader(new ByteArrayInputStream(baos.toByteArray()));
++        try {
++            launcher.run(cmd.toCommandArray(), null, baos, viewPath);
++        } catch (IOException e) {
++            // We don't care if Clearcase returns an error code, we will process it afterwards
+         }
++        returnReader = new InputStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+         baos.close();
+ 
+         return returnReader;

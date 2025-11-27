@@ -1,0 +1,35 @@
+#!groovy​
+
+def version
+def describe
+
+node {
+    stage('Prepare') {
+        deleteDir()
+
+        checkout scm
+
+        describe = sh(returnStdout: true, script: 'git describe --tags --dirty').trim()
+        println describe
+
+        def model1 = readMavenPom file: 'pom.xml';
+        version = model1.version
+        println version
+    }
+
+    stage ("Build maven") {
+        try{
+            withMaven(jdk: 'Build JDK', maven: 'Maven35') {
+                sh "mvn --fail-at-end clean verify deploy"
+                writeFile file: '.archive-jenkins-maven-event-spy-logs', text: ''
+            }
+        }
+        catch(e){
+            cucumber 'target/cucumber/cucumber.json'
+            error 'maven build failed.'
+        }
+        cucumber 'target/cucumber/cucumber.json'
+        jacoco execPattern: 'target/coverage-reports/jacoco*.exec'
+    }
+
+}

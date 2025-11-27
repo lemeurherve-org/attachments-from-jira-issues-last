@@ -1,0 +1,113 @@
+diff --git a/src/main/java/hudson/scm/SubversionChangeLogSet.java b/src/main/java/hudson/scm/SubversionChangeLogSet.java
+index a90f7d8..cae0f3f 100644
+--- a/src/main/java/hudson/scm/SubversionChangeLogSet.java
++++ b/src/main/java/hudson/scm/SubversionChangeLogSet.java
+@@ -163,7 +163,7 @@ public final class SubversionChangeLogSet extends ChangeLogSet<LogEntry> {
+         public Collection<String> getAffectedPaths() {
+             return new AbstractList<String>() {
+                 public String get(int index) {
+-                    return preparePath(paths.get(index).value);
++                    return paths.get(index).getPath();
+                 }
+                 public int size() {
+                     return paths.size();
+@@ -171,42 +171,6 @@ public final class SubversionChangeLogSet extends ChangeLogSet<LogEntry> {
+             };
+         }
+         
+-        private String preparePath(String path) {
+-            SCM scm = getParent().build.getProject().getScm();
+-            if (!(scm instanceof SubversionSCM)) return path;
+-            ModuleLocation[] locations = ((SubversionSCM)scm).getLocations();
+-            for (int i = 0; i < locations.length; i++) {
+-                String commonPart = findCommonPart(locations[i].remote, path);
+-                if (commonPart != null) {
+-                    if (path.startsWith("/")) {
+-                        path = path.substring(1);
+-                    }
+-                    String newPath = path.substring(commonPart.length());
+-                    if (newPath.startsWith("/")) {
+-                        newPath = newPath.substring(1);
+-                    }
+-                    return newPath;
+-                }
+-            }
+-            return path;
+-        }
+-        
+-        private String findCommonPart(String folder, String filePath) {
+-            if (folder == null || filePath == null) {
+-                return null;
+-            }
+-            if (filePath.startsWith("/")) {
+-                filePath = filePath.substring(1);
+-            }
+-            for (int i = 0; i < folder.length(); i++) {
+-                String part = folder.substring(i);
+-                if (filePath.startsWith(part)) {
+-                    return part;
+-                }
+-            }
+-            return null;
+-        }
+-
+         public void setUser(String author) {
+             this.author = User.get(author);
+         }
+@@ -297,7 +261,55 @@ public final class SubversionChangeLogSet extends ChangeLogSet<LogEntry> {
+          * Inherited from AffectedFile
+          */
+         public String getPath() {
+-	        return getValue();
++	        return preparePath(value);
++        }
++        
++        /*
++         * Convert svn affected path to workspace-relative path
++         *  
++         * @param path
++         * @return
++         */
++        private String preparePath(String path) {
++            SCM scm = entry.getParent().build.getProject().getScm();
++            if (!(scm instanceof SubversionSCM)) return path;
++            if (path.startsWith("/")) {
++                path = path.substring(1);
++            }
++            ModuleLocation[] locations = ((SubversionSCM)scm).getLocations();
++            for (int i = 0; i < locations.length; i++) {
++                
++                String commonPart = findCommonPart(locations[i].remote, "/" + path);
++                if (commonPart != null) {
++                    String newPath = path.substring(commonPart.length());
++                    if (newPath.startsWith("/")) {
++                        newPath = newPath.substring(1);
++                    }
++                    // add the local dir to convert affected svn path to workspace-relative path
++                    if (locations[i].getLocalDir().isEmpty() || locations[i].getLocalDir().equals(".")) {
++                        return newPath;
++                    } else {
++                        return locations[i].getLocalDir() + "/" + newPath;
++                    }
++                }
++            }
++            return path;
++        }
++        
++        private String findCommonPart(String folder, String filePath) {
++            if (folder == null || filePath == null) {
++                return null; 
++            }
++            int i = 0;
++            while (i >= 0) {
++                String part = folder.substring(i);
++                if (filePath.startsWith(part)) {
++                    return part;
++                }
++                // slight optimisation - jump to next / rather than character by character
++                i = folder.indexOf("/", i + 1);
++            }
++            return null;
+         }
+         
+         public void setValue(String value) {

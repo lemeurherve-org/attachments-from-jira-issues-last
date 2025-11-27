@@ -1,0 +1,133 @@
+Index: src/main/java/hudson/plugins/plot/Plot.java
+===================================================================
+--- src/main/java/hudson/plugins/plot/Plot.java	(revision 14231)
++++ src/main/java/hudson/plugins/plot/Plot.java	(working copy)
+@@ -29,6 +29,9 @@
+ import java.util.Properties;
+ import java.util.logging.Logger;
+ 
++import javax.xml.xpath.XPath;
++import javax.xml.xpath.XPathFactory;
++
+ import org.jfree.chart.ChartFactory;
+ import org.jfree.chart.ChartRenderingInfo;
+ import org.jfree.chart.ChartUtilities;
+@@ -43,6 +46,7 @@
+ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
++import org.xml.sax.InputSource;
+ 
+ import au.com.bytecode.opencsv.CSVReader;
+ import au.com.bytecode.opencsv.CSVWriter;
+@@ -649,7 +653,16 @@
+             in = seriesFiles[0].read();
+             logger.println("Saving plot series data from: " + seriesFiles[0]);
+             Properties data = new Properties();
+-            data.load(in);
++            if (series.getXPath() == null) {
++              data.load(in);
++            } else {
++              InputSource xmlSource = new InputSource(in);
++
++              XPathFactory factory = XPathFactory.newInstance();
++              XPath xpath = factory.newXPath();
++              String yvalue = xpath.evaluate(series.getXPath(), xmlSource);
++              data.setProperty("YVALUE", yvalue);
++            }
+             return data;
+         } catch (Exception e) {
+             logger.println("Exception reading plot series data from: " + seriesFiles[0]);
+Index: src/main/java/hudson/plugins/plot/PlotPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/plot/PlotPublisher.java	(revision 14231)
++++ src/main/java/hudson/plugins/plot/PlotPublisher.java	(working copy)
+@@ -209,6 +209,7 @@
+             String[] groups = req.getParameterValues("plotParam.group");
+             String[] numBuilds = req.getParameterValues("plotParam.numBuilds");
+         	String[] seriesFiles = req.getParameterValues("seriesParam.file");
++        	String[] seriesXPaths = req.getParameterValues("seriesParam.xpath");
+         	String[] seriesLabels = req.getParameterValues("seriesParam.label");
+             if (seriesFiles != null) {
+             	//LOGGER.info(fileNames.length+","+titles.length+","+yaxises.length+","+
+@@ -222,7 +223,7 @@
+                 		    ! seriesFiles[seriesCounter].equals("PLOT_SEPARATOR")) 
+                 	{
+                     	seriesList.add(new Series(seriesFiles[seriesCounter],
+-                    							  seriesLabels[seriesCounter]));
++                    		seriesXPaths[seriesCounter], seriesLabels[seriesCounter]));
+                     	seriesCounter++;
+                     }
+                 	seriesCounter++; //skip past separator
+Index: src/main/java/hudson/plugins/plot/Series.java
+===================================================================
+--- src/main/java/hudson/plugins/plot/Series.java	(revision 14231)
++++ src/main/java/hudson/plugins/plot/Series.java	(working copy)
+@@ -16,6 +16,11 @@
+     public String file;
+ 
+     /**
++     * Data series XPath expression. Optional.
++     */
++    public String xpath;
++
++  /**
+      * Data series legend label. Optional.
+      */
+     public String label;
+@@ -23,8 +28,9 @@
+     /**
+      * @stapler-constructor
+      */
+-    public Series(String file, String label) {
++    public Series(String file, String xpath, String label) {
+         this.file = file;
++        this.xpath = xpath;
+         this.label = label;
+     }
+ 
+@@ -33,6 +39,11 @@
+     public String getFile() {
+         return file;
+     }
++
++    public String getXPath() {
++        return xpath;
++    }
++
+     public String getLabel() {
+         return label;
+     }
+Index: src/main/resources/hudson/plugins/plot/PlotPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/plot/PlotPublisher/config.jelly	(revision 14231)
++++ src/main/resources/hudson/plugins/plot/PlotPublisher/config.jelly	(working copy)
+@@ -29,6 +29,9 @@
+ 	                  <f:textbox name="seriesParam.file" value="${series.file}" 
+ 	                    checkUrl="'${rootURL}/publisher/PlotPublisher/checkSeriesFile?job=${it.fullName}&amp;value='+escape(this.value)"/>
+ 	                </f:entry>
++	                <f:entry title="Data series XPath expression" help="/plugin/plot/help-xpath.html">
++	                  <f:textbox name="seriesParam.xpath" value="${series.xpath}"/>
++	                </f:entry>
+ 	                <f:entry title="Data series legend label" help="/plugin/plot/help-legend.html">
+ 	                  <f:textbox name="seriesParam.label" value="${series.label}" />
+ 	                </f:entry>
+Index: src/main/webapp/help-series.html
+===================================================================
+--- src/main/webapp/help-series.html	(revision 14231)
++++ src/main/webapp/help-series.html	(working copy)
+@@ -1,10 +1,11 @@
+ <div>
+-  Mandatory. Specifies the path to the Java property file (key=value pairs), relative to
++  Mandatory. Specifies the path to the Java property file (key=value pairs) or XML-file, relative to
+   <a href='ws/'>the workspace root</a>, that
+-  contains the data value for this data series.  The file must
++  contains the data value for this data series.  If it is a property file, the file must
+   contain a <code>YVALUE</code> property and may optionally
+   contain a <code>URL</code> property. If present, the URL will be 
+-  opened when the data point on the plot is clicked.
++  opened when the data point on the plot is clicked. If it is a XML-file, the XPath expression must be
++  set.
+   <p>
+   The specification of this file can use wildcards like <code>build/report/*/report.properties</code>
+   but only the first file resolved by the wildcard will be used.

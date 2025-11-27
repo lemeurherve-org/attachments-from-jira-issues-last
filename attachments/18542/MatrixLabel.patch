@@ -1,0 +1,152 @@
+Index: MatrixConfiguration.java
+===================================================================
+--- MatrixConfiguration.java	(revision 16218)
++++ MatrixConfiguration.java	(working copy)
+@@ -47,8 +47,10 @@
+ import hudson.tasks.Publisher;
+ 
+ import java.io.IOException;
++import java.util.HashSet;
+ import java.util.List;
+ import java.util.Map;
++import java.util.Set;
+ 
+ /**
+  * One configuration of {@link MatrixProject}.
+@@ -197,9 +199,53 @@
+         return this;
+     }
+ 
++    /**
++     * Finds labels that exist with nodes matching the axises in the combination.
++     * Labels must be in the format of "axis=value".  For example, if your matrix
++     * build has an axis for compiler[gfortran,lahey] then the corresponding labels
++     * would be "compiler=gfortran" and "compiler=lahey".  A label is only returned
++     * if it exists and has nodes.
++     * @param combination to find labels for.
++     * @return set of labels that match the combination,  null if no labels match.
++     */
++    private Set<Label> getLabelsForCombination(Combination combination){
++        Set<Label> labels = new HashSet<Label> ();
++
++        for(Map.Entry<String, String> entry : combination.entrySet()){
++            Label label = null;
++            if("label".equals(entry.getKey())){
++                label = Hudson.getInstance().getLabel(entry.getValue());
++            }
++            else{
++                label = Hudson.getInstance().getLabel(entry.getKey()+"="+entry.getValue());
++            }
++            if(label != null && label.getNodes().size() > 0 && !labels.contains(label)){
++                labels.add(label);
++            }
++        }
++        return labels.size()> 0 ? labels : null;
++    }
++
++    /**
++     * @return new MatrixLabel if there are labels that match the combination.
++     */
+     @Override
+     public Label getAssignedLabel() {
+-        return Hudson.getInstance().getLabel(combination.get("label"));
++        Set<Label> labels = getLabelsForCombination(combination);
++        if(labels != null){
++            StringBuffer buffer = new StringBuffer();
++            buffer.append("Node labeled with \"");
++            for(Label label : labels){
++                buffer.append(label.getName() + " ");
++            }
++            buffer.append("\"");
++            return new MatrixLabel(buffer.toString(), labels);
++        }
++        else{
++            return null;
++        }
++        
++
+     }
+ 
+     @Override
+Index: MatrixLabel.java
+===================================================================
+--- MatrixLabel.java	(revision 0)
++++ MatrixLabel.java	(revision 0)
+@@ -0,0 +1,77 @@
++/*
++ * The MIT License
++ * 
++ * Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Tom Huybrechts
++ * 
++ * Permission is hereby granted, free of charge, to any person obtaining a copy
++ * of this software and associated documentation files (the "Software"), to deal
++ * in the Software without restriction, including without limitation the rights
++ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++ * copies of the Software, and to permit persons to whom the Software is
++ * furnished to do so, subject to the following conditions:
++ * 
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ * 
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++ * THE SOFTWARE.
++ */
++package hudson.matrix;
++
++import hudson.model.Hudson;
++import hudson.model.Label;
++import hudson.model.Node;
++import java.util.Set;
++import java.util.HashSet;
++import java.util.Collections;
++
++/**
++ * Extended {@link Label} to allow for an axises to be matched to an executor's
++ * labels. 
++ *
++ * @author Joseph Levin
++ */
++public class MatrixLabel extends Label {
++    
++    private final Set<Label> labelsForCombonation;
++
++    public MatrixLabel(String name, Set<Label> labels) {
++        //give it a name if it's ever required
++        super(name);
++        labelsForCombonation = labels;
++    }
++
++    public boolean isSelfLabel() {
++        return false;
++    }
++
++    private boolean nodeHasRequiredLabels(Node node){
++        for(Label label : labelsForCombonation){
++            if (!label.contains(node)){
++                return false;
++            }
++        }
++        return true;
++    }
++
++    public Set<Node> getNodes() {        
++        Set<Node> nodes = new HashSet<Node>();
++        Hudson h = Hudson.getInstance();
++        if (nodeHasRequiredLabels(h)){
++            nodes.add(h);
++        }
++
++        for (Node n : h.getNodes()) {
++            if (nodeHasRequiredLabels(n)){
++                nodes.add(n);
++            }
++
++        }
++        return Collections.unmodifiableSet(nodes);
++    }
++}

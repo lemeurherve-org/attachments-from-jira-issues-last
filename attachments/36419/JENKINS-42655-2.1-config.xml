@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+    <actions/>
+    <description/>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <hudson.model.ParametersDefinitionProperty>
+            <parameterDefinitions>
+                <org.biouno.unochoice.ChoiceParameter>
+                    <name>States</name>
+                    <description>Name of the State</description>
+                    <randomName>choice-parameter-7742518808078</randomName>
+                    <visibleItemCount>1</visibleItemCount>
+                    <script class="org.biouno.unochoice.model.GroovyScript">
+                        <script>return ["Parana", "Santa Catarina"]</script>
+                        <fallbackScript>return ["Error in script"]</fallbackScript>
+                    </script>
+                    <filterable>true</filterable>
+                    <choiceType>PT_SINGLE_SELECT</choiceType>
+                </org.biouno.unochoice.ChoiceParameter>
+                <org.biouno.unochoice.CascadeChoiceParameter>
+                    <name>Cities</name>
+                    <description>Name of the State</description>
+                    <randomName>choice-parameter-7742521457669</randomName>
+                    <visibleItemCount>1</visibleItemCount>
+                    <script class="org.biouno.unochoice.model.GroovyScript">
+                        <script>if (States.equals("Parana")) { return ["Curitiba"] } else { return ["Florianopolis"] }</script>
+                        <fallbackScript>return ["Error in script"]</fallbackScript>
+                    </script>
+                    <filterable>true</filterable>
+                    <choiceType>PT_SINGLE_SELECT</choiceType>
+                    <referencedParameters>States</referencedParameters>
+                    <parameters class="linked-hash-map"/>
+                </org.biouno.unochoice.CascadeChoiceParameter>
+            </parameterDefinitions>
+        </hudson.model.ParametersDefinitionProperty>
+    </properties>
+    <scm class="hudson.scm.NullSCM"/>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers/>
+    <concurrentBuild>false</concurrentBuild>
+    <builders/>
+    <publishers/>
+    <buildWrappers/>
+</project>

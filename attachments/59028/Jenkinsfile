@@ -1,0 +1,27 @@
+def runToolOnCheckout(tool) {
+    node('') {
+        timestamps {
+            deleteDir()
+            checkout scm
+            sh "${tool}"
+        }
+    }
+}
+
+stage('1') {
+    runToolOnCheckout("sleep 5; cat readme.md")
+}
+stage('2') {
+    runToolOnCheckout("sleep 5; cat readme.md")
+}
+stage('3') {
+    runToolOnCheckout("sleep 5; cat readme.md")
+}
+stage('4') {
+    runToolOnCheckout("sleep 5; cat readme.md")
+}
+stage('5') {
+    runToolOnCheckout("sleep 5; cat readme.md")
+}
+
+// vim: syntax=groovy

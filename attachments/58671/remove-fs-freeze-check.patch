@@ -1,0 +1,44 @@
+From c69cee8d1fde454e4e21a5625fcf957ebbfba9ce Mon Sep 17 00:00:00 2001
+From: Tom Wieczorek <t.wieczorek@yieldlab.de>
+Date: Thu, 22 Jul 2021 08:31:06 +0200
+Subject: [PATCH] Remove fs freeze check
+
+It won't work on read-only filesystems.
+---
+ .../simplediskusage/UsageComputation.java       | 17 -----------------
+ 1 file changed, 17 deletions(-)
+
+diff --git a/src/main/java/com/cloudbees/simplediskusage/UsageComputation.java b/src/main/java/com/cloudbees/simplediskusage/UsageComputation.java
+index bc2e83a..fd6f620 100644
+--- a/src/main/java/com/cloudbees/simplediskusage/UsageComputation.java
++++ b/src/main/java/com/cloudbees/simplediskusage/UsageComputation.java
+@@ -59,29 +59,12 @@ protected void computeUsage(Path path) throws IOException {
+         // used to throttle IO
+         final AtomicLong chunkStartTime = new AtomicLong(System.currentTimeMillis());
+ 
+-        // used to lock this thread if there's a FS freeze ongoing
+-        final AtomicLong writableLastCheckTime = new AtomicLong(System.currentTimeMillis());
+-
+         final Stack<AtomicLong> computeStack = new Stack<>();
+         computeStack.push(new AtomicLong(0));
+         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+             @Override
+             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                 computeStack.push(new AtomicLong(0));
+-
+-                // check every 10 seconds that the process can write on JENKINS_HOME
+-                // this will lock this thread if the filesystem is frozen
+-                // this is to speed up the FS freeze operation which is otherwise slowed down
+-                if (System.currentTimeMillis() - writableLastCheckTime.get() > 10000) {
+-                    writableLastCheckTime.set(System.currentTimeMillis());
+-                    FilePath jenkinsHome = Jenkins.get().getRootPath();
+-                    try {
+-                        jenkinsHome.touch(System.currentTimeMillis());
+-                    } catch (InterruptedException e) {
+-                        logger.log(Level.INFO, "Exception while touching JENKINS_HOME", e);
+-                    }
+-                }
+-
+                 return FileVisitResult.CONTINUE;
+             }
+ 

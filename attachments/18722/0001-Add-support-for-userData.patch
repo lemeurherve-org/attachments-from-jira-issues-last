@@ -1,0 +1,85 @@
+From a1fca9eba9525f5d02c3c3141d308d6ec77b648e Mon Sep 17 00:00:00 2001
+From: Lubomir Rintel (Good Data) <lubo.rintel@gooddata.com>
+Date: Mon, 27 Jul 2009 17:23:47 +0200
+Subject: [PATCH 1/2] Add support for userData
+
+Allows passing arbitrary data to the slave.
+---
+ .../java/hudson/plugins/ec2/SlaveTemplate.java     |    6 ++++--
+ .../hudson/plugins/ec2/EC2Cloud/config.jelly       |    5 ++++-
+ .../help/system-config/master-slave/userData.html  |    7 +++++++
+ 3 files changed, 15 insertions(+), 3 deletions(-)
+ create mode 100644 target/hudson-for-test/help/system-config/master-slave/userData.html
+
+diff --git a/src/main/java/hudson/plugins/ec2/SlaveTemplate.java b/src/main/java/hudson/plugins/ec2/SlaveTemplate.java
+index 9e64e96..9380a25 100644
+--- a/src/main/java/hudson/plugins/ec2/SlaveTemplate.java
++++ b/src/main/java/hudson/plugins/ec2/SlaveTemplate.java
+@@ -40,18 +40,20 @@ public class SlaveTemplate implements Describable<SlaveTemplate> {
+     public final InstanceType type;
+     public final String labels;
+     public final String initScript;
++    public final String userData;
+     protected transient EC2Cloud parent;
+ 
+     private transient /*almost final*/ Set<Label> labelSet;
+ 
+     @DataBoundConstructor
+-    public SlaveTemplate(String ami, String remoteFS, InstanceType type, String labels, String description, String initScript) {
++    public SlaveTemplate(String ami, String remoteFS, InstanceType type, String labels, String description, String initScript, String userData) {
+         this.ami = ami;
+         this.remoteFS = remoteFS;
+         this.type = type;
+         this.labels = Util.fixNull(labels);
+         this.description = description;
+         this.initScript = initScript;
++        this.userData = userData;
+         readResolve(); // initialize
+     }
+     
+@@ -91,7 +93,7 @@ public class SlaveTemplate implements Describable<SlaveTemplate> {
+             KeyPairInfo keyPair = parent.getPrivateKey().find(ec2);
+             if(keyPair==null)
+                 throw new EC2Exception("No matching keypair found on EC2. Is the EC2 private key a valid one?");
+-            Instance inst = ec2.runInstances(ami, 1, 1, Collections.<String>emptyList(), null, keyPair.getKeyName(), type).getInstances().get(0);
++            Instance inst = ec2.runInstances(ami, 1, 1, Collections.<String>emptyList(), userData, keyPair.getKeyName(), type).getInstances().get(0);
+ 
+             return new EC2Slave(inst.getInstanceId(),description,remoteFS,type, labels,initScript);
+         } catch (FormException e) {
+diff --git a/src/main/resources/hudson/plugins/ec2/EC2Cloud/config.jelly b/src/main/resources/hudson/plugins/ec2/EC2Cloud/config.jelly
+index 8766cb9..2ea4d2f 100644
+--- a/src/main/resources/hudson/plugins/ec2/EC2Cloud/config.jelly
++++ b/src/main/resources/hudson/plugins/ec2/EC2Cloud/config.jelly
+@@ -24,6 +24,9 @@
+         <f:entry title="${%Instance Type}" help="/plugin/ec2/help/instanceType.html">
+           <f:enum field="type">${it.name()}</f:enum>
+         </f:entry>
++        <f:entry title="${%User Data}" help="/help/system-config/master-slave/userData.html" field="userData">
++          <f:textbox />
++        </f:entry>
+         <f:entry title="${%Description}" help="/help/system-config/master-slave/description.html" field="description">
+           <f:textbox />
+         </f:entry>
+@@ -45,4 +48,4 @@
+       </table>
+     </f:repeatable>
+   </f:entry>
+-</j:jelly>
+\ No newline at end of file
++</j:jelly>
+diff --git a/target/hudson-for-test/help/system-config/master-slave/userData.html b/target/hudson-for-test/help/system-config/master-slave/userData.html
+new file mode 100644
+index 0000000..8110b31
+--- /dev/null
++++ b/target/hudson-for-test/help/system-config/master-slave/userData.html
+@@ -0,0 +1,7 @@
++<div>
++  Arbitrary data to pass to the instance.
++
++  <p>
++  The instance will be able to access the data using address
++  <a href="http://169.254.169.254/2009-04-04/user-data">http://169.254.169.254/2009-04-04/user-data</a>.
++</div>
+-- 
+1.6.2.5
+

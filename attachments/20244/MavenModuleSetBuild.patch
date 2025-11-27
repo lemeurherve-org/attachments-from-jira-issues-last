@@ -1,0 +1,26 @@
+Index: src/main/java/hudson/maven/MavenModuleSetBuild.java
+===================================================================
+--- src/main/java/hudson/maven/MavenModuleSetBuild.java	(revision )
++++ src/main/java/hudson/maven/MavenModuleSetBuild.java	(revision )
+@@ -205,7 +205,9 @@
+ 
+             private boolean belongsToSubsidiary(List<MavenModule> subsidiaries, String path) {
+                 for (MavenModule sub : subsidiaries)
+-                    if (FilenameUtils.separatorsToUnix(path).startsWith(FilenameUtils.normalize(sub.getRelativePath())))
++                    if (FilenameUtils.separatorsToUnix(path) != null &&
++                    		sub.getRelativePath() != null &&
++                    		FilenameUtils.separatorsToUnix(path).startsWith(sub.getRelativePath()))
+                         return true;
+                 return false;
+             }
+@@ -215,7 +217,9 @@
+              */
+             private boolean isDescendantOf(ChangeLogSet.Entry e, MavenModule mod) {
+                 for (String path : e.getAffectedPaths()) {
+-                    if (FilenameUtils.separatorsToUnix(path).startsWith(FilenameUtils.normalize(mod.getRelativePath())))
++                    if (FilenameUtils.separatorsToUnix(path) != null &&
++                    		mod.getRelativePath() != null &&
++                    		FilenameUtils.separatorsToUnix(path).startsWith(mod.getRelativePath()))
+                         return true;
+                 }
+                 return false;

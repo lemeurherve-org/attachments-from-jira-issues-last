@@ -1,0 +1,157 @@
+Index: src/main/java/hudson/plugins/sonar/model/LightProjectConfig.java
+===================================================================
+--- src/main/java/hudson/plugins/sonar/model/LightProjectConfig.java	(revision 33278)
++++ src/main/java/hudson/plugins/sonar/model/LightProjectConfig.java	(working copy)
+@@ -76,13 +76,17 @@
+   /**
+    * Optional.
+    */
++  private final String hudsonUrl;
++
++  /**
++   * Optional.
++   */
+   private final ReportsConfig reports;
+ 
+   public LightProjectConfig(String groupId, String artifactId, String projectName) {
+     this(groupId, artifactId, projectName, null, null, null, null, null, null, null, null);
+   }
+ 
+-  @DataBoundConstructor
+   public LightProjectConfig(
+       String groupId,
+       String artifactId,
+@@ -96,6 +100,24 @@
+       String language,
+       ReportsConfig reports
+   ) {
++      this(groupId, artifactId, projectName, projectVersion, projectDescription, javaVersion, projectSrcDir, projectSrcEncoding, projectBinDir, language, reports, null);
++  }
++
++  @DataBoundConstructor
++  public LightProjectConfig(
++      String groupId,
++      String artifactId,
++      String projectName,
++      String projectVersion,
++      String projectDescription,
++      String javaVersion,
++      String projectSrcDir,
++      String projectSrcEncoding,
++      String projectBinDir,
++      String language,
++      ReportsConfig reports,
++      String hudsonUrl
++  ) {
+     this.groupId = groupId;
+     this.artifactId = artifactId;
+     this.projectName = projectName;
+@@ -107,6 +129,7 @@
+     this.projectBinDir = projectBinDir;
+     this.language = language;
+     this.reports = reports;
++    this.hudsonUrl = hudsonUrl;
+   }
+ 
+   public String getGroupId() {
+@@ -149,6 +172,10 @@
+     return StringUtils.trimToEmpty(language);
+   }
+ 
++  public String getHudsonUrl() {
++    return hudsonUrl;
++  }
++
+   public ReportsConfig getReports() {
+     return reports;
+   }
+Index: src/main/java/hudson/plugins/sonar/SonarPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/sonar/SonarPublisher.java	(revision 33278)
++++ src/main/java/hudson/plugins/sonar/SonarPublisher.java	(working copy)
+@@ -345,11 +345,12 @@
+ 
+   private boolean executeSonar(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener, SonarInstallation sonarInstallation) {
+     try {
++      EnvVars env = build.getEnvironment(listener);
+       String pomName = getPomName(build);
+       FilePath root = build.getModuleRoot();
+       if (isUseSonarLight()) {
+         LOG.info("Generating " + pomName);
+-        SonarPomGenerator.generatePomForNonMavenProject(getLightProject(), root, pomName);
++        SonarPomGenerator.generatePomForNonMavenProject(getLightProject(), root, pomName, env);
+       }
+       String mavenInstallationName = getMavenInstallationName();
+       if (isMavenBuilder(build.getProject())) {
+Index: src/main/java/hudson/plugins/sonar/template/SonarPomGenerator.java
+===================================================================
+--- src/main/java/hudson/plugins/sonar/template/SonarPomGenerator.java	(revision 33278)
++++ src/main/java/hudson/plugins/sonar/template/SonarPomGenerator.java	(working copy)
+@@ -15,6 +15,7 @@
+  */
+ package hudson.plugins.sonar.template;
+ 
++import hudson.EnvVars;
+ import hudson.FilePath;
+ import hudson.plugins.sonar.model.LightProjectConfig;
+ import hudson.plugins.sonar.model.ReportsConfig;
+@@ -29,11 +30,12 @@
+  * @since 1.2
+  */
+ public final class SonarPomGenerator {
+-  public static void generatePomForNonMavenProject(LightProjectConfig project, FilePath root, String pomName) throws IOException, InterruptedException {
++  public static void generatePomForNonMavenProject(LightProjectConfig project, FilePath root, String pomName, EnvVars env) throws IOException, InterruptedException {
+     SimpleTemplate pomTemplate = new SimpleTemplate("hudson/plugins/sonar/sonar-light-pom.template");
+-    pomTemplate.setAttribute("groupId", project.getGroupId());
+-    pomTemplate.setAttribute("artifactId", project.getArtifactId());
+-    pomTemplate.setAttribute("projectName", project.getProjectName()); // FIXME Godin: env.expand because projectName can be "${JOB_NAME}"
++    pomTemplate.setAttribute("groupId", env.expand(project.getGroupId()));
++    pomTemplate.setAttribute("artifactId", env.expand(project.getArtifactId()));
++    pomTemplate.setAttribute("projectName", env.expand(project.getProjectName()));
++    pomTemplate.setAttribute("hudsonUrl", env.expand(StringUtils.defaultIfEmpty(project.getHudsonUrl(), "${JOB_URL}")));
+     pomTemplate.setAttribute("projectVersion", StringUtils.isEmpty(project.getProjectVersion()) ? "1.0" : project.getProjectVersion());
+     pomTemplate.setAttribute("javaVersion", StringUtils.isEmpty(project.getJavaVersion()) ? "1.5" : project.getJavaVersion());
+ 
+Index: src/main/resources/hudson/plugins/sonar/SonarPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/sonar/SonarPublisher/config.jelly	(revision 33278)
++++ src/main/resources/hudson/plugins/sonar/SonarPublisher/config.jelly	(working copy)
+@@ -126,6 +126,10 @@
+               <f:textbox name="language" value="${instance.lightProject.language}"/>
+             </f:entry>
+ 
++            <f:entry title="${%HudsonUrl}" description="${%HudsonUrlDescr}">
++              <f:textbox name="hudsonUrl" value="${instance.lightProject.hudsonUrl}"/>
++            </f:entry>
++
+             <f:optionalBlock name="reports" title="${%ReuseReports}"
+                              checked="${instance.lightProject.isReuseReports()}">
+               <f:section title="${%Reports}">
+Index: src/main/resources/hudson/plugins/sonar/SonarPublisher/config.properties
+===================================================================
+--- src/main/resources/hudson/plugins/sonar/SonarPublisher/config.properties	(revision 33278)
++++ src/main/resources/hudson/plugins/sonar/SonarPublisher/config.properties	(working copy)
+@@ -28,6 +28,8 @@
+ JavaVersionDescr=Default is 1.5.
+ Language=Language
+ LanguageDescr=Default is java.
++HudsonUrl=Hudson url
++HudsonUrlDesc=The full url to this job in Hudson (example: ${JOB_URL})
+ ReuseReports=Check to reuse reports generated by your build
+ SurefireReportsPath=Surefire reports path
+ CoberturaReportPath=Cobertura report path
+Index: src/main/resources/hudson/plugins/sonar/sonar-light-pom.template
+===================================================================
+--- src/main/resources/hudson/plugins/sonar/sonar-light-pom.template	(revision 33278)
++++ src/main/resources/hudson/plugins/sonar/sonar-light-pom.template	(working copy)
+@@ -6,6 +6,10 @@
+   <name>$projectName$</name>
+   <version>$projectVersion$</version>
+   $description$
++  <ciManagement>
++    <system>Hudson</system>
++    <url>$hudsonUrl$</url>
++  </ciManagement>
+ 
+   <build>
+     $outputDirectory$

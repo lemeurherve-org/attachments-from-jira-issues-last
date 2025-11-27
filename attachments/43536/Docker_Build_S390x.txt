@@ -1,0 +1,194 @@
+ docker build -t jenkins .
+Sending build context to Docker daemon  662.5kB
+Step 1/37 : FROM openjdk:8-jdk
+8-jdk: Pulling from library/openjdk
+9351e2bf09f4: Pull complete
+10c6d95a7f07: Pull complete
+c4fda1014bc6: Pull complete
+9ee6f36da521: Pull complete
+5ea7e541213f: Pull complete
+ecfdf612a0f0: Pull complete
+06720e84a234: Pull complete
+737a43621d3a: Pull complete
+99aeeed5cb3f: Pull complete
+Digest: sha256:cbf0fdbfedf4c741c587d4451debfcb56ac8bde15180b13111bb130a28086678
+Status: Downloaded newer image for openjdk:8-jdk
+ ---> 24d2d484320d
+Step 2/37 : RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
+ ---> Running in 2391c8a0f225
+Get:1 http://security.debian.org/debian-security stretch/updates InRelease [94.3 kB]
+Get:2 http://security.debian.org/debian-security stretch/updates/main s390x Packages [359 kB]
+Ign:3 http://cdn-fastly.deb.debian.org/debian stretch InRelease
+Get:4 http://cdn-fastly.deb.debian.org/debian stretch-updates InRelease [91.0 kB]
+Get:5 http://cdn-fastly.deb.debian.org/debian stretch Release [118 kB]
+Get:6 http://cdn-fastly.deb.debian.org/debian stretch Release.gpg [2434 B]
+Get:7 http://cdn-fastly.deb.debian.org/debian stretch-updates/main s390x Packages [11.6 kB]
+Get:8 http://cdn-fastly.deb.debian.org/debian stretch/main s390x Packages [6868 kB]
+Fetched 7545 kB in 2s (2980 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+curl is already the newest version (7.52.1-5+deb9u6).
+git is already the newest version (1:2.11.0-3+deb9u3).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+ ---> 437d01eb6011
+Removing intermediate container 2391c8a0f225
+Step 3/37 : ARG user=jenkins
+ ---> Running in b0f5ad1c1277
+ ---> 68d0356e8d44
+Removing intermediate container b0f5ad1c1277
+Step 4/37 : ARG group=jenkins
+ ---> Running in 1f946668c6c1
+ ---> 6937c8e656bf
+Removing intermediate container 1f946668c6c1
+Step 5/37 : ARG uid=1000
+ ---> Running in 6d8494da4361
+ ---> 70e7e3e0d175
+Removing intermediate container 6d8494da4361
+Step 6/37 : ARG gid=1000
+ ---> Running in a5e63430a0d5
+ ---> 2fe7eca21918
+Removing intermediate container a5e63430a0d5
+Step 7/37 : ARG http_port=8080
+ ---> Running in 8ad1a1e95c31
+ ---> 901058b39502
+Removing intermediate container 8ad1a1e95c31
+Step 8/37 : ARG agent_port=50000
+ ---> Running in dd9c7720de94
+ ---> 5d5428e283c9
+Removing intermediate container dd9c7720de94
+Step 9/37 : ARG JENKINS_HOME=/var/jenkins_home
+ ---> Running in f94314c259cc
+ ---> 27a8f27c25b7
+Removing intermediate container f94314c259cc
+Step 10/37 : ENV JENKINS_HOME $JENKINS_HOME
+ ---> Running in 52d1398fe735
+ ---> 8d8b6e1236cf
+Removing intermediate container 52d1398fe735
+Step 11/37 : ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
+ ---> Running in 7d19a95600ad
+ ---> e5b2fd468d5e
+Removing intermediate container 7d19a95600ad
+Step 12/37 : RUN mkdir -p $JENKINS_HOME   && chown ${uid}:${gid} $JENKINS_HOME   && groupadd -g ${gid} ${group}   && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user}
+ ---> Running in 8c9f611c9055
+useradd: warning: the home directory already exists.
+Not copying any file from skel directory into it.
+ ---> 12149297f35a
+Removing intermediate container 8c9f611c9055
+Step 13/37 : VOLUME $JENKINS_HOME
+ ---> Running in 6c346c7ca5e1
+ ---> 5deaa83d1513
+Removing intermediate container 6c346c7ca5e1
+Step 14/37 : RUN mkdir -p /usr/share/jenkins/ref/init.groovy.d
+ ---> Running in 26b282bcaa54
+ ---> 0ea8fe6b1e9e
+Removing intermediate container 26b282bcaa54
+Step 15/37 : ARG TINI_VERSION=v0.16.1
+ ---> Running in 1f29c9f2c546
+ ---> 227b11fa3cd4
+Removing intermediate container 1f29c9f2c546
+Step 16/37 : COPY tini_pub.gpg ${JENKINS_HOME}/tini_pub.gpg
+ ---> 53008ea1dc3e
+Step 17/37 : RUN curl -fsSL https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-$(dpkg --print-architecture) -o /sbin/tini   && curl -fsSL https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-$(dpkg --print-architecture).asc -o /sbin/tini.asc   && gpg --import ${JENKINS_HOME}/tini_pub.gpg   && gpg --verify /sbin/tini.asc   && rm -rf /sbin/tini.asc /root/.gnupg   && chmod +x /sbin/tini
+ ---> Running in 1d6754ffef94
+gpg: directory '/root/.gnupg' created
+gpg: keybox '/root/.gnupg/pubring.kbx' created
+gpg: /root/.gnupg/trustdb.gpg: trustdb created
+gpg: key 9A84159D7001A4E5: public key "Thomas Orozco <thomas@orozco.fr>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+gpg: no ultimately trusted keys found
+gpg: assuming signed data in '/sbin/tini'
+gpg: Signature made Fri Aug 25 12:49:15 2017 UTC
+gpg:                using RSA key 0B588DFF0527A9B7
+gpg: Good signature from "Thomas Orozco <thomas@orozco.fr>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 6380 DC42 8747 F6C3 93FE  ACA5 9A84 159D 7001 A4E5
+     Subkey fingerprint: 595E 85A6 B1B4 779E A4DA  AEC7 0B58 8DFF 0527 A9B7
+ ---> 881279295725
+Removing intermediate container 1d6754ffef94
+Step 18/37 : COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/tcp-slave-agent-port.groovy
+ ---> 603f1cf0049c
+Step 19/37 : ARG JENKINS_VERSION
+ ---> Running in 16bbbcf12ed6
+ ---> 3b3a894a121e
+Removing intermediate container 16bbbcf12ed6
+Step 20/37 : ENV JENKINS_VERSION ${JENKINS_VERSION:-2.121.1}
+ ---> Running in 2d69ec77c553
+ ---> f7686fc7670e
+Removing intermediate container 2d69ec77c553
+Step 21/37 : ARG JENKINS_SHA=5bb075b81a3929ceada4e960049e37df5f15a1e3cfc9dc24d749858e70b48919
+ ---> Running in 50b95010cad6
+ ---> f9646f330051
+Removing intermediate container 50b95010cad6
+Step 22/37 : ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
+ ---> Running in 993fc5999322
+ ---> bd14b0530254
+Removing intermediate container 993fc5999322
+Step 23/37 : RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war   && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" | sha256sum -c -
+ ---> Running in 12e2263a216a
+/usr/share/jenkins/jenkins.war: OK
+ ---> cbec9ade7166
+Removing intermediate container 12e2263a216a
+Step 24/37 : ENV JENKINS_UC https://updates.jenkins.io
+ ---> Running in 2656f5235ec1
+ ---> 3355a01ab56c
+Removing intermediate container 2656f5235ec1
+Step 25/37 : ENV JENKINS_UC_EXPERIMENTAL https://updates.jenkins.io/experimental
+ ---> Running in 1cc7dd1d2745
+ ---> f76d140ac956
+Removing intermediate container 1cc7dd1d2745
+Step 26/37 : ENV JENKINS_INCREMENTALS_REPO_MIRROR https://repo.jenkins-ci.org/incrementals
+ ---> Running in 0f5047fa51e9
+ ---> 3131c50e7485
+Removing intermediate container 0f5047fa51e9
+Step 27/37 : RUN chown -R ${user} "$JENKINS_HOME" /usr/share/jenkins/ref
+ ---> Running in 9120147e58e0
+ ---> 137ee13e13b4
+Removing intermediate container 9120147e58e0
+Step 28/37 : EXPOSE ${http_port}
+ ---> Running in 7297d0e5f51e
+ ---> 867e6f1d4d21
+Removing intermediate container 7297d0e5f51e
+Step 29/37 : EXPOSE ${agent_port}
+ ---> Running in 1c89ca54a400
+ ---> 46e08410bbb8
+Removing intermediate container 1c89ca54a400
+Step 30/37 : ENV COPY_REFERENCE_FILE_LOG $JENKINS_HOME/copy_reference_file.log
+ ---> Running in 45ac43de16ad
+ ---> 7f3ba0ec2420
+Removing intermediate container 45ac43de16ad
+Step 31/37 : USER ${user}
+ ---> Running in e7e6c25ecb7c
+ ---> ff3b0dc4229d
+Removing intermediate container e7e6c25ecb7c
+Step 32/37 : COPY jenkins-support /usr/local/bin/jenkins-support
+ ---> 3a2598da0336
+Step 33/37 : COPY jenkins.sh /usr/local/bin/jenkins.sh
+ ---> 823fefdd9a30
+Step 34/37 : COPY tini-shim.sh /bin/tini
+ ---> 59e1b798a8a8
+Step 35/37 : ENTRYPOINT /sbin/tini -- /usr/local/bin/jenkins.sh
+ ---> Running in 6a227a68bbcd
+ ---> 267374163417
+Removing intermediate container 6a227a68bbcd
+Step 36/37 : COPY plugins.sh /usr/local/bin/plugins.sh
+ ---> ac5e1fc2a853
+Step 37/37 : COPY install-plugins.sh /usr/local/bin/install-plugins.sh
+ ---> be51f5d52ec8
+Successfully built be51f5d52ec8
+Successfully tagged jenkins:latest
+
+docker run --name jenkins_s390x -P jenkins
+Running from: /usr/share/jenkins/jenkins.war
+webroot: EnvVars.masterEnvVars.get("JENKINS_HOME")
+Jul 28, 2018 1:17:49 PM org.eclipse.jetty.util.log.Log initialized
+INFO: Logging initialized @14108ms to org.eclipse.jetty.util.log.JavaUtilLog
+Jul 28, 2018 1:17:50 PM winstone.Logger logInternal
+INFO: Beginning extraction from war file
+.....
+
+
+

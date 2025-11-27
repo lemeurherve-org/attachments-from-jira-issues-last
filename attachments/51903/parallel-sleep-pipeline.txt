@@ -1,0 +1,35 @@
+pipeline {
+	
+    agent any
+
+    options { 
+        parallelsAlwaysFailFast() 
+    }
+    	
+    stages {
+        stage('A') {
+            parallel {
+                stage('Docs') {
+                    steps { 
+                        sleep 10
+                    }
+                }
+                
+                stage('Build') {
+                    steps { 
+                        sleep 5
+                        sh 'exit 1'
+                    }
+                }
+                
+                stage('Tests') {
+                    steps {
+                      catchError(catchInterruptions: false) {
+                            sleep 10
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,60 @@
+Index: src/main/java/hudson/plugins/clearcase/ClearToolExec.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/ClearToolExec.java	(revision 28776)
++++ src/main/java/hudson/plugins/clearcase/ClearToolExec.java	(working copy)
+@@ -26,7 +26,6 @@
+ 
+ import hudson.AbortException;
+ import hudson.FilePath;
+-import hudson.plugins.clearcase.util.PathUtil;
+ import hudson.util.ArgumentListBuilder;
+ import hudson.util.VariableResolver;
+ 
+@@ -127,7 +126,6 @@
+ 
+     public List<String> lsview(boolean onlyActiveDynamicViews)
+         throws IOException, InterruptedException {
+-        viewListPattern = getListPattern();
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+         cmd.add("lsview");
+ 
+@@ -142,20 +140,24 @@
+ 
+     public boolean doesViewExist(String viewName)
+         throws IOException, InterruptedException {
+-        List<String> views = lsview(false);
++        ArgumentListBuilder cmd = new ArgumentListBuilder();
++        cmd.add("lsview");
++        cmd.add(viewName);
+ 
+-        for (String v : views) {
+-            if (v.equals(viewName))
+-                return true;
++        ByteArrayOutputStream baos = new ByteArrayOutputStream();
++        if (launcher.run(cmd.toCommandArray(), null, baos, null)) {
++        	List<String> views = parseListOutput(new InputStreamReader(new ByteArrayInputStream(baos.toByteArray())), false);
++            for (String v : views) {
++                if (v.equals(viewName))
++                    return true;
++            }
+         }
+-
+         return false;
+     }
+ 
+     
+     public List<String> lsvob(boolean onlyMounted) throws IOException,
+                                                           InterruptedException {
+-        viewListPattern = getListPattern();
+         ArgumentListBuilder cmd = new ArgumentListBuilder();
+         cmd.add("lsvob");
+ 
+@@ -227,7 +229,7 @@
+         BufferedReader reader = new BufferedReader(consoleReader);
+         String line = reader.readLine();
+         while (line != null) {
+-            Matcher matcher = viewListPattern.matcher(line);
++            Matcher matcher = getListPattern().matcher(line);
+             if (matcher.find() && matcher.groupCount() == 3) {
+                 if ((!onlyStarMarked)
+                     || (onlyStarMarked && matcher.group(1).equals("*"))) {

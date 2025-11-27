@@ -1,0 +1,24 @@
+Index: src/main/resources/com/sonyericsson/jenkins/plugins/bfa/model/FailureCauseMatrixBuildAction/summary.groovy
+===================================================================
+--- src/main/resources/com/sonyericsson/jenkins/plugins/bfa/model/FailureCauseMatrixBuildAction/summary.groovy	(revision 548)
++++ src/main/resources/com/sonyericsson/jenkins/plugins/bfa/model/FailureCauseMatrixBuildAction/summary.groovy	(working copy)
+@@ -32,8 +32,8 @@
+ 
+ index = 1
+ 
+-def rootFailureDisplayData = my.getFailureCauseDisplayData()
+-if (PluginImpl.getInstance().isNoCausesEnabled() || !rootFailureDisplayData.isEmpty()) {
++def matrixRuns = my.getRunsWithAction()
++if (PluginImpl.getInstance().isNoCausesEnabled() || !matrixRuns.isEmpty()) {
+ 
+     tr {
+         td {
+@@ -44,7 +44,7 @@
+         }
+     }
+ 
+-    my.getRunsWithAction().each { run ->
++    matrixRuns.each { run ->
+         tr {
+             td {}
+             td(style: "font-size: larger; font-weight: bold") {

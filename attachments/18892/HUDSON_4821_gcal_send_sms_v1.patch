@@ -1,0 +1,194 @@
+Index: src/main/java/gcal/gcalPublisher.java
+===================================================================
+--- src/main/java/gcal/gcalPublisher.java	(revision 23629)
++++ src/main/java/gcal/gcalPublisher.java	(working copy)
+@@ -30,10 +30,12 @@
+ import com.google.gdata.data.*;
+ import com.google.gdata.data.calendar.*;
+ import com.google.gdata.data.extensions.*;
++import com.google.gdata.data.extensions.Reminder.Method;
+ import com.google.gdata.util.*;
+ import java.net.URL;
+ import java.net.MalformedURLException;
+ import java.io.IOException;
++import java.util.TimeZone;
+ 
+ 
+ /**
+@@ -62,20 +64,38 @@
+     return password;
+   }
+ 
++  private final boolean sendSms;
++  public boolean getSendSms(){
++    return sendSms;
++  }
++
+   private final String statusToPublish;
+   public String getStatusToPublish(){
+     return statusToPublish;
+   }
+ 
+-  gcalPublisher(String url, String login, String password, String statusToPublish) {
++  private final String statusToSendSms;
++  public String getStatusToSendSms(){
++    return statusToSendSms;
++  }
++
++  gcalPublisher(String url, String login, String password, String statusToPublish, boolean sendSms, String statusToSendSms) {
+     int startPoint       = url.indexOf("/feeds/")+7;
+     this.calendarID      = url.substring(startPoint,url.indexOf("/",startPoint+1));
+     this.url             = serviceURL+"feeds/"+calendarID+"/private/full";
+     this.login           = login;
+     this.password        = password;
+     this.statusToPublish = statusToPublish==null?"All":statusToPublish;
++    this.sendSms         = sendSms;
++    this.statusToSendSms = statusToSendSms==null?"Failures":statusToSendSms;
+   }
+ 
++  private boolean statusMatchesBuildResult( String status, AbstractBuild<?,?> build ) {
++     return status.equals("All") ||
++        (status.equals("Successes") && build.getResult()==Result.SUCCESS ) ||
++        (status.equals("Failures") && build.getResult()==Result.FAILURE );
++  }
++
+   @Override
+   public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) {
+     /*
+@@ -89,10 +109,7 @@
+     listener.getLogger().println("GCal: job display name  : "+build.getParent().getDisplayName());
+     listener.getLogger().println("GCal: mailer base url   : "+Mailer.DESCRIPTOR.getUrl());
+     */
+-    if ( statusToPublish.equals("All") ||
+-        (statusToPublish.equals("Successes") && build.getResult()==Result.SUCCESS ) ||
+-        (statusToPublish.equals("Failures") && build.getResult()==Result.FAILURE )
+-        ) {
++    if ( statusMatchesBuildResult( statusToPublish, build ) ) {
+       try {
+ 
+         listener.getLogger().println("GCal: Preparing calendar update request...");
+@@ -101,10 +118,30 @@
+         URL postUrl = new URL(url);
+         CalendarEventEntry myEntry = new CalendarEventEntry();
+ 
+-        myEntry.setTitle(new PlainTextConstruct(build.getParent().getDisplayName()+" build "+build.getDisplayName()+" "+(build.getResult()==Result.FAILURE?"failed":"succeeded")));
++        boolean failed = build.getResult()==Result.FAILURE;
++        // 
++        boolean hackGcalSmsInUse = true;
++        myEntry.setTitle(new PlainTextConstruct(build.getParent().getDisplayName()+" build "+build.getDisplayName()+" "+(failed?"failed":"succeeded")));
+         myEntry.setContent(new PlainTextConstruct("Check the status for build "+build.getDisplayName()+" here "+ Mailer.descriptor().getUrl() + build.getUrl()));
+-        DateTime startTime = DateTime.parseDateTime(build.getTimestampString2());
+-        DateTime endTime = DateTime.now();
++
++        DateTime startTime;
++        DateTime endTime;
++        Reminder reminder = null;
++        if (sendSms && statusMatchesBuildResult( statusToSendSms, build) ) {
++          long tzOffset = TimeZone.getDefault().getRawOffset(); // I don't think we should take care of the daylight savings
++
++          // event needs to be in the future for SMS notification to work.
++          // We should probably secure the fact that the start minute is indeed in the future if we really want a notification to be sent.
++          endTime = new DateTime(DateTime.now().getValue() + tzOffset + 70*1000); // 70 sec just to give us a bit of time for the notification.
++          startTime = endTime;
++
++          reminder = new Reminder();
++          reminder.setMinutes(0);
++          reminder.setMethod(Method.SMS);
++        } else {
++          endTime = DateTime.now();
++          startTime = DateTime.parseDateTime(build.getTimestampString2());
++        }
+         When eventTimes = new When();
+         eventTimes.setStartTime(startTime);
+         eventTimes.setEndTime(endTime);
+@@ -112,8 +149,14 @@
+ 
+         // Send the request and receive the response:
+         listener.getLogger().println("GCal: Sending calendar update request...");
+-        myService.insert(postUrl, myEntry);
++        myEntry = myService.insert(postUrl, myEntry);
+         listener.getLogger().println("GCal: Calendar updated.");
++        if (reminder != null) {
++          listener.getLogger().println("GCal: Adding SMS reminder.");
++          myEntry.getReminder().add(reminder);
++          myEntry.update();
++          listener.getLogger().println("GCal: SMS reminder added.");
++        }
+       } catch (AuthenticationException e) {
+         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+         listener.error("GCal: Could not authenticate user ["+login+"] to calendar ["+url+"]");
+@@ -158,11 +201,11 @@
+     }
+     @Override
+     public gcalPublisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+-      return new gcalPublisher(req.getParameter("gcal.url"),req.getParameter("gcal.login"),req.getParameter("gcal.password"),req.getParameter("gcal.statusToPublish"));
++      return new gcalPublisher(req.getParameter("gcal.url"),req.getParameter("gcal.login"),req.getParameter("gcal.password"),req.getParameter("gcal.statusToPublish"), "on".equals(req.getParameter("gcal.sendSms")), req.getParameter("gcal.statusToSendSms"));
+     }
+     @Override
+     public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+       return true;
+     }
+   }
+-}
+\ No newline at end of file
++}
+Index: src/main/resources/gcal/gcalPublisher/config.jelly
+===================================================================
+--- src/main/resources/gcal/gcalPublisher/config.jelly	(revision 23629)
++++ src/main/resources/gcal/gcalPublisher/config.jelly	(working copy)
+@@ -16,6 +16,26 @@
+     <f:radio name="gcal.statusToPublish" value="Failures" checked="${instance.statusToPublish=='Failures'}"/>
+     <label>Only failing builds</label>
+   </f:entry>
++  <!--f:entry title="Send SMS">
++    <f:checkbox name="gcal.useSms" checked="${instance.useSms}" />
++  </f:entry-->
++
++  <f:optionalBlock title="Send SMS?"
++                   name="gcal.sendSms" checked="${instance.sendSms}">
++    <f:nested>
++      <table>
++        <f:entry title="Which builds to send an SMS ? (Defaults to Failures)">
++          <f:radio name="gcal.statusToSendSms" value="All"     checked="${instance.statusToSendSms=='All'}"/>
++          <label>All buils</label>
++          <f:radio name="gcal.statusToSendSms" value="Successes" checked="${instance.statusToSendSms=='Successes'}"/>
++          <label>Only successful builds</label>
++          <f:radio name="gcal.statusToSendSms" value="Failures" checked="${instance.statusToSendSms=='Failures'}"/>
++          <label>Only failing builds</label>
++        </f:entry>
++      </table>
++    </f:nested>
++  </f:optionalBlock>
++
+   <!--
+   <f:entry title="Get Calendars">
+     <input name="gcal.get" value="Fetch calendars" type="button"
+@@ -23,4 +43,4 @@
+   </f:entry>
+   -->
+ 
+-</j:jelly>
+\ No newline at end of file
++</j:jelly>
+Index: src/main/webapp/help-sendSms.html
+===================================================================
+--- src/main/webapp/help-sendSms.html	(revision 0)
++++ src/main/webapp/help-sendSms.html	(revision 0)
+@@ -0,0 +1,7 @@
++<div>
++  <p>
++    When you enable this option, the calendar events will be created so that you can receive (free) notifications by SMS from google.
++    The event time information will be changed a bit so that the event happens slightly in the future. Only failed events will be reported.
++    You need to have configured your calendar properly to receive SMS notifications.
++  </p>
++</div>
+
+Property changes on: src/main/webapp/help-sendSms.html
+___________________________________________________________________
+Added: svn:mime-type
+   + text/html
+Added: svn:keywords
+   + Id
+Added: svn:eol-style
+   + native
+

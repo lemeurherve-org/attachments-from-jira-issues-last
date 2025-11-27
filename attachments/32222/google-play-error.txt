@@ -1,0 +1,74 @@
+Exiting batchmode successfully now!
+Authenticating to Google Play API...
+- Credential:     Google Play
+- Application ID: (REMOVED)
+Uploading 1 APK(s) with application ID: (REMOVED)
+      APK file: (REMOVED)
+    SHA-1 hash: (REMOVED)
+   versionCode: 381
+ minSdkVersion: 15
+
+Assigning APK(s) to alpha release track...
+The alpha release track will now contain the APK(s): 381
+
+Applying changes to Google Play...
+Upload failed: org.jenkinsci.plugins.googleplayandroidpublisher.PublisherApiException: com.google.api.client.googleapis.json.GoogleJsonResponseException: 500 Internal Server Error
+{
+  "code" : 500,
+  "message" : null
+}
+	at org.jenkinsci.plugins.googleplayandroidpublisher.AbstractPublisherTask.call(AbstractPublisherTask.java:34)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:328)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at hudson.remoting.Engine$1$1.run(Engine.java:63)
+	at java.lang.Thread.run(Thread.java:745)
+	at ......remote call to UnityMac(Native Method)
+	at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1416)
+	at hudson.remoting.UserResponse.retrieve(UserRequest.java:220)
+	at hudson.remoting.Channel.call(Channel.java:781)
+	at hudson.FilePath.act(FilePath.java:1074)
+	at org.jenkinsci.plugins.googleplayandroidpublisher.ApkPublisher.perform(ApkPublisher.java:303)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:32)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:782)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:723)
+	at hudson.model.Build$BuildExecution.post2(Build.java:185)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:668)
+	at hudson.model.Run.execute(Run.java:1763)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:410)
+Caused by: com.google.api.client.googleapis.json.GoogleJsonResponseException: 500 Internal Server Error
+{
+  "code" : 500,
+  "message" : null
+}
+	at com.google.api.client.googleapis.json.GoogleJsonResponseException.from(GoogleJsonResponseException.java:145)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:113)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:40)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest$1.interceptResponse(AbstractGoogleClientRequest.java:312)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:1049)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:410)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:343)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.execute(AbstractGoogleClientRequest.java:460)
+	at org.jenkinsci.plugins.googleplayandroidpublisher.ApkUploadTask.execute(ApkUploadTask.java:145)
+	at org.jenkinsci.plugins.googleplayandroidpublisher.ApkUploadTask.execute(ApkUploadTask.java:34)
+	at org.jenkinsci.plugins.googleplayandroidpublisher.AbstractPublisherTask.call(AbstractPublisherTask.java:31)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:118)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+	at hudson.remoting.Request$2.run(Request.java:328)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at hudson.remoting.Engine$1$1.run(Engine.java:63)
+	at java.lang.Thread.run(Thread.java:745)
+
+- No changes have been applied to the Google Play account
+Build step 'Upload Android APK to Google Play' marked build as failure
+Warning: you have no plugins providing access control for builds, so falling back to legacy behavior of permitting any downstream builds to be triggered
+Finished: FAILURE

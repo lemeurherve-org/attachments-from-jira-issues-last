@@ -1,0 +1,13 @@
+Index: JUnitResultArchiver.java
+===================================================================
+--- JUnitResultArchiver.java	(revision 36542)
++++ JUnitResultArchiver.java	(working copy)
+@@ -138,7 +138,7 @@
+ 				throw new AbortException(Messages.JUnitResultArchiver_BadXML(testResults));
+ 			}
+             result.freeze(action);
+-			if (result.getPassCount() == 0 && result.getFailCount() == 0)
++			if (result.getPassCount() == 0 && result.getFailCount() == 0 && result.getSkipCount() == 0)
+ 				throw new AbortException(Messages.JUnitResultArchiver_ResultIsEmpty());
+ 
+             // TODO: Move into JUnitParser [BUG 3123310]

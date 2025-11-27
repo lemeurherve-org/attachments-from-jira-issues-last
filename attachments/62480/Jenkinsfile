@@ -1,0 +1,30 @@
+pipeline {
+    agent none
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout()
+    }
+    environment {
+        GIT_AUTHOR_DATE="Wed Feb 16 14:00 2037 +0100"
+        GIT_COMMITTER_DATE="Wed Feb 16 14:00 2037 +0100"
+    }
+    stages {
+        stage('Stage 1'){
+            agent { label 'win-64' }
+            steps {
+                checkout scm
+                bat 'git rev-parse HEAD'
+                bat 'git show'
+            }
+        }
+        stage('Stage 2'){
+            agent { label 'win-64' }
+            steps {
+                checkout scm
+                bat 'git rev-parse HEAD'
+                bat 'git show'
+            }
+        }
+    }
+}
+

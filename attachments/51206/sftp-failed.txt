@@ -1,0 +1,17 @@
+[Pipeline] stage
+[Pipeline] { (Download logs)
+[Pipeline] dir
+Running in C:\temp
+[Pipeline] {
+[Pipeline] sshCommand
+Executing command on UMBCS SOC[10.xxx.xxx.xxx]: ls -ltr ~ sudo: false
+total 2276
+-rw-r--r--. 1 **** users 2326973 May 13 09:53 test.zip
+[Pipeline] sshGet
+Receiving a file/directory from UMBCS SOC[10.xxx.xxx.xxx]: from: ~/test.zip into: C:\temp\202005131013-soc-.zip
+Failed SFTP GET: UMBCS SOC:~/test.zip -> C:\temp\202005131013-soc-.zip
+[Pipeline] echo
+something failed
+[Pipeline] echo
+org.hidetake.groovy.ssh.operation.SftpException: Failed SFTP GET: UMBCS SOC:~/test.zip -> C:\temp\202005131013-soc-.zip: (SSH_FX_NO_SUCH_FILE: A reference was made to a file which does not exist): No such file
+[Pipeline] }

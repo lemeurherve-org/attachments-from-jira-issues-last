@@ -1,0 +1,16 @@
+pipeline {
+  agent {
+    label 'jenkins-packer'
+  }	        
+  stages {  
+    stage ('Notify') {
+      steps {
+        emailext (
+          subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${currentBuild.displayName}]'",
+          body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${currentBuild.displayName}]':</p>
+          <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${currentBuild.displayName}]</a>"</p>""",
+          recipientProviders: [[$class: 'RequesterRecipientProvider']])
+      }
+    }
+  }
+}   

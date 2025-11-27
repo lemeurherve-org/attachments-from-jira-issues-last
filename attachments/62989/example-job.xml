@@ -1,0 +1,185 @@
+<project>
+<actions/>
+<description><b>Always enter a description for your job.</b><br> Please include information about what the purpose of the build is including artifacts created, and possibly if said artifact is consumed by another job.</description>
+<keepDependencies>false</keepDependencies>
+<properties>
+<hudson.plugins.jira.JiraProjectProperty plugin="jira@3.13">
+<siteName>http://atl1.lab.vts-i.com/jira/</siteName>
+</hudson.plugins.jira.JiraProjectProperty>
+<hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.8">
+<useBuildBlocker>true</useBuildBlocker>
+<blockLevel>GLOBAL</blockLevel>
+<scanQueueFor>DISABLED</scanQueueFor>
+<blockingJobs>If this job is triggered by aanother build it may be helpful to set this build to not start if that other is running. Can be multiple builds.</blockingJobs>
+</hudson.plugins.buildblocker.BuildBlockerProperty>
+<jenkins.model.BuildDiscarderProperty>
+<strategy class="hudson.tasks.LogRotator">
+<daysToKeep>-1</daysToKeep>
+<numToKeep>10</numToKeep>
+<artifactDaysToKeep>-1</artifactDaysToKeep>
+<artifactNumToKeep>-1</artifactNumToKeep>
+</strategy>
+</jenkins.model.BuildDiscarderProperty>
+<com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@332.va_1ee476d8f6d">
+<autoRebuild>false</autoRebuild>
+<rebuildDisabled>false</rebuildDisabled>
+</com.sonyericsson.rebuild.RebuildSettings>
+<hudson.model.ParametersDefinitionProperty>
+<parameterDefinitions>
+<hudson.model.StringParameterDefinition>
+<name>BUILD_NAME</name>
+<description>This is just the build display name.<br> If you are make a custom dev build change the name to display the name of your story.<br> If this is a release candidate change the display name to reflect that.</description>
+<defaultValue>#${BUILD_NUMBER}</defaultValue>
+<trim>true</trim>
+</hudson.model.StringParameterDefinition>
+<hudson.model.StringParameterDefinition>
+<name>BUILD_DESC</name>
+<description>Modify if making a custom dev build or a release build.</description>
+<defaultValue>Unmodified build using *insert branch variable* branches.</defaultValue>
+<trim>false</trim>
+</hudson.model.StringParameterDefinition>
+</parameterDefinitions>
+</hudson.model.ParametersDefinitionProperty>
+</properties>
+<scm class="hudson.scm.NullSCM"/>
+<canRoam>true</canRoam>
+<disabled>false</disabled>
+<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+<jdk>(System)</jdk>
+<triggers/>
+<concurrentBuild>false</concurrentBuild>
+<builders>
+<hudson.tasks.Shell>
+<command>#/bin/bash echo Hello there. a=10000 while [ $a -gt 1 ] do echo $a a=`expr $a - 1` done</command>
+<configuredLocalRules/>
+</hudson.tasks.Shell>
+</builders>
+<publishers>
+<hudson.plugins.emailext.ExtendedEmailPublisher plugin="email-ext@2.97">
+<recipientList>$DEFAULT_RECIPIENTS, my-email</recipientList>
+<configuredTriggers>
+<hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+<email>
+<subject>$PROJECT_DEFAULT_SUBJECT</subject>
+<body>$PROJECT_DEFAULT_CONTENT</body>
+<recipientProviders>
+<hudson.plugins.emailext.plugins.recipients.DevelopersRecipientProvider/>
+<hudson.plugins.emailext.plugins.recipients.ListRecipientProvider/>
+</recipientProviders>
+<attachmentsPattern/>
+<attachBuildLog>false</attachBuildLog>
+<compressBuildLog>false</compressBuildLog>
+<replyTo>$PROJECT_DEFAULT_REPLYTO</replyTo>
+<contentType>project</contentType>
+</email>
+</hudson.plugins.emailext.plugins.trigger.FailureTrigger>
+<hudson.plugins.emailext.plugins.trigger.FixedTrigger>
+<email>
+<subject>$PROJECT_DEFAULT_SUBJECT</subject>
+<body>$PROJECT_DEFAULT_CONTENT</body>
+<recipientProviders>
+<hudson.plugins.emailext.plugins.recipients.DevelopersRecipientProvider/>
+<hudson.plugins.emailext.plugins.recipients.ListRecipientProvider/>
+</recipientProviders>
+<attachmentsPattern/>
+<attachBuildLog>false</attachBuildLog>
+<compressBuildLog>false</compressBuildLog>
+<replyTo>$PROJECT_DEFAULT_REPLYTO</replyTo>
+<contentType>project</contentType>
+</email>
+</hudson.plugins.emailext.plugins.trigger.FixedTrigger>
+</configuredTriggers>
+<contentType>default</contentType>
+<defaultSubject>$DEFAULT_SUBJECT</defaultSubject>
+<defaultContent>$DEFAULT_CONTENT</defaultContent>
+<attachmentsPattern/>
+<presendScript>$DEFAULT_PRESEND_SCRIPT</presendScript>
+<postsendScript>$DEFAULT_POSTSEND_SCRIPT</postsendScript>
+<attachBuildLog>false</attachBuildLog>
+<compressBuildLog>false</compressBuildLog>
+<replyTo>$DEFAULT_REPLYTO</replyTo>
+<from/>
+<saveOutput>false</saveOutput>
+<disabled>false</disabled>
+</hudson.plugins.emailext.ExtendedEmailPublisher>
+</publishers>
+<buildWrappers>
+<hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.43">
+<deleteDirs>false</deleteDirs>
+<cleanupParameter/>
+<externalDelete/>
+<disableDeferredWipeout>false</disableDeferredWipeout>
+</hudson.plugins.ws__cleanup.PreBuildCleanup>
+<org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper plugin="credentials-binding@...">
+<bindings>
+<org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+<credentialsId>my-creds</credentialsId>
+<usernameVariable>USER</usernameVariable>
+<passwordVariable>PW</passwordVariable>
+</org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+</bindings>
+</org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+<hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.20"/>
+<hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@1.0.4">
+<colorMapName>xterm</colorMapName>
+</hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+<org.jfrog.hudson.generic.ArtifactoryGenericConfigurator plugin="artifactory@3.17.1">
+<specsDeployerDetails>
+<artifactoryName>OUR Artifactory</artifactoryName>
+<artifactoryUrl>http://our-url:8081/artifactory</artifactoryUrl>
+<stagingPlugin/>
+</specsDeployerDetails>
+<specsResolverDetails>
+<artifactoryName>OUR Artifactory</artifactoryName>
+<artifactoryUrl>http://our-url:8081/artifactory</artifactoryUrl>
+<stagingPlugin/>
+</specsResolverDetails>
+<deployerCredentialsConfig>
+<credentialsId/>
+<overridingCredentials>false</overridingCredentials>
+<ignoreCredentialPluginDisabled>false</ignoreCredentialPluginDisabled>
+</deployerCredentialsConfig>
+<resolverCredentialsConfig>
+<credentialsId/>
+<overridingCredentials>false</overridingCredentials>
+<ignoreCredentialPluginDisabled>false</ignoreCredentialPluginDisabled>
+</resolverCredentialsConfig>
+<uploadSpec>
+<spec>{ "files": [ { "pattern": "*.zip/jar/rpm", "target": "*REPO*/*SUB_FOLDER/" } ] }</spec>
+</uploadSpec>
+<downloadSpec>
+<spec/>
+</downloadSpec>
+<deployBuildInfo>true</deployBuildInfo>
+<includeEnvVars>false</includeEnvVars>
+<envVarsPatterns>
+<includePatterns/>
+<excludePatterns>*password*,*psw*,*secret*,*key*,*token*</excludePatterns>
+</envVarsPatterns>
+<discardOldBuilds>true</discardOldBuilds>
+<discardBuildArtifacts>true</discardBuildArtifacts>
+<asyncBuildRetention>false</asyncBuildRetention>
+<multiConfProject>false</multiConfProject>
+<customBuildName/>
+<overrideBuildName>false</overrideBuildName>
+<useSpecs>true</useSpecs>
+<project/>
+</org.jfrog.hudson.generic.ArtifactoryGenericConfigurator>
+<org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@2.4.0">
+<template>#${BUILD_NUMBER}</template>
+<descriptionTemplate>${BUILD_DESC}</descriptionTemplate>
+<runAtStart>true</runAtStart>
+<runAtEnd>false</runAtEnd>
+</org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+<hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.32">
+<strategy class="hudson.plugins.build_timeout.impl.ElasticTimeOutStrategy">
+<timeoutPercentage>150</timeoutPercentage>
+<numberOfBuilds>3</numberOfBuilds>
+<failSafeTimeoutDuration>false</failSafeTimeoutDuration>
+<timeoutMinutesElasticDefault>60</timeoutMinutesElasticDefault>
+</strategy>
+<operationList/>
+</hudson.plugins.build__timeout.BuildTimeoutWrapper>
+</buildWrappers>
+</project>

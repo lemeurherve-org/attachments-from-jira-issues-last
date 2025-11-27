@@ -1,0 +1,31 @@
+Index: src/main/java/hudson/scm/SubversionChangeLogBuilder.java
+===================================================================
+--- src/main/java/hudson/scm/SubversionChangeLogBuilder.java	(revision 12551)
++++ src/main/java/hudson/scm/SubversionChangeLogBuilder.java	(working copy)
+@@ -26,6 +26,7 @@
+ import java.io.IOException;
+ import java.io.PrintStream;
+ import java.io.File;
++import java.net.ConnectException;
+ import java.util.Map;
+ import java.util.Collection;
+ 
+@@ -96,7 +97,7 @@
+         return SubversionSCM.DescriptorImpl.DESCRIPTOR.createAuthenticationProvider();
+     }
+ 
+-    private boolean buildModule(String url, SVNLogClient svnlc, SVNXMLLogHandler logHandler) {
++    private boolean buildModule(String url, SVNLogClient svnlc, SVNXMLLogHandler logHandler) throws ConnectException{
+         PrintStream logger = listener.getLogger();
+         Long prevRev = previousRevisions.get(url);
+         if(prevRev==null) {
+@@ -129,7 +130,8 @@
+             if(debug)
+                 listener.getLogger().println("done");
+         } catch (SVNException e) {
+-            e.printStackTrace(listener.error("revision check failed on "+url));
++            listener.error("revision check failed on "+url);
++            throw new ConnectException(e.getLocalizedMessage());
+         }
+         return true;
+     }

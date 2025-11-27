@@ -1,0 +1,326 @@
+diff --git a/src/main/java/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition.java b/src/main/java/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition.java
+index d5bc0b2..f043333 100644
+--- a/src/main/java/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition.java
++++ b/src/main/java/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition.java
+@@ -91,22 +91,23 @@
+   private final boolean reverseByName;
+   private final String defaultValue;
+   private final String maxTags;
++  private final String extraListDirs;
+   private static final String SVN_BRANCHES = "branches";
+   private static final String SVN_TAGS = "tags";
+   private static final String SVN_TRUNK = "trunk";
+   
+   @Deprecated
+   public ListSubversionTagsParameterDefinition(String name, String tagsDir, String tagsFilter, String defaultValue, String maxTags, boolean reverseByDate, boolean reverseByName, String uuid) {
+-    this(name, tagsDir, null, tagsFilter, defaultValue, maxTags, reverseByDate, reverseByName);
++    this(name, tagsDir, null, tagsFilter, defaultValue, maxTags, reverseByDate, reverseByName, null);
+   }
+ 
+   @Deprecated
+   public ListSubversionTagsParameterDefinition(String name, String tagsDir, String tagsFilter, String defaultValue, String maxTags, boolean reverseByDate, boolean reverseByName, String uuid, String credentialsId) {
+-      this(name, tagsDir, credentialsId, tagsFilter, defaultValue, maxTags, reverseByDate, reverseByName);
++      this(name, tagsDir, credentialsId, tagsFilter, defaultValue, maxTags, reverseByDate, reverseByName, null);
+   }
+ 
+   @DataBoundConstructor
+-  public ListSubversionTagsParameterDefinition(String name, String tagsDir, String credentialsId, String tagsFilter, String defaultValue, String maxTags, boolean reverseByDate, boolean reverseByName) {
++  public ListSubversionTagsParameterDefinition(String name, String tagsDir, String credentialsId, String tagsFilter, String defaultValue, String maxTags, boolean reverseByDate, boolean reverseByName, String extraListDirs) {
+     super(name, ResourceBundleHolder.get(ListSubversionTagsParameterDefinition.class).format("TagDescription"));
+     this.tagsDir = Util.removeTrailingSlash(tagsDir);
+     this.tagsFilter = tagsFilter;
+@@ -115,6 +116,7 @@
+     this.defaultValue = defaultValue;
+     this.maxTags = maxTags;
+     this.credentialsId = credentialsId;
++    this.extraListDirs = extraListDirs;
+   }
+ 
+   // This method is invoked from a GET or POST HTTP request
+@@ -182,7 +184,9 @@
+       } else {
+         SimpleSVNDirEntryHandler dirEntryHandler = new SimpleSVNDirEntryHandler(tagsFilter);
+         logClient.doList(repoURL, SVNRevision.HEAD, SVNRevision.HEAD, false, SVNDepth.IMMEDIATES, SVNDirEntry.DIRENT_TIME, dirEntryHandler);
++        listExtraDirs(logClient, repoURL, dirEntryHandler);
+         dirs = dirEntryHandler.getDirs(isReverseByDate(), isReverseByName());
++        removeListExtraDirs(dirs);
+       }
+     }
+     catch(SVNException e) {
+@@ -235,8 +239,48 @@
+ 
+   public String getMaxTags() {
+     return maxTags;
+-  }  
+-
++  }
++  
++  public String getExtraListDirs() {
++    return extraListDirs;
++  }
++  
++  /**
++   * List the extra directories from svn.
++   */
++  private void listExtraDirs(SVNLogClient logClient, SVNURL repoURL, SimpleSVNDirEntryHandler dirEntryHandler) throws SVNException {
++    if (extraListDirs == null) {
++      return;
++    }
++    if (extraListDirs.isEmpty()) {
++      return;
++    }
++    String[] splitDirs = extraListDirs.split(",");
++    for (String dir:splitDirs) {
++      SVNURL extraListRepo = repoURL.appendPath(dir, true);
++      dirEntryHandler.setParentPath(dir);
++      logClient.doList(extraListRepo, SVNRevision.HEAD, SVNRevision.HEAD, false, SVNDepth.IMMEDIATES, SVNDirEntry.DIRENT_TIME, dirEntryHandler);
++    }
++  }
++  
++  /**
++   * Removed the extra list directories from the list so we only have the childeren.
++   * 
++   * @param dirs The list of directories to clean.
++   */
++  private void removeListExtraDirs(List<String> dirs) {
++    if (extraListDirs == null) {
++      return;
++    }
++    if (extraListDirs.isEmpty()) {
++      return;
++    }
++    String[] splitDirs = extraListDirs.split(",");
++    for (String dir:splitDirs) {
++      dirs.remove(dir+"/"); // Only show childeren.
++    }
++  }
++  
+   /**
+    * Checks to see if given repository contains a trunk, branches, and tags
+    * directories.
+@@ -313,6 +357,16 @@
+     dirs.addAll(branches);
+     dirs.addAll(tags);
+ 
++    // Get the extra directories
++    if (extraListDirs != null) {
++      SimpleSVNDirEntryHandler extraEntryHandler = new SimpleSVNDirEntryHandler(null);
++      listExtraDirs(logClient, repoURL, extraEntryHandler);
++      List<String> extraDirs = extraEntryHandler.getDirs(isReverseByDate(), isReverseByName());
++      extraDirs.remove("");
++      removeListExtraDirs(extraDirs);
++      dirs.addAll(extraDirs);
++    }
++
+     // Filter out any unwanted repository locations.
+     if (StringUtils.isNotBlank(tagsFilter) && dirs.size() > 0) {
+       Pattern filterPattern = Pattern.compile(tagsFilter);
+diff --git a/src/main/java/hudson/scm/listtagsparameter/SimpleSVNDirEntryHandler.java b/src/main/java/hudson/scm/listtagsparameter/SimpleSVNDirEntryHandler.java
+index 9f930e2..9a43621 100644
+--- a/src/main/java/hudson/scm/listtagsparameter/SimpleSVNDirEntryHandler.java
++++ b/src/main/java/hudson/scm/listtagsparameter/SimpleSVNDirEntryHandler.java
+@@ -49,6 +49,7 @@
+ 
+   private final List<SVNDirEntry> dirs = new ArrayList<SVNDirEntry>();
+   private final Pattern filterPattern;
++  private String parentPath = null;
+ 
+   public SimpleSVNDirEntryHandler(String filter) {
+     if(Util.fixEmpty(filter) != null) {
+@@ -85,7 +86,7 @@
+ 
+     List<String> sortedDirs = new ArrayList<String>();
+     for (SVNDirEntry dirEntry : dirs) {
+-      sortedDirs.add(dirEntry.getName());
++      sortedDirs.add(dirEntry.getRelativePath());
+     }
+  
+     return sortedDirs;
+@@ -93,9 +94,19 @@
+ 
+   @Override
+   public void handleDirEntry(SVNDirEntry dirEntry) throws SVNException {
++    if (parentPath != null) {
++      dirEntry.setRelativePath(parentPath + "/" + dirEntry.getName());
++    }
+     if(filterPattern == null || filterPattern.matcher(dirEntry.getName()).matches()) {
+       dirs.add(dirEntry);
+     }
+   }
+ 
++  public void setParentPath(String parentPath) {
++    this.parentPath = parentPath;
++  }
++
++  public String getParentPath() {
++    return parentPath;
++  }
+ }
+diff --git a/src/main/resources/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition/config.jelly b/src/main/resources/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition/config.jelly
+index bec9322..c2500b8 100644
+--- a/src/main/resources/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition/config.jelly
++++ b/src/main/resources/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition/config.jelly
+@@ -34,6 +34,9 @@
+     <f:entry title="${%Credentials}" field="credentialsId">
+         <c:select field="credentialsId"/>
+     </f:entry>
++    <f:entry title="${%Extra folders}" field="extraListDirs">
++        <f:textbox/>
++    </f:entry>
+     <f:entry title="${%Tags filter}" field="tagsFilter">
+         <f:textbox/>
+     </f:entry>
+diff --git a/src/main/resources/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition/help-extraListDirs.html b/src/main/resources/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition/help-extraListDirs.html
+new file mode 100644
+index 0000000..984f07c
+--- /dev/null
++++ b/src/main/resources/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinition/help-extraListDirs.html
+@@ -0,0 +1,27 @@
++<!--
++  - The MIT License
++  -
++  - Copyright (c) 2011, Willem Cazander
++  -
++  - Permission is hereby granted, free of charge, to any person obtaining a copy
++  - of this software and associated documentation files (the "Software"), to deal
++  - in the Software without restriction, including without limitation the rights
++  - to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++  - copies of the Software, and to permit persons to whom the Software is
++  - furnished to do so, subject to the following conditions:
++  -
++  - The above copyright notice and this permission notice shall be included in
++  - all copies or substantial portions of the Software.
++  -
++  - THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++  - IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++  - FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++  - AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++  - LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++  - OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
++  - THE SOFTWARE.
++  -->
++
++<div>
++  Comma separated extra sub-directory folders to include with listing of svn tag and/or branches.
++</div>
+diff --git a/src/test/java/hudson/scm/listtagsparameter/ListExtraDirsParameterDefinitionTest.java b/src/test/java/hudson/scm/listtagsparameter/ListExtraDirsParameterDefinitionTest.java
+new file mode 100644
+index 0000000..042a04c
+--- /dev/null
++++ b/src/test/java/hudson/scm/listtagsparameter/ListExtraDirsParameterDefinitionTest.java
+@@ -0,0 +1,84 @@
++package hudson.scm.listtagsparameter;
++
++import static org.junit.Assert.assertEquals;
++import hudson.Proc;
++import hudson.scm.AbstractSubversionTest;
++
++import java.util.Arrays;
++import java.util.List;
++
++import org.junit.Assert;
++import org.jvnet.hudson.test.Bug;
++import org.tmatesoft.svn.core.ISVNDirEntryHandler;
++import org.tmatesoft.svn.core.SVNDirEntry;
++import org.tmatesoft.svn.core.SVNException;
++import org.tmatesoft.svn.core.SVNURL;
++import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
++import org.tmatesoft.svn.core.wc.SVNLogClient;
++import org.tmatesoft.svn.core.wc.SVNRevision;
++
++/**
++ * @author Willem Cazander
++ */
++public class ListExtraDirsParameterDefinitionTest extends AbstractSubversionTest {
++	
++    public void testNormalListing() throws Exception {
++        Proc p = runSvnServe(getClass().getResource("JENKINS-SUBLIST.zip"));
++        try {
++        	Thread.sleep(4321L); // FIXME: Let svnserve finish starting, fix in runSvnServe(), see also ListSubversionTagsParameterDefinitionTest.java
++        	
++            ListSubversionTagsParameterDefinition def = new ListSubversionTagsParameterDefinition("FOO", "svn://localhost/", null, "", "", "", false, false, null);
++            List<String> tags = def.getTags(null);
++            List<String> expected = Arrays.asList("trunk", "branches/a", "branches/b", "branches/b_fix", "branches/c", "tags/a", "tags/b", "tags/c");
++            
++            assertEquals(expected,tags);
++            
++        } finally {
++            p.kill();
++        }
++    }
++    
++    public void testExtraListing() throws Exception {
++        Proc p = runSvnServe(getClass().getResource("JENKINS-SUBLIST.zip"));
++        try {
++        	Thread.sleep(4321L); // FIXME: Let svnserve finish starting, fix in runSvnServe(), see also ListSubversionTagsParameterDefinitionTest.java
++        	
++            ListSubversionTagsParameterDefinition def = new ListSubversionTagsParameterDefinition("FOO", "svn://localhost/", null, "tags.*", "", "", false, false, "tags-auto");
++            List<String> tags = def.getTags(null);
++            List<String> expected = Arrays.asList("tags/a", "tags/b", "tags/c","tags-auto/t_0", "tags-auto/t_1", "tags-auto/t_3");
++            
++            assertEquals(expected,tags);
++            
++        } finally {
++            p.kill();
++        }
++    }
++    
++    public void testBranchListing() throws Exception {
++        Proc p = runSvnServe(getClass().getResource("JENKINS-SUBLIST.zip"));
++        try {
++        	Thread.sleep(4321L); // FIXME: Let svnserve finish starting, fix in runSvnServe(), see also ListSubversionTagsParameterDefinitionTest.java
++        	
++            ListSubversionTagsParameterDefinition def = new ListSubversionTagsParameterDefinition("FOO", "svn://localhost/branches", null, "a|f..", "", "", false, false, "b_fix");
++            List<String> tags = def.getTags(null);
++            List<String> expected = Arrays.asList("a", "b_fix/f_0", "b_fix/f_1");
++            
++            assertEquals(expected,tags);
++            
++        } finally {
++            p.kill();
++        }
++    }
++
++    private void dumpRepositoryContents() throws SVNException {
++        System.out.println("Repository contents:");
++        SVNURL repoURL = SVNURL.parseURIEncoded( "svn://localhost/");
++        SVNLogClient logClient = new SVNLogClient((ISVNAuthenticationManager)null, null);
++        logClient.doList(repoURL, SVNRevision.HEAD, SVNRevision.HEAD, false, true, new ISVNDirEntryHandler() {
++            @Override
++            public void handleDirEntry(SVNDirEntry dirEntry) throws SVNException {
++                System.out.println(dirEntry.getRelativePath());
++            }
++        });
++    }
++}
+diff --git a/src/test/java/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinitionTest.java b/src/test/java/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinitionTest.java
+index 125df37..40a8829 100644
+--- a/src/test/java/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinitionTest.java
++++ b/src/test/java/hudson/scm/listtagsparameter/ListSubversionTagsParameterDefinitionTest.java
+@@ -28,7 +28,7 @@
+     public void testListTags() throws Exception {
+         Proc p = runSvnServe(getClass().getResource("JENKINS-11933.zip"));
+         try {
+-            ListSubversionTagsParameterDefinition def = new ListSubversionTagsParameterDefinition("FOO", "svn://localhost/", null, "", "", "", false, false);
++            ListSubversionTagsParameterDefinition def = new ListSubversionTagsParameterDefinition("FOO", "svn://localhost/", null, "", "", "", false, false, null);
+             List<String> tags = def.getTags(null);
+             List<String> expected = Arrays.asList("trunk", "tags/a", "tags/b", "tags/c");
+             
+diff --git a/src/test/java/hudson/scm/listtagsparameter/SimpleSVNDirEntryHandlerTest.java b/src/test/java/hudson/scm/listtagsparameter/SimpleSVNDirEntryHandlerTest.java
+index be78ac3..a554f85 100644
+--- a/src/test/java/hudson/scm/listtagsparameter/SimpleSVNDirEntryHandlerTest.java
++++ b/src/test/java/hudson/scm/listtagsparameter/SimpleSVNDirEntryHandlerTest.java
+@@ -109,6 +109,7 @@
+         SVNDirEntry entry = Mockito.mock(SVNDirEntry.class);
+         Mockito.when(entry.getDate()).thenReturn(df.parse(lastChanged));
+         Mockito.when(entry.getName()).thenReturn(directoryName);
++        Mockito.when(entry.getRelativePath()).thenReturn(directoryName);
+         return entry;
+     }
+ }
+diff --git a/src/test/resources/hudson/scm/listtagsparameter/JENKINS-SUBLIST.zip b/src/test/resources/hudson/scm/listtagsparameter/JENKINS-SUBLIST.zip
+new file mode 100644
+index 0000000..0fc8c72
+--- /dev/null
++++ b/src/test/resources/hudson/scm/listtagsparameter/JENKINS-SUBLIST.zip
+Binary files differ

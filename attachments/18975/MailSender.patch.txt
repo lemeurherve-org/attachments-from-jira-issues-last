@@ -1,0 +1,31 @@
+Index: main/core/src/main/java/hudson/tasks/MailSender.java
+===================================================================
+--- main/core/src/main/java/hudson/tasks/MailSender.java	(リビジョン 24903)
++++ main/core/src/main/java/hudson/tasks/MailSender.java	(作業コピー)
+@@ -158,7 +158,7 @@
+         msg.setSubject(getSubject(build, "Hudson build is back to " + subject + ": "),"UTF-8");
+         StringBuffer buf = new StringBuffer();
+         appendBuildUrl(build, buf);
+-        msg.setText(buf.toString());
++        msg.setText(buf.toString(),"UTF-8");
+ 
+         return msg;
+     }
+@@ -179,7 +179,7 @@
+         msg.setSubject(getSubject(build, subject),"UTF-8");
+         StringBuffer buf = new StringBuffer();
+         appendBuildUrl(build, buf);
+-        msg.setText(buf.toString());
++        msg.setText(buf.toString(),"UTF-8");
+ 
+         return msg;
+     }
+@@ -272,7 +272,7 @@
+             buf.append("Failed to access build log\n\n").append(Functions.printThrowable(e));
+         }
+ 
+-        msg.setText(buf.toString());
++        msg.setText(buf.toString(),"UTF-8");
+ 
+         return msg;
+     }

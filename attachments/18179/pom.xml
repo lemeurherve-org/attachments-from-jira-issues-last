@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>GROUP-ID</groupId>
+	<artifactId>ARTIFACT-ID-${my.env.suffix}</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>ARTIFACT</name>
+	<packaging>jar</packaging>
+	<profiles>
+		<profile>
+			<id>profileA</id>
+			<activation>
+				<property>
+					<name>myEnv</name>
+					<value>envA</value>
+				</property>
+			</activation>
+			<properties>
+				<my.env.suffix>ENV-A</my.env.suffix>
+			</properties>
+		</profile>
+		<profile>
+			<id>profileB</id>
+			<activation>
+				<property>
+					<name>myEnv</name>
+					<value>envB</value>
+				</property>
+			</activation>
+			<properties>
+				<my.env.suffix>ENV-B</my.env.suffix>
+			</properties>
+		</profile>
+	</profiles>
+</project>

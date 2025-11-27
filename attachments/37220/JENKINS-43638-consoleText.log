@@ -1,0 +1,268 @@
+Started by user anonymous
+[Pipeline] node
+Running on windows-vagrant in C:\Users\IEUser\workspace\my-spring-boot-app-windows
+[Pipeline] {
+[Pipeline] withMaven
+[withMaven] use JDK installation provided by the build agent
+[withMaven] use Maven installation 'maven-3.3.9'
+[withMaven] use Maven settings provided by the Jenkins Managed Configuration File 'my-maven-settings' 
+[withMaven] use Maven settings.xml 'my-maven-settings' with Maven servers credentials provided by Jenkins (replaceAll: true): [mavenServerId: 'github', jenkinsCredentials: 'github', username: 'dev1', type: 'UsernamePasswordCredentialsImpl'], [mavenServerId: 'nexus', jenkinsCredentials: 'nexus', username: 'admin', type: 'UsernamePasswordCredentialsImpl']
+[withMaven] use Maven global settings provided by the Jenkins Managed Configuration File 'my-global-maven-settings' 
+[withMaven] use Maven global settings.xml 'my-global-maven-settings' with Maven servers credentials provided by Jenkins (replaceAll: true): [mavenServerId: 'nexus', jenkinsCredentials: 'nexus', username: 'admin', type: 'UsernamePasswordCredentialsImpl'], [mavenServerId: 'github', jenkinsCredentials: 'github', username: 'dev1', type: 'UsernamePasswordCredentialsImpl']
+[Pipeline] {
+[Pipeline] git
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/cyrille-leclerc/my-spring-boot-app.git # timeout=10
+Fetching upstream changes from https://github.com/cyrille-leclerc/my-spring-boot-app.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/cyrille-leclerc/my-spring-boot-app.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse "refs/remotes/origin/master^{commit}" # timeout=10
+ > git rev-parse "refs/remotes/origin/origin/master^{commit}" # timeout=10
+Checking out Revision df0c1393477ff9e5aa74bb954edd7c9f05ea9b17 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f df0c1393477ff9e5aa74bb954edd7c9f05ea9b17
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D master # timeout=10
+ > git checkout -b master df0c1393477ff9e5aa74bb954edd7c9f05ea9b17
+ > git rev-list df0c1393477ff9e5aa74bb954edd7c9f05ea9b17 # timeout=10
+[Pipeline] bat
+[my-spring-boot-app-windows] Running batch script
+
+C:\Users\IEUser\workspace\my-spring-boot-app-windows>mvn clean install 
+----- withMaven Wrapper script -----
+Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-10T08:41:47-08:00)
+Maven home: C:\Users\IEUser\tools\hudson.tasks.Maven_MavenInstallation\maven-3.3.9
+Java version: 1.8.0_121, vendor: Oracle Corporation
+Java home: C:\Program Files\Java\jdk1.8.0_121\jre
+Default locale: en_US, platform encoding: Cp1252
+OS name: "windows 10", version: "10.0", arch: "amd64", family: "dos"
+[jenkins-maven-event-spy] INFO generate C:\Users\IEUser\workspace\my-spring-boot-app-windows@tmp\withMavenc15c413e\maven-spy-20170417-135935-187.log ...
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building my-spring-boot-app 0.0.12-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ my-spring-boot-app ---
+[INFO] Deleting C:\Users\IEUser\workspace\my-spring-boot-app-windows\target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ my-spring-boot-app ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ my-spring-boot-app ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to C:\Users\IEUser\workspace\my-spring-boot-app-windows\target\classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ my-spring-boot-app ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory C:\Users\IEUser\workspace\my-spring-boot-app-windows\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ my-spring-boot-app ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to C:\Users\IEUser\workspace\my-spring-boot-app-windows\target\test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.18.1:test (default-test) @ my-spring-boot-app ---
+[INFO] Surefire report directory: C:\Users\IEUser\workspace\my-spring-boot-app-windows\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+13:59:48.363 [main] DEBUG o.s.t.c.j.SpringJUnit4ClassRunner - SpringJUnit4ClassRunner constructor called with [class com.example.DemoApplicationTests]
+13:59:48.464 [main] DEBUG o.s.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
+13:59:48.474 [main] DEBUG o.s.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
+13:59:48.511 [main] DEBUG o.s.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [com.example.DemoApplicationTests] from class [org.springframework.test.context.web.WebTestContextBootstrapper]
+13:59:48.586 [main] DEBUG o.s.t.c.w.WebTestContextBootstrapper - Found explicit ContextLoader class [org.springframework.boot.test.SpringApplicationContextLoader] for context configuration attributes [ContextConfigurationAttributes@490ab905 declaringClass = 'com.example.DemoApplicationTests', classes = '{class com.example.DemoApplication}', locations = '{}', inheritLocations = true, initializers = '{}', inheritInitializers = true, name = [null], contextLoaderClass = 'org.springframework.boot.test.SpringApplicationContextLoader']
+13:59:48.597 [main] DEBUG o.s.t.c.s.AbstractContextLoader - Did not detect default resource location for test class [com.example.DemoApplicationTests]: class path resource [com/example/DemoApplicationTests-context.xml] does not exist
+13:59:48.597 [main] DEBUG o.s.t.c.s.AbstractContextLoader - Did not detect default resource location for test class [com.example.DemoApplicationTests]: class path resource [com/example/DemoApplicationTestsContext.groovy] does not exist
+13:59:48.597 [main] INFO  o.s.t.c.s.AbstractContextLoader - Could not detect default resource locations for test class [com.example.DemoApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+13:59:48.600 [main] DEBUG o.s.t.c.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [com.example.DemoApplicationTests]
+13:59:48.606 [main] DEBUG o.s.t.c.w.WebTestContextBootstrapper - @TestExecutionListeners is not present for class [com.example.DemoApplicationTests]: using defaults.
+13:59:48.624 [main] INFO  o.s.t.c.w.WebTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+13:59:48.652 [main] INFO  o.s.t.c.w.WebTestContextBootstrapper - Could not instantiate TestExecutionListener [org.springframework.test.context.transaction.TransactionalTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttributeSource]
+13:59:48.654 [main] INFO  o.s.t.c.w.WebTestContextBootstrapper - Could not instantiate TestExecutionListener [org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttribute]
+13:59:48.671 [main] INFO  o.s.t.c.w.WebTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@9660f4e, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@5a8806ef, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@6c49835d, org.springframework.test.context.support.DirtiesContextTestExecutionListener@5e853265]
+13:59:48.702 [main] DEBUG o.s.t.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test class [com.example.DemoApplicationTests]
+13:59:48.704 [main] DEBUG o.s.t.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframework.test.annotation.SystemProfileValueSource] for class [com.example.DemoApplicationTests]
+Running com.example.DemoApplicationTests
+13:59:48.707 [main] DEBUG o.s.t.c.j.SpringJUnit4ClassRunner - SpringJUnit4ClassRunner constructor called with [class com.example.DemoApplicationTests]
+13:59:48.708 [main] DEBUG o.s.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
+13:59:48.708 [main] DEBUG o.s.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
+13:59:48.711 [main] DEBUG o.s.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [com.example.DemoApplicationTests] from class [org.springframework.test.context.web.WebTestContextBootstrapper]
+13:59:48.715 [main] DEBUG o.s.t.c.w.WebTestContextBootstrapper - Found explicit ContextLoader class [org.springframework.boot.test.SpringApplicationContextLoader] for context configuration attributes [ContextConfigurationAttributes@2d6eabae declaringClass = 'com.example.DemoApplicationTests', classes = '{class com.example.DemoApplication}', locations = '{}', inheritLocations = true, initializers = '{}', inheritInitializers = true, name = [null], contextLoaderClass = 'org.springframework.boot.test.SpringApplicationContextLoader']
+13:59:48.717 [main] DEBUG o.s.t.c.s.AbstractContextLoader - Did not detect default resource location for test class [com.example.DemoApplicationTests]: class path resource [com/example/DemoApplicationTests-context.xml] does not exist
+13:59:48.717 [main] DEBUG o.s.t.c.s.AbstractContextLoader - Did not detect default resource location for test class [com.example.DemoApplicationTests]: class path resource [com/example/DemoApplicationTestsContext.groovy] does not exist
+13:59:48.718 [main] INFO  o.s.t.c.s.AbstractContextLoader - Could not detect default resource locations for test class [com.example.DemoApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+13:59:48.719 [main] DEBUG o.s.t.c.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [com.example.DemoApplicationTests]
+13:59:48.720 [main] DEBUG o.s.t.c.w.WebTestContextBootstrapper - @TestExecutionListeners is not present for class [com.example.DemoApplicationTests]: using defaults.
+13:59:48.723 [main] INFO  o.s.t.c.w.WebTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+13:59:48.725 [main] INFO  o.s.t.c.w.WebTestContextBootstrapper - Could not instantiate TestExecutionListener [org.springframework.test.context.transaction.TransactionalTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttributeSource]
+13:59:48.726 [main] INFO  o.s.t.c.w.WebTestContextBootstrapper - Could not instantiate TestExecutionListener [org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [org/springframework/transaction/interceptor/TransactionAttribute]
+13:59:48.726 [main] INFO  o.s.t.c.w.WebTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@1d29cf23, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@5f282abb, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@167fdd33, org.springframework.test.context.support.DirtiesContextTestExecutionListener@1e965684]
+13:59:48.727 [main] DEBUG o.s.t.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test class [com.example.DemoApplicationTests]
+13:59:48.727 [main] DEBUG o.s.t.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframework.test.annotation.SystemProfileValueSource] for class [com.example.DemoApplicationTests]
+13:59:48.729 [main] DEBUG o.s.t.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test class [com.example.DemoApplicationTests]
+13:59:48.730 [main] DEBUG o.s.t.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframework.test.annotation.SystemProfileValueSource] for class [com.example.DemoApplicationTests]
+13:59:48.738 [main] DEBUG o.s.t.c.s.AbstractDirtiesContextTestExecutionListener - Before test class: context [DefaultTestContext@17579e0f testClass = DemoApplicationTests, testInstance = [null], testMethod = [null], testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4d41cee testClass = DemoApplicationTests, locations = '{}', classes = '{class com.example.DemoApplication}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.SpringApplicationContextLoader', parent = [null]]], class annotated with @DirtiesContext [false] with mode [null].
+13:59:48.740 [main] DEBUG o.s.t.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test class [com.example.DemoApplicationTests]
+13:59:48.741 [main] DEBUG o.s.t.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframework.test.annotation.SystemProfileValueSource] for class [com.example.DemoApplicationTests]
+13:59:48.857 [main] DEBUG o.s.core.env.StandardEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+13:59:48.858 [main] DEBUG o.s.core.env.StandardEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+13:59:48.859 [main] DEBUG o.s.core.env.StandardEnvironment - Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+13:59:48.862 [main] DEBUG o.s.core.env.StandardEnvironment - Adding [integrationTest] PropertySource with search precedence immediately lower than [systemEnvironment]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.3.2.RELEASE)
+
+2017-04-17 13:59:50.095  INFO 3424 --- [           main] com.example.DemoApplicationTests         : Starting DemoApplicationTests on IE11Win10 with PID 3424 (C:\Users\IEUser\workspace\my-spring-boot-app-windows\target\test-classes started by IEUser in C:\Users\IEUser\workspace\my-spring-boot-app-windows)
+2017-04-17 13:59:50.095  INFO 3424 --- [           main] com.example.DemoApplicationTests         : No active profile set, falling back to default profiles: default
+2017-04-17 13:59:50.567  INFO 3424 --- [           main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@243c4f91: startup date [Mon Apr 17 13:59:50 PDT 2017]; root of context hierarchy
+2017-04-17 13:59:54.032  INFO 3424 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Overriding bean definition for bean 'beanNameViewResolver' with a different definition: replacing [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration$WhitelabelErrorViewConfiguration; factoryMethodName=beanNameViewResolver; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/boot/autoconfigure/web/ErrorMvcAutoConfiguration$WhitelabelErrorViewConfiguration.class]] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration$WebMvcAutoConfigurationAdapter; factoryMethodName=beanNameViewResolver; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/boot/autoconfigure/web/WebMvcAutoConfiguration$WebMvcAutoConfigurationAdapter.class]]
+2017-04-17 13:59:57.976  INFO 3424 --- [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@243c4f91: startup date [Mon Apr 17 13:59:50 PDT 2017]; root of context hierarchy
+2017-04-17 13:59:58.156  INFO 3424 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-04-17 13:59:58.157  INFO 3424 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-04-17 13:59:58.236  INFO 3424 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-04-17 13:59:58.236  INFO 3424 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-04-17 13:59:58.930  INFO 3424 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-04-17 14:00:00.758  INFO 3424 --- [           main] com.example.DemoApplicationTests         : Started DemoApplicationTests in 11.885 seconds (JVM running for 13.776)
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.071 sec - in com.example.DemoApplicationTests
+2017-04-17 14:00:00.826  INFO 3424 --- [       Thread-1] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@243c4f91: startup date [Mon Apr 17 13:59:50 PDT 2017]; root of context hierarchy
+Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="C:\Users\IEUser\workspace\my-spring-boot-app-windows@tmp\withMavenc15c413e\pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="C:\Users\IEUser\workspace\my-spring-boot-app-windows@tmp\withMavenc15c413e" 
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ my-spring-boot-app ---
+[INFO] Building jar: C:\Users\IEUser\workspace\my-spring-boot-app-windows\target\my-spring-boot-app-0.0.12-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:1.3.2.RELEASE:repackage (default) @ my-spring-boot-app ---
+[INFO] 
+[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ my-spring-boot-app ---
+[INFO] Installing C:\Users\IEUser\workspace\my-spring-boot-app-windows\target\my-spring-boot-app-0.0.12-SNAPSHOT.jar to C:\Users\IEUser\.m2\repository\com\example\my-spring-boot-app\0.0.12-SNAPSHOT\my-spring-boot-app-0.0.12-SNAPSHOT.jar
+[INFO] Installing C:\Users\IEUser\workspace\my-spring-boot-app-windows\pom.xml to C:\Users\IEUser\.m2\repository\com\example\my-spring-boot-app\0.0.12-SNAPSHOT\my-spring-boot-app-0.0.12-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 29.342 s
+[INFO] Finished at: 2017-04-17T14:00:05-07:00
+[INFO] Final Memory: 27M/69M
+[INFO] ------------------------------------------------------------------------
+[jenkins-maven-event-spy] INFO generated C:\Users\IEUser\workspace\my-spring-boot-app-windows@tmp\withMavenc15c413e\maven-spy-20170417-135935-187.log
+Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="C:\Users\IEUser\workspace\my-spring-boot-app-windows@tmp\withMavenc15c413e\pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="C:\Users\IEUser\workspace\my-spring-boot-app-windows@tmp\withMavenc15c413e" 
+[Pipeline] }
+[withMaven] archive C:\Users\IEUser\workspace\my-spring-boot-app-windows@tmp\withMavenc15c413e\maven-spy-20170417-135935-187.log as maven-spy-20170417-135935-187.log
+[withMaven] Archive artifact C:\Users\IEUser\workspace\my-spring-boot-app-windows\pom.xml under com/example/my-spring-boot-app/0.0.12-SNAPSHOT/my-spring-boot-app-0.0.12-SNAPSHOT.pom
+[withMaven] Archive artifact C:\Users\IEUser\workspace\my-spring-boot-app-windows\target\my-spring-boot-app-0.0.12-SNAPSHOT.jar under com/example/my-spring-boot-app/0.0.12-SNAPSHOT/my-spring-boot-app-0.0.12-SNAPSHOT.jar
+ERROR: [withMaven] WARNING Exception processing the logs generated by the Jenkins Maven Event Spy C:\Users\IEUser\workspace\my-spring-boot-app-windows@tmp\withMavenc15c413e\maven-spy-20170417-135935-187.log, ignore file.  Please report a bug associated for the component 'pipeline-maven-plugin' at https://issues.jenkins-ci.org 
+java.io.IOException: java.io.IOException: Failed to extract C:\Users\IEUser\workspace\my-spring-boot-app-windows/transfer of 2 files
+	at hudson.FilePath.readFromTar(FilePath.java:2300)
+	at hudson.FilePath.copyRecursiveTo(FilePath.java:2209)
+	at jenkins.model.StandardArtifactManager.archive(StandardArtifactManager.java:61)
+	at org.jenkinsci.plugins.pipeline.maven.reporters.GeneratedArtifactsReporter.process(GeneratedArtifactsReporter.java:99)
+	at org.jenkinsci.plugins.pipeline.maven.MavenSpyLogProcessor.processMavenSpyLogs(MavenSpyLogProcessor.java:101)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution$Callback.finished(WithMavenStepExecution.java:770)
+	at org.jenkinsci.plugins.workflow.steps.BodyExecutionCallback$TailCall.onSuccess(BodyExecutionCallback.java:114)
+	at org.jenkinsci.plugins.workflow.cps.CpsBodyExecution$SuccessAdapter.receive(CpsBodyExecution.java:360)
+	at com.cloudbees.groovy.cps.Outcome.resumeFrom(Outcome.java:73)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:146)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:18)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:33)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:108)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:163)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:328)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$100(CpsThreadGroup.java:80)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:240)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:228)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:63)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:112)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.io.EOFException: Unexpected end of ZLIB input stream
+	at com.jcraft.jzlib.InflaterInputStream.fill(InflaterInputStream.java:186)
+	at com.jcraft.jzlib.InflaterInputStream.read(InflaterInputStream.java:106)
+	at org.apache.commons.compress.utils.IOUtils.readFully(IOUtils.java:160)
+	at org.apache.commons.compress.utils.IOUtils.readFully(IOUtils.java:134)
+	at org.apache.commons.compress.archivers.tar.TarArchiveInputStream.readRecord(TarArchiveInputStream.java:419)
+	at org.apache.commons.compress.archivers.tar.TarArchiveInputStream.getRecord(TarArchiveInputStream.java:388)
+	at org.apache.commons.compress.archivers.tar.TarArchiveInputStream.getNextTarEntry(TarArchiveInputStream.java:269)
+	at hudson.FilePath.readFromTar(FilePath.java:2278)
+	... 28 more
+
+	at hudson.FilePath.copyRecursiveTo(FilePath.java:2216)
+	at jenkins.model.StandardArtifactManager.archive(StandardArtifactManager.java:61)
+	at org.jenkinsci.plugins.pipeline.maven.reporters.GeneratedArtifactsReporter.process(GeneratedArtifactsReporter.java:99)
+	at org.jenkinsci.plugins.pipeline.maven.MavenSpyLogProcessor.processMavenSpyLogs(MavenSpyLogProcessor.java:101)
+	at org.jenkinsci.plugins.pipeline.maven.WithMavenStepExecution$Callback.finished(WithMavenStepExecution.java:770)
+	at org.jenkinsci.plugins.workflow.steps.BodyExecutionCallback$TailCall.onSuccess(BodyExecutionCallback.java:114)
+	at org.jenkinsci.plugins.workflow.cps.CpsBodyExecution$SuccessAdapter.receive(CpsBodyExecution.java:360)
+	at com.cloudbees.groovy.cps.Outcome.resumeFrom(Outcome.java:73)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:146)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:18)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:33)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:108)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:163)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:328)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$100(CpsThreadGroup.java:80)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:240)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:228)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:63)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:112)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.util.concurrent.ExecutionException: java.io.IOException: This archives contains unclosed entries.
+	at hudson.remoting.Channel$2.adapt(Channel.java:813)
+	at hudson.remoting.Channel$2.adapt(Channel.java:808)
+	at hudson.remoting.FutureAdapter.get(FutureAdapter.java:59)
+	at hudson.FilePath.copyRecursiveTo(FilePath.java:2212)
+	... 27 more
+Caused by: java.io.IOException: This archives contains unclosed entries.
+	at org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.finish(TarArchiveOutputStream.java:225)
+	at org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.close(TarArchiveOutputStream.java:241)
+	at hudson.util.io.TarArchiver.close(TarArchiver.java:111)
+	at hudson.FilePath.writeToTar(FilePath.java:2263)
+	at hudson.FilePath.access$2100(FilePath.java:190)
+	at hudson.FilePath$45.invoke(FilePath.java:2202)
+	at hudson.FilePath$45.invoke(FilePath.java:2198)
+	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:2719)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:153)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:336)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at hudson.remoting.Engine$1$1.run(Engine.java:94)
+	at java.lang.Thread.run(Unknown Source)
+	at ......remote call to windows-vagrant(Native Method)
+	at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1416)
+	at hudson.remoting.UserResponse.retrieve(UserRequest.java:220)
+	at hudson.remoting.Channel$2.adapt(Channel.java:811)
+	... 30 more
+[Pipeline] // withMaven
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

@@ -1,0 +1,61 @@
+jenkins:
+  numExecutors: 0
+  clouds:
+  - docker:
+      name: "docker"
+      dockerApi:
+        dockerHost:
+          uri: "unix:///var/run/docker.sock"
+      templates:
+      - labelString: "docker"
+        pullStrategy: PULL_NEVER
+        dockerTemplateBase:
+          image: "agent"
+          volumes:
+          - "/var/run/docker.sock:/var/run/docker.sock"
+        remoteFs: "/home/jenkins/agent"
+        connector:
+          attach:
+            user: "jenkins"
+        retentionStrategy:
+          idleMinutes: 0
+        stopTimeout: 0
+      - labelString: "linux test"
+        dockerTemplateBase:
+          image: "jenkins/agent:4.6-1-stretch"
+        mode: EXCLUSIVE
+        remoteFs: "/home/jenkins/agent"
+        connector:
+          attach:
+            user: "jenkins"
+        retentionStrategy:
+          idleMinutes: 0
+        stopTimeout: 0
+  - amazonEC2:
+      cloudName: "EC2"
+      templates:
+      - ami: "ami-0b6d40394e1d4fef7"
+        amiType:
+          unixData:
+            sshPort: "22"
+        associatePublicIp: true
+        connectionStrategy: PUBLIC_IP
+        deleteRootOnTermination: false
+        ebsOptimized: true
+        hostKeyVerificationStrategy: 'OFF'
+        idleTerminationMinutes: "1"
+        labelString: "ec2"
+        maxTotalUses: -1
+        minimumNumberOfInstances: 4
+        minimumNumberOfSpareInstances: 0
+        mode: NORMAL
+        monitoring: true
+        numExecutors: 1
+        remoteAdmin: "ec2-user"
+        remoteFS: "/home/ec2-user"
+        stopOnTerminate: false
+        t2Unlimited: false
+        type: T3aSmall
+        useDedicatedTenancy: false
+        useEphemeralDevices: false
+      useInstanceProfileForCredentials: false

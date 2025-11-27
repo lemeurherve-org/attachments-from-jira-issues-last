@@ -1,0 +1,152 @@
+Index: src/main/java/hudson/plugins/clearcase/ucm/UcmMakeBaseline.java
+===================================================================
+--- src/main/java/hudson/plugins/clearcase/ucm/UcmMakeBaseline.java	(revision 13149)
++++ src/main/java/hudson/plugins/clearcase/ucm/UcmMakeBaseline.java	(working copy)
+@@ -56,6 +56,10 @@
+     private final boolean fullBaseline;
+ 
+     private final boolean identical;
++    
++    private final String dynamicViewName;   
++    
++    private final boolean rebaseDynamicView;    
+ 
+     public String getCommentPattern() {
+         return this.commentPattern;
+@@ -80,7 +84,15 @@
+     public boolean isIdentical() {
+         return this.identical;
+     }
++    
++	public String getDynamicViewName() {
++		return this.dynamicViewName;
++	}
+ 
++	public boolean isRebaseDynamicView() {
++		return this.rebaseDynamicView;
++	}    
++
+     public static final class UcmMakeBaselineDescriptor extends
+             Descriptor<Publisher> {
+ 
+@@ -101,7 +113,10 @@
+                     .getParameter("mkbl.lock") != null, req
+                     .getParameter("mkbl.recommend") != null, req
+                     .getParameter("mkbl.fullBaseline") != null, req
+-                    .getParameter("mkbl.identical") != null);
++                    .getParameter("mkbl.identical") != null, req
++                    .getParameter("mkbl.rebaseDynamicView") != null , req
++                    .getParameter("mkbl.dynamicViewName") 
++            	);
+             return p;
+         }
+ 
+@@ -114,13 +129,17 @@
+     private UcmMakeBaseline(final String namePattern,
+             final String commentPattern, final boolean lock,
+             final boolean recommend, final boolean fullBaseline,
+-            final boolean identical) {
++            final boolean identical,
++            final boolean rebaseDynamicView,
++            final String dynamicViewName) {
+         this.namePattern = namePattern;
+         this.commentPattern = commentPattern;
+         this.lockStream = lock;
+         this.recommend = recommend;
+         this.fullBaseline = fullBaseline;
+         this.identical = identical;
++        this.rebaseDynamicView = rebaseDynamicView;
++        this.dynamicViewName = dynamicViewName;
+     }
+ 
+     @Override
+@@ -206,6 +225,14 @@
+                     recommedBaseline(scm.getStream(), clearToolLauncher,
+                             filePath);
+                 }
++                
++    			//Rebase a dynamic view
++    			if (this.rebaseDynamicView){
++    				for (String baseline:this.latestBaselines){
++    					rebaseDynamicView(clearToolLauncher,filePath,this.dynamicViewName, baseline);
++    				}
++    			}
++                
+             } else if (build.getResult().equals(Result.FAILURE)) {
+                 // On failure, demote only baselines created in this build
+                 for (String baselineName : this.createdBaselines) {
+@@ -242,6 +269,22 @@
+         return DESCRIPTOR;
+     }
+ 
++    
++    private void rebaseDynamicView(HudsonClearToolLauncher clearToolLauncher,
++    		FilePath filePath,
++    		String dynamicView, String blName) throws InterruptedException, IOException {
++    	
++        ArgumentListBuilder cmd = new ArgumentListBuilder();
++        cmd.add("rebase");
++        cmd.add("-baseline");
++        cmd.add(blName);
++        cmd.add("-view");
++        cmd.add(dynamicView);
++        cmd.add("-complete");
++               
++        clearToolLauncher.run(cmd.toCommandArray(), null, null, filePath);
++    }    
++    
+     private void unlockStream(String stream,
+             HudsonClearToolLauncher clearToolLauncher, FilePath filePath)
+             throws IOException, InterruptedException {
+@@ -410,4 +453,6 @@
+ 
+     }
+ 
++
++
+ }
+Index: src/main/resources/hudson/plugins/clearcase/ucm/UcmMakeBaseline/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/clearcase/ucm/UcmMakeBaseline/config.jelly	(revision 13149)
++++ src/main/resources/hudson/plugins/clearcase/ucm/UcmMakeBaseline/config.jelly	(working copy)
+@@ -23,4 +23,16 @@
+ 	<f:entry title="Recommend baseline" help="/plugin/clearcase/ucm/mkbl/recommend.html">
+ 		<f:checkbox name="mkbl.recommend" checked="${h.defaultToTrue(instance.recommend)}"  />
+ 	</f:entry>
++	
++    <f:nested>
++	  <table>	
++         <f:optionalBlock name="mkbl.rebaseDynamicView" title="Rebase a dynamic view"
++                       checked="${instance.rebaseDynamicView}" help="/plugin/clearcase/ucm/mkbl/rebase.html">
++		    <f:entry title="Dynamic view to rebase" help="/plugin/clearcase/ucm/mkbl/dynamicView.html">
++        		<f:textbox name="mkbl.dynamicViewName" value="${instance.dynamicViewName}" />       
++    		</f:entry>
++	     </f:optionalBlock>
++	  </table>
++    </f:nested>
++	
+ </j:jelly>
+Index: src/main/webapp/ucm/mkbl/dynamicView.html
+===================================================================
+--- src/main/webapp/ucm/mkbl/dynamicView.html	(revision 0)
++++ src/main/webapp/ucm/mkbl/dynamicView.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++  <p>
++	Specify the name of the dynamic view to rebase.
++  </p>
++</div>
+\ No newline at end of file
+Index: src/main/webapp/ucm/mkbl/rebase.html
+===================================================================
+--- src/main/webapp/ucm/mkbl/rebase.html	(revision 0)
++++ src/main/webapp/ucm/mkbl/rebase.html	(revision 0)
+@@ -0,0 +1,7 @@
++<div>
++  <p>
++	You have often the need to rebase a dynamic view. For example, a dynamic
++	view that stores a composite component must be rebased before to create a 
++	composite baseline.
++  </p>
++</div>
+\ No newline at end of file

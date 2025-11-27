@@ -1,0 +1,143 @@
+"main" id=1 (0x1) state=WAITING cpu=83%
+    - waiting on <0x710713de> (a hudson.remoting.Engine)
+    - locked <0x710713de> (a hudson.remoting.Engine)
+    at java.lang.Object.wait(Native Method)
+    at java.lang.Thread.join(Thread.java:1225)
+    at java.lang.Thread.join(Thread.java:1278)
+    at hudson.remoting.jnlp.Main.main(Main.java:137)
+    at hudson.remoting.jnlp.Main._main(Main.java:130)
+    at hudson.remoting.Launcher.run(Launcher.java:228)
+    at hudson.remoting.Launcher.main(Launcher.java:192)
+
+"Reference Handler" id=2 (0x2) state=WAITING cpu=82%
+    - waiting on <0x223f6902> (a java.lang.ref.Reference$Lock)
+    - locked <0x223f6902> (a java.lang.ref.Reference$Lock)
+    at java.lang.Object.wait(Native Method)
+    at java.lang.Object.wait(Object.java:485)
+    at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+
+"Finalizer" id=3 (0x3) state=WAITING cpu=68%
+    - waiting on <0x5bd977aa> (a java.lang.ref.ReferenceQueue$Lock)
+    - locked <0x5bd977aa> (a java.lang.ref.ReferenceQueue$Lock)
+    at java.lang.Object.wait(Native Method)
+    at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:118)
+    at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:134)
+    at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:171)
+
+"Signal Dispatcher" id=6 (0x6) state=RUNNABLE cpu=36%
+
+"Thread-2" id=12 (0xc) state=TIMED_WAITING cpu=50%
+    - waiting on <0x403ef810> (a hudson.remoting.Channel)
+    - locked <0x403ef810> (a hudson.remoting.Channel)
+    at java.lang.Object.wait(Native Method)
+    at hudson.remoting.Channel.join(Channel.java:948)
+    at hudson.remoting.Engine.run(Engine.java:267)
+
+"RemoteInvocationHandler [#1]" id=13 (0xd) state=TIMED_WAITING cpu=47%
+    - waiting on <0x010e73e0> (a java.lang.ref.ReferenceQueue$Lock)
+    - locked <0x010e73e0> (a java.lang.ref.ReferenceQueue$Lock)
+    at java.lang.Object.wait(Native Method)
+    at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:118)
+    at hudson.remoting.RemoteInvocationHandler$Unexporter.run(RemoteInvocationHandler.java:415)
+    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:439)
+    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+    at hudson.remoting.AtmostOneThreadExecutor$Worker.run(AtmostOneThreadExecutor.java:110)
+    at java.lang.Thread.run(Thread.java:695)
+
+"Channel reader thread: channel" id=14 (0xe) state=RUNNABLE cpu=81% (running in native)
+    at java.net.SocketInputStream.socketRead0(Native Method)
+    at java.net.SocketInputStream.read(SocketInputStream.java:129)
+    at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+    at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+    at hudson.remoting.FlightRecorderInputStream.read(FlightRecorderInputStream.java:82)
+    at hudson.remoting.ChunkedInputStream.readHeader(ChunkedInputStream.java:72)
+    at hudson.remoting.ChunkedInputStream.readUntilBreak(ChunkedInputStream.java:103)
+    at hudson.remoting.ChunkedCommandTransport.readBlock(ChunkedCommandTransport.java:39)
+    at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+    at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:48)
+
+"Ping thread for channel hudson.remoting.Channel@403ef810:channel" id=16 (0x10) state=TIMED_WAITING cpu=73%
+    at java.lang.Thread.sleep(Native Method)
+    at hudson.remoting.PingThread.run(PingThread.java:90)
+
+"AWT-AppKit" id=19 (0x13) state=RUNNABLE cpu=67% (running in native)
+
+"pool-1-thread-1687 for channel" id=2138 (0x85a) state=WAITING cpu=46%
+    - waiting on <0x70b7976c> (a java.lang.UNIXProcess)
+    - locked <0x70b7976c> (a java.lang.UNIXProcess)
+    at java.lang.Object.wait(Native Method)
+    at java.lang.Object.wait(Object.java:485)
+    at java.lang.UNIXProcess.waitFor(UNIXProcess.java:115)
+    at hudson.Proc$LocalProc.join(Proc.java:319)
+    at hudson.Launcher$RemoteLaunchCallable$1.join(Launcher.java:1141)
+    at sun.reflect.GeneratedMethodAccessor26.invoke(Unknown Source)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+    at java.lang.reflect.Method.invoke(Method.java:597)
+    at hudson.remoting.RemoteInvocationHandler$RPCRequest.perform(RemoteInvocationHandler.java:608)
+    at hudson.remoting.RemoteInvocationHandler$RPCRequest.call(RemoteInvocationHandler.java:583)
+    at hudson.remoting.RemoteInvocationHandler$RPCRequest.call(RemoteInvocationHandler.java:542)
+    at hudson.remoting.UserRequest.perform(UserRequest.java:120)
+    at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+    at hudson.remoting.Request$2.run(Request.java:326)
+    at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)
+    at hudson.remoting.Engine$1$1.run(Engine.java:62)
+    at java.lang.Thread.run(Thread.java:695)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.locks.ReentrantLock$NonfairSync@65678a86
+
+"process reaper" id=2143 (0x85f) state=RUNNABLE cpu=37% (running in native)
+    at java.lang.UNIXProcess.waitForProcessExit(Native Method)
+    at java.lang.UNIXProcess.access$900(UNIXProcess.java:17)
+    at java.lang.UNIXProcess$2$1.run(UNIXProcess.java:86)
+
+"/bin/sh -xe /var/folders/z4/wbrn01zx5qg46jrnc7m7xvs80000gn/T/hudson1717225193912512521.sh: stdout copier" id=2144 (0x860) state=RUNNABLE cpu=59% (running in native)
+    at java.io.FileInputStream.readBytes(Native Method)
+    at java.io.FileInputStream.read(FileInputStream.java:220)
+    at java.lang.UNIXProcess$DeferredCloseInputStream.read(UNIXProcess.java:227)
+    at java.io.BufferedInputStream.read1(BufferedInputStream.java:256)
+    at java.io.BufferedInputStream.read(BufferedInputStream.java:317)
+    at java.io.FilterInputStream.read(FilterInputStream.java:90)
+    at hudson.util.StreamCopyThread.run(StreamCopyThread.java:60)
+
+"pool-1-thread-1694" id=2151 (0x867) state=TIMED_WAITING cpu=61%
+    - waiting on <0x0accc4e9> (a java.util.concurrent.SynchronousQueue$TransferStack)
+    - locked <0x0accc4e9> (a java.util.concurrent.SynchronousQueue$TransferStack)
+    at sun.misc.Unsafe.park(Native Method)
+    at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:196)
+    at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:424)
+    at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:323)
+    at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:874)
+    at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:955)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:917)
+    at hudson.remoting.Engine$1$1.run(Engine.java:62)
+    at java.lang.Thread.run(Thread.java:695)
+
+"pool-1-thread-1695 for channel" id=2153 (0x869) state=RUNNABLE cpu=88%
+    at sun.management.ThreadImpl.dumpThreads0(Native Method)
+    at sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:433)
+    at com.cloudbees.jenkins.support.impl.ThreadDumps.threadDumpModern(ThreadDumps.java:222)
+    at com.cloudbees.jenkins.support.impl.ThreadDumps.threadDump(ThreadDumps.java:199)
+    at com.cloudbees.jenkins.support.impl.ThreadDumps$GetThreadDump.call(ThreadDumps.java:182)
+    at com.cloudbees.jenkins.support.impl.ThreadDumps$GetThreadDump.call(ThreadDumps.java:174)
+    at hudson.remoting.UserRequest.perform(UserRequest.java:120)
+    at hudson.remoting.UserRequest.perform(UserRequest.java:48)
+    at hudson.remoting.Request$2.run(Request.java:326)
+    at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+    at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)
+    at hudson.remoting.Engine$1$1.run(Engine.java:62)
+    at java.lang.Thread.run(Thread.java:695)
+
+    Locked synchronizers: count = 1
+      - java.util.concurrent.locks.ReentrantLock$NonfairSync@14364428
+
+
+

@@ -1,0 +1,221 @@
+Index: plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java
+===================================================================
+--- plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java	(revision 32400)
++++ plugin/src/main/java/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper.java	(revision )
+@@ -38,10 +38,12 @@
+ import hudson.model.Descriptor;
+ import hudson.model.Hudson;
+ import hudson.model.Item;
++import hudson.model.Result;
+ import hudson.security.Permission;
+ import hudson.tasks.BuildWrapper;
+ import hudson.tasks.BuildWrapperDescriptor;
+ import hudson.tasks.Builder;
++import hudson.tasks.Maven;
+ import hudson.util.FormValidation;
+ 
+ import java.io.IOException;
+@@ -87,14 +89,16 @@
+ 	private transient String              hudsonUserName;
+ 
+ 	public String                         releaseGoals        = DescriptorImpl.DEFAULT_RELEASE_GOALS;
++    public String                         rollbackGoals       = DescriptorImpl.DEFAULT_ROLLBACK_GOALS;
+ 	public String                         defaultVersioningMode          = DescriptorImpl.DEFAULT_VERSIONING;
+ 	public boolean                        selectCustomScmCommentPrefix = DescriptorImpl.DEFAULT_SELECT_CUSTOM_SCM_COMMENT_PREFIX;
+ 	public boolean                        selectAppendHudsonUsername   = DescriptorImpl.DEFAULT_SELECT_APPEND_HUDSON_USERNAME;
+ 	
+ 	@DataBoundConstructor
+-	public M2ReleaseBuildWrapper(String releaseGoals, String defaultVersioningMode, boolean selectCustomScmCommentPrefix, boolean selectAppendHudsonUsername) {
++	public M2ReleaseBuildWrapper(String releaseGoals, String rollbackGoals, String defaultVersioningMode, boolean selectCustomScmCommentPrefix, boolean selectAppendHudsonUsername) {
+ 		super();
+ 		this.releaseGoals = releaseGoals;
++        this.rollbackGoals = rollbackGoals;
+ 		this.defaultVersioningMode = defaultVersioningMode;
+ 		this.selectCustomScmCommentPrefix = selectCustomScmCommentPrefix;
+ 		this.selectAppendHudsonUsername = selectAppendHudsonUsername;
+@@ -102,11 +106,11 @@
+ 
+ 
+ 	@Override
+-	public Environment setUp(AbstractBuild build, Launcher launcher, final BuildListener listener)
++	public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
+ 	                                                                                              throws IOException,
+ 	                                                                                              InterruptedException {
+ 		final String originalGoals;
+-		MavenModuleSet mmSet;
++		final MavenModuleSet mmSet;
+ 		final String mavenOpts;
+ 		
+ 		synchronized (getModuleSet(build)) {
+@@ -151,15 +155,16 @@
+ 				}
+ 				
+ 				mmSet.setGoals(thisBuildGoals);
++                mavenOpts = mmSet.getMavenOpts();
+ 			}
+ 			else {
+ 				// can this be so?
+ 				originalGoals = null;
++                mavenOpts = null;
+ 			}
+-			mavenOpts = mmSet.getMavenOpts();
+-			
++
+ 		}
+-		
++
+ 		return new Environment() {
+ 
+ 			@Override
+@@ -167,52 +172,76 @@
+ 				if (mavenOpts != null && !env.containsKey("MAVEN_OPTS")) {
+ 					env.put("MAVEN_OPTS", mavenOpts);
+ 				}
+-			};
++			}
+ 
+ 
+-			@Override
+-			public boolean tearDown(AbstractBuild bld, BuildListener lstnr) throws IOException,
+-			                                                               InterruptedException {
++            @Override
++            public boolean tearDown(AbstractBuild bld, BuildListener lstnr) throws IOException,
++                    InterruptedException {
++                if (bld.getResult() != Result.SUCCESS) {
++                    executeRollback(bld, lstnr, launcher);
++                }
+-				boolean retVal = true;
+-				// TODO only re-set the build goals if they are still releaseGoals to avoid mid-air collisions.
+-				final MavenModuleSet mmSet = getModuleSet(bld);
+-				final boolean localcloseStage;
++                boolean retVal = true;
++                // TODO only re-set the build goals if they are still releaseGoals to avoid mid-air collisions.
++                final MavenModuleSet mmSet = getModuleSet(bld);
++                final boolean localcloseStage;
+-				String version = null;
++                String version;
+-				synchronized (mmSet) {
+-					mmSet.setGoals(originalGoals);
+-					// get a local variable so we don't have to synchronise on mmSet any more than we have to.
+-					localcloseStage = closeNexusStage;
+-					version = getReleaseVersion(mmSet.getRootModule());
+-					versions = null;
+-				}
++                synchronized (mmSet) {
++                    mmSet.setGoals(originalGoals);
++                    // get a local variable so we don't have to synchronise on mmSet any more than we have to.
++                    localcloseStage = closeNexusStage;
++                    version = getReleaseVersion(mmSet.getRootModule());
++                    versions = null;
++                }
+ 
+-				if (localcloseStage) {
+-					StageClient client = new StageClient(new URL(getDescriptor().getNexusURL()), getDescriptor().getNexusUser(), getDescriptor().getNexusPassword()); 
+-					try {
+-						MavenModule rootModule = mmSet.getRootModule();
+-						// TODO grab the version that we have just released...
+-						Stage stage = client.getOpenStageID(rootModule.getModuleName().groupId, rootModule.getModuleName().artifactId, version);
+-						if (stage != null) {
+-							lstnr.getLogger().println("[M2Release] Closing repository " + stage);
+-							client.closeStage(stage, repoDescription);
+-							lstnr.getLogger().append("[M2Release] Closed staging repository.");
++                if (localcloseStage) {
++                    StageClient client = new StageClient(new URL(getDescriptor().getNexusURL()), getDescriptor().getNexusUser(), getDescriptor().getNexusPassword());
++                    try {
++                        MavenModule rootModule = mmSet.getRootModule();
++                        // TODO grab the version that we have just released...
++                        Stage stage = client.getOpenStageID(rootModule.getModuleName().groupId, rootModule.getModuleName().artifactId, version);
++                        if (stage != null) {
++                            lstnr.getLogger().println("[M2Release] Closing repository " + stage);
++                            client.closeStage(stage, repoDescription);
++                            lstnr.getLogger().append("[M2Release] Closed staging repository.");
+-						}
+-						else {
++                        } else {
+-							retVal = false;
+-							lstnr.fatalError("[M2Release] Could not find nexus stage repository for project.\n");
+-						}
+-					}
+-					catch (StageException ex) {
+-						lstnr.fatalError("[M2Release] Could not close repository , %s\n", ex.toString());
+-						retVal = false;
+-					}
+-				}
+-				return retVal;
+-			}
+-		};
++                            retVal = false;
++                            lstnr.fatalError("[M2Release] Could not find nexus stage repository for project.\n");
++                        }
++                    }
++                    catch (StageException ex) {
++                        lstnr.fatalError("[M2Release] Could not close repository , %s\n", ex.toString());
++                        retVal = false;
++                    }
++                }
++                return retVal;
++            }
++        };
+ 	}
+ 
++    private boolean executeRollback(AbstractBuild bld, BuildListener listener, Launcher launcher) throws IOException, InterruptedException {
++        boolean isSuccess = true;
+ 
++        if (Util.fixEmptyAndTrim(rollbackGoals) != null) {
++            String thisBuildGoals = rollbackGoals;
++            if (scmUsername != null) {
++                thisBuildGoals = "-Dusername=" + scmUsername + " " + thisBuildGoals;
++            }
++
++            if (scmPassword != null) {
++                thisBuildGoals = "-Dpassword=" + scmPassword + " " + thisBuildGoals;
++            }
++
++            String mavenName = getModuleSet(bld).getMaven().getName();
++            Maven buildStep = new Maven(thisBuildGoals, mavenName);
++            isSuccess = buildStep.prebuild(bld, listener);
++            if (isSuccess) {
++                isSuccess = buildStep.perform(bld, launcher, listener);
++            }
++        }
++        return isSuccess;
++    }
++
+ 	void enableRelease() {
+ 		doRelease = true;
+ 	}
+@@ -374,6 +403,7 @@
+ 	public static class DescriptorImpl extends BuildWrapperDescriptor {
+ 
+ 		public static final String     DEFAULT_RELEASE_GOALS = "-Dresume=false release:prepare release:perform"; //$NON-NLS-1$
++		public static final String     DEFAULT_ROLLBACK_GOALS = "release:rollback";
+ 		public static final Permission CREATE_RELEASE        = new Permission(Item.PERMISSIONS,
+ 		                                                                      "Release", //$NON-NLS-1$
+ 		                                                                      Messages._CreateReleasePermission_Description(),
+Index: plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper/config.jelly
+===================================================================
+--- plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper/config.jelly	(revision 32289)
++++ plugin/src/main/resources/org/jvnet/hudson/plugins/m2release/M2ReleaseBuildWrapper/config.jelly	(revision )
+@@ -10,7 +10,11 @@
+ 		-->
+ 		<f:textbox field="releaseGoals" value="${h.defaulted(instance.releaseGoals,descriptor.DEFAULT_RELEASE_GOALS)}"/>
+ 	</f:entry>
+-	
++
++    <f:entry title="Rollback goals and options" help="/plugin/m2release/help-projectConfig-rollbackGoals.html">
++        <f:textbox field="rollbackGoals" value="${h.defaulted(instance.rollbackGoals,descriptor.DEFAULT_ROLLBACK_GOALS)}"/>
++    </f:entry>
++
+ 	<f:entry title="Default versioning mode" help="/plugin/m2release/help-projectConfig-versioningMode.html">
+ 		<select name="defaultVersioningMode">
+ 			<f:option value="${descriptor.VERSIONING_AUTO}" selected="${descriptor.VERSIONING_AUTO == h.defaulted(instance.defaultVersioningMode,descriptor.DEFAULT_VERSIONING)}">None</f:option>
+Index: plugin/src/main/webapp/help-projectConfig-rollbackGoals.html
+===================================================================
+--- plugin/src/main/webapp/help-projectConfig-rollbackGoals.html	(revision )
++++ plugin/src/main/webapp/help-projectConfig-rollbackGoals.html	(revision )
+@@ -0,0 +1,4 @@
++<div>
++	Enter the goals you wish to be invoked if the release process fails (meant for clean up purposes).
++	e.g. <tt>release:rollback</tt>
++</div>
+\ No newline at end of file

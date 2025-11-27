@@ -1,0 +1,193 @@
+748f0d26b18a07c2477758ebc37c39bbf62243b6
+ .../java/hudson/plugins/sonar/SonarPublisher.java  | 30 +++++++++++++++++++---
+ .../hudson/plugins/sonar/utils/SonarMaven.java     | 10 ++++++--
+ .../hudson/plugins/sonar/utils/SonarUtils.java     | 10 ++++++++
+ .../plugins/sonar/SonarPublisher/config.jelly      | 10 +++++++-
+ .../plugins/sonar/SonarPublisher/config.properties |  3 ++-
+ src/main/webapp/help-escape-branch.html            |  8 ++++++
+ 6 files changed, 63 insertions(+), 8 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/sonar/SonarPublisher.java b/src/main/java/hudson/plugins/sonar/SonarPublisher.java
+index 41998bd..379d863 100644
+--- a/src/main/java/hudson/plugins/sonar/SonarPublisher.java
++++ b/src/main/java/hudson/plugins/sonar/SonarPublisher.java
+@@ -85,6 +85,13 @@ public class SonarPublisher extends Notifier {
+   private String branch;
+ 
+   /**
++   * Optional
++   * 
++   * Indicates if the branch string specified should have invalid characters replaced with _
++   */
++  private boolean escapeBranch;
++    
++  /**
+    * Optional.
+    *
+    * @since 1.6
+@@ -144,37 +151,40 @@ public class SonarPublisher extends Notifier {
+       String installationName,
+       TriggersConfig triggers,
+       String jobAdditionalProperties, String mavenOpts) {
+-    this(installationName, null, null, triggers, jobAdditionalProperties, mavenOpts, null, null, null);
++    this(installationName, null, false, null, triggers, jobAdditionalProperties, mavenOpts, null, null, null);
+   }
+ 
+   public SonarPublisher(String installationName,
+       TriggersConfig triggers,
+       String jobAdditionalProperties, String mavenOpts,
+       String mavenInstallationName, String rootPom) {
+-    this(installationName, null, null, triggers, jobAdditionalProperties, mavenOpts, mavenInstallationName, rootPom, null);
++    this(installationName, null, false, null, triggers, jobAdditionalProperties, mavenOpts, mavenInstallationName, rootPom, null);
+   }
+ 
+   public SonarPublisher(String installationName,
+       String branch,
++      boolean escapeBranch,
+       String language,
+       TriggersConfig triggers,
+       String jobAdditionalProperties, String mavenOpts,
+       String mavenInstallationName, String rootPom) {
+-    this(installationName, branch, language, triggers, jobAdditionalProperties, mavenOpts, mavenInstallationName, rootPom, null);
++    this(installationName, branch, escapeBranch, language, triggers, jobAdditionalProperties, mavenOpts, mavenInstallationName, rootPom, null);
+   }
+ 
+   public SonarPublisher(String installationName,
+       String branch,
++      boolean escapeBranch,
+       String language,
+       TriggersConfig triggers,
+       String jobAdditionalProperties, String mavenOpts,
+       String mavenInstallationName, String rootPom, String jdk) {
+-    this(installationName, branch, language, triggers, jobAdditionalProperties, mavenOpts, mavenInstallationName, rootPom, jdk, null, null, false);
++    this(installationName, branch, escapeBranch, language, triggers, jobAdditionalProperties, mavenOpts, mavenInstallationName, rootPom, jdk, null, null, false);
+   }
+ 
+   @DataBoundConstructor
+   public SonarPublisher(String installationName,
+       String branch,
++      boolean escapeBranch,
+       String language,
+       TriggersConfig triggers,
+       String jobAdditionalProperties, String mavenOpts,
+@@ -182,6 +192,7 @@ public class SonarPublisher extends Notifier {
+     super();
+     this.installationName = installationName;
+     this.branch = branch;
++    this.escapeBranch = escapeBranch;
+     this.language = language;
+     this.jdk = jdk;
+     // Triggers
+@@ -251,6 +262,17 @@ public class SonarPublisher extends Notifier {
+   }
+ 
+   /**
++   * @return escapeBranch
++   */
++  public boolean isEscapeBranch(){
++	  return escapeBranch;
++  }
++  
++  public void setEscapeBranch(boolean escapeBranch){
++	  this.escapeBranch = escapeBranch;
++  }  
++ 
++  /**
+    * @return triggers configuration
+    */
+   public TriggersConfig getTriggers() {
+diff --git a/src/main/java/hudson/plugins/sonar/utils/SonarMaven.java b/src/main/java/hudson/plugins/sonar/utils/SonarMaven.java
+index e715b94..7e4b602 100644
+--- a/src/main/java/hudson/plugins/sonar/utils/SonarMaven.java
++++ b/src/main/java/hudson/plugins/sonar/utils/SonarMaven.java
+@@ -92,8 +92,14 @@ public final class SonarMaven extends Maven {
+     argsBuilder.appendMasked("sonar.jdbc.username", getInstallation().getDatabaseLogin());
+     argsBuilder.appendMasked("sonar.jdbc.password", getInstallation().getDatabasePassword());
+     argsBuilder.append("sonar.host.url", getInstallation().getServerUrl());
+-
+-    argsBuilder.append("sonar.branch", publisher.getBranch());
++    
++    if(publisher.isEscapeBranch()){
++    	EnvVars envVars = build.getEnvironment(listener);
++    	argsBuilder.append("sonar.branch", SonarUtils.escapeInvalidBranchCharacters(envVars.expand(publisher.getBranch())));
++    } else {
++    	argsBuilder.append("sonar.branch", publisher.getBranch());
++    }
++    
+     argsBuilder.append("sonar.language", publisher.getLanguage());
+ 
+     if (StringUtils.isNotBlank(getInstallation().getSonarLogin())) {
+diff --git a/src/main/java/hudson/plugins/sonar/utils/SonarUtils.java b/src/main/java/hudson/plugins/sonar/utils/SonarUtils.java
+index 4b5300e..9b92ec2 100644
+--- a/src/main/java/hudson/plugins/sonar/utils/SonarUtils.java
++++ b/src/main/java/hudson/plugins/sonar/utils/SonarUtils.java
+@@ -79,4 +79,14 @@ public final class SonarUtils {
+     }
+     return null;
+   }
++  
++  /**
++   * Escapes characters not found in the regex [^0-9a-zA-Z:-_\\.:]
++   * http://jira.codehaus.org/browse/SONAR-4188 - for valid character regex
++   * @param branch name to clean
++   * @return cleaned up branch name
++   */
++  public static String escapeInvalidBranchCharacters(String branchName){
++	  return branchName.replaceAll("[^0-9a-zA-Z:-_\\.:]", "_");
++  }
+ }
+diff --git a/src/main/resources/hudson/plugins/sonar/SonarPublisher/config.jelly b/src/main/resources/hudson/plugins/sonar/SonarPublisher/config.jelly
+index beafb50..b7f70a9 100644
+--- a/src/main/resources/hudson/plugins/sonar/SonarPublisher/config.jelly
++++ b/src/main/resources/hudson/plugins/sonar/SonarPublisher/config.jelly
+@@ -14,7 +14,7 @@
+     </f:entry>
+   </j:if>
+   <j:if test="${sonars.size() gt 1}">
+-    <!-- choise not necessary if there's no choice -->
++    <!-- choice not necessary if there's no choice -->
+     <f:entry title="${%SonarInstallation}" help="/plugin/sonar/help-sonar-installation.html">
+       <select class="setting-input" name="sonar.installationName">
+         <j:forEach var="inst" items="${sonars}">
+@@ -30,6 +30,14 @@
+       <f:textbox name="sonar.branch" value="${instance.getBranch()}"/>
+     </f:entry>
+ 
++    <f:nested>
++      <table width="100%">
++	  	<f:entry title="${%EscapeInvalidBranches}" field="escapeBranch" help="/plugin/sonar/help-escape-branch.html">
++	   		<f:checkbox />
++	  	</f:entry>
++      </table>
++    </f:nested>
++
+     <f:entry title="${%Language}" description="${%LanguageDescr}" help="/plugin/sonar/help-language.html">
+       <f:textbox name="sonar.language" value="${instance.getLanguage()}"/>
+     </f:entry>
+diff --git a/src/main/resources/hudson/plugins/sonar/SonarPublisher/config.properties b/src/main/resources/hudson/plugins/sonar/SonarPublisher/config.properties
+index 71329e5..4b1f36a 100644
+--- a/src/main/resources/hudson/plugins/sonar/SonarPublisher/config.properties
++++ b/src/main/resources/hudson/plugins/sonar/SonarPublisher/config.properties
+@@ -14,4 +14,5 @@ DontUseGlobalTriggers=Don\'t use global triggers configuration
+ Language=Language
+ LanguageDescr=Default is java
+ InheritFromJob=(Inherit From Job)
+-JDKDesc=JDK to be used for this sonar analysis
+\ No newline at end of file
++JDKDesc=JDK to be used for this sonar analysis
++EscapeInvalidBranches=Escape invalid branch characters
+\ No newline at end of file
+diff --git a/src/main/webapp/help-escape-branch.html b/src/main/webapp/help-escape-branch.html
+new file mode 100644
+index 0000000..5a2eef1
+--- /dev/null
++++ b/src/main/webapp/help-escape-branch.html
+@@ -0,0 +1,8 @@
++<div>
++  <p>
++  Optional.<br/>
++  If this is set, any invalid characters in the branch name above are replaced by _ before setting sonar.branch<br/>
++  For example, if you specify ${GIT_BRANCH} above, the branch will be something like "origin/master", which is not a valid sonar branch.
++  If you check this option, however, it will be changed to "origin_master", which is something sonar will accept.
++  </p>
++</div>

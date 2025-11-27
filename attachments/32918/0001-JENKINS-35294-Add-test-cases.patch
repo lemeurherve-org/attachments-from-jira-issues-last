@@ -1,0 +1,51 @@
+From 37abb804409835d0246b5fa451d66fbd0bca2961 Mon Sep 17 00:00:00 2001
+From: Magnus Reftel <magnus.reftel@gmail.com>
+Date: Mon, 6 Jun 2016 21:38:53 +0200
+Subject: [PATCH] [JENKINS-35294] Add test cases
+
+---
+ .../sandbox/groovy/SandboxInterceptorTest.java     | 28 ++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/src/test/java/org/jenkinsci/plugins/scriptsecurity/sandbox/groovy/SandboxInterceptorTest.java b/src/test/java/org/jenkinsci/plugins/scriptsecurity/sandbox/groovy/SandboxInterceptorTest.java
+index 086e75a..bbd1b43 100644
+--- a/src/test/java/org/jenkinsci/plugins/scriptsecurity/sandbox/groovy/SandboxInterceptorTest.java
++++ b/src/test/java/org/jenkinsci/plugins/scriptsecurity/sandbox/groovy/SandboxInterceptorTest.java
+@@ -667,6 +667,34 @@ public class SandboxInterceptorTest {
+         public void explode() {}
+     }
+ 
++    @Issue("JENKINS-35294")
++    @Test public void enumWithVarargs() throws Exception {
++        String script = "enum Thing {\n"
++            + "  FIRST(\"The first thing\"),\n"
++            + "  String[] descriptions;\n"
++            + "  public Thing(String... descriptions) {\n"
++            + "    this.descriptions = descriptions;\n"
++            + "  }\n"
++            + "}\n"
++            + "Thing.values()[0].descriptions[0]\n";
++        String expected = "The first thing";
++        assertEvaluate(new GenericWhitelist(), expected, script);
++    }
++
++    @Issue("JENKINS-35294")
++    @Test public void enumWithStringAndVarargs() throws Exception {
++        String script = "enum Thing {\n"
++            + "  FIRST(\"The first thing\"),\n"
++            + "  String description;\n"
++            + "  public Thing(String description, int... unused) {\n"
++            + "    this.description = description;\n"
++            + "  }\n"
++            + "}\n"
++            + "Thing.values()[0].description\n";
++        String expected = "The first thing";
++        assertEvaluate(new GenericWhitelist(), expected, script);
++    }
++
+     private static void assertEvaluate(Whitelist whitelist, final Object expected, final String script) {
+         final GroovyShell shell = new GroovyShell(GroovySandbox.createSecureCompilerConfiguration());
+         Object actual = GroovySandbox.run(shell.parse(script), whitelist);
+-- 
+2.8.2
+

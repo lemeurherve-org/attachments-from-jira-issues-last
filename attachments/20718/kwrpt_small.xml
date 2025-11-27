@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<errorList xmlns="http://www.klocwork.com/inForce/report/1.0" version="9.2.2">
+<problem>
+ <problemID>48</problemID>
+ <file>D:\jenkins\workspace\nightly_trunk_klocwork_build\eadev\btmmq\btmwatch.c</file>
+ <method>StopWatchThread</method>
+ <line>590</line>
+ <column>1</column>
+ <code>MLK.MIGHT</code>
+ <message>Possible memory leak. Dynamic memory stored in &apos;stopMsg&apos; allocated through function &apos;smartptr_debug_malloc&apos; at line 559 can be lost at line 590</message>
+ <anchor>2032047143</anchor>
+ <prefix>_,&quot;Failedtoallocatestopmsg\n&quot;);}</prefix>
+ <postfix>/*AcoupleofniceroutinesforQPBTMW</postfix>
+ <trace>
+  <traceBlock file="D:\jenkins\workspace\nightly_trunk_klocwork_build\eadev\btmmq\btmwatch.c" method="StopWatchThread" id="0">
+   <traceLine line="559" text="Dynamic memory stored in &apos;stopMsg&apos; is allocated by calling function &apos;smartptr_debug_malloc&apos;." type="E" refId="1"/>
+   <traceLine line="560" text="stopMsg!=0 is true" type="C"/>
+   <traceLine line="563" text="err==QUEUE_SUCCESS is true" type="C"/>
+   <traceLine line="590" text="Dynamic memory stored in &apos;stopMsg&apos; is lost." type="E"/>
+  </traceBlock>
+  <traceBlock file="D:\jenkins\workspace\nightly_trunk_klocwork_build\eadev\mqsutil\smartptr.c" method="smartptr_debug_malloc" id="1">
+   <traceLine line="63" text="&apos;smartptr_safe_alloc(x, 0)&apos; is allocated by calling function &apos;smartptr_safe_alloc&apos;." type="E" refId="2"/>
+  </traceBlock>
+  <traceBlock file="D:\jenkins\workspace\nightly_trunk_klocwork_build\eadev\mqsutil\smartptr.c" method="smartptr_safe_alloc" id="2">
+   <traceLine line="227" text="to_alloc&gt;0 is true" type="C"/>
+   <traceLine line="229" text="&apos;rv&apos; is allocated by calling function &apos;malloc&apos;." type="E"/>
+  </traceBlock>
+ </trace>
+ <citingStatus>Analyze</citingStatus>
+ <state>Existing</state>
+ <severity>Error</severity>
+ <severitylevel>3</severitylevel>
+ <displayAs>Error</displayAs>
+ <dateOriginated>1309898966000</dateOriginated>
+ <dateFixed>1309986347000</dateFixed>
+ <url>http://mm-dev-build-01.dsl.bmc.com:9080/review/insight-review.html#goto:project=eadev_c,pid=48</url>
+</problem>
+</errorList>

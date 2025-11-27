@@ -1,0 +1,20 @@
+Index: Updater.java
+===================================================================
+--- Updater.java	(revision 36676)
++++ Updater.java	(working copy)
+@@ -230,8 +230,13 @@
+     	            }
+     	        }
+     	        scmChange.append( "\nFiles : " ).append( "\n" );
+-    	        for (AffectedFile affectedFile : change.getAffectedFiles()) {
+-    	            scmChange.append( "* " ).append( affectedFile.getPath() ).append( "\n" );
++    	        //added additional try .. catch; getAffectedFiles is not supported by all SCM implementations
++    	        try {
++	    	        for (AffectedFile affectedFile : change.getAffectedFiles()) {
++	    	            scmChange.append( "* " ).append( affectedFile.getPath() ).append( "\n" );
++	    	        }
++    	        } catch (UnsupportedOperationException e) {
++    	            LOGGER.warning( "Unsupported SCM operation " + e.getMessage() );
+     	        }
+     	        if (scmChange.length()>0) {
+     	            scmChanges.add( scmChange.toString() );

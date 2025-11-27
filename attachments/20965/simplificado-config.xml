@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<maven2-moduleset>
+  <actions/>
+  <description>Cópia do job etics-6.1.x-es para testar o delay de builds que está sendo tratado em https://issues.jenkins-ci.org/browse/JENKINS-11362.</description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>30</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>br.com.cpqd.etics</groupId>
+    <artifactId>cpqd-etics</artifactId>
+  </rootModule>
+  <goals>-o -P es,win64 clean -Darch.classifier=win64 -Dmaven.test.skip=true</goals>
+  <alternateSettings>.m2/settings.xml</alternateSettings>
+  <mavenName>maven-2.2.1</mavenName>
+  <mavenOpts>-Xmx1200m -XX:MaxPermSize=256m</mavenOpts>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <usePrivateRepository>true</usePrivateRepository>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <archivingDisabled>true</archivingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>0</mavenValidationLevel>
+  <reporters/>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+  </buildWrappers>
+</maven2-moduleset>

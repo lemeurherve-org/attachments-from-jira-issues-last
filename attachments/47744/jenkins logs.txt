@@ -1,0 +1,105 @@
+[06/19/19 22:39:37] [SSH] Opening SSH connection to 10.236.121.88:22.
+[06/19/19 22:39:38] [SSH] SSH host key matches key in Known Hosts file. Connection will be allowed.
+[06/19/19 22:39:38] [SSH] Authentication successful.
+[06/19/19 22:39:38] [SSH] The remote users environment is:
+BASH=/bin/bash
+BASHOPTS=cmdhist:extquote:force_fignore:hostcomplete:interactive_comments:progcomp:promptvars:sourcepath
+BASH_ALIASES=()
+BASH_ARGC=()
+BASH_ARGV=()
+BASH_CMDS=()
+BASH_EXECUTION_STRING=set
+BASH_LINENO=()
+BASH_SOURCE=()
+BASH_VERSINFO=([0]="4" [1]="1" [2]="2" [3]="1" [4]="release" [5]="x86_64-redhat-linux-gnu")
+BASH_VERSION='4.1.2(1)-release'
+CVS_RSH=ssh
+DIRSTACK=()
+EUID=301563
+GROUPS=()
+G_BROKEN_FILENAMES=1
+HOME=/home/svcidptomcat
+HOSTNAME=bdc1rnaridpap01
+HOSTTYPE=x86_64
+ID=301563
+IFS=$' \t\n'
+LANG=en_US.UTF-8
+LESSOPEN='||/usr/bin/lesspipe.sh %s'
+LOGNAME=svcidptomcat
+MACHTYPE=x86_64-redhat-linux-gnu
+MAIL=/var/mail/svcidptomcat
+OPTERR=1
+OPTIND=1
+OSTYPE=linux-gnu
+PATH=/usr/lib64/qt-3.3/bin:/bin:/usr/bin:/usr/boksm/bin
+PIPESTATUS=([0]="0")
+PPID=27616
+PS1=$'\nsvcidptomcat@bdc1rnaridpap01 [$PWD]\n$ '
+PS4='+ '
+PWD=/home/svcidptomcat
+QTDIR=/usr/lib64/qt-3.3
+QTINC=/usr/lib64/qt-3.3/include
+QTLIB=/usr/lib64/qt-3.3/lib
+SHELL=/bin/bash
+SHELLOPTS=braceexpand:hashall:interactive-comments
+SHLVL=1
+SSH_CLIENT='168.162.248.203 54936 22'
+SSH_CONNECTION='168.162.248.203 54936 10.236.142.71 22'
+TERM=dumb
+UID=301563
+USER=svcidptomcat
+_=/etc/bashrc
+[06/19/19 22:39:38] [SSH] Starting sftp client.
+ERROR: [06/19/19 22:39:38] [SSH] SFTP failed. Copying via SCP.
+java.io.IOException: The subsystem request failed.
+	at com.trilead.ssh2.channel.ChannelManager.requestSubSystem(ChannelManager.java:739)
+	at com.trilead.ssh2.Session.startSubSystem(Session.java:355)
+	at com.trilead.ssh2.SFTPv3Client.<init>(SFTPv3Client.java:100)
+	at com.trilead.ssh2.SFTPv3Client.<init>(SFTPv3Client.java:119)
+	at hudson.plugins.sshslaves.SFTPClient.<init>(SFTPClient.java:43)
+	at hudson.plugins.sshslaves.SSHLauncher.copySlaveJar(SSHLauncher.java:1096)
+	at hudson.plugins.sshslaves.SSHLauncher.access$300(SSHLauncher.java:144)
+	at hudson.plugins.sshslaves.SSHLauncher$2.call(SSHLauncher.java:802)
+	at hudson.plugins.sshslaves.SSHLauncher$2.call(SSHLauncher.java:785)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.io.IOException: This SSH2 channel is not open. state: 4
+	at com.trilead.ssh2.channel.ChannelManager.ioException(ChannelManager.java:1543)
+	at com.trilead.ssh2.channel.ChannelManager.waitForChannelRequestResult(ChannelManager.java:167)
+	at com.trilead.ssh2.channel.ChannelManager.requestSubSystem(ChannelManager.java:734)
+	... 12 more
+Caused by: java.io.IOException: The connection is being shutdown
+	at com.trilead.ssh2.channel.ChannelManager.handleEndMessage(ChannelManager.java:1525)
+	at com.trilead.ssh2.transport.TransportManager$1.run(TransportManager.java:535)
+	... 1 more
+Caused by: java.io.IOException: Peer sent DISCONNECT message (reason code 2): No terminal authorization granted
+	at com.trilead.ssh2.transport.TransportManager.receiveLoop(TransportManager.java:779)
+	at com.trilead.ssh2.transport.TransportManager$1.run(TransportManager.java:502)
+	... 1 more
+java.io.IOException: Could not copy slave.jar into '/home/svcidptomcat' on slave
+	at hudson.plugins.sshslaves.SSHLauncher.copySlaveJarUsingSCP(SSHLauncher.java:1180)
+	at hudson.plugins.sshslaves.SSHLauncher.copySlaveJar(SSHLauncher.java:1141)
+	at hudson.plugins.sshslaves.SSHLauncher.access$300(SSHLauncher.java:144)
+	at hudson.plugins.sshslaves.SSHLauncher$2.call(SSHLauncher.java:802)
+	at hudson.plugins.sshslaves.SSHLauncher$2.call(SSHLauncher.java:785)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.io.IOException: Sorry, this connection is closed.
+	at com.trilead.ssh2.transport.TransportManager.ensureConnected(TransportManager.java:600)
+	at com.trilead.ssh2.transport.TransportManager.sendMessage(TransportManager.java:673)
+	at com.trilead.ssh2.channel.ChannelManager.openSessionChannel(ChannelManager.java:572)
+	at com.trilead.ssh2.Session.<init>(Session.java:42)
+	at com.trilead.ssh2.Connection.openSession(Connection.java:1145)
+	at com.trilead.ssh2.Connection.exec(Connection.java:1566)
+	at hudson.plugins.sshslaves.SSHLauncher.copySlaveJarUsingSCP(SSHLauncher.java:1164)
+	... 8 more
+Caused by: java.io.IOException: Peer sent DISCONNECT message (reason code 2): No terminal authorization granted
+	at com.trilead.ssh2.transport.TransportManager.receiveLoop(TransportManager.java:779)
+	at com.trilead.ssh2.transport.TransportManager$1.run(TransportManager.java:502)
+	... 1 more
+[06/19/19 22:39:38] Launch failed - cleaning up connection
+[06/19/19 22:39:38] [SSH] Connection closed.

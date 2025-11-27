@@ -1,0 +1,204 @@
+Started on Dec 27, 2012 12:06:30 PM
+[checkpoint] $ tf history $/Checkpoint/Web/Application/main -noprompt -version:D2012-12-26T16:45:50Z~D2012-12-27T18:06:31Z -recursive -format:detailed -server:http://tfstta.int.thomson.com:8080/tfs ********
+Changeset: 1502405
+User: TLR\U0076016
+Date: Dec 27, 2012 11:18:17 AM
+
+Comment:
+  The SEC Interpretations and Guidance find by citation search page now works properly in IE10.  Also removed a number of invalid HTML comments from various Find by Citation search pages.
+
+Items:
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/aftrhist.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/aftrinc.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/cfncfedgar.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/cfnosece2.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/cfnrelpre.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/cfnrulpro.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/cfsecomaaer.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/secexp.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/secexpfor.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/tcm.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/tcmhist.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/tcr.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/tcrhist.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/Templates/fragments/wgapias.jspf
+
+Check-in Notes:
+  Code Reviewer: Lavanya
+  Dependencies: 
+  Developer Notes: IE10 is pickier about bad HTML mark-up, specifically non-closed table tags within forms.
+  Feature: Search
+  Project: Bug
+  Testing Instructions: Using IE10, test each Find by Citation "More..." search page in each practice area to ensure that each type of search on every page can be performed.
+  VersionOne ID: D-05425
+
+-------------------------------------------------------------------------------
+Changeset: 1502384
+User: TLR\U0026729
+Date: Dec 27, 2012 10:53:51 AM
+
+Comment:
+  IntelliJ 12 project file changes
+
+Items:
+  edit $/Checkpoint/Web/Application/main/.idea/compiler.xml
+  edit $/Checkpoint/Web/Application/main/.idea/inspectionProfiles/Project_Default.xml
+
+Check-in Notes:
+  Code Reviewer: 
+  Dependencies: 
+  Developer Notes: 
+  Feature: IntelliJ
+  Project: N/A
+  Testing Instructions: 
+  VersionOne ID: 
+
+-------------------------------------------------------------------------------
+Changeset: 1501840
+User: TLR\U0096898
+Date: Dec 26, 2012 3:00:15 PM
+
+Comment:
+  jQuery UI Upgrade
+------------------------------------------------------------------
+Upgraded:
+    - jQuery Core to 1.8.3 from 1.7.1
+    - jQuery UI to 1.9.2 from 1.8.16
+
+Avoided:
+    - Upgrading jQueryMobile to 1.2
+    - Touching Portal or Mobile or Basic
+
+Good Points:
+    - Seems slightly more fluid, which is good, meaning dialogs don't take so long to flicker into correct place (though maybe I'm seeing things), accordion slides a bit nicer, etc.
+    - Accessibility improvements in areas noted below.
+
+Testing:
+    - Tested each feature in IE7/9/Chrome/FF
+    - Tested iOS4/5/6/Surface
+    - Unit tests will be forthcoming
+
+General Notes:
+---------------------------------------------
+- Systematically compared CSS for the upgrade to ensure nothing was added/missed in the upgrade to 1.9.2
+    - Merged in few spotfixes we had inserted in past.
+- Disabled the 1.8 API, preferring the 1.9 API for upgrading to limit our problems in the future. (http://jqueryui.com/upgrade-guide/1.9/#overview)
+    - 1.10 will disable these API's so we should do it right now
+- widget.('destroy') method prior to instantiating widgets caused some problems
+    - Unclear why we were always doing this before, doesn't seem real necessary
+    - Refactored out of the code for now in problem areas.
+    - Modified the docTabs draggable ('destroy') as it was throwing an error on page render.
+    - Confirmed that other instances of ('destroy') don't need to be modified, especially on the jquery UI widgets that were causing problems.
+
+Widget Notes:
+---------------------------------------------
+- Upgraded Accordion
+    - Made styling tweaks to make it the same again.
+    - Made changes for API changes in the JS specifically for active panes on open/page load
+    - Accessibility improvements for tabbing
+- Upgraded Autocomplete
+    - Refactored to use new internal functions for jqueryUI changes
+    - Removed custom widget and instead just used internal function override function found on jQueryUI example
+    - Major Accessibility improvements
+- Confirmed .widget() API changes do not impact our current code
+    - Since I refactored the one instance of this (autocomplete) we no longer have to worry about these
+- Upgraded Dialog API
+    - Removed 'destroy' from the generic dialog setup, shouldn't be needed anyways but a note nonetheless.
+    - 'beforeclose' option changed to 'beforeClose' due to API change.
+    - Major Accessibility improvements
+- Confirmed Position API changes do not impact our current code
+- Upgraded Tabs API
+    - Accessibility improvements
+- Confirmed that other external plugins not affected by changes
+
+
+Items:
+  edit $/Checkpoint/Web/Application/main/CPWar/web/common/js/cp.util.js
+  add $/Checkpoint/Web/Application/main/CPWar/web/common/js/extern/jquery/jquery-1.8.3.min.js
+  add $/Checkpoint/Web/Application/main/CPWar/web/common/js/extern/jquery/jquery-ui-1.9.2.custom.min.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/css/externalOverride.css
+  add $/Checkpoint/Web/Application/main/CPWar/web/v10/css/extern/jquery/smoothness/jquery-ui-1.9.2.custom.css
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-bg_flat_0_aaaaaa_40x100.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-bg_flat_75_ffffff_40x100.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-bg_glass_55_fbf9ee_1x400.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-bg_glass_65_ffffff_1x400.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-bg_glass_75_dadada_1x400.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-bg_glass_95_fef1ec_1x400.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-bg_highlight-soft_75_cccccc_1x100.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-icons_222222_256x240.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-icons_2e83ff_256x240.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-icons_454545_256x240.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-icons_888888_256x240.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/cssImages/extern/jquery/smoothness/images/ui-icons_cd0a0a_256x240.png
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.content.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.dialog.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.doctabs.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.history.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.keywordSearch.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.notes.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.optionsDialog.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.sessTimer.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.wizardDialog.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/optsChangeTimeZone.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/fragments/keywords.jspf
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/fragments/stdJsIncludeJquery.jspf
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/include/myHomeQuickSrch.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/include/newUserSetupWizardTimeZone.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/WEB-INF/properties/url_mapv10.xml
+  edit $/Checkpoint/Web/Application/main/CPWar/web/WEB-INF/tags/ctJsp/searchAutoComplete.tag
+
+Check-in Notes:
+  Code Reviewer: Jeff
+  Dependencies: 
+  Developer Notes: 
+  Feature: Upgrading jQuery and jQuery UI
+  Project: Infrastructure/Refactoring
+  Testing Instructions: Test all Checkpoint Functionality, changes affect all areas of the UI.
+  VersionOne ID: S-05092
+
+-------------------------------------------------------------------------------
+Changeset: 1501824
+User: TLR\C110452
+Date: Dec 26, 2012 2:45:56 PM
+
+Comment:
+  Adding a polling interaction for the document tray status.  This approach needs to be further validated.  Adding conditionals to show or hide the temporary doc tray placeholder as well as the temporary highlighting that acts as an indicator of the doc tray containing in progress items.
+
+Items:
+  edit $/Checkpoint/Web/Application/main/CPWar/src/com/tta/checkpoint/data/docTray/CPExportedItems.java
+  edit $/Checkpoint/Web/Application/main/CPWar/src/com/tta/checkpoint/defines/CPAppProp.java
+  edit $/Checkpoint/Web/Application/main/CPWar/src/com/tta/checkpoint/defines/CPUrlParms.java
+  edit $/Checkpoint/Web/Application/main/CPWar/src/com/tta/checkpoint/servlet/CPDocTrayServlet.java
+  edit $/Checkpoint/Web/Application/main/CPWar/src/com/tta/checkpoint/servlet/docTray/CPDocTrayService.java
+  add $/Checkpoint/Web/Application/main/CPWar/src/com/tta/checkpoint/servlet/docTray/CPDocTrayWaitForCompletionThread.java
+  edit $/Checkpoint/Web/Application/main/CPWar/src/com/tta/checkpoint/uiData/viewBean/CPDocTrayQuickViewBean.java
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/css/standard.css
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/css/fragments/_mainNavTile.scss
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/js/cp.docTray.js
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/download.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/v10/jsp/mainNav.jsp
+  edit $/Checkpoint/Web/Application/main/CPWar/web/WEB-INF/properties/appBase.properties
+
+Check-in Notes:
+  Code Reviewer: Braden
+  Dependencies: 
+  Developer Notes: 
+  Feature: Poll request
+  Project: Doc Tray
+  Testing Instructions: Log in and validate that the temporary doc tray placeholder is not visible.  Export any item that takes a little bit of time to complete.  Validate that the temporary doc tray placeholder is visible and it is highlighted.  Navigate to another page and validate that the temporary doc tray placeholder is visible and the temporary highlighting goes away when the document export completes.  Delete the document and validate the temporary doc tray placeholder is no longer visible.
+  VersionOne ID: S-05054
+
+FATAL: Parse error. Unable to find an item within a changeset.  Please report this as a bug.  Changesetdata = "
+Changeset: 1501840
+User: TLR\U0096898
+Date: Dec 26, 2012 3:00:15 PM
+Comment:
+  jQuery UI Upgrade
+
+".
+[8mha:AAAAWB+LCAAAAAAAAABb85aBtbiIQSmjNKU4P08vOT+vOD8nVc8DzHWtSE4tKMnMz/PLL0ldFVf2c+b/lb5MDAwVRQxSaBqcITRIIQMEMIIUFgAAckCEiWAAAAA=[0mnull
+FATAL: Aborted
+[8mha:AAAAWB+LCAAAAAAAAABb85aBtbiIQSmjNKU4P08vOT+vOD8nVc8DzHWtSE4tKMnMz/PLL0ldFVf2c+b/lb5MDAwVRQxSaBqcITRIIQMEMIIUFgAAckCEiWAAAAA=[0mDone. Took 6.6 sec
+No changes

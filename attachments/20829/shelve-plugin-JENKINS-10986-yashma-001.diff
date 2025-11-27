@@ -1,0 +1,312 @@
+diff --git a/src/main/java/org/jvnet/hudson/plugins/shelveproject/ShelveProjectExecutable.java b/src/main/java/org/jvnet/hudson/plugins/shelveproject/ShelveProjectExecutable.java
+index eb857e6..0778b5a 100644
+--- a/src/main/java/org/jvnet/hudson/plugins/shelveproject/ShelveProjectExecutable.java
++++ b/src/main/java/org/jvnet/hudson/plugins/shelveproject/ShelveProjectExecutable.java
+@@ -1,18 +1,32 @@
+ package org.jvnet.hudson.plugins.shelveproject;
+ 
++import hudson.Util;
+ import hudson.FilePath;
+ import hudson.model.AbstractProject;
+ import hudson.model.Hudson;
+ import hudson.model.Queue;
++import hudson.model.TaskListener;
++import hudson.util.DirScanner;
++import hudson.util.FileVisitor;
+ 
+ import java.io.File;
+-import java.io.FileFilter;
++import java.io.IOException;
++import java.io.InterruptedIOException;
+ import java.io.FileNotFoundException;
+ import java.io.FileOutputStream;
+ import java.io.OutputStream;
++import java.io.FileWriter;
++import java.io.BufferedWriter;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
++//import java.io.IOException;
++//import java.lang.String;
++
++/**
++ * Scans everything recursively.
++ */
++
+ public class ShelveProjectExecutable
+     implements Queue.Executable
+ {
+@@ -39,6 +53,7 @@ public class ShelveProjectExecutable
+         {
+             deleteProject();
+         }
++//TODO else clean-up packed symlinks
+     }
+ 
+     public long getEstimatedDuration()
+@@ -53,13 +68,7 @@ public class ShelveProjectExecutable
+         {
+             final File projectRoot = project.getRootDir();
+             OutputStream outputStream1 = createOutputStream( Hudson.getInstance().getRootDir(), project.getName() );
+-            new FilePath( projectRoot ).zip( outputStream1, new FileFilter()
+-            {
+-                public boolean accept( File file )
+-                {
+-                    return true;
+-                }
+-            } );
++            new FilePath( projectRoot ).zip( outputStream1, new DirScannerPackSyms ( ));
+             outputStream1.close();
+             return true;
+         }
+@@ -97,4 +106,53 @@ public class ShelveProjectExecutable
+     {
+         return "Shelving " + project.getName();
+     }
++
++// This class distorts the purpose of DirScanner class in order to process symlinks
++	private class DirScannerPackSyms extends DirScanner {
++		private void scan(File f, String path, FileVisitor visitor) throws IOException {
++			if (f.canRead()) {
++				if ( Util.isSymlink(f) ) {
++// create a symlink-text file
++					File fsm = new File (f.getPath() + ".symlink");
++					String sm = "";
++//					LOGGER.info( "================link found " + f.getPath());
++					try {
++						sm = Util.resolveSymlink(f, TaskListener.NULL);
++					} catch (InterruptedException e) {
++						LOGGER.log( Level.SEVERE, "Error resolving symlink" + f.getPath(), e );
++						throw (IOException)new InterruptedIOException().initCause(e);
++//                        return;
++					}
++					if (sm == null) {
++						LOGGER.info( "symlink resolved to NULL for [" + f.getPath() + "].");
++						return;
++					}
++					try {
++// TODO need an if here?
++						BufferedWriter wsm = new BufferedWriter(new FileWriter(fsm.getPath()));
++						wsm.write(sm);
++						wsm.close();
++					} catch ( Exception e ) {
++						LOGGER.log( Level.SEVERE, "Could not create packed symlink for [" + fsm.getPath() + "].", e );
++						return;
++					}
++					visitor.visit(fsm,path+fsm.getName());
++					return;
++				}
++				visitor.visit(f,path+f.getName());
++				if(f.isDirectory() )  {
++					for( File child : f.listFiles() )
++						scan(child,path+f.getName()+'/',visitor);
++				}
++			}
++		}
++
++		public void scan(File dir, FileVisitor visitor) throws IOException {
++			scan(dir,"",visitor);
++		}
++
++		private static final long serialVersionUID = 1L;
++	}
+ }
++
++
+diff --git a/src/main/java/org/jvnet/hudson/plugins/shelveproject/UnshelveProjectExecutable.java b/src/main/java/org/jvnet/hudson/plugins/shelveproject/UnshelveProjectExecutable.java
+index 9591d0d..ed8c7c8 100644
+--- a/src/main/java/org/jvnet/hudson/plugins/shelveproject/UnshelveProjectExecutable.java
++++ b/src/main/java/org/jvnet/hudson/plugins/shelveproject/UnshelveProjectExecutable.java
+@@ -1,79 +1,113 @@
+-package org.jvnet.hudson.plugins.shelveproject;
+-
+-import hudson.FilePath;
+-import hudson.model.Hudson;
+-import hudson.model.Queue;
+-import org.apache.commons.io.FileUtils;
+-import org.apache.commons.lang.StringUtils;
+-
+-import java.io.File;
+-import java.util.Collection;
+-import java.util.logging.Level;
+-import java.util.logging.Logger;
+-
+-public class UnshelveProjectExecutable
+-    implements Queue.Executable
+-{
+-    private final static Logger LOGGER = Logger.getLogger( UnshelveProjectExecutable.class.getName() );
+-
+-    private final String[] shelvedProjectArchiveNames;
+-
+-    private final Queue.Task parentTask;
+-
+-    public UnshelveProjectExecutable( Queue.Task parentTask, String[] shelvedProjectArchiveNames )
+-    {
+-        this.parentTask = parentTask;
+-        this.shelvedProjectArchiveNames = shelvedProjectArchiveNames;
+-    }
+-
+-    public Queue.Task getParent()
+-    {
+-        return parentTask;
+-    }
+-
+-    public void run()
+-    {
+-        for (String shelvedProjectArchiveName : shelvedProjectArchiveNames)
+-        {
+-            final File shelvedProjectArchive = getArchiveFile(shelvedProjectArchiveName);
+-            LOGGER.info( "Unshelving project [" + shelvedProjectArchiveName + "]." );
+-            try
+-            {
+-                new FilePath( shelvedProjectArchive ).unzip(
+-                    new FilePath( new File( Hudson.getInstance().getRootDir(), "jobs" ) ) );
+-                shelvedProjectArchive.delete();
+-                Hudson.getInstance().reload();
+-            }
+-            catch ( Exception e )
+-            {
+-                LOGGER.log( Level.SEVERE, "Could not unarchive project archive [" + shelvedProjectArchiveName + "].", e );
+-            }
+-        }
+-    }
+-
+-    private File getArchiveFile(String shelvedProjectArchiveName) {
+-        // JENKINS-8759 - The archive name comes from the html form, so take a bit extra care for security reasons by
+-        // only accessing the archive if it exists in the directory of shevled projects.
+-        File shelvedProjectsDirectory = new File( Hudson.getInstance().getRootDir(), "shelvedProjects" );
+-        Collection<File> files = FileUtils.listFiles(shelvedProjectsDirectory, null, false);
+-        for (File file : files)
+-        {
+-            if (StringUtils.equals(file.getName(), shelvedProjectArchiveName))
+-            {
+-                return file;
+-            }
+-        }
+-        return null; // Project was already unshelved?
+-    }
+-
+-    public long getEstimatedDuration()
+-    {
+-        return -1; // impossible to estimate duration
+-    }
+-
+-    @Override
+-    public String toString()
+-    {
+-        return "Unshelving Project";
+-    }
++package org.jvnet.hudson.plugins.shelveproject;
++
++import hudson.Util;
++import hudson.FilePath;
++import hudson.model.Hudson;
++import hudson.model.Queue;
++import hudson.model.TaskListener;
++import hudson.util.DirScanner;
++import hudson.util.FileVisitor;
++
++import org.apache.commons.io.FileUtils;
++import org.apache.commons.lang.StringUtils;
++
++import java.io.BufferedReader;
++import java.io.File;
++import java.io.FileReader;
++import java.util.Collection;
++import java.util.logging.Level;
++import java.util.logging.Logger;
++
++public class UnshelveProjectExecutable
++    implements Queue.Executable
++{
++    private final static Logger LOGGER = Logger.getLogger( UnshelveProjectExecutable.class.getName() );
++
++    private final String[] shelvedProjectArchiveNames;
++
++    private final Queue.Task parentTask;
++
++    public UnshelveProjectExecutable( Queue.Task parentTask, String[] shelvedProjectArchiveNames )
++    {
++        this.parentTask = parentTask;
++        this.shelvedProjectArchiveNames = shelvedProjectArchiveNames;
++    }
++
++    public Queue.Task getParent()
++    {
++        return parentTask;
++    }
++
++    public void run()
++    {
++        for (String shelvedProjectArchiveName : shelvedProjectArchiveNames)
++        {
++            final File shelvedProjectArchive = getArchiveFile(shelvedProjectArchiveName);
++
++            final File jobsDir = new File( Hudson.getInstance().getRootDir(), "jobs" );
++            final File projDir = new File(jobsDir, StringUtils.substringBeforeLast( shelvedProjectArchive.getName(), "-" ));
++
++			LOGGER.info( "Unshelving project [" + shelvedProjectArchiveName + "]." );
++            try
++            {
++                new FilePath( shelvedProjectArchive ).unzip(new FilePath( jobsDir));
++
++// Process packed symlinks only on platforms which support them
++				if (! Util.NO_SYMLINK) {
++					new DirScanner.Glob ("**/*.symlink","").scan ( projDir, new FileVisitor()
++						{
++							public void visit( File file, String relativePath ){
++					// unpack symlink target
++								try {
++									BufferedReader inBuf = new BufferedReader(new FileReader(file));
++									String symTarget = inBuf.readLine();
++									inBuf.close();
++					// Unpack symlink name
++									String symName = StringUtils.substringBeforeLast( file.getName(), ".symlink" );
++									String linkDir = file.getParent();
++
++									Util.createSymlink( new File(linkDir), symTarget, symName, TaskListener.NULL);
++									file.delete();
++								} catch ( Exception e ) {
++//Handle InterruptedException ???
++									LOGGER.log( Level.SEVERE, "Could not unpack symlink [ " + file.getPath() + "].", e );
++								}
++							}
++						});
++				}
++				shelvedProjectArchive.delete();
++				Hudson.getInstance().reload();
++            }
++            catch ( Exception e )
++            {
++                LOGGER.log( Level.SEVERE, "Could not unarchive project archive [" + shelvedProjectArchiveName + "].", e );
++            }
++        }
++    }
++
++    private File getArchiveFile(String shelvedProjectArchiveName) {
++        // JENKINS-8759 - The archive name comes from the html form, so take a bit extra care for security reasons by
++        // only accessing the archive if it exists in the directory of shevled projects.
++        File shelvedProjectsDirectory = new File( Hudson.getInstance().getRootDir(), "shelvedProjects" );
++        Collection<File> files = FileUtils.listFiles(shelvedProjectsDirectory, null, false);
++        for (File file : files)
++        {
++            if (StringUtils.equals(file.getName(), shelvedProjectArchiveName))
++            {
++                return file;
++            }
++        }
++        return null; // Project was already unshelved?
++    }
++
++    public long getEstimatedDuration()
++    {
++        return -1; // impossible to estimate duration
++    }
++
++    @Override
++    public String toString()
++    {
++        return "Unshelving Project";
++    }
+ }
+\ No newline at end of file

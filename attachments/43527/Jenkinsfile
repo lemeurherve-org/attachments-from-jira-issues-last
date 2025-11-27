@@ -1,0 +1,26 @@
+#!/usr/bin/groovy
+
+pipeline {
+	agent any;
+
+	stages {
+		stage('one') {
+			steps {
+				script {
+					println BUILD_TAG
+				}
+			}
+		}
+
+		stage('two') {
+			steps {
+				script {
+					sh 'git show'
+					sh 'cat Jenkinsfile'
+					println 'second version'
+				}
+			}
+		}
+
+	}
+}

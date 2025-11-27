@@ -1,0 +1,35 @@
+Error provisioning node
+com.google.api.client.googleapis.json.GoogleJsonResponseException: 400 Bad Request
+{
+  "code" : 400,
+  "errors" : [ {
+    "domain" : "global",
+    "message" : "Instances with guest accelerators do not support live migration.",
+    "reason" : "badRequest"
+  } ],
+  "message" : "Instances with guest accelerators do not support live migration."
+}
+	at com.google.api.client.googleapis.json.GoogleJsonResponseException.from(GoogleJsonResponseException.java:146)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:113)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:40)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest$1.interceptResponse(AbstractGoogleClientRequest.java:321)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:1065)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:419)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:352)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.execute(AbstractGoogleClientRequest.java:469)
+	at com.google.jenkins.plugins.computeengine.client.ComputeClient.insertInstance(ComputeClient.java:339)
+	at com.google.jenkins.plugins.computeengine.InstanceConfiguration.provision(InstanceConfiguration.java:232)
+	at com.google.jenkins.plugins.computeengine.ComputeEngineCloud.provision(ComputeEngineCloud.java:159)
+	at hudson.slaves.NodeProvisioner$StandardStrategyImpl.apply(NodeProvisioner.java:715)
+	at hudson.slaves.NodeProvisioner.update(NodeProvisioner.java:320)
+	at hudson.slaves.NodeProvisioner.access$000(NodeProvisioner.java:61)
+	at hudson.slaves.NodeProvisioner$NodeProvisionerInvoker.doRun(NodeProvisioner.java:809)
+	at hudson.triggers.SafeTimerTask.run(SafeTimerTask.java:51)
+	at jenkins.security.ImpersonatingScheduledExecutorService$1.run(ImpersonatingScheduledExecutorService.java:58)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)

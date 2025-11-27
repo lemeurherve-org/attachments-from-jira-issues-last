@@ -1,0 +1,87 @@
+2023-10-10 09:54:20.576+0000 [id=34]  INFO  h.s.NodeProvisioner$StandardStrategyImpl#apply: Started provisioning REDACTED from REDACTED with 1 executors. Remaining excess workload: -0
+2023-10-10 09:54:20.576+0000 [id=34]  FINER hudson.slaves.NodeProvisioner#update: Provisioning strategy hudson.slaves.NodeProvisioner$StandardStrategyImpl@3981c444 declared provisioning complete
+2023-10-10 09:54:20.581+0000 [id=162189]  FINEST  o.c.j.p.k.KubernetesCloud#connect: Building connection to Kubernetes REDACTED URL null namespace REDACTED
+2023-10-10 09:54:20.581+0000 [id=162189]  FINE  o.c.j.p.k.KubernetesCloud#connect: Connected to Kubernetes REDACTED URL https://172.20.0.1:443/ namespace REDACTED2023-10-10 09:54:20.587+0000 [id=34]  INFO  hudson.slaves.NodeProvisioner#update: REDACTED provisioning successfully completed. We have now 4 computer(s)
+2023-10-10 09:54:20.588+0000 [id=162189]	FINEST	o.c.j.p.k.PodTemplateUtils#parseFromYaml: Parsed pod template from yaml: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  name: "REDACTED"
+spec:
+  REDACTED
+2023-10-10 09:54:20.588+0000 [id=162189]	FINEST	o.c.j.p.k.PodTemplateUtils#combine: Combining pods, parent: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  name: "REDACTED"
+spec:
+  REDACTED
+2023-10-10 09:54:20.589+0000 [id=162189]	FINEST	o.c.j.p.k.PodTemplateUtils#combine: Pods combined: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "REDACTED"
+    runUrl: "REDACTED"
+    jobPattern: "REDACTED"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "11618245613d8c28b48ac4dc735bfcb8d70d0f47"
+    jenkins/label: "REDACTED"
+  name: "REDACTED"
+spec:
+  REDACTED
+2023-10-10 09:54:20.589+0000 [id=162189]	FINEST	o.c.j.p.k.PodTemplateBuilder#build: Pod built: ---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "REDACTED"
+    runUrl: "REDACTED"
+    jobPattern: "REDACTED"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "11618245613d8c28b48ac4dc735bfcb8d70d0f47"
+    jenkins/label: "REDACTED"
+  name: "REDACTED"
+  namespace: "REDACTED"
+spec:
+  REDACTED
+2023-10-10 09:54:20.589+0000 [id=162189]	FINE	o.c.j.p.k.KubernetesLauncher#launch: Creating Pod: REDACTED REDACTED/REDACTED
+(100x) 2023-10-10 09:54:20.601+0000 [id=34]	FINER	hudson.slaves.NodeProvisioner#update: ran update on REDACTED in 0ms
+2023-10-10 09:54:20.850+0000 [id=162189]	INFO	o.c.j.p.k.KubernetesLauncher#launch: Created Pod: REDACTED REDACTED/REDACTED
+
+2023-10-10 10:00:42.387+0000 [id=167889] INFO o.c.j.p.k.KubernetesSlave#_terminate: Terminating Kubernetes instance for agent REDACTED
+2023-10-10 10:00:42.402+0000 [id=167962] INFO o.internal.platform.Platform#log: --> DELETE https://172.20.0.1/api/v1/namespaces/REDACTED/pods/REDACTED h2
+2023-10-10 10:00:42.402+0000 [id=167962] INFO o.internal.platform.Platform#log: Authorization: Bearer REDACTED
+2023-10-10 10:00:42.402+0000 [id=167962] INFO o.internal.platform.Platform#log: User-Agent: fabric8-kubernetes-client/6.4.1
+2023-10-10 10:00:42.402+0000 [id=167962] INFO o.internal.platform.Platform#log: Content-Type: application/json; charset=utf-8
+2023-10-10 10:00:42.402+0000 [id=167962] INFO o.internal.platform.Platform#log: Content-Length: 75
+2023-10-10 10:00:42.403+0000 [id=167962] INFO o.internal.platform.Platform#log: Host: 172.20.0.1
+2023-10-10 10:00:42.403+0000 [id=167962] INFO o.internal.platform.Platform#log: Connection: Keep-Alive
+2023-10-10 10:00:42.403+0000 [id=167962] INFO o.internal.platform.Platform#log: Accept-Encoding: gzip
+2023-10-10 10:00:42.403+0000 [id=167962] INFO o.internal.platform.Platform#log:
+2023-10-10 10:00:42.403+0000 [id=167962] INFO o.internal.platform.Platform#log: {"apiVersion":"v1","kind":"DeleteOptions","propagationPolicy":"Background"}
+2023-10-10 10:00:42.403+0000 [id=167962] INFO o.internal.platform.Platform#log: --> END DELETE (75-byte body)
+2023-10-10 10:00:42.457+0000 [id=167962] INFO o.internal.platform.Platform#log: <-- 200 https://172.20.0.1/api/v1/namespaces/REDACTED/pods/REDACTED (54ms)
+2023-10-10 10:00:42.457+0000 [id=167962] INFO o.internal.platform.Platform#log: audit-id: acf7caf0-7f7d-44be-951f-fbf599cbde5c
+2023-10-10 10:00:42.457+0000 [id=167962] INFO o.internal.platform.Platform#log: cache-control: no-cache, private
+2023-10-10 10:00:42.457+0000 [id=167962] INFO o.internal.platform.Platform#log: content-type: application/json
+2023-10-10 10:00:42.457+0000 [id=167962] INFO o.internal.platform.Platform#log: x-kubernetes-pf-flowschema-uid: dec317e9-e558-46c2-bfb7-ce848aaccd93
+2023-10-10 10:00:42.457+0000 [id=167962] INFO o.internal.platform.Platform#log: x-kubernetes-pf-prioritylevel-uid: d25f04bc-e0f0-446b-bff0-210a6f4bd563
+2023-10-10 10:00:42.457+0000 [id=167962] INFO o.internal.platform.Platform#log: date: Tue, 10 Oct 2023 10:00:42 GMT
+2023-10-10 10:00:42.458+0000 [id=167962] INFO o.internal.platform.Platform#log: <-- END HTTP (16645-byte body)
+2023-10-10 10:00:42.459+0000 [id=167889] INFO o.c.j.p.k.KubernetesSlave#deleteSlavePod: Terminated Kubernetes instance for agent REDACTED/REDACTED
+2023-10-10 10:00:42.459+0000 [id=167889] INFO o.c.j.p.k.KubernetesSlave#_terminate: Disconnected computer REDACTED
+2023-10-10 10:00:42.461+0000 [id=165373] INFO j.s.DefaultJnlpSlaveReceiver#channelClosed: Jetty (winstone)-165373 for REDACTED terminated: java.nio.channels.ClosedChannelException
+2023-10-10 10:11:00.852+0000 [id=162189]	FINER	o.c.j.p.k.KubernetesLauncher#launch: Removing Jenkins node: REDACTED
+2023-10-10 10:11:00.852+0000 [id=162189]	INFO	o.c.j.p.k.KubernetesSlave#_terminate: Terminating Kubernetes instance for agent REDACTED
+2023-10-10 10:11:00.852+0000 [id=162189]	FINEST	o.c.j.p.k.KubernetesCloud#connect: Building connection to Kubernetes REDACTED URL null namespace REDACTED
+2023-10-10 10:11:00.852+0000 [id=162189]	FINE	o.c.j.p.k.KubernetesFactoryAdapter#createClient: Autoconfiguring Kubernetes client
+2023-10-10 10:11:00.852+0000 [id=162189]	FINE	o.c.j.p.k.KubernetesFactoryAdapter#createClient: Creating Kubernetes client: KubernetesFactoryAdapter [serviceAddress=null, namespace=REDACTED, caCertData=null, credentials=null, skipTlsVerify=false, connectTimeout=5, readTimeout=15]
+2023-10-10 10:11:00.852+0000 [id=162189]	FINE	o.c.j.p.k.KubernetesFactoryAdapter#createClient: Proxy Settings for Cloud: false
+2023-10-10 10:11:00.859+0000 [id=162189]	FINE	o.c.j.p.k.KubernetesClientProvider#createClient: Created new Kubernetes client: REDACTED io.fabric8.kubernetes.client.impl.KubernetesClientImpl@67588030
+2023-10-10 10:11:00.859+0000 [id=162189]	FINE	o.c.j.p.k.KubernetesCloud#connect: Connected to Kubernetes REDACTED URL https://172.20.0.1:443/ namespace REDACTED
+2023-10-10 10:11:00.859+0000 [id=162189]	SEVERE	o.c.j.p.k.KubernetesSlave#_terminate: Computer for agent is null: REDACTED
+2023-10-10 10:11:00.859+0000 [id=162189]	INFO	hudson.slaves.AbstractCloudSlave#terminate: FATAL: Computer for agent is null: REDACTED
+2023-10-10 10:11:00.859+0000 [id=33]	FINE	o.c.j.p.k.KubernetesCloud#provision: In provisioning : [REDACTED]

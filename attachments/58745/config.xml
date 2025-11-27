@@ -1,0 +1,115 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1189.va_d37a_e9e4eda_">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2114.v2654ca_721309"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2114.v2654ca_721309">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@2.3.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.34">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@2.6.3">
+          <name>Branch</name>
+          <randomName>choice-parameter-38205510582337</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1175.v4b_d517d6db_f0">
+              <script>
+// Retrieves multibranch pipeline&apos;s jobs (each job is created per branch discovered in repo)
+import jenkins.model.Jenkins
+
+def buildName = Jenkins.instance.getItemByFullName(&quot;myproject/k8s/build/integration&quot;)
+buildName.getAllJobs().displayName
+</script>
+              <sandbox>true</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1175.v4b_d517d6db_f0">
+              <script>return [&apos;Unable to list branches&apos;]</script>
+              <sandbox>true</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>test</projectName>
+          <projectFullName>myproject/k8s/build/test</projectFullName>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.6.3">
+          <name>Build</name>
+          <randomName>choice-parameter-38205512919366</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1175.v4b_d517d6db_f0">
+              <script>
+import jenkins.model.Jenkins
+
+def job = Jenkins.instance.getItemByFullName(&quot;myproject/k8s/build/integration/${Branch}&quot;)
+def builds = job.getBuilds()
+List goodBuilds = []
+
+for (build in builds) {
+  // Allow successful and unstable builds
+  if (build.result.toString() == &quot;SUCCESS&quot; || build.result.toString() == &quot;UNSTABLE&quot;) {
+    goodBuilds.add(build.number)
+  }
+}
+
+return goodBuilds
+</script>
+              <sandbox>true</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1175.v4b_d517d6db_f0">
+              <script>return [&apos;Unable to list builds&apos;]</script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>test</projectName>
+          <projectFullName>myproject/k8s/build/test</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>Branch</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2729.vea_17b_79ed57a_">
+    <script>@Library(&apos;lime-shared-library@CLOUDE-3304&apos;) _
+pipeline {
+    agent {
+        kubernetes {}
+    }
+    environment {
+        ENVIRONMENT=&apos;build&apos;
+        JOB_PREFIX=&quot;myproject/k8s/${ENVIRONMENT}/integration&quot;
+    }
+    stages {
+        stage(&apos;Test&apos;) {
+            steps {
+                script {
+                    def descr = getBuildDescription(project: &quot;${env.JOB_PREFIX}/${params.Branch}&quot;, buildNum: &quot;${params.Build}&quot;)
+                    echo descr
+                }
+            }
+        }
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

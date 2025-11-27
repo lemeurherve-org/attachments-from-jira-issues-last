@@ -1,0 +1,31 @@
+Index: maven-plugin/src/main/java/hudson/maven/MavenModule.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- maven-plugin/src/main/java/hudson/maven/MavenModule.java	(revision 609c4f8df07e8df6531bafaa0e07b6a69dd68420)
++++ maven-plugin/src/main/java/hudson/maven/MavenModule.java	(revision )
+@@ -565,17 +565,21 @@
+         
+         for (String goal : Util.tokenize(getGoals())) {
+             if ("deploy".equals(goal) || "deploy:deploy".equals(goal)) {
+-                return 2;
++                return 3;
+             }
+             
+             if ("install".equals(goal)) {
++                relevancy = 2;
++            }
++
++            if ("verify".equals(goal)) {
+                 relevancy = 1;
+             }
+         }
+         
+         for (Publisher publisher : getParent().getPublishers()) {
+             if (publisher instanceof RedeployPublisher) {
+-                return 2;
++                return 3;
+             }
+         }
+         

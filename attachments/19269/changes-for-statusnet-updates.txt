@@ -1,0 +1,318 @@
+Index: src/test/java/hudson/plugins/twitter/ShouldIncludeURLTest.java
+===================================================================
+--- src/test/java/hudson/plugins/twitter/ShouldIncludeURLTest.java	(Revision 29189)
++++ src/test/java/hudson/plugins/twitter/ShouldIncludeURLTest.java	(Arbeitskopie)
+@@ -11,7 +11,7 @@
+         DescriptorImpl descriptor = hudson.getDescriptorByType(DescriptorImpl.class);
+         descriptor.includeUrl = true;
+ 
+-        TwitterPublisher pub = new TwitterPublisher(null, null, null, null);
++        TwitterPublisher pub = new TwitterPublisher(null, null, null, null, null);
+         Assert.assertTrue(pub.shouldIncludeUrl());
+ 
+         ReflectionHelper.setField(pub, "includeUrl", Boolean.FALSE);
+@@ -25,7 +25,7 @@
+         DescriptorImpl descriptor = hudson.getDescriptorByType(DescriptorImpl.class);
+         descriptor.includeUrl = false;
+ 
+-        TwitterPublisher pub = new TwitterPublisher(null, null, null, null);
++        TwitterPublisher pub = new TwitterPublisher(null, null, null, null, null);
+ 
+         Assert.assertFalse(pub.shouldIncludeUrl());
+ 
+Index: src/test/java/hudson/plugins/twitter/ShouldTweetTest.java
+===================================================================
+--- src/test/java/hudson/plugins/twitter/ShouldTweetTest.java	(Revision 29189)
++++ src/test/java/hudson/plugins/twitter/ShouldTweetTest.java	(Arbeitskopie)
+@@ -20,7 +20,7 @@
+         DescriptorImpl descriptor = hudson.getDescriptorByType(DescriptorImpl.class);
+         descriptor.onlyOnFailureOrRecovery = true;
+ 
+-        TwitterPublisher pub = new TwitterPublisher(null, null, null, null);
++        TwitterPublisher pub = new TwitterPublisher(null, null, null, null, null);
+ 
+         assertLimitedTweets(pub);
+     }
+@@ -29,7 +29,7 @@
+         DescriptorImpl descriptor = hudson.getDescriptorByType(DescriptorImpl.class);
+         descriptor.onlyOnFailureOrRecovery = true;
+ 
+-        TwitterPublisher pub = new TwitterPublisher(null, null, "false", null);
++        TwitterPublisher pub = new TwitterPublisher(null, null, null, "false", null);
+ 
+         assertAlwaysTweet(pub);
+     }
+@@ -38,7 +38,7 @@
+         DescriptorImpl descriptor = hudson.getDescriptorByType(DescriptorImpl.class);
+         descriptor.onlyOnFailureOrRecovery = true;
+ 
+-        TwitterPublisher pub = new TwitterPublisher(null, null, "true", null);
++        TwitterPublisher pub = new TwitterPublisher(null, null, null, "true", null);
+ 
+         assertLimitedTweets(pub);
+     }
+@@ -47,7 +47,7 @@
+         DescriptorImpl descriptor = hudson.getDescriptorByType(DescriptorImpl.class);
+         descriptor.onlyOnFailureOrRecovery = false;
+ 
+-        TwitterPublisher pub = new TwitterPublisher(null, null, null, null);
++        TwitterPublisher pub = new TwitterPublisher(null, null, null, null, null);
+ 
+         assertAlwaysTweet(pub);
+     }
+@@ -56,7 +56,7 @@
+         DescriptorImpl descriptor = hudson.getDescriptorByType(DescriptorImpl.class);
+         descriptor.onlyOnFailureOrRecovery = false;
+ 
+-        TwitterPublisher pub = new TwitterPublisher(null, null, "false", null);
++        TwitterPublisher pub = new TwitterPublisher(null, null, null, "false", null);
+ 
+         assertAlwaysTweet(pub);
+     }
+@@ -65,7 +65,7 @@
+         DescriptorImpl descriptor = hudson.getDescriptorByType(DescriptorImpl.class);
+         descriptor.onlyOnFailureOrRecovery = false;
+ 
+-        TwitterPublisher pub = new TwitterPublisher(null, null, "true", null);
++        TwitterPublisher pub = new TwitterPublisher(null, null, null, "true", null);
+ 
+         assertLimitedTweets(pub);
+     }
+Index: src/main/java/hudson/plugins/twitter/TwitterPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/twitter/TwitterPublisher.java	(Revision 29189)
++++ src/main/java/hudson/plugins/twitter/TwitterPublisher.java	(Arbeitskopie)
+@@ -39,6 +39,7 @@
+ /**
+  * @author cactusman
+  * @author justinedelson
++ * @author matthub
+  */
+ public class TwitterPublisher extends Notifier {
+ 
+@@ -49,21 +50,23 @@
+ 
+     private String id;
+     private String password;
++    private String url;
+     private Boolean onlyOnFailureOrRecovery;
+     private Boolean includeUrl;
+ 
+-    private TwitterPublisher(String id, String password, Boolean onlyOnFailureOrRecovery,
++    private TwitterPublisher(String id, String password, String url, Boolean onlyOnFailureOrRecovery,
+             Boolean includeUrl) {
+         this.onlyOnFailureOrRecovery = onlyOnFailureOrRecovery;
+         this.includeUrl = includeUrl;
+         this.id = id;
+         this.password = password;
++        this.url = url;
+     }
+ 
+     @DataBoundConstructor
+-    public TwitterPublisher(String id, String password, String onlyOnFailureOrRecovery,
++    public TwitterPublisher(String id, String password, String url, String onlyOnFailureOrRecovery,
+             String includeUrl) {
+-        this(cleanToString(id), cleanToString(password), cleanToBoolean(onlyOnFailureOrRecovery),
++        this(cleanToString(id), cleanToString(password), cleanToString(url), cleanToBoolean(onlyOnFailureOrRecovery),
+                 cleanToBoolean(includeUrl));
+     }
+ 
+@@ -114,13 +117,18 @@
+     public BuildStepMonitor getRequiredMonitorService() {
+         return BuildStepMonitor.BUILD;
+     }
++    
++    public String getUrl()
++    {
++    	return url;
++    }
+ 
+     @Override
+     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
+     	if (shouldTweet(build)) {
+             try {
+                 String newStatus = createTwitterStatusMessage(build);
+-                ((DescriptorImpl) getDescriptor()).updateTwit(id, password, newStatus);
++                ((DescriptorImpl) getDescriptor()).updateTwit(url, id, password, newStatus);
+             } catch (Exception e) {
+                 LOGGER.log(Level.SEVERE, "Unable to send tweet.", e);
+             }
+@@ -233,6 +241,7 @@
+         public String id;
+         public String password;
+         public String hudsonUrl;
++        public String url;
+         public boolean onlyOnFailureOrRecovery;
+         public boolean includeUrl;
+ 
+@@ -246,7 +255,8 @@
+             // set the booleans to false as defaults
+             includeUrl = false;
+             onlyOnFailureOrRecovery = false;
+-
++            url = "";
++            
+             req.bindParameters(this, "twitter.");
+             hudsonUrl = Mailer.descriptor().getUrl();
+             save();
+@@ -255,7 +265,7 @@
+ 
+         @Override
+         public String getDisplayName() {
+-            return "Twitter";
++            return "Twitter/StatusNet";
+         }
+ 
+         public String getId() {
+@@ -277,6 +287,11 @@
+         public boolean isOnlyOnFailureOrRecovery() {
+             return onlyOnFailureOrRecovery;
+         }
++        
++        public String getBaseRestUrl()
++        {
++        	return url;
++        }
+ 
+         @SuppressWarnings("unchecked")
+ 		@Override
+@@ -291,18 +306,29 @@
+                 hudsonUrl = Functions.inferHudsonURL(req);
+                 save();
+             }
++            if (url == null)
++            {
++                // if base URL is not configured yet, infer some default
++                url = "http://api.twitter.com/1/";
++                save();
++            }
+             return super.newInstance(req, formData);
+         }
+ 
+-        public void updateTwit(String id, String password, String message) throws Exception {
++        public void updateTwit(String baseUrl, String id, String password, String message) throws Exception {
+             if (id == null || password == null) {
+                 id = this.id;
+                 password = this.password;
+             }
++            
++            if (baseUrl == null)
++            {
++            	baseUrl = this.url;
++            }
+ 
+-            LOGGER.info("Attempting to update Twitter status to: " + message);
++            LOGGER.info("Attempting to update status to: " + message + " (server: " + baseUrl + ")");
+ 
+-            AsyncTwitter twitter = new AsyncTwitter(id,password);
++            AsyncTwitter twitter = new AsyncTwitter(id,password,baseUrl);
+             twitter.updateStatusAsync(message, new TwitterAdapter() {
+             	@Override
+                 public void onException(TwitterException e, int method) {
+Index: src/main/resources/hudson/plugins/twitter/TwitterPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/twitter/TwitterPublisher/config.jelly	(Revision 29189)
++++ src/main/resources/hudson/plugins/twitter/TwitterPublisher/config.jelly	(Arbeitskopie)
+@@ -1,6 +1,6 @@
+ <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <f:advanced>
+-    <f:entry title="Only Tweet on Failure or Recovery?" help="/plugin/twitter/help-project-failure.html">
++    <f:entry title="Only Tweet on Failure or Recovery?" help="/plugin/twitter-statusnet/help-project-failure.html">
+       <select class="setting-input validated" name="twitter.onlyOnFailureOrRecovery">
+           <option>(System Default)</option>
+           <f:option selected="${instance.onlyOnFailureOrRecovery==true}">Yes</f:option>
+@@ -8,7 +8,7 @@
+         </select>
+     </f:entry>
+   
+-    <f:entry title="Include Build Url?" help="/plugin/twitter/help-project-url.html">
++    <f:entry title="Include Build Url?" help="/plugin/twitter-statusnet/help-project-url.html">
+       <select class="setting-input validated" name="twitter.includeUrl">
+           <option>(System Default)</option>
+           <f:option selected="${instance.includeUrl==true}">Yes</f:option>
+@@ -16,11 +16,14 @@
+         </select>
+     </f:entry>
+     
+-  	<f:entry title="ID" help="/plugin/twitter/help-project-id.html">
++  	<f:entry title="ID" help="/plugin/twitter-statusnet/help-project-id.html">
+ 	    <input class="setting-input" name="twitter.id" type="text" value="${instance.id}" />
+     </f:entry>
+-	<f:entry title="Password" help="/plugin/twitter/help-project-password.html">
++	<f:entry title="Password" help="/plugin/twitter-statusnet/help-project-password.html">
+ 		<input class="setting-input" name="twitter.password" type="password" value="${instance.password}" />
+ 	</f:entry>
++  	<f:entry title="API URL" help="/plugin/twitter-statusnet/help-project-base-url.html">
++	    <input class="setting-input" name="twitter.url" type="text" value="${instance.url}" />
++      </f:entry>
+   </f:advanced>
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/twitter/TwitterPublisher/global.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/twitter/TwitterPublisher/global.jelly	(Revision 29189)
++++ src/main/resources/hudson/plugins/twitter/TwitterPublisher/global.jelly	(Arbeitskopie)
+@@ -2,20 +2,24 @@
+ 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+ 	xmlns:f="/lib/form">
+ 	<f:section title="Global Twitter Settings">
+-		<f:entry title="ID" help="/plugin/twitter/help-global-id.html">
++		<f:entry title="ID" help="/plugin/twitter-statusnet/help-global-id.html">
+ 			<input class="setting-input" name="twitter.id" type="text"
+ 				value="${descriptor.id}" />
+ 		</f:entry>
+-		<f:entry title="Password" help="/plugin/twitter/help-global-password.html">
++		<f:entry title="Password" help="/plugin/twitter-statusnet/help-global-password.html">
+ 			<input class="setting-input" name="twitter.password"
+ 				type="password" value="${descriptor.password}" />
+ 		</f:entry>
+-		
+-		<f:entry title="Only Tweet on Failure or Recovery?" help="/plugin/twitter/help-global-failure.html">
++		<f:entry title="API URL" help="/plugin/twitter-statusnet/help-global-base-url.html">
++			<input class="setting-input" name="twitter.url"
++				type="text" value="${descriptor.url}" />
++		</f:entry>
++				
++		<f:entry title="Only Tweet on Failure or Recovery?" help="/plugin/twitter-statusnet/help-global-failure.html">
+ 		    <f:checkbox name="twitter.onlyOnFailureOrRecovery" checked="${descriptor.onlyOnFailureOrRecovery}" />
+ 		</f:entry>
+ 		
+-		<f:entry title="Include the Build URL in the Tweet?" help="/plugin/twitter/help-global-url.html">
++		<f:entry title="Include the Build URL in the Tweet?" help="/plugin/twitter-statusnet/help-global-url.html">
+ 		    <f:checkbox name="twitter.includeUrl" checked="${descriptor.includeUrl}" />
+ 		</f:entry>
+ 		
+Index: src/main/resources/index.jelly
+===================================================================
+--- src/main/resources/index.jelly	(Revision 29189)
++++ src/main/resources/index.jelly	(Arbeitskopie)
+@@ -1,3 +1,3 @@
+ <div>
+-  This plugin is a Twitter Plugin.
++  This plugin is a Twitter/StatusNet Plugin.
+ </div>
+\ No newline at end of file
+Index: pom.xml
+===================================================================
+--- pom.xml	(Revision 29189)
++++ pom.xml	(Arbeitskopie)
+@@ -7,14 +7,14 @@
+         <relativePath>../pom.xml</relativePath>
+     </parent>
+ 
+-    <artifactId>twitter</artifactId>
++    <artifactId>twitter-statusnet</artifactId>
+     <packaging>hpi</packaging>
+-    <version>0.5-SNAPSHOT</version>
+-    <name>Twitter plugin</name>
++    <version>0.1-SNAPSHOT</version>
++    <name>Twitter/StatusNet plugin</name>
+     <description>
+-        Plugin for Hudson that adds tweets to Twitter (http://www.twitter.com/) for build events.
++        Plugin for Hudson that adds tweets to Twitter (http://www.twitter.com/) or an arbitrary StatusNet (http://status.net/) for build events.
+     </description>
+-    <url>http://wiki.hudson-ci.org/display/HUDSON/Twitter+Plugin</url>
++    <url>http://wiki.hudson-ci.org/display/HUDSON/Twitter+StatusNet+Plugin</url>
+ 
+     <dependencies>
+         <dependency>

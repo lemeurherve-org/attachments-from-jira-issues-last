@@ -1,0 +1,122 @@
+Index: src/main/java/hudson/plugins/plot/Plot.java
+===================================================================
+--- src/main/java/hudson/plugins/plot/Plot.java	(revision 19313)
++++ src/main/java/hudson/plugins/plot/Plot.java	(working copy)
+@@ -412,11 +412,15 @@
+         loadPlotData();
+         // extract the data for each data series
+         for (Series series : getSeries()) {
+-            Properties seriesData = loadSeriesData(series,project.getWorkspace(),logger);
+-            if (seriesData != null) {
+-                rawPlotData.add(new String[] {
++            Properties[] matchingFilesData = loadSeriesData(series,project.getWorkspace(),logger);
++            for (Properties seriesData : matchingFilesData) {
++                String label = series.getLabel();
++                if (label == null || label.length() == 0) {
++                    label = seriesData.getProperty("LABEL");
++                }
++		rawPlotData.add(new String[] {
+                     seriesData.getProperty("YVALUE"),
+-                    series.getLabel(),
++                    label,
+                     build.getNumber() + "", // convert to a string
+                     build.getTimestamp().getTimeInMillis() + "",
+                     seriesData.getProperty("URL")
+@@ -632,37 +636,44 @@
+      * @return a properties object that contains the retrieved series data
+      *         from the workspace
+      */
+-    private Properties loadSeriesData(Series series, FilePath workspaceRootDir, PrintStream logger) {
++    private Properties[] loadSeriesData(Series series, FilePath workspaceRootDir, PrintStream logger) {
+         InputStream in = null;
+         FilePath[] seriesFiles = null;
+         try {
+             seriesFiles = workspaceRootDir.list(series.getFile());
+         } catch (Exception e) {
+             logger.println("Exception trying to retrieve series files: " + e);
+-            return null;
++            return new Properties[0];
+         }
+         if (seriesFiles != null && seriesFiles.length < 1) {
+             logger.println("No plot data file found: " + series.getFile());
+-            return null;
++            return new Properties[0];
+         }
+-        try {
+-            in = seriesFiles[0].read();
+-            logger.println("Saving plot series data from: " + seriesFiles[0]);
+-            Properties data = new Properties();
+-            data.load(in);
+-            return data;
+-        } catch (Exception e) {
+-            logger.println("Exception reading plot series data from: " + seriesFiles[0]);
+-            return null;
+-        } finally {
+-            if (in != null) {
+-                try {
+-                    in.close();
+-                } catch (IOException ignore) {
+-                    //ignore
++        Properties[] result = new Properties[seriesFiles.length];
++        for (int i = 0; i < seriesFiles.length; i++) {
++            try {
++                in = seriesFiles[i].read();
++                logger.println("Saving plot series data from: " + seriesFiles[i]);
++                Properties data = new Properties();
++                data.load(in);
++                if(!data.containsKey("LABEL") ) {
++                    data.setProperty("LABEL", seriesFiles[i].getName());
+                 }
++                result[i] = data;
++            } catch (Exception e) {
++        	logger.println("Exception reading plot series data from: " + seriesFiles[i]);
++        	return new Properties[0];
++            } finally {
++        	if (in != null) {
++        	    try {
++        	        in.close();
++        	    } catch (IOException ignore) {
++        	        //ignore
++                    }
++                }
+             }
+-        }
++	}
++        return result;
+     }
+ 
+ }
+Index: src/main/webapp/help-series.html
+===================================================================
+--- src/main/webapp/help-series.html	(revision 19313)
++++ src/main/webapp/help-series.html	(working copy)
+@@ -3,13 +3,15 @@
+   <a href='ws/'>the workspace root</a>, that
+   contains the data value for this data series.  The file must
+   contain a <code>YVALUE</code> property and may optionally
+-  contain a <code>URL</code> property. If present, the URL will be 
+-  opened when the data point on the plot is clicked.
++  contain a <code>URL</code> property or a <code>LABEL</code> property. If present, the URL will be 
++  opened when the data point on the plot is clicked.  The LABEL property will be used to label 
++  the data series only if no label is defined (below).
+   <p>
+   The specification of this file can use wildcards like <code>build/report/*/report.properties</code>
+   but only the first file resolved by the wildcard will be used.
+   See <a href='http://ant.apache.org/manual/CoreTypes/fileset.html'>
+-  the @includes of Ant fileset</a> for the exact format.
++  the @includes of Ant fileset</a> for the exact format.  More information 
++  about Ant's patterns can be found <a href='http://ant.apache.org/manual/dirtasks.html#patterns'>here</a>.
+   <p>
+   For example, a properties file might look like:
+   <pre>
+Index: src/main/webapp/help-legend.html
+===================================================================
+--- src/main/webapp/help-legend.html	(revision 19313)
++++ src/main/webapp/help-legend.html	(working copy)
+@@ -1,3 +1,5 @@
+ <div>
+-  Optional. Specifies the legend label for this data series. 
++  Optional. Specifies the legend label for this data series.  <b>Leave this 
++  field empty to use the LABEL property from the property file (if provided), 
++  or otherwise the final component of the filename (if LABEL is not provided).</b>
+ </div>

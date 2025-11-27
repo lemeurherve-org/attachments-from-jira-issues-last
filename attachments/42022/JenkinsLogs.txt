@@ -1,0 +1,60 @@
+Started by user Michel Calvin
+[EnvInject] - Loading node environment variables.
+Building on master in workspace C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test
+Querying for remote changeset at '$/VehicleInventory' as of 'D2018-03-28T22:49:30Z'...
+Query result is: Changeset #435 by 'BFUSA\CalvinMichel' on '2018-03-16T18:53:32Z'.
+Checking if there exists a mapping for C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test...yes, in workspace 'Hudson-TFS Request Automation Test-MASTER'.
+Downloading list of workspaces from http://apptfs01pakr.bfusa.com:8080/tfs/MicrosoftCOE...
+Deleting workspaces named 'Hudson-TFS Request Automation Test-MASTER' from computer 'BLDCMW01PAKR'...
+Deleted 1 workspace(s) named 'Hudson-TFS Request Automation Test-MASTER'.
+Creating workspace 'Hudson-TFS Request Automation Test-MASTER' owned by 'scmbuild'...
+Mapping '$/VehicleInventory' to local folder 'C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test' in workspace 'Hudson-TFS Request Automation Test-MASTER'...
+Created workspace 'Hudson-TFS Request Automation Test-MASTER'.
+Getting version 'C435' to 'C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test'...
+Finished getting version 'C435'. Retrieved 2223 resources.
+Run condition [Always] enabling prebuild for step [Execute Windows batch command]
+Run condition [Never] preventing prebuild for step [Execute Windows batch command]
+Run condition [Always] enabling perform for step [Execute Windows batch command]
+[TFS Request Automation Test] $ cmd /c call C:\Users\scmbuild\AppData\Local\Temp\jenkins8844959096545937467.bat
+
+C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test>cd SCMTest\VehicleInventory 
+
+C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory>"C:\Program Files\dotnet\dotnet.exe" restore VehicleInventory.csproj 
+  Restoring packages for C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\VehicleInventory.csproj...
+  Restore completed in 96.19 ms for C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\VehicleInventory.csproj.
+  Generating MSBuild file C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\obj\VehicleInventory.csproj.nuget.g.props.
+  Generating MSBuild file C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\obj\VehicleInventory.csproj.nuget.g.targets.
+  Restore completed in 903.35 ms for C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\VehicleInventory.csproj.
+
+C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory>"C:\Program Files\dotnet\dotnet.exe" build VehicleInventory.csproj 
+Microsoft (R) Build Engine version 15.6.82.30579 for .NET Core
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Restore completed in 58.36 ms for C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\VehicleInventory.csproj.
+  Restore completed in 95.87 ms for C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\VehicleInventory.csproj.
+  VehicleInventory -> C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\bin\Debug\net452\win7-x86\VehicleInventory.exe
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.19
+
+C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory>"C:\Program Files\dotnet\dotnet.exe" publish -c Release -o pub 
+Microsoft (R) Build Engine version 15.6.82.30579 for .NET Core
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Restore completed in 57.47 ms for C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\VehicleInventory.csproj.
+  Restore completed in 89.79 ms for C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\VehicleInventory.csproj.
+  VehicleInventory -> C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\bin\Release\net452\win7-x86\VehicleInventory.exe
+  VehicleInventory -> C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory\pub\
+
+C:\Program Files (x86)\Jenkins\workspace\TFS Request Automation Test\SCMTest\VehicleInventory>exit 0 
+Run condition [Never] preventing perform for step [Execute Windows batch command]
+Archiving artifacts
+Fetching latest version for artifact: Vehicle Inventory SCMTest CICD
+Triggering release...
+Successfully triggered release.
+Release Name: Release-1
+Release id: 17
+Finished: SUCCESS

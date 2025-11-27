@@ -1,0 +1,69 @@
+diff plugins/ldapemail/src/main/java/com/mtvi/plateng/hudson/ldap/LdapMailAddressResolver.java plugins/ldapemail/src/main/java/com/mtvi/plateng/hudson/ldap/LdapMailAddressResolver.java
+index 8995f01..c032a60 100644
+--- plugins/ldapemail/src/main/java/com/mtvi/plateng/hudson/ldap/LdapMailAddressResolver.java
++++ plugins/ldapemail/src/main/java/com/mtvi/plateng/hudson/ldap/LdapMailAddressResolver.java
+@@ -120,7 +120,7 @@ public class LdapMailAddressResolver extends MailAddressResolver {
+         String emailAddress = null;
+         SearchControls controls = new SearchControls();
+         controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+-        String filter = String.format("%s=%s", configuration.getSearchAttribute(), userName);
++        String filter = configuration.getSearchAttribute().replaceAll("%s", userName);
+ 
+         LOGGER.log(Level.INFO, String.format("Performing LDAP search within %s using %s",
+                 configuration.getBaseDN(), filter));
+diff plugins/ldapemail/src/main/resources/com/mtvi/plateng/hudson/ldap/PluginImpl/config.jelly plugins/ldapemail/src/main/resources/com/mtvi/plateng/hudson/ldap/PluginImpl/config.jelly
+index 24e8721..9289441 100644
+--- plugins/ldapemail/src/main/resources/com/mtvi/plateng/hudson/ldap/PluginImpl/config.jelly
++++ plugins/ldapemail/src/main/resources/com/mtvi/plateng/hudson/ldap/PluginImpl/config.jelly
+@@ -15,7 +15,7 @@
+     <f:entry title="${%Email Attribute}">
+       <f:textbox name="emailAttribute" value="${it.config.emailAttribute}"/>
+     </f:entry>
+-    <f:entry title="${%Search Attribute}">
++    <f:entry title="${%Search Attribute}" help="/plugin/ldapemail/help-searchattribute.html">
+       <f:textbox name="searchAttribute" value="${it.config.searchAttribute}"/>
+     </f:entry>
+     <f:entry title="${%Perform Search}" help="/plugin/ldapemail/help-perform.html">
+diff plugins/ldapemail/src/main/webapp/help-perform.html plugins/ldapemail/src/main/webapp/help-perform.html
+index 1d76cc5..8490764 100644
+--- plugins/ldapemail/src/main/webapp/help-perform.html
++++ plugins/ldapemail/src/main/webapp/help-perform.html
+@@ -5,8 +5,11 @@
+ -->
+ 
+ <div>
+-  Check to perform a subtree-scoped search within the BaseDN with the filter:
+-  <tt>&lt;searchAttribute&gt;=&lt;userName&gt;</tt>.  When unchecked, a simple
+-  lookup is done for the distinguished name (DN) with this pattern:
++  <p>
++  Check to perform a subtree-scoped search within the BaseDN.
++  </p>
++  <p>
++  When unchecked, a simple lookup is done for the distinguished name (DN) with this pattern:
+   <tt>&lt;searchAttribute&gt;=&lt;userName&gt;,&lt;baseDN&gt;</tt>.
++  </p>
+ </div>
+diff plugins/ldapemail/src/main/webapp/help-searchattribute.html plugins/ldapemail/src/main/webapp/help-searchattribute.html
+new file mode 100644
+index 0000000..2a0fcba
+--- /dev/null
++++ plugins/ldapemail/src/main/webapp/help-searchattribute.html
+@@ -0,0 +1,17 @@
++<!--
++
++    Copyright (c) 2008, MTV Networks
++
++-->
++
++<div>
++  <p>
++  Perform Search checked: The search attribute should be an LDAP query, containing one or more '%s' strings 
++  that will be replaced with the <tt>&lt;userName&gt;</tt> value.
++  Examples: (cn=%s) or (&(ID=%s)(cn=prefix*))
++  </p>
++  <p>
++  Perform Search unchecked: The search attribute should be the LDAP attribute to perform the lookup against.
++  Example: cn
++  </p>
++</div>
+

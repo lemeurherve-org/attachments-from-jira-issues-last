@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>C:\temp\TestProject\TestProject</customWorkspace>
+  <builders/>
+  <publishers>
+    <net.praqma.jenkins.plugin.prqa.notifier.PRQANotifier plugin="prqa-plugin@1.2.2">
+      <graphTypes>
+        <net.praqma.jenkins.plugin.prqa.graphs.ComplianceIndexGraphs>
+          <categories>
+            <net.praqma.prqa.status.StatusCategory>FileCompliance</net.praqma.prqa.status.StatusCategory>
+            <net.praqma.prqa.status.StatusCategory>ProjectCompliance</net.praqma.prqa.status.StatusCategory>
+          </categories>
+          <data serialization="custom">
+            <unserializable-parents/>
+            <list>
+              <default>
+                <size>0</size>
+              </default>
+              <int>0</int>
+            </list>
+            <net.praqma.prqa.PRQAStatusCollection>
+              <default>
+                <overrideMaximum class="enum-map" enum-type="net.praqma.prqa.status.StatusCategory"/>
+                <overrideMinimum class="enum-map" enum-type="net.praqma.prqa.status.StatusCategory"/>
+              </default>
+            </net.praqma.prqa.PRQAStatusCollection>
+          </data>
+          <title>Compliance Levels</title>
+          <type>Compliance</type>
+        </net.praqma.jenkins.plugin.prqa.graphs.ComplianceIndexGraphs>
+        <net.praqma.jenkins.plugin.prqa.graphs.MessagesGraph>
+          <categories>
+            <net.praqma.prqa.status.StatusCategory>Messages</net.praqma.prqa.status.StatusCategory>
+          </categories>
+          <data serialization="custom">
+            <unserializable-parents/>
+            <list>
+              <default>
+                <size>0</size>
+              </default>
+              <int>0</int>
+            </list>
+            <net.praqma.prqa.PRQAStatusCollection>
+              <default>
+                <overrideMaximum class="enum-map" enum-type="net.praqma.prqa.status.StatusCategory"/>
+                <overrideMinimum class="enum-map" enum-type="net.praqma.prqa.status.StatusCategory"/>
+              </default>
+            </net.praqma.prqa.PRQAStatusCollection>
+          </data>
+          <title>Number of messages</title>
+          <type>Compliance</type>
+        </net.praqma.jenkins.plugin.prqa.graphs.MessagesGraph>
+      </graphTypes>
+      <chosenReportTypes enum-type="net.praqma.prqa.PRQAContext$QARReportType">Compliance,CodeReview,Suppression</chosenReportTypes>
+      <threshholdlevel>0</threshholdlevel>
+      <totalBetter>false</totalBetter>
+      <product>qac</product>
+      <chosenServer></chosenServer>
+      <vcsConfigXml></vcsConfigXml>
+      <performCrossModuleAnalysis>true</performCrossModuleAnalysis>
+      <publishToQAV>false</publishToQAV>
+      <singleSnapshotMode>false</singleSnapshotMode>
+      <enableDependencyMode>true</enableDependencyMode>
+      <enableDataFlowAnalysis>true</enableDataFlowAnalysis>
+      <generateReports>false</generateReports>
+      <codeUploadSetting>None</codeUploadSetting>
+      <sourceOrigin></sourceOrigin>
+      <qaVerifyProjectName></qaVerifyProjectName>
+      <source class="net.praqma.jenkins.plugin.prqa.notifier.PRQAReportProjectFileSource">
+        <projectFile>test.prj</projectFile>
+      </source>
+    </net.praqma.jenkins.plugin.prqa.notifier.PRQANotifier>
+  </publishers>
+  <buildWrappers/>
+</project>

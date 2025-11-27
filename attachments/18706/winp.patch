@@ -1,0 +1,108 @@
+Index: enableDebugPrivilege.cpp
+===================================================================
+--- enableDebugPrivilege.cpp	(revision 150)
++++ enableDebugPrivilege.cpp	(working copy)
+@@ -13,6 +13,7 @@
+ 
+ 	LUID sedebugnameValue;
+ 	if(!LookupPrivilegeValue( NULL, SE_DEBUG_NAME, &sedebugnameValue )) {
++		CloseHandle( hToken );
+ 		reportError(env,"Failed to look up SE_DEBUG_NAME");
+ 		return;
+ 	}
+@@ -23,6 +24,7 @@
+ 	tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+ 
+ 	if(!AdjustTokenPrivileges( hToken, FALSE, &tkp, sizeof tkp, NULL, NULL )) {
++		CloseHandle( hToken );
+ 		reportError(env,"Failed to adjust token privileges");
+ 		return;
+ 	}
+Index: envvar-cmdline.cpp
+===================================================================
+--- envvar-cmdline.cpp	(revision 150)
++++ envvar-cmdline.cpp	(working copy)
+@@ -57,6 +57,7 @@
+ 	PROCESS_BASIC_INFORMATION ProcInfo;
+ 	SIZE_T _;
+ 	if(!NT_SUCCESS(ZwQueryInformationProcess(hProcess, ProcessBasicInformation, &ProcInfo, sizeof(ProcInfo), &_))) {
++		CloseHandle(hProcess);
+ 		reportError(pEnv,"Failed to ZWQueryInformationProcess");
+ 		return NULL;
+ 	}
+@@ -64,6 +65,7 @@
+ 	// from there to PEB
+ 	PEB ProcPEB;
+ 	if(!ReadProcessMemory(hProcess, ProcInfo.PebBaseAddress, &ProcPEB, sizeof(ProcPEB), &_)) {
++		CloseHandle(hProcess);
+ 		reportError(pEnv,"Failed to read PEB");
+ 		return NULL;
+ 	}
+@@ -71,6 +73,7 @@
+ 	// then to INFOBLOCK
+ 	RTL_USER_PROCESS_PARAMETERS ProcBlock;
+ 	if(!ReadProcessMemory(hProcess, ProcPEB.dwInfoBlockAddress, &ProcBlock, sizeof(ProcBlock), &_)) {
++		CloseHandle(hProcess);
+ 		reportError(pEnv,"Failed to read RT_USER_PROCESS_PARAMETERS");
+ 		return NULL;
+ 	}
+@@ -78,6 +81,7 @@
+ 	// now read command line aguments
+ 	LPWSTR pszCmdLine = (LPWSTR)::LocalAlloc(LMEM_FIXED|LMEM_ZEROINIT,ProcBlock.wLength+2);
+ 	if(pszCmdLine==NULL) {
++		CloseHandle(hProcess);
+ 		reportError(pEnv,"Failed to allocate memory for reading command line");
+ 		return NULL;
+ 	}
+@@ -88,6 +92,8 @@
+ 		// so retry with this address.
+ 		ProcBlock._dwCmdLineAddress |= 0x20000;
+ 		if(!ReadProcessMemory(hProcess, ProcBlock.dwCmdLineAddress, pszCmdLine, ProcBlock.wLength, &_)) {
++			CloseHandle(hProcess);
++			LocalFree(pszCmdLine);
+ 			reportError(pEnv,"Failed to read command line arguments");
+ 			return NULL;
+ 		}
+@@ -96,6 +102,8 @@
+ 	// figure out the size of the env var block
+ 	MEMORY_BASIC_INFORMATION info;
+ 	if(::VirtualQueryEx(hProcess, ProcBlock.env, &info, sizeof(info))==0) {
++		CloseHandle(hProcess);
++		LocalFree(pszCmdLine);
+ 		reportError(pEnv,"VirtualQueryEx failed");
+ 		return NULL;
+ 	}
+@@ -104,12 +112,17 @@
+ 	int envSize = info.RegionSize;
+ 	LPWSTR buf = (LPWSTR)LocalAlloc(LMEM_FIXED,(cmdLineLen+1/*for \0*/)*2+envSize);
+ 	if(buf==NULL) {
++		CloseHandle(hProcess);
++		LocalFree(pszCmdLine);
+ 		reportError(pEnv,"Buffer allocation failed");
+ 		return NULL;
+ 	}
+ 	lstrcpy(buf,pszCmdLine);
+ 
+ 	if(!ReadProcessMemory(hProcess, ProcBlock.env, buf+cmdLineLen+1, envSize, &_)) {
++		CloseHandle(hProcess);
++		LocalFree(buf);
++		LocalFree(pszCmdLine);
+ 		reportError(pEnv,"Failed to read environment variable table");
+ 		return NULL;
+ 	}
+Index: java-interface.cpp
+===================================================================
+--- java-interface.cpp	(revision 150)
++++ java-interface.cpp	(working copy)
+@@ -10,8 +10,10 @@
+ 	HANDLE hProcess = OpenProcess(PROCESS_SET_INFORMATION,FALSE,pid);
+ 	if(hProcess==NULL || hProcess==INVALID_HANDLE_VALUE)
+ 		return GetLastError(); 
+-	if(!SetPriorityClass(hProcess,priority))
++	if(!SetPriorityClass(hProcess,priority)) {
++		CloseHandle(hProcess);
+ 		return GetLastError();
++	}
+ 	CloseHandle(hProcess);
+ 	return 0;
+ }

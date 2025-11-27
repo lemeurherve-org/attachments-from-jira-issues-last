@@ -1,0 +1,60 @@
+diff -rupN periodicbackup-plugin-master.orig/pom.xml periodicbackup-plugin-master/pom.xml
+--- periodicbackup-plugin-master.orig/pom.xml	2013-07-17 02:08:10.000000000 +0200
++++ periodicbackup-plugin-master/pom.xml	2015-08-20 12:13:41.161954500 +0200
+@@ -3,7 +3,7 @@
+     <parent>
+         <groupId>org.jenkins-ci.plugins</groupId>
+         <artifactId>plugin</artifactId>
+-        <version>1.399</version>
++        <version>1.618</version>
+     </parent>
+ 
+     <artifactId>periodicbackup</artifactId>
+diff -rupN periodicbackup-plugin-master.orig/src/main/java/org/jenkinsci/plugins/periodicbackup/ConfigOnly.java periodicbackup-plugin-master/src/main/java/org/jenkinsci/plugins/periodicbackup/ConfigOnly.java
+--- periodicbackup-plugin-master.orig/src/main/java/org/jenkinsci/plugins/periodicbackup/ConfigOnly.java	2013-07-17 02:08:10.000000000 +0200
++++ periodicbackup-plugin-master/src/main/java/org/jenkinsci/plugins/periodicbackup/ConfigOnly.java	2015-09-02 10:16:25.364308200 +0200
+@@ -61,16 +61,18 @@ public class ConfigOnly extends FileMana
+     public Iterable<File> getFilesToBackup() throws PeriodicBackupException {
+         File rootDir = Hudson.getInstance().getRootDir();
+         List<File> filesToBackup = Lists.newArrayList();
+-        addRootFiles(rootDir, filesToBackup);
++        addXmlFiles(rootDir, filesToBackup);
++        addXmlFiles(new File(rootDir, "labels"), filesToBackup);
+         addJobFiles(rootDir, filesToBackup);
+-        addUserFiles(rootDir, filesToBackup);
++        addConfigFiles(rootDir, "users", filesToBackup);
++        addConfigFiles(rootDir, "nodes", filesToBackup);
+         return filesToBackup;
+     }
+ 
+-    private void addRootFiles(File rootDir, List<File> filesToBackup) {
++    private void addXmlFiles(File xmlDir, List<File> filesToBackup) {
+         // First find the xml files in the home directory
+-        File[] xmlsInRoot = rootDir.listFiles(Util.extensionFileFilter("xml"));
+-        filesToBackup.addAll(Arrays.asList(xmlsInRoot));
++        File[] xmlFiles = xmlDir.listFiles(Util.extensionFileFilter("xml"));
++        filesToBackup.addAll(Arrays.asList(xmlFiles));
+     }
+ 
+     private void addJobFiles(File rootDir, List<File> filesToBackup) {
+@@ -101,8 +103,8 @@ public class ConfigOnly extends FileMana
+         }
+     }
+ 
+-    private void addUserFiles(File rootDir, List<File> filesToBackup) {
+-        File usersDir = new File(rootDir, "users");
++    private void addConfigFiles(File rootDir, String backupDir, List<File> filesToBackup) {
++        File usersDir = new File(rootDir, backupDir);
+         if (usersDir.exists() && usersDir.isDirectory()) {
+             // Each user directory should have a config.xml file
+             File[] dirsInUsers = usersDir.listFiles((FileFilter) FileFilterUtils.directoryFileFilter());
+@@ -110,8 +112,7 @@ public class ConfigOnly extends FileMana
+                 File userConfig = new File(user, "config.xml");
+                 if (userConfig.exists() && userConfig.isFile()) {
+                     filesToBackup.add(userConfig);
+-                }
+-                else {
++                } else {
+                     LOGGER.warning(userConfig.getAbsolutePath() + " does not exist or is not a file.");
+                 }
+             }

@@ -1,0 +1,20 @@
+org.tap4j.parser.ParserException: Error parsing TAP Stream: Duplicated TAP Plan found.
+	at org.tap4j.parser.Tap13Parser.parse(Tap13Parser.java:204)
+	at org.tap4j.parser.Tap13Parser.parseFile(Tap13Parser.java:170)
+	at org.tap4j.plugin.TapParser.parse(TapParser.java:105)
+	at org.tap4j.plugin.TapPublisher.loadResults(TapPublisher.java:297)
+	at org.tap4j.plugin.TapPublisher.perform(TapPublisher.java:239)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:27)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:804)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:776)
+	at hudson.model.Build$BuildExecution.post2(Build.java:183)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:726)
+	at hudson.model.Run.execute(Run.java:1600)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:241)
+Caused by: org.tap4j.parser.ParserException: Duplicated TAP Plan found.
+	at org.tap4j.parser.Tap13Parser.onPlan(Tap13Parser.java:394)
+	at org.tap4j.parser.Tap13Parser.parseLine(Tap13Parser.java:294)
+	at org.tap4j.parser.Tap13Parser.parse(Tap13Parser.java:199)
+	... 13 more

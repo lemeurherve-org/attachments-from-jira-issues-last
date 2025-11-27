@@ -1,0 +1,344 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<hudson>
+  <disabledAdministrativeMonitors>
+    <string>jenkins.diagnostics.ControllerExecutorsNoAgents</string>
+    <string>jenkins.monitor.JavaVersionRecommendationAdminMonitor-11-2024-09-30-WARNING</string>
+    <string>hudson.util.DoubleLaunchChecker</string>
+    <string>jenkins.diagnostics.ControllerExecutorsAgents</string>
+    <string>org.jenkinsci.plugins.rolestrategy.NamingStrategyAdministrativeMonitor</string>
+    <string>hudson.diagnosis.ReverseProxySetupMonitor</string>
+  </disabledAdministrativeMonitors>
+  <version>2.512</version>
+  <numExecutors>0</numExecutors>
+  <mode>NORMAL</mode>
+  <useSecurity>true</useSecurity>
+  <authorizationStrategy class="com.michelin.cio.hudson.plugins.rolestrategy.RoleBasedAuthorizationStrategy">
+    <permissionTemplates>
+      <template name="项目组员权限">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+      </template>
+      <template name="项目组长/产品经理">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Delete</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Create</permission>
+          <permission>hudson.model.Run.Delete</permission>
+          <permission>hudson.model.Item.Workspace</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Replay</permission>
+          <permission>hudson.model.Item.Move</permission>
+          <permission>hudson.model.Item.Configure</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+      </template>
+    </permissionTemplates>
+    <roleMap type="slaveRoles"/>
+    <roleMap type="globalRoles">
+      <role name="guest" pattern=".*">
+        <permissions>
+          <permission>hudson.model.Hudson.Read</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">anonymous</sid>
+          <sid type="GROUP">authenticated</sid>
+        </assignedSIDs>
+      </role>
+      <role name="super_admin" pattern=".*">
+        <permissions>
+          <permission>hudson.model.Hudson.Administer</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">admin</sid>
+          <sid type="USER">huangjs</sid>
+          <sid type="USER">jenkins_runner</sid>
+          <sid type="USER">yezw</sid>
+          <sid type="USER">yuhr</sid>
+        </assignedSIDs>
+      </role>
+    </roleMap>
+    <roleMap type="projectRoles">
+      <role name="Demo文件夹" pattern="Jenkins_test.*?" templateName="项目组长/产品经理">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Delete</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Create</permission>
+          <permission>hudson.model.Run.Delete</permission>
+          <permission>hudson.model.Item.Workspace</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Replay</permission>
+          <permission>hudson.model.Item.Move</permission>
+          <permission>hudson.model.Item.Configure</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="GROUP">authenticated</sid>
+        </assignedSIDs>
+      </role>
+      <role name="周文的项目" pattern="TeamWuHan.*?" templateName="项目组员权限">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">wangj</sid>
+          <sid type="USER">dengmy</sid>
+          <sid type="USER">huanglj</sid>
+          <sid type="USER">lvcy</sid>
+          <sid type="USER">songyx</sid>
+          <sid type="USER">wenxx</sid>
+          <sid type="USER">xiongjm</sid>
+          <sid type="USER">yejt</sid>
+          <sid type="USER">zhouw</sid>
+        </assignedSIDs>
+      </role>
+      <role name="周文的项目组长" pattern="TeamWuHan.*?" templateName="项目组长/产品经理">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Delete</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Create</permission>
+          <permission>hudson.model.Run.Delete</permission>
+          <permission>hudson.model.Item.Workspace</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Replay</permission>
+          <permission>hudson.model.Item.Move</permission>
+          <permission>hudson.model.Item.Configure</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">dengmy</sid>
+          <sid type="USER">songyx</sid>
+          <sid type="USER">zhouw</sid>
+        </assignedSIDs>
+      </role>
+      <role name="王占军的项目" pattern="Team2.*?" templateName="项目组员权限">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">wangj</sid>
+          <sid type="USER">huanglj</sid>
+          <sid type="USER">huangzp</sid>
+          <sid type="USER">lvcy</sid>
+          <sid type="USER">songyx</sid>
+          <sid type="USER">wenxx</sid>
+          <sid type="USER">xiongjm</sid>
+          <sid type="USER">yejt</sid>
+        </assignedSIDs>
+      </role>
+      <role name="王占军的项目组长" pattern="Team2.*?" templateName="项目组长/产品经理">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Delete</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Create</permission>
+          <permission>hudson.model.Run.Delete</permission>
+          <permission>hudson.model.Item.Workspace</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Replay</permission>
+          <permission>hudson.model.Item.Move</permission>
+          <permission>hudson.model.Item.Configure</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">huanglj</sid>
+          <sid type="USER">huangzp</sid>
+          <sid type="USER">wenxx</sid>
+          <sid type="USER">yejt</sid>
+        </assignedSIDs>
+      </role>
+      <role name="盘古项目" pattern="TeamPanGu.*?" templateName="项目组员权限">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">wangj</sid>
+          <sid type="USER">cailm</sid>
+          <sid type="USER">hxy</sid>
+          <sid type="USER">leirr</sid>
+          <sid type="USER">songyx</sid>
+          <sid type="USER">wenxx</sid>
+          <sid type="USER">xiongjm</sid>
+          <sid type="USER">yejt</sid>
+        </assignedSIDs>
+      </role>
+      <role name="盘古项目组长" pattern="TeamPanGu.*?" templateName="项目组长/产品经理">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Delete</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Create</permission>
+          <permission>hudson.model.Run.Delete</permission>
+          <permission>hudson.model.Item.Workspace</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Replay</permission>
+          <permission>hudson.model.Item.Move</permission>
+          <permission>hudson.model.Item.Configure</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">cailm</sid>
+          <sid type="USER">zhaojc</sid>
+        </assignedSIDs>
+      </role>
+      <role name="葛洪春的项目" pattern="Team3.*?" templateName="项目组员权限">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">wangj</sid>
+          <sid type="USER">huanglj</sid>
+          <sid type="USER">leirr</sid>
+          <sid type="USER">lvcy</sid>
+          <sid type="USER">songyx</sid>
+          <sid type="USER">wenxx</sid>
+          <sid type="USER">xiongjm</sid>
+          <sid type="USER">yejt</sid>
+          <sid type="USER">zhaojc</sid>
+        </assignedSIDs>
+      </role>
+      <role name="葛洪春的项目组长" pattern="Team3.*?" templateName="项目组长/产品经理">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Delete</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Create</permission>
+          <permission>hudson.model.Run.Delete</permission>
+          <permission>hudson.model.Item.Workspace</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Replay</permission>
+          <permission>hudson.model.Item.Move</permission>
+          <permission>hudson.model.Item.Configure</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">leirr</sid>
+          <sid type="USER">yejt</sid>
+        </assignedSIDs>
+      </role>
+      <role name="谢旭明的项目" pattern="Team1.*?" templateName="项目组员权限">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs>
+          <sid type="USER">wangj</sid>
+          <sid type="USER">huanglj</sid>
+          <sid type="USER">lvcy</sid>
+          <sid type="USER">songyx</sid>
+          <sid type="USER">wenxx</sid>
+          <sid type="USER">xiongjm</sid>
+          <sid type="USER">yejt</sid>
+        </assignedSIDs>
+      </role>
+      <role name="谢旭明的项目组长" pattern="Team1.*?" templateName="项目组长/产品经理">
+        <permissions>
+          <permission>hudson.model.Item.Cancel</permission>
+          <permission>hudson.model.Item.Delete</permission>
+          <permission>hudson.model.Item.Read</permission>
+          <permission>hudson.model.Item.Create</permission>
+          <permission>hudson.model.Run.Delete</permission>
+          <permission>hudson.model.Item.Workspace</permission>
+          <permission>hudson.model.Item.Build</permission>
+          <permission>hudson.model.Run.Replay</permission>
+          <permission>hudson.model.Item.Move</permission>
+          <permission>hudson.model.Item.Configure</permission>
+          <permission>hudson.model.Run.Update</permission>
+          <permission>hudson.model.View.Read</permission>
+        </permissions>
+        <assignedSIDs/>
+      </role>
+    </roleMap>
+  </authorizationStrategy>
+  <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+    <disableSignup>false</disableSignup>
+    <enableCaptcha>false</enableCaptcha>
+  </securityRealm>
+  <disableRememberMe>false</disableRememberMe>
+  <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+  <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULL_NAME}</workspaceDir>
+  <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+  <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+  <jdks/>
+  <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+  <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+  <clouds/>
+  <quietPeriod>5</quietPeriod>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>all</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+    </hudson.model.AllView>
+    <hudson.model.MyView>
+      <owner class="hudson" reference="../../.."/>
+      <name>我的项目</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+    </hudson.model.MyView>
+  </views>
+  <primaryView>all</primaryView>
+  <slaveAgentPort>50000</slaveAgentPort>
+  <label></label>
+  <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+    <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+  </crumbIssuer>
+  <nodeProperties/>
+  <globalNodeProperties>
+    <hudson.slaves.EnvironmentVariablesNodeProperty>
+      <envVars serialization="custom">
+        <unserializable-parents/>
+        <tree-map>
+          <default>
+            <comparator class="java.lang.String$CaseInsensitiveComparator"/>
+          </default>
+          <int>2</int>
+          <string>GERRIT_HOST</string>
+          <string>10.0.1.1</string>
+          <string>LAN</string>
+          <string>zh.CH.UTF-8</string>
+        </tree-map>
+      </envVars>
+    </hudson.slaves.EnvironmentVariablesNodeProperty>
+  </globalNodeProperties>
+  <noUsageStatistics>true</noUsageStatistics>
+  <nodeRenameMigrationNeeded>false</nodeRenameMigrationNeeded>
+</hudson>

@@ -1,0 +1,89 @@
+diff --git a/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java b/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java
+index fd90744..75d0fee 100644
+--- a/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java
++++ b/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java
+@@ -52,6 +52,8 @@ import java.util.logging.Logger;
+ import javax.annotation.Nonnull;
+ 
+ import hudson.util.VersionNumber;
++import java.util.regex.Matcher;
++import java.util.regex.Pattern;
+ import org.jenkinsci.plugins.docker.commons.fingerprint.DockerFingerprints;
+ import org.jenkinsci.plugins.workflow.steps.AbstractStepDescriptorImpl;
+ import org.jenkinsci.plugins.workflow.steps.AbstractStepExecutionImpl;
+@@ -182,25 +184,12 @@ public class WithContainerStep extends AbstractStepImpl {
+                 }
+                 @Override public void kill(Map<String,String> modelEnvVars) throws IOException, InterruptedException {
+                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+-                    if (getInner().launch().cmds("docker", "exec", container, "ps", "-A", "-o", "pid,command", "e").stdout(baos).quiet(true).join() != 0) {
++                    // Similar information to $(ps -A -o pid,command e) but more reliable formatting:
++                    if (getInner().launch().cmds("docker", "exec", container, "sh", "-c", "for f in /proc/*/environ; do echo $f; cat $f; echo; done").stdout(baos).quiet(true).join() != 0) {
+                         throw new IOException("failed to run ps");
+                     }
+-                    List<String> pids = new ArrayList<String>();
+-                    LINE: for (String line : baos.toString().split("\n")) {
+-                        for (Map.Entry<String,String> entry : modelEnvVars.entrySet()) {
+-                            // TODO this is imprecise: false positive when argv happens to match KEY=value even if environment does not. Cf. trick in BourneShellScript.
+-                            if (!line.contains(entry.getKey() + "=" + entry.getValue())) {
+-                                continue LINE;
+-                            }
+-                        }
+-                        line = line.trim();
+-                        int spc = line.indexOf(' ');
+-                        if (spc == -1) {
+-                            continue;
+-                        }
+-                        pids.add(line.substring(0, spc));
+-                    }
+-                    LOGGER.log(Level.FINE, "killing {0}", pids);
++                    List<String> pids = pidsMatching(baos.toString(), modelEnvVars);
++                    LOGGER.log(Level.INFO, "killing {0}", pids);
+                     if (!pids.isEmpty()) {
+                         List<String> cmds = new ArrayList<String>(Arrays.asList("docker", "exec", container, "kill"));
+                         cmds.addAll(pids);
+@@ -214,6 +203,17 @@ public class WithContainerStep extends AbstractStepImpl {
+ 
+     }
+ 
++    private static final Pattern OUTPUT = Pattern.compile("^/proc/(\\d+)/environ\n(.+?)\\000$", Pattern.MULTILINE | Pattern.DOTALL);
++    static List<String> pidsMatching(String output, Map<String,String> modelEnvVars) {
++        List<String> pids = new ArrayList<String>();
++        Matcher m = OUTPUT.matcher(output);
++        while (m.find()) {
++            String[] env = m.group(2).split("\\000");
++            System.err.println("TODO for " + m.group(1) + " found " + Arrays.toString(env));
++        }
++        return pids;
++    }
++
+     private static class Callback extends BodyExecutionCallback {
+ 
+         private static final long serialVersionUID = 1;
+diff --git a/src/test/java/org/jenkinsci/plugins/docker/workflow/WithContainerStepTest.java b/src/test/java/org/jenkinsci/plugins/docker/workflow/WithContainerStepTest.java
+index 607537a..aab2e7a 100644
+--- a/src/test/java/org/jenkinsci/plugins/docker/workflow/WithContainerStepTest.java
++++ b/src/test/java/org/jenkinsci/plugins/docker/workflow/WithContainerStepTest.java
+@@ -25,6 +25,7 @@ package org.jenkinsci.plugins.docker.workflow;
+ 
+ import hudson.model.Result;
+ import hudson.tools.ToolProperty;
++import java.util.Arrays;
+ import java.util.Collections;
+ import org.jenkinsci.plugins.docker.commons.tools.DockerTool;
+ import org.jenkinsci.plugins.workflow.BuildWatcher;
+@@ -34,6 +35,7 @@ import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+ import org.jenkinsci.plugins.workflow.steps.StepConfigTester;
+ import org.jenkinsci.plugins.workflow.test.steps.SemaphoreStep;
++import static org.junit.Assert.*;
+ import org.junit.ClassRule;
+ import org.junit.Test;
+ import org.junit.Rule;
+@@ -79,6 +81,7 @@ public class WithContainerStepTest {
+     @Test public void stop() {
+         story.addStep(new Statement() {
+             @Override public void evaluate() throws Throwable {
++                assertEquals(Arrays.asList("2", "3"), WithContainerStep.pidsMatching("/proc/1/environ\nFOO=bar\000\n/proc/2/environ\nCOOKIE=killme\000FOO=baz\000\n/proc/3/environ\nFOO=quux\000COOKIE=killme\000\n/proc/4/environ\nCOOKIE=donotkillme\000\n", Collections.singletonMap("COOKIE", "killme")));
+                 DockerTestUtil.assumeDocker();
+                 WorkflowJob p = story.j.jenkins.createProject(WorkflowJob.class, "p");
+                 p.setDefinition(new CpsFlowDefinition(

@@ -1,0 +1,42 @@
+digraph {
+node [shape=box, style=rounded];
+subgraph clusterMain {
+"Adminstracao-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/Adminstracao-1.0/"];
+"Autenticacao-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/Autenticacao-1.0/"];
+"Cache-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/Cache-1.0/"];
+"Exception-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/Exception-1.0/"];
+"Historico-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/Historico-1.0/"];
+"LeitorLayout-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/LeitorLayout-1.0/"];
+"PAD-ejb-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/PAD-ejb-1.0/"];
+"PAD-jsf-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/PAD-jsf-1.0/"];
+"Transacao-1.0" [href="http://jenkins.cpqd.com.br:11008/dsin/job/Transacao-1.0/"];
+color=invis;}
+subgraph clusterStandalone {
+color=invis;}
+"Autenticacao-1.0" -> "Adminstracao-1.0" [ color=black  ] ;
+"Exception-1.0" -> "Adminstracao-1.0" [ color=black  ] ;
+"Exception-1.0" -> "Cache-1.0" [ color=black  ] ;
+"Adminstracao-1.0" -> "Historico-1.0" [ color=black  ] ;
+"Adminstracao-1.0" -> "Historico-1.0" [ color=black  ] ;
+"Exception-1.0" -> "Historico-1.0" [ color=black  ] ;
+"Adminstracao-1.0" -> "LeitorLayout-1.0" [ color=black  ] ;
+"Adminstracao-1.0" -> "LeitorLayout-1.0" [ color=black  ] ;
+"Exception-1.0" -> "LeitorLayout-1.0" [ color=black  ] ;
+"Adminstracao-1.0" -> "PAD-ejb-1.0" [ color=black  ] ;
+"Adminstracao-1.0" -> "PAD-ejb-1.0" [ color=black  ] ;
+"Cache-1.0" -> "PAD-ejb-1.0" [ color=black  ] ;
+"Cache-1.0" -> "PAD-ejb-1.0" [ color=black  ] ;
+"Exception-1.0" -> "PAD-ejb-1.0" [ color=black  ] ;
+"Adminstracao-1.0" -> "PAD-jsf-1.0" [ color=black  ] ;
+"Adminstracao-1.0" -> "PAD-jsf-1.0" [ color=black  ] ;
+"Exception-1.0" -> "PAD-jsf-1.0" [ color=black  ] ;
+"LeitorLayout-1.0" -> "PAD-jsf-1.0" [ color=black  ] ;
+"LeitorLayout-1.0" -> "PAD-jsf-1.0" [ color=black  ] ;
+"PAD-ejb-1.0" -> "PAD-jsf-1.0" [ color=black  ] ;
+"PAD-ejb-1.0" -> "PAD-jsf-1.0" [ color=black  ] ;
+"Exception-1.0" -> "Transacao-1.0" [ color=black  ] ;
+"LeitorLayout-1.0" -> "Transacao-1.0" [ color=black  ] ;
+"LeitorLayout-1.0" -> "Transacao-1.0" [ color=black  ] ;
+"PAD-ejb-1.0" -> "Transacao-1.0" [ color=black  ] ;
+"PAD-ejb-1.0" -> "Transacao-1.0" [ color=black  ] ;
+}

@@ -1,0 +1,16 @@
+WARNING: Error in provisioning; slave=KubernetesSlave name: jenkins-slave-hklqr-9pvd3, template=org.csanchez.jenkins.plugins.kubernetes.PodTemplate@4d9f2108
+io.fabric8.kubernetes.client.KubernetesClientException: Failure executing: POST at: https://172.30.0.1/api/v1/namespaces/continuous-infra-devel/pods. Message: pods "jenkins-slave-hklqr-9pvd3" already exists. Received status: Status(apiVersion=v1, code=409, details=StatusDetails(causes=[], group=null, kind=pods, name=jenkins-slave-hklqr-9pvd3, retryAfterSeconds=null, additionalProperties={}), kind=Status, message=pods "jenkins-slave-hklqr-9pvd3" already exists, metadata=ListMeta(resourceVersion=null, selfLink=null, additionalProperties={}), reason=AlreadyExists, status=Failure, additionalProperties={}).
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.requestFailure(OperationSupport.java:470)
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.assertResponseCode(OperationSupport.java:409)
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.handleResponse(OperationSupport.java:379)
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.handleResponse(OperationSupport.java:343)
+	at io.fabric8.kubernetes.client.dsl.base.OperationSupport.handleCreate(OperationSupport.java:226)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.handleCreate(BaseOperation.java:769)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.create(BaseOperation.java:356)
+	at org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher.launch(KubernetesLauncher.java:133)
+	at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:262)
+	at jenkins.util.ContextResettingExecutorService$2.call(ContextResettingExecutorService.java:46)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)

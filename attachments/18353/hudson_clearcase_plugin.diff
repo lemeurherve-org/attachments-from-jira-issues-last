@@ -1,0 +1,54 @@
+Index: clearcase/src/test/java/hudson/plugins/clearcase/ClearToolExecTest.java
+===================================================================
+--- clearcase/src/test/java/hudson/plugins/clearcase/ClearToolExecTest.java	(revision 15690)
++++ clearcase/src/test/java/hudson/plugins/clearcase/ClearToolExecTest.java	(working copy)
+@@ -19,6 +19,9 @@
+ import org.junit.Before;
+ import org.junit.Test;
+ 
++import java.text.SimpleDateFormat;
++import java.util.TimeZone;
++
+ public class ClearToolExecTest extends AbstractWorkspaceTest {
+     private Mockery context;
+     private ClearToolExec clearToolExec;
+@@ -118,12 +121,15 @@
+         workspace.child("viewName").mkdirs();
+         final Calendar mockedCalendar = Calendar.getInstance();
+         mockedCalendar.set(2007, 10, 18, 15, 05, 25);
++        SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy.HH:mm:ss'UTC'Z");
++        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
++        final String formattedDate = formatter.format(mockedCalendar.getTime()).toLowerCase();
+         context.checking(new Expectations() {
+             {
+                 one(launcher).getWorkspace();
+                 will(returnValue(workspace));
+                 one(launcher).run(
+-                        with(equal(new String[] { "lshistory", "-r", "-since", "18-nov.15:05:25",
++                        with(equal(new String[] { "lshistory", "-r", "-since", formattedDate,
+                                 "-fmt", "FORMAT", "-branch", "brtype:branch", "-nco",
+                                 "vob1", "vob2", "vob 3" })), (InputStream) with(anything()),
+                         (OutputStream) with(an(OutputStream.class)), with(aNonNull(FilePath.class)));
+Index: clearcase/src/main/java/hudson/plugins/clearcase/ClearToolExec.java
+===================================================================
+--- clearcase/src/main/java/hudson/plugins/clearcase/ClearToolExec.java	(revision 15690)
++++ clearcase/src/main/java/hudson/plugins/clearcase/ClearToolExec.java	(working copy)
+@@ -17,6 +17,7 @@
+ import java.util.List;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
++import java.util.TimeZone;
+ 
+ public abstract class ClearToolExec implements ClearTool {
+ 
+@@ -39,7 +40,9 @@
+ 	public Reader lshistory(String format, Date lastBuildDate, String viewName,
+ 			String branch, String[] viewPaths) throws IOException,
+ 			InterruptedException {
+-		SimpleDateFormat formatter = new SimpleDateFormat("d-MMM.HH:mm:ss");
++            SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy.HH:mm:ss'UTC'Z");
++            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
++            
+ 		ArgumentListBuilder cmd = new ArgumentListBuilder();
+ 		cmd.add("lshistory");
+ 		cmd.add("-r");

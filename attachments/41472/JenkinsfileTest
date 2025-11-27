@@ -1,0 +1,103 @@
+pipeline {
+    agent none
+	
+	options {
+		skipDefaultCheckout true
+	}
+	
+    stages {
+		stage('Stage 1') {
+			agent {
+				label 'Linux-Slave'
+			}
+			steps {
+                sh 'echo "hello"'
+                sleep(time:3,unit:'SECONDS');
+			}	
+		}
+		
+        stage('Stage 2') {
+			agent {
+				label 'Linux-Slave'
+			}
+            steps {
+                sh 'echo "hello"'
+                sleep(time:3,unit:'SECONDS');
+
+		    }
+								
+        }
+		
+		stage("Stage 3") {
+			  agent none
+			  steps {
+				checkpoint 'Build Completed'
+				sleep(time:3,unit:'SECONDS');
+			  }
+		}
+		
+		stage('Stage 4') {
+			agent {
+				label 'Linux-Slave'
+			}
+			steps {			
+				sh 'echo "hello"'
+				sleep(time:3,unit:'SECONDS');
+			}
+		}
+		
+		stage("Stage 5") {
+			  agent none
+			  steps {
+				checkpoint 'CQ Scan Completed'
+				sleep(time:3,unit:'SECONDS');
+			  }
+		}
+	
+		stage('Stage 6') {
+			agent {
+				label 'Linux-Slave'
+			}
+            steps {				
+				sh 'echo "hello"'
+				sleep(time:3,unit:'SECONDS');
+            }
+        }
+		
+		stage("Stage 7") {
+			agent none
+			steps {
+				checkpoint 'DEV Deployment Approval Gate'
+				sleep(time:3,unit:'SECONDS');
+			}
+		}
+	
+        stage('Stage 8') {
+            agent {
+				label 'Linux-Slave'
+			}
+			steps {
+				sh 'echo "hello"'
+				sleep(time:3,unit:'SECONDS');
+            }
+        }
+
+		stage("Stage 9") {
+			agent none
+			steps {
+				checkpoint 'QA Deployment Approval Gate'
+				sleep(time:3,unit:'SECONDS');
+			}
+		}
+		
+		stage('Stage 10') {
+            agent {
+				label 'Linux-Slave'
+			}
+			steps {
+				sh 'echo "hello"'
+				sleep(time:3,unit:'SECONDS');
+            }
+        }
+    }
+}

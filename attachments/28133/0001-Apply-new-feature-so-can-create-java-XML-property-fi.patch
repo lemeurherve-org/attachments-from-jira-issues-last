@@ -1,0 +1,142 @@
+From 9dbc1cb360d292d9c5cea8497344befab9086bba Mon Sep 17 00:00:00 2001
+From: Martin Franklin <martinfr62@gmail.com>
+Date: Fri, 5 Dec 2014 14:44:33 -0800
+Subject: [PATCH] Apply new feature so can create java XML property file rather
+ than downloading all linked artifacts
+
+---
+ .../MavenDeploymentDownloader.java                 | 36 +++++++++++++++++++---
+ .../MavenDeploymentDownloader/config.jelly         |  3 ++
+ .../mavendeploymentlinker/Messages.properties      |  2 ++
+ 3 files changed, 36 insertions(+), 5 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/mavendeploymentlinker/MavenDeploymentDownloader.java b/src/main/java/hudson/plugins/mavendeploymentlinker/MavenDeploymentDownloader.java
+index 51eb68a..dc0e2e1 100644
+--- a/src/main/java/hudson/plugins/mavendeploymentlinker/MavenDeploymentDownloader.java
++++ b/src/main/java/hudson/plugins/mavendeploymentlinker/MavenDeploymentDownloader.java
+@@ -23,10 +23,12 @@ import hudson.util.ListBoxModel.Option;
+ 
+ import java.io.IOException;
+ import java.io.InputStream;
++import java.io.OutputStream;
+ import java.io.PrintStream;
+ import java.net.URL;
+ import java.util.Collections;
+ import java.util.List;
++import java.util.Properties;
+ import java.util.concurrent.ExecutionException;
+ import java.util.regex.Pattern;
+ import java.util.regex.PatternSyntaxException;
+@@ -54,11 +56,16 @@ import com.ning.http.client.Response;
+  */
+ public class MavenDeploymentDownloader extends Builder {
+ 
+-    private final String projectName;
++	private final String projectName;
+     private final String filePattern;
+     private final String targetDir;
+     private final boolean stripVersion;
+-    private final boolean failIfNoArtifact;
++    private final boolean createPropertyFile;
++    public boolean isCreatePropertyFile() {
++		return createPropertyFile;
++	}
++
++	private final boolean failIfNoArtifact;
+     private final boolean cleanTargetDir;
+     private final String stripVersionPattern;
+     private final String permaLink;
+@@ -85,7 +92,7 @@ public class MavenDeploymentDownloader extends Builder {
+      */
+     @DataBoundConstructor
+     public MavenDeploymentDownloader(String projectName, String filePattern, String permaLink, String targetDir, boolean stripVersion,
+-            String stripVersionPattern, boolean failIfNoArtifact, boolean cleanTargetDir) {
++            String stripVersionPattern, boolean failIfNoArtifact, boolean cleanTargetDir,boolean createPropertyFile) {
+         // check the permissions only if we can
+         if(!projectName.startsWith("$")){ // if this is a parameter, we can't check the name here it will be expanded by the TokenMacro...
+             StaplerRequest req = Stapler.getCurrentRequest();
+@@ -105,6 +112,7 @@ public class MavenDeploymentDownloader extends Builder {
+         this.failIfNoArtifact = failIfNoArtifact;
+         this.cleanTargetDir = cleanTargetDir;
+         this.stripVersionPattern = Util.fixEmpty(stripVersionPattern);
++        this.createPropertyFile = createPropertyFile;
+     }
+ 
+     private Pattern getFilePatternMatcher() {
+@@ -187,6 +195,7 @@ public class MavenDeploymentDownloader extends Builder {
+                 }
+             }
+         }
++        Properties propUrls = new Properties();
+ 
+         int matchedFiles = 0;
+         for (MavenDeploymentLinkerAction action : linkerActions) {
+@@ -211,7 +220,11 @@ public class MavenDeploymentDownloader extends Builder {
+                         console.println(Messages.downloadArtifact(HyperlinkNote.encodeTo(url, url), fp.getRemote()));
+                         AsyncHttpClient client = new AsyncHttpClient();
+                         try {
+-                            downloadFile(client, url, fp);
++                        	if (isCreatePropertyFile()) {
++                        		propUrls.setProperty(fileName, url);
++                        	} else {
++                        		downloadFile(client, url, fp);
++                        	}
+                         } catch (ExecutionException e) {
+                             console.println(Messages.downloadArtifactFailed(HyperlinkNote.encodeTo(url, url), e.getMessage()));
+                             throw new IOException(Messages.downloadArtifactFailed(url, e.getMessage()), e);
+@@ -220,6 +233,19 @@ public class MavenDeploymentDownloader extends Builder {
+                 }
+             }
+         }
++        if (this.isCreatePropertyFile()) {
++            FilePath fp = new FilePath(targetDirFp, this.getProjectName()+".properties");
++
++        	try {
++
++        		propUrls.storeToXML(fp.write(), "Deployment Properties for "+this.getProjectName());
++        		console.println(Messages.savedProperties(fp.getName()));
++        		
++        	} catch (Exception ex) {
++        		console.println(Messages.failedToSaveProperties(fp.getName()));
++        		throw new IOException(Messages.failedToSaveProperties(fp.getName()));
++        	}
++        }
+         if (matchedFiles == 0) {
+             if (failIfNoArtifact) {
+                 console.println(Messages.noArtifactFoundError(filePattern));
+@@ -232,7 +258,7 @@ public class MavenDeploymentDownloader extends Builder {
+         return true;
+     }
+ 
+-    private String getFileName(String url, boolean stripVersion) {
++	private String getFileName(String url, boolean stripVersion) {
+         int slashIndex = url.lastIndexOf('/');
+         String fname = url.substring(slashIndex + 1);
+         if (stripVersion) {
+diff --git a/src/main/resources/hudson/plugins/mavendeploymentlinker/MavenDeploymentDownloader/config.jelly b/src/main/resources/hudson/plugins/mavendeploymentlinker/MavenDeploymentDownloader/config.jelly
+index b93ddea..1c6c643 100644
+--- a/src/main/resources/hudson/plugins/mavendeploymentlinker/MavenDeploymentDownloader/config.jelly
++++ b/src/main/resources/hudson/plugins/mavendeploymentlinker/MavenDeploymentDownloader/config.jelly
+@@ -24,5 +24,8 @@
+ 		<f:entry title="${%Version strip pattern}" field="stripVersionPattern">
+ 			<f:textbox />
+ 		</f:entry>
++		<f:entry title="${%Create property file no download}" field="createPropertyFile">
++			<f:checkbox checked="${instance.isCreatePropertyFile()}" />
++		</f:entry>
+ 	</f:advanced>
+ </j:jelly>
+diff --git a/src/main/resources/hudson/plugins/mavendeploymentlinker/Messages.properties b/src/main/resources/hudson/plugins/mavendeploymentlinker/Messages.properties
+index 9d08047..ea8a0b9 100644
+--- a/src/main/resources/hudson/plugins/mavendeploymentlinker/Messages.properties
++++ b/src/main/resources/hudson/plugins/mavendeploymentlinker/Messages.properties
+@@ -1,4 +1,6 @@
+ MavenDeploymentLinkerRecorder_DisplayName=Link to maven deployments
++failedToSaveProperties=Failed to save deployment properties {0}
++savedProperties=Saved properties to {0}
+ 
+ MavenDeploymentDownloader_DisplayName=Get linked maven deployments
+ StripVersionPatternInvalidSyntax=invalid pattern (regex) syntax!
+-- 
+1.9.4.msysgit.2
+

@@ -1,0 +1,126 @@
+// Pipeline v1.3
+
+import hudson.model.ParametersAction
+import jenkins.model.Jenkins
+import jenkins.model.CauseOfInterruption
+import org.jenkinsci.plugins.workflow.job.WorkflowRun
+
+
+currentBuild.setDescription("test build");
+
+def testStuff() {
+   println currentBuild.getProjectName()
+   println currentBuild.getFullProjectName()
+   def build = Jenkins.instanceOrNull.getItem(currentBuild.fullProjectName).getBuildByNumber(currentBuild.number)
+   def paramActions = build.getActions(ParametersAction)
+}
+
+@NonCPS
+def prKiller(String pr_parameter, String pr_number, String buildIDString) {
+   // Webhook defined: pr_number or PULL_REQUEST_ID
+   // pr_parameter = "pr_number" or "PULL_REQUEST_ID"
+   // This is the actual name of the pull request id to search for 
+   // --------------------------------------------------------------
+
+   def job = Jenkins.instanceOrNull.getItem(JOB_NAME)
+   def builds = job.getBuilds()
+   def buildID = buildIDString as int
+   def highestRID = buildID
+   WorkflowRun curBuild
+
+   echo "=" * 50
+   echo "Current PR: ${pr_number}"
+   echo "Current ID: ${BUILD_ID}"
+   echo "Current Job: ${JOB_NAME}"
+   echo "Checking for cancelable jobs:"
+
+   for (def build : builds) {
+      def cbuildID = build.id.toInteger()
+      def curPRN = build.allActions.find{it in hudson.model.ParametersAction}?.getParameter(pr_parameter)?.value
+      if (true) {
+         if (cbuildID == buildID) {
+            // set curBuild as build in case we need to abort self
+            curBuild = build
+         } else if (build.isBuilding() && cbuildID < highestRID) {
+            // abort older running builds for same PR
+            def cause = "Aborted by #${buildID} for being an old job for PR ${curPRN}"
+            build.getListener().getLogger().println(cause)
+            // add message to build status page
+            def r = new ArrayList<>(Arrays.asList({ cause as String } as CauseOfInterruption))
+            build.addAction(new InterruptedBuildAction(r))
+            build.doStop()
+            echo "${cbuildID} was terminated."
+         } else if (cbuildID > highestRID) {
+            // a newer build was found, abort self at end
+            echo "Highest running ID is now ${cbuildID} from ${highestRID}"
+            highestRID = cbuildID
+         }
+      }
+   }
+
+   if (highestRID > buildID) {
+      println "Terminating self since newer job was found"
+      def r = new ArrayList<>(Arrays.asList({ "Aborting due to the presence of a newer job" as String } as CauseOfInterruption))
+      curBuild.addAction(new InterruptedBuildAction(r))
+      // kill because doStop is not immediate
+      curBuild.doKill()
+   }
+
+   echo "=" * 50
+}
+
+@NonCPS
+def testNewGetLog() {
+   def log = Jenkins.instanceOrNull.getItem(JOB_NAME).getBuildByNumber(Integer.parseInt(BUILD_NUMBER)).logFile.text
+   def match = log =~ /Pipeline/
+   if (match.find()) {
+      echo match.group(0)
+   } else {
+      error("Build failed because of this and that..")
+   }
+}
+// ---------------------------------------------------------
+
+pipeline {
+   // agent { docker { image 'python:3.10.1-alpine' } }
+   agent { label '' }
+
+   stages {
+      stage('Prepare') {
+         steps{
+            script {
+               testStuff()
+
+               def pr_number = "5"
+               prKiller("PULL_REQUEST_ID", pr_number, BUILD_ID)
+               
+               // prKiller()
+               testNewGetLog()
+            }
+         }
+      }
+      stage('Test shell') { 
+         steps {
+            dir ('tools') {
+               sh 'python3 -m pip install -r requirements.txt'
+            }
+         }
+      }
+      stage('Run bitbucket fork policy checker') {
+         steps {
+            dir ('tools') {
+               withCredentials([usernamePassword(credentialsId: 'buildbot', usernameVariable: 'bitbucket_key', passwordVariable: 'bitbucket_secret')]) {
+                  sh 'echo last commit $GIT_PREVIOUS_SUCCESSFUL_COMMIT'
+                  sh 'python3 long_task.py'
+               }
+            }
+         }
+      }
+   }
+}
+
+// https://plugins.jenkins.io/credentials-binding/
+// http://127.0.0.1:8080/credentials/store/system/
+// http://127.0.0.1:8080/job/TestPrKiller/
+// https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#usernames-and-passwords
+// https://www.jenkins.io/doc/book/using/using-credentials/

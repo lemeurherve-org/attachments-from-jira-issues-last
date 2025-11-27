@@ -1,0 +1,19 @@
+pipeline {
+    agent {
+        docker {
+            image "weakcamel/centos-python2-build:3"
+        }
+    }
+    stages {
+        stage('build and unit test') {
+            steps {
+                git changelog: false, poll: false, url: 'https://github.com/k-bx/python-semver.git'
+                script {
+                    sh('virtualenv /tmp/venv')
+                    sh '. /tmp/venv/bin/activate && python setup.py build'
+                    sh('. /tmp/venv/bin/activate && python setup.py bdist_rpm')
+                }
+            }
+        }
+    } //stages
+}

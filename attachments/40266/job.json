@@ -1,0 +1,84 @@
+{
+  "zimniok": {
+    "git_|-pull-system-example_|-https://git.example.org/example/system_|-latest": {
+      "comment": "Repository /root/system is up-to-date",
+      "name": "https://git.example.org/example/system",
+      "start_time": "19:34:52.275313",
+      "result": true,
+      "duration": 3281.126,
+      "__run_num__": 0,
+      "__sls__": "system-example",
+      "changes": {},
+      "__id__": "pull-system-example"
+    },
+    "docker_container_|-system-example_|-system-example_|-running": {
+      "comment": "",
+      "name": "system-example",
+      "start_time": "19:35:12.632132",
+      "result": true,
+      "duration": 3751.048,
+      "__run_num__": 4,
+      "__sls__": "system-example",
+      "changes": {
+        "state": {
+          "new": "running",
+          "old": null
+        },
+        "container_id": {
+          "added": "7497f7fffff7014dce7bb4376cf0be57179be3fbd541c935daab1a146eb0253e"
+        }
+      },
+      "__id__": "system-example"
+    },
+    "docker_container_|-remove-old-container_|-system-example_|-absent": {
+      "comment": "Successfully removed container 'system-example'",
+      "name": "system-example",
+      "start_time": "19:35:04.002182",
+      "result": true,
+      "duration": 617.675,
+      "__run_num__": 2,
+      "__sls__": "system-example",
+      "changes": {
+        "removed": [
+          "992f519986a8fe0b9daf12e2e835f3238be06a3f3cf65a5414b977afdf7e5f70"
+        ]
+      },
+      "__id__": "remove-old-container"
+    },
+    "docker_container_|-stop-old-container_|-system-example_|-stopped": {
+      "comment": "The following container(s) were stopped: system-example",
+      "name": "system-example",
+      "start_time": "19:34:55.990659",
+      "result": true,
+      "duration": 8011.188,
+      "__run_num__": 1,
+      "__sls__": "system-example",
+      "changes": {
+        "system-example": {
+          "state": {
+            "new": "stopped",
+            "old": "running"
+          },
+          "result": true
+        }
+      },
+      "__id__": "stop-old-container"
+    },
+    "cmd_|-run-migration_|-docker run --rm -t -v storage:/storage/ system-example /usr/local/example/bin/migrate-database.sh_|-run": {
+      "comment": "Command \"docker run --rm -t -v storage:/storage/ system-example /usr/local/example/bin/migrate-database.sh\" run",
+      "name": "docker run --rm -t -v storage:/storage/ system-example /usr/local/example/bin/migrate-database.sh",
+      "start_time": "19:35:04.633828",
+      "result": true,
+      "duration": 7997.874,
+      "__run_num__": 3,
+      "__sls__": "system-example",
+      "changes": {
+        "pid": 15443,
+        "retcode": 0,
+        "stderr": "",
+        "stdout": "[....] Starting PostgreSQL 9.4 database server: main\u001b[?25l\u001b7\u001b[1G[\u001b[32m ok \u001b[39;49m\u001b8\u001b[?12l\u001b[?25h.\r\n/var/run/postgresql:5432 - akceptowanie po\u0142\u0105cze\u0144\r\n===================================================================\r\n== Database migrations                                           ==\r\n===================================================================\r\nUse directory=<dir_name> to override default migration directories.\r\nYou can override db name & host from ruckusing.conf.php with:\r\n    database=<db name>\r\n    host=<host>\r\n    port=<port>\r\n    \r\nSet migration dir to: /var/www/system/\r\nDirectory: \r\nUsing host: 127.0.0.1, port: 5432, database: example_1 \r\nSet migration dir to: /var/www/system/\r\nDirectory: \r\nUsing host: 127.0.0.1, port: 5432, database: example_1 \r\nStarted: 2017-11-08 7:35pm CET\r\n\r\n[db:setup]: \r\n\tNOTICE: table 'schema_migrations' already exists. Nothing to do.\r\n\r\nFinished: 2017-11-08 7:35pm CET\r\n\r\nSet migration dir to: /var/www/system/\r\nDirectory: migrations\r\nUsing host: 127.0.0.1, port: 5432, database: example_1 \r\nStarted: 2017-11-08 7:35pm CET\r\n\r\n[db:status]: \r\nAll migrations applied.\r\n\r\n\r\n\r\nFinished: 2017-11-08 7:35pm CET\r\n\r\nSet migration dir to: /var/www/system/\r\nDirectory: migrations\r\nUsing host: 127.0.0.1, port: 5432, database: example_1 \r\nStarted: 2017-11-08 7:35pm CET\r\n\r\n[db:migrate]: \r\n\tMigrating UP:\r\n\tdrop_functions_triggers_views.sql\r\n\trunning create_functions_triggers_views.sql\r\n\r\n\r\nFinished: 2017-11-08 7:35pm CET\r\n\r\nYou can see all executed sqls in logs/<env>.log\r\n[....] Stopping PostgreSQL 9.4 database server: main\u001b[?25l\u001b7\u001b[1G[\u001b[32m ok \u001b[39;49m\u001b8\u001b[?12l\u001b[?25h."
+      },
+      "__id__": "run-migration"
+    }
+  }
+}

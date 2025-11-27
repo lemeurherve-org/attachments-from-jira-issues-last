@@ -1,0 +1,112 @@
+diff -r 0d4a6fc92e22 src/main/java/hudson/plugins/dependencyanalyzer/parser/BuildLogFileParser.java
+--- a/src/main/java/hudson/plugins/dependencyanalyzer/parser/BuildLogFileParser.java	Sat Aug 01 04:00:50 2009 +0200
++++ b/src/main/java/hudson/plugins/dependencyanalyzer/parser/BuildLogFileParser.java	Sat Aug 22 00:25:26 2009 +0200
+@@ -33,7 +33,7 @@
+ 			+ ".*");
+ 
+ 	private enum Goal {
+-		DEPENDENCY_ANALYSE(LOG_LEVEL_REGEX + "\\[dependency:analyze\\]$");
++	    DEPENDENCY_ANALYSE(LOG_LEVEL_REGEX + "\\[dependency:analyze( \\{execution: [^\\}]+\\}){0,1}\\]$");
+ 
+ 		private Pattern pattern;
+ 
+diff -r 0d4a6fc92e22 src/test/java/hudson/plugins/dependencyanalyzer/parser/BuildLogFileParserTest.java
+--- a/src/test/java/hudson/plugins/dependencyanalyzer/parser/BuildLogFileParserTest.java	Sat Aug 01 04:00:50 2009 +0200
++++ b/src/test/java/hudson/plugins/dependencyanalyzer/parser/BuildLogFileParserTest.java	Sat Aug 22 00:25:26 2009 +0200
+@@ -40,6 +40,14 @@
+ 		Assert.assertNotNull("No dependency:analyze block found", parser.getDependencyAnalyseBlock());
+ 	}
+ 
++    @Test
++    public void testGetDependencyAnalyseSectionEmptyWithExecutionId() throws Exception {
++        File file = getFile("log_build_with_empty_dependency_analyze_with_execution_id");
++        
++        parser.parseLogFile(file);
++        
++        Assert.assertNotNull("No dependency:analyze block found", parser.getDependencyAnalyseBlock());
++    }
+ 	
+ 	@Test
+ 	public void testGetDependencyAnalyseSectionPresent() throws Exception {
+@@ -56,5 +64,19 @@
+ 		
+ 	}
+ 
++    @Test
++    public void testGetDependencyAnalyseSectionPresentWithExecutionId() throws Exception {
++        File file = getFile("log_build_with_dependency_analyze_with_execution_id");
++        
++        parser.parseLogFile(file);
++        
++        String result = parser.getDependencyAnalyseBlock();
++
++        Assert.assertNotNull("dependency:analyze block must be found", result);
++        System.err.println(result);
++        List<String> lines = IOUtils.readLines(new StringReader(result));
++        Assert.assertEquals("Wrong number of line returned, ", 3, lines.size());
++        
++    }
+ 	
+ }
+diff -r 0d4a6fc92e22 src/test/resources/log_build_with_dependency_analyze_with_execution_id
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/src/test/resources/log_build_with_dependency_analyze_with_execution_id	Sat Aug 22 00:25:26 2009 +0200
+@@ -0,0 +1,28 @@
++[INFO] Scanning for projects...
++[INFO] Searching repository for plugin with prefix: 'dependency'.
++[INFO] ------------------------------------------------------------------------
++[INFO] Building jmemcached Command Line Interface
++[INFO]    task-segment: [dependency:analyze]
++[INFO] ------------------------------------------------------------------------
++[INFO] Preparing dependency:analyze
++[INFO] [resources:resources {execution: default-resources}]
++[INFO] Using 'UTF-8' encoding to copy filtered resources.
++[INFO] Copying 5 resources
++[INFO] [compiler:compile {execution: default-compile}]
++[INFO] Nothing to compile - all classes are up to date
++[INFO] [resources:testResources {execution: default-testResources}]
++[INFO] Using 'UTF-8' encoding to copy filtered resources.
++[INFO] skip non existing resourceDirectory /Software/hudson/jobs/jmemcache-daemon/workspace/cli/src/test/resources
++[INFO] [compiler:testCompile {execution: default-testCompile}]
++[INFO] No sources to compile
++[INFO] [dependency:analyze {execution: default-cli}]
++[WARNING] Unused declared dependencies found:
++[WARNING]    org.slf4j:slf4j-jdk14:jar:1.5.5:compile
++[WARNING]    junit:junit:jar:4.5:test
++[INFO] ------------------------------------------------------------------------
++[INFO] BUILD SUCCESSFUL
++[INFO] ------------------------------------------------------------------------
++[INFO] Total time: 5 seconds
++[INFO] Finished at: Sat Aug 22 00:16:09 CEST 2009
++[INFO] Final Memory: 24M/80M
++[INFO] ------------------------------------------------------------------------
+diff -r 0d4a6fc92e22 src/test/resources/log_build_with_empty_dependency_analyze_with_execution_id
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/src/test/resources/log_build_with_empty_dependency_analyze_with_execution_id	Sat Aug 22 00:25:26 2009 +0200
+@@ -0,0 +1,26 @@
++[INFO] Scanning for projects...
++[INFO] Searching repository for plugin with prefix: 'dependency'.
++[INFO] ------------------------------------------------------------------------
++[INFO] Building jmemcached Core
++[INFO]    task-segment: [dependency:analyze]
++[INFO] ------------------------------------------------------------------------
++[INFO] Preparing dependency:analyze
++[INFO] [resources:resources {execution: default-resources}]
++[INFO] Using 'UTF-8' encoding to copy filtered resources.
++[INFO] skip non existing resourceDirectory /Software/hudson/jobs/jmemcache-daemon/workspace/core/src/main/resources
++[INFO] [compiler:compile {execution: default-compile}]
++[INFO] Nothing to compile - all classes are up to date
++[INFO] [resources:testResources {execution: default-testResources}]
++[INFO] Using 'UTF-8' encoding to copy filtered resources.
++[INFO] skip non existing resourceDirectory /Software/hudson/jobs/jmemcache-daemon/workspace/core/src/test/resources
++[INFO] [compiler:testCompile {execution: default-testCompile}]
++[INFO] Nothing to compile - all classes are up to date
++[INFO] [dependency:analyze {execution: default-cli}]
++[INFO] No dependency problems found
++[INFO] ------------------------------------------------------------------------
++[INFO] BUILD SUCCESSFUL
++[INFO] ------------------------------------------------------------------------
++[INFO] Total time: 5 seconds
++[INFO] Finished at: Sat Aug 22 00:18:56 CEST 2009
++[INFO] Final Memory: 21M/80M
++[INFO] ------------------------------------------------------------------------

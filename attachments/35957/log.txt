@@ -1,0 +1,66 @@
+Branch indexing
+Connecting to https://api.github.com using jenkinsadmin/****** (GitHub access token for jenkinsadmin)
+Cloning the remote Git repository
+remote: Counting objects
+remote: Compressing objects
+Receiving objects
+Resolving deltas
+Updating references
+Checking out Revision 5969b8da99cc5541e313cf343cd31ba3ad2e4843 (PR-2750)
+First time build. Skipping changelog.
+
+GitHub has been notified of this commit’s build result
+
+com.google.common.util.concurrent.UncheckedExecutionException: org.acegisecurity.BadCredentialsException: Bad credentials; nested exception is javax.naming.AuthenticationException: [LDAP: error code 49 - Invalid Credentials]
+	at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2234)
+	at com.google.common.cache.LocalCache.get(LocalCache.java:3965)
+	at com.google.common.cache.LocalCache$LocalManualCache.get(LocalCache.java:4764)
+	at jenkins.security.UserDetailsCache.loadUserByUsername(UserDetailsCache.java:127)
+	at hudson.model.User$UserIDCanonicalIdResolver.resolveCanonicalId(User.java:1093)
+	at hudson.model.User.get(User.java:404)
+	at hudson.model.User.get(User.java:373)
+	at hudson.plugins.git.GitChangeSet.findOrCreateUser(GitChangeSet.java:379)
+	at hudson.plugins.git.GitChangeSet.getAuthor(GitChangeSet.java:448)
+	at io.jenkins.blueocean.autofavorite.FavoritingScmListener.onCheckout(FavoritingScmListener.java:88)
+	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:123)
+	at org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition.create(CpsScmFlowDefinition.java:108)
+	at org.jenkinsci.plugins.workflow.multibranch.SCMBinder.create(SCMBinder.java:85)
+	at org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:215)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:405)
+Caused by: org.acegisecurity.BadCredentialsException: Bad credentials; nested exception is javax.naming.AuthenticationException: [LDAP: error code 49 - Invalid Credentials]
+	at org.acegisecurity.ldap.DefaultInitialDirContextFactory.connect(DefaultInitialDirContextFactory.java:184)
+	at org.acegisecurity.ldap.DefaultInitialDirContextFactory.newInitialDirContext(DefaultInitialDirContextFactory.java:261)
+	at org.acegisecurity.ldap.DefaultInitialDirContextFactory.newInitialDirContext(DefaultInitialDirContextFactory.java:241)
+	at org.acegisecurity.ldap.LdapTemplate.execute(LdapTemplate.java:123)
+	at org.acegisecurity.ldap.LdapTemplate.searchForSingleEntry(LdapTemplate.java:246)
+	at org.acegisecurity.ldap.search.FilterBasedLdapUserSearch.searchForUser(FilterBasedLdapUserSearch.java:119)
+	at hudson.security.LDAPSecurityRealm$LDAPUserDetailsService.loadUserByUsername(LDAPSecurityRealm.java:899)
+	at hudson.security.LDAPSecurityRealm$LDAPUserDetailsService.loadUserByUsername(LDAPSecurityRealm.java:850)
+	at hudson.security.LDAPSecurityRealm.loadUserByUsername(LDAPSecurityRealm.java:732)
+	at jenkins.security.UserDetailsCache$Retriever.call(UserDetailsCache.java:172)
+	at jenkins.security.UserDetailsCache$Retriever.call(UserDetailsCache.java:161)
+	at com.google.common.cache.LocalCache$LocalManualCache$1.load(LocalCache.java:4767)
+	at com.google.common.cache.LocalCache$LoadingValueReference.loadFuture(LocalCache.java:3568)
+	at com.google.common.cache.LocalCache$Segment.loadSync(LocalCache.java:2350)
+	at com.google.common.cache.LocalCache$Segment.lockedGetOrLoad(LocalCache.java:2313)
+	at com.google.common.cache.LocalCache$Segment.get(LocalCache.java:2228)
+	... 15 more
+Caused by: javax.naming.AuthenticationException: [LDAP: error code 49 - Invalid Credentials]
+	at com.sun.jndi.ldap.LdapCtx.mapErrorCode(LdapCtx.java:3136)
+	at com.sun.jndi.ldap.LdapCtx.processReturnCode(LdapCtx.java:3082)
+	at com.sun.jndi.ldap.LdapCtx.processReturnCode(LdapCtx.java:2883)
+	at com.sun.jndi.ldap.LdapCtx.connect(LdapCtx.java:2797)
+	at com.sun.jndi.ldap.LdapCtx.<init>(LdapCtx.java:319)
+	at com.sun.jndi.ldap.LdapCtxFactory.getUsingURL(LdapCtxFactory.java:192)
+	at com.sun.jndi.ldap.LdapCtxFactory.getUsingURLs(LdapCtxFactory.java:210)
+	at com.sun.jndi.ldap.LdapCtxFactory.getLdapCtxInstance(LdapCtxFactory.java:153)
+	at com.sun.jndi.ldap.LdapCtxFactory.getInitialContext(LdapCtxFactory.java:83)
+	at javax.naming.spi.NamingManager.getInitialContext(NamingManager.java:684)
+	at javax.naming.InitialContext.getDefaultInitCtx(InitialContext.java:313)
+	at javax.naming.InitialContext.init(InitialContext.java:244)
+	at javax.naming.InitialContext.<init>(InitialContext.java:216)
+	at javax.naming.directory.InitialDirContext.<init>(InitialDirContext.java:101)
+	at org.acegisecurity.ldap.DefaultInitialDirContextFactory.connect(DefaultInitialDirContextFactory.java:180)
+	... 30 more
+Finished: FAILURE

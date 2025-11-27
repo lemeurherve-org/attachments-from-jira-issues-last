@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jenkins.branch.OrganizationFolder plugin="branch-api">
+    <actions>
+      <org.jenkinsci.plugins.orgfolder.github.GitHubOrgAction plugin="github-organization-folder">
+        <url>https://our-org.url.com/dev</url>
+        <name>FreshBooks dev Team</name>
+        <avatar/>
+      </org.jenkinsci.plugins.orgfolder.github.GitHubOrgAction>
+      <org.jenkinsci.plugins.orgfolder.github.GitHubLink plugin="github-organization-folder">
+        <image>logo</image>
+        <url>https://our-org.url.com/dev</url>
+      </org.jenkinsci.plugins.orgfolder.github.GitHubLink>
+    </actions>
+    <description/>
+    <displayName>dev</displayName>
+    <properties>
+      <jenkins.branch.NoTriggerOrganizationFolderProperty>
+        <branches>.*</branches>
+      </jenkins.branch.NoTriggerOrganizationFolderProperty>
+    </properties>
+    <folderViews class="com.cloudbees.hudson.plugins.folder.views.DefaultFolderViewHolder" plugin="cloudbees-folder">
+      <views>
+        <hudson.model.ListView>
+          <owner class="jenkins.branch.OrganizationFolder" reference="../../../.."/>
+          <name>Repositories</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <org.jenkinsci.plugins.orgfolder.github.CustomNameJobColumn plugin="github-organization-folder">
+              <bundle>org.jenkinsci.plugins.orgfolder.github.Messages</bundle>
+              <key>ListViewColumn.Repository</key>
+            </org.jenkinsci.plugins.orgfolder.github.CustomNameJobColumn>
+            <org.jenkinsci.plugins.orgfolder.github.RepositoryDescriptionColumn plugin="github-organization-folder"/>
+          </columns>
+          <includeRegex>.*</includeRegex>
+          <recurse>false</recurse>
+        </hudson.model.ListView>
+      </views>
+      <primaryView>Repositories</primaryView>
+      <tabBar class="hudson.views.DefaultViewsTabBar"/>
+    </folderViews>
+    <healthMetrics>
+      <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric plugin="cloudbees-folder">
+        <nonRecursive>false</nonRecursive>
+      </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+    </healthMetrics>
+    <icon class="org.jenkinsci.plugins.orgfolder.github.GitHubOrgIcon" plugin="github-organization-folder">
+      <folder class="jenkins.branch.OrganizationFolder" reference="../.."/>
+    </icon>
+    <orphanedItemStrategy class="com.cloudbees.hudson.plugins.folder.computed.DefaultOrphanedItemStrategy" plugin="cloudbees-folder">
+      <pruneDeadBranches>true</pruneDeadBranches>
+      <daysToKeep>7</daysToKeep>
+      <numToKeep>1000</numToKeep>
+    </orphanedItemStrategy>
+    <triggers>
+      <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger plugin="cloudbees-folder">
+        <spec>H H * * *</spec>
+        <interval>600000</interval>
+      </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
+    </triggers>
+    <navigators>
+      <org.jenkinsci.plugins.github__branch__source.GitHubSCMNavigator plugin="github-branch-source">
+        <repoOwner>dev</repoOwner>
+        <scanCredentialsId>github-integration</scanCredentialsId>
+        <checkoutCredentialsId>SAME</checkoutCredentialsId>
+        <apiUri>https://our-org.url.com/api/v3</apiUri>
+        <pattern>(our-application)</pattern>
+        <includes>master master.*</includes>
+        <buildOriginBranch>true</buildOriginBranch>
+        <buildOriginBranchWithPR>false</buildOriginBranchWithPR>
+        <buildOriginPRMerge>true</buildOriginPRMerge>
+        <buildOriginPRHead>false</buildOriginPRHead>
+        <buildForkPRMerge>true</buildForkPRMerge>
+        <buildForkPRHead>false</buildForkPRHead>
+      </org.jenkinsci.plugins.github__branch__source.GitHubSCMNavigator>
+    </navigators>
+    <projectFactories>
+      <org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProjectFactory plugin="workflow-multibranch"/>
+    </projectFactories>

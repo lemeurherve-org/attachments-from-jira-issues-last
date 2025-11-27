@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>10</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.plugins.promoted__builds.parameters.PromotedBuildParameterDefinition plugin="promoted-builds@2.20">
+          <name>BuildName</name>
+          <description></description>
+          <projectName>PlaybackAPI-Build</projectName>
+          <promotionProcessName>Dev</promotionProcessName>
+        </hudson.plugins.promoted__builds.parameters.PromotedBuildParameterDefinition>
+        <com.wangyin.ams.cms.abs.ParaReadOnly.WReadonlyStringParameterDefinition plugin="readonly-parameters@1.0.0">
+          <name>API_Version</name>
+          <description></description>
+          <defaultValue>2.0</defaultValue>
+        </com.wangyin.ams.cms.abs.ParaReadOnly.WReadonlyStringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>StandAloneBuild</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>true</string>
+              <string>false</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <EnvInjectJobProperty plugin="envinject@1.92.1">
+      <info>
+        <groovyScriptContent>import hudson.model.*
+
+// get current thread / Executor
+def thr = Thread.currentThread()
+// get current build
+def build = thr?.executable
+
+def API_Version_param = &quot;API_Version&quot;
+
+def resolver = build.buildVariableResolver
+
+def API_Version_param_value = resolver.resolve(API_Version_param)
+println &quot;param ${API_Version_param} value : ${API_Version_param_value}&quot;
+
+import org.codehaus.groovy.runtime.*; 
+if (!binding.variables.containsKey(&apos;CUSTOM_BUILD_NAME&apos;)) {
+    def dateTime = new Date()  
+    def formattedDate = DateGroovyMethods.format(dateTime, &apos;yyyy.MM.dd.HHmm&apos;)
+    def buildName = formattedDate +&quot;_MVSPlayer-Deploy-Dev_&quot;+ &quot;${API_Version_param_value}&quot; 
+    return [CUSTOM_BUILD_NAME: buildName]
+}</groovyScriptContent>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+      <on>true</on>
+      <keepJenkinsSystemVariables>true</keepJenkinsSystemVariables>
+      <keepBuildVariables>true</keepBuildVariables>
+      <overrideBuildParameters>false</overrideBuildParameters>
+      <contributors/>
+    </EnvInjectJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>Slave_1</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <EnvInjectBuilder plugin="envinject@1.92.1">
+      <info>
+        <propertiesContent>DistributionId=11111111111111
+DistributionPath=/XYZXYZXYZ/2.0/*</propertiesContent>
+      </info>
+    </EnvInjectBuilder>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder plugin="conditional-buildstep@1.3.5">
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.core.BooleanCondition" plugin="run-condition@1.0">
+        <token>$StandAloneBuild</token>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.plugins.powershell.PowerShell plugin="powershell@1.3">
+          <command>#GET PROMOTED BUILD NUMBER FROM URL AND WRITE TO ENV.BUILD FILE
+Set-executionpolicy unrestricted
+$arr = ($Env:BuildName).split(&apos;/&apos;)
+$BuildNumber = $arr[-2]
+$fileProp = [string](&quot;BuildNumber=&quot; + $BuildNumber) 
+$fileProp | out-file &quot;env.build&quot; -Encoding ASCII</command>
+        </hudson.plugins.powershell.PowerShell>
+        <EnvInjectBuilder plugin="envinject@1.92.1">
+          <info>
+            <propertiesFilePath>env.build</propertiesFilePath>
+          </info>
+        </EnvInjectBuilder>
+        <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.38.1">
+          <project>PlaybackAPI-Build</project>
+          <filter>build.properties</filter>
+          <target></target>
+          <excludes></excludes>
+          <selector class="hudson.plugins.copyartifact.SpecificBuildSelector">
+            <buildNumber>$BuildNumber</buildNumber>
+          </selector>
+          <doNotFingerprintArtifacts>false</doNotFingerprintArtifacts>
+        </hudson.plugins.copyartifact.CopyArtifact>
+        <EnvInjectBuilder plugin="envinject@1.92.1">
+          <info>
+            <propertiesFilePath>build.properties</propertiesFilePath>
+          </info>
+        </EnvInjectBuilder>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
+    <hudson.tasks.BatchFile>
+      <command>ECHO deleting %WORKSPACE%\%API_Version%.%Buildnumber%&#xd;
+rmdir /S /Q %WORKSPACE%\%API_Version%.%Buildnumber%&#xd;
+&#xd;
+exit /B 0</command>
+    </hudson.tasks.BatchFile>
+    <hudson.plugins.powershell.PowerShell plugin="powershell@1.3">
+      <command>write-host &quot;*********************Reading from build S3 bucket*********************&quot;</command>
+    </hudson.plugins.powershell.PowerShell>
+    <hudson.plugins.powershell.PowerShell plugin="powershell@1.3">
+      <command>write-host &quot;*********************loading to Dev S3 bucket*********************&quot;</command>
+    </hudson.plugins.powershell.PowerShell>
+    <hudson.plugins.powershell.PowerShell plugin="powershell@1.3">
+      <command>write-host &quot;*********************Call Dev Invalidation*********************&quot;</command>
+    </hudson.plugins.powershell.PowerShell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <com.michelin.cio.hudson.plugins.maskpasswords.MaskPasswordsBuildWrapper/>
+    <EnvInjectPasswordWrapper plugin="envinject@1.92.1">
+      <injectGlobalPasswords>true</injectGlobalPasswords>
+      <maskPasswordParameters>true</maskPasswordParameters>
+      <passwordEntries/>
+    </EnvInjectPasswordWrapper>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@1.6.5">
+      <template>${ENV,var=&quot;CUSTOM_BUILD_NAME&quot;}</template>
+      <runAtStart>true</runAtStart>
+      <runAtEnd>true</runAtEnd>
+    </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+  </buildWrappers>
+</project>

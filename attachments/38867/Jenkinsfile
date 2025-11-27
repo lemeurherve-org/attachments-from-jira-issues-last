@@ -1,0 +1,12 @@
+#!/usr/bin/env groovy
+pipeline {
+    agent any
+    stages {
+        stage('deploy') {
+            steps {
+                when { anyOf { branch 'prod'; branch 'stage' } }
+                sh 'echo hello world'
+            }
+        }
+    }
+}

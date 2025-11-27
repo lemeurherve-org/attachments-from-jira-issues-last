@@ -1,0 +1,58 @@
+    @SuppressWarnings("unchecked")
+    private void makeBaseline(AbstractBuild build,
+            HudsonClearToolLauncher clearToolLauncher, FilePath filePath)
+            throws Exception {
+
+        ArgumentListBuilder cmd = new ArgumentListBuilder();
+
+        String baselineName = Util
+                .replaceMacro(namePattern, build.getEnvVars());
+        String baselineComment = Util.replaceMacro(commentPattern, build
+                .getEnvVars());
+        cmd.add("mkbl");
+        if (this.identical) {
+            cmd.add("-identical");
+        }
+        cmd.add("-comment");
+        cmd.add(baselineComment);
+        if (fullBaseline) {
+            cmd.add("-full");
+        } else {
+            cmd.add("-incremental");
+        }
+
+
+        //Make baseline only for read/write components (identical or not)
+        cmd.add("-comp");
+        StringBuffer lstComp = new StringBuffer();
+        for (String comp:this.readWriteComponents){
+        	lstComp.append(",");
+        	lstComp.append(comp);        	
+        }
+        lstComp.delete(0, 1);
+        cmd.add(lstComp.toString());
+        
+        
+        cmd.add(baselineName);        
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        clearToolLauncher.run(cmd.toCommandArray(), null, baos, filePath);
+        baos.close();
+        String cleartoolResult = baos.toString();
+        if (cleartoolResult.contains("cleartool: Error")) {
+            throw new Exception("Failed to make baseline, reason: "
+                    + cleartoolResult);
+        }
+
+				this.createdBaselines = new ArrayList<String>();
+        Pattern pattern = Pattern.compile("Created baseline \".+?\"");
+        Matcher matcher = pattern.matcher(cleartoolResult);
+        while (matcher.find()) {
+            String match = matcher.group();
+            String newBaseline = match.substring(match.indexOf("\"") + 1, match
+                    .length() - 1);
+            this.createdBaselines.add(newBaseline);
+        }
+
+    }

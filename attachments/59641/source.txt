@@ -1,0 +1,36 @@
+stage('Update Jira issues') {
+                try {
+                    echo "Update JIRA tickets with current Build Version  ${currentBuild.displayName}"
+
+                    utils.methodtogetjiraids().each { jiraChange ->
+						echo "jiraChange: "+jiraChange
+					    jiraAddComment idOrKey: jiraChange.jiraTicketId, site: "jira", comment: jiraChange.commentBody, failOnError: false, auditLog: false
+					}
+                } catch (e) {
+                    echo "Error in Update Jira issues stage : ${e}"
+                }
+            }
+
+
+
+## METHOD
+@NonCPS
+def methodtogetjiraids() {
+  def jiraList = []
+  for(def int i=0; i<currentBuild.changeSets.size(); i++) {
+    def changeSet = currentBuild.changeSets[i]
+    for(def int j=0; j<changeSet.items.size(); j++) {
+      def item = changeSet.items[j]
+      if (item.msg.startsWith("XXX-") || item.msg.startsWith("XXXX-")) {
+        def jiraTicketId = item.msg.split(" ")[0].split(":")[0]
+        def commentBody = ''
+        echo "        ... add comment to ${jiraTicketId}"
+        jiraList << [ jiraTicketId: jiraTicketId, commentBody: commentBody]
+        echo "... after add"
+      }
+    }
+  }
+
+  echo "jiras: "+jiraList
+  return jiraList
+}

@@ -1,0 +1,31 @@
+Index: src/main/resources/hudson/plugins/cigame/rules/plugins/violation/Messages.properties
+===================================================================
+--- src/main/resources/hudson/plugins/cigame/rules/plugins/violation/Messages.properties	(revision 23698)
++++ src/main/resources/hudson/plugins/cigame/rules/plugins/violation/Messages.properties	(working copy)
+@@ -7,4 +7,5 @@
+ ViolationRuleSet.PmdRule.Name=PMD violation
+ ViolationRuleSet.PylintRule.Name=pylint violation
+ ViolationRuleSet.SimianRule.Name=Simian violation
++ViolationRuleSet.StylecopRule.Name=StyleCop violation
+ ViolationRuleSet.Title=Violations
+Index: src/main/resources/hudson/plugins/cigame/rules/plugins/violation/Messages_sv.properties
+===================================================================
+--- src/main/resources/hudson/plugins/cigame/rules/plugins/violation/Messages_sv.properties	(revision 23698)
++++ src/main/resources/hudson/plugins/cigame/rules/plugins/violation/Messages_sv.properties	(working copy)
+@@ -8,4 +8,5 @@
+ ViolationRuleSet.PmdRule.Name=PMD varning
+ ViolationRuleSet.PylintRule.Name=pylint varning
+ ViolationRuleSet.SimianRule.Name=Simian varning
++ViolationRuleSet.StylecopRule.Name=StyleCop varning
+ ViolationRuleSet.Title=Violations varningsregler
+Index: src/main/java/hudson/plugins/cigame/rules/plugins/violation/ViolationsRuleSet.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/plugins/violation/ViolationsRuleSet.java	(revision 23698)
++++ src/main/java/hudson/plugins/cigame/rules/plugins/violation/ViolationsRuleSet.java	(working copy)
+@@ -17,5 +17,6 @@
+         add(new DefaultViolationRule("findbugs", Messages.ViolationRuleSet_FindBugsRule_Name(), -1, 1)); //$NON-NLS-1$ //$NON-NLS-2$
+         add(new DefaultViolationRule("fxcop", Messages.ViolationRuleSet_FxcopRule_Name(), -1, 1)); //$NON-NLS-1$ //$NON-NLS-2$
+         add(new DefaultViolationRule("simian", Messages.ViolationRuleSet_SimianRule_Name(), -5, 5)); //$NON-NLS-1$ //$NON-NLS-2$
++        add(new DefaultViolationRule("stylecop", Messages.ViolationRuleSet_StylecopRule_Name(), -1, 1)); //$NON-NLS-1$ //$NON-NLS-2$
+     }
+ }

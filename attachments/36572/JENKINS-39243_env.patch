@@ -1,0 +1,13 @@
+diff --git a/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java b/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java
+index 310be8f..f80dffc 100644
+--- a/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java
++++ b/src/main/java/org/jenkinsci/plugins/docker/workflow/WithContainerStep.java
+@@ -153,7 +153,7 @@ public class WithContainerStep extends AbstractStepImpl {
+             Optional<String> containerId = dockerClient.getContainerIdIfContainerized();
+             if (containerId.isPresent()) {
+                 listener.getLogger().println(node.getDisplayName() + " seems to be running inside container " + containerId.get());
+-                final Collection<String> mountedVolumes = dockerClient.getVolumes(envHost, containerId.get());
++                final Collection<String> mountedVolumes = dockerClient.getVolumes(env, containerId.get());
+                 final String[] dirs = {ws, tmp};
+                 for (String dir : dirs) {
+                     // check if there is any volume which contains the directory

@@ -1,0 +1,285 @@
+Index: src/test/resources/ci-game-scores.properties
+===================================================================
+--- src/test/resources/ci-game-scores.properties	(revision 0)
++++ src/test/resources/ci-game-scores.properties	(revision 0)
+@@ -0,0 +1,16 @@
++warning.add=
++warning.remove=
++build.success=
++build.failure=
++violation.add=
++violation.remove=
++findbugs.warning.fix=
++findbugs.warning.new=
++checkstyle.warning.add=
++checkstyle.warning.remove=
++pmd.annotation.add=
++pmd.annotation.remove=
++opentasks.annotation.add=
++opentasks.annotation.remove=
++unittesting.tests.failed.increased=
++unittesting.tests.passed.increased=
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/cigame/rules/build/BuildResultRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/build/BuildResultRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/build/BuildResultRule.java	(working copy)
+@@ -4,6 +4,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ 
+ /**
+  * Rule that gives points on the result of the build.
+@@ -14,12 +15,12 @@
+     private int successPoints;
+ 
+     public BuildResultRule() {
+-        this(1, -10);
++        this(1,-10);
+     }
+ 
+     public BuildResultRule(int successPoints, int failurePoints) {
+-        this.successPoints = successPoints;
+-        this.failurePoints = failurePoints;
++        this.successPoints = PointsCfg.read("build.success",successPoints);
++        this.failurePoints = PointsCfg.read("build.failure",failurePoints);
+     }
+ 
+     public String getName() {
+Index: src/main/java/hudson/plugins/cigame/rules/plugins/pmd/DefaultPmdRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/plugins/pmd/DefaultPmdRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/plugins/pmd/DefaultPmdRule.java	(working copy)
+@@ -6,6 +6,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ import hudson.plugins.pmd.PmdResult;
+ import hudson.plugins.pmd.PmdResultAction;
+ import hudson.plugins.pmd.util.model.Priority;
+@@ -18,8 +19,10 @@
+ 
+     public DefaultPmdRule(Priority tasksPriority, int pointsForAddingAnAnnotation, int pointsForRemovingAnAnnotation) {
+         this.tasksPriority = tasksPriority;
+-        this.pointsForAddingAnAnnotation = pointsForAddingAnAnnotation;
+-        this.pointsForRemovingAnAnnotation = pointsForRemovingAnAnnotation;
++        this.pointsForAddingAnAnnotation = 
++        	PointsCfg.read("pmd.annotation.add",pointsForAddingAnAnnotation);
++        this.pointsForRemovingAnAnnotation = 
++        	PointsCfg.read("pmd.annotation.remove",pointsForRemovingAnAnnotation);
+     }
+ 
+     public RuleResult evaluate(AbstractBuild<?, ?> build) {
+Index: src/main/java/hudson/plugins/cigame/rules/plugins/findbugs/FixedFindBugsWarningsRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/plugins/findbugs/FixedFindBugsWarningsRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/plugins/findbugs/FixedFindBugsWarningsRule.java	(working copy)
+@@ -6,6 +6,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ import hudson.plugins.findbugs.FindBugsResultAction;
+ import hudson.plugins.findbugs.util.model.Priority;
+ 
+@@ -16,7 +17,8 @@
+     
+     public FixedFindBugsWarningsRule(Priority priority, int pointsForEachFixedWarning) {
+         this.priority = priority;
+-        this.pointsForEachFixedWarning = pointsForEachFixedWarning;
++        this.pointsForEachFixedWarning = 
++        	PointsCfg.read("findbugs.warning.fix",pointsForEachFixedWarning);
+     }
+ 
+     public RuleResult evaluate(AbstractBuild<?, ?> build) {
+Index: src/main/java/hudson/plugins/cigame/rules/plugins/findbugs/NewFindBugsWarningsRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/plugins/findbugs/NewFindBugsWarningsRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/plugins/findbugs/NewFindBugsWarningsRule.java	(working copy)
+@@ -6,6 +6,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ import hudson.plugins.findbugs.FindBugsResultAction;
+ import hudson.plugins.findbugs.util.model.Priority;
+ 
+@@ -16,7 +17,8 @@
+     
+     public NewFindBugsWarningsRule(Priority priority, int pointsForEachNewWarning) {
+         this.priority = priority;
+-        this.pointsForEachNewWarning = pointsForEachNewWarning;
++        this.pointsForEachNewWarning = 
++        	PointsCfg.read("findbugs.warning.new",pointsForEachNewWarning);
+     }
+ 
+     public RuleResult evaluate(AbstractBuild<?, ?> build) {
+Index: src/main/java/hudson/plugins/cigame/rules/plugins/violation/DefaultViolationRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/plugins/violation/DefaultViolationRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/plugins/violation/DefaultViolationRule.java	(working copy)
+@@ -6,6 +6,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ import hudson.plugins.violations.ViolationsBuildAction;
+ import hudson.plugins.violations.ViolationsReport;
+ import hudson.plugins.violations.ViolationsReport.TypeReport;
+@@ -21,8 +22,10 @@
+             int pointsForAddingViolation, int pointsForRemovingViolation) {
+         this.typeName = typeName;
+         this.violationName = violationName;
+-        this.pointsForAddingViolation = pointsForAddingViolation;
+-        this.pointsForRemovingViolation = pointsForRemovingViolation;
++        this.pointsForAddingViolation = 
++        	PointsCfg.read("violation.add",pointsForAddingViolation);
++        this.pointsForRemovingViolation = 
++        	PointsCfg.read("violation.remove",pointsForRemovingViolation);
+     }
+ 
+     public RuleResult evaluate(AbstractBuild<?, ?> build) {
+Index: src/main/java/hudson/plugins/cigame/rules/plugins/opentasks/DefaultOpenTasksRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/plugins/opentasks/DefaultOpenTasksRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/plugins/opentasks/DefaultOpenTasksRule.java	(working copy)
+@@ -7,6 +7,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ import hudson.plugins.tasks.TasksResult;
+ import hudson.plugins.tasks.TasksResultAction;
+ import hudson.plugins.tasks.util.model.FileAnnotation;
+@@ -25,8 +26,10 @@
+     public DefaultOpenTasksRule(Priority tasksPriority,
+             int pointsForAddingAnAnnotation, int pointsForRemovingAnAnnotation) {
+         this.tasksPriority = tasksPriority;
+-        this.pointsForAddingAnAnnotation = pointsForAddingAnAnnotation;
+-        this.pointsForRemovingAnAnnotation = pointsForRemovingAnAnnotation;
++        this.pointsForAddingAnAnnotation = 
++        	PointsCfg.read("opentasks.annotation.add",pointsForAddingAnAnnotation);
++        this.pointsForRemovingAnAnnotation = 
++        	PointsCfg.read("opentasks.annotation.remove",pointsForRemovingAnAnnotation);
+     }
+ 
+     public RuleResult evaluate(AbstractBuild<?, ?> build) {
+Index: src/main/java/hudson/plugins/cigame/rules/plugins/warnings/DefaultWarningsRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/plugins/warnings/DefaultWarningsRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/plugins/warnings/DefaultWarningsRule.java	(working copy)
+@@ -7,6 +7,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ import hudson.plugins.warnings.WarningsResult;
+ import hudson.plugins.warnings.WarningsResultAction;
+ import hudson.plugins.warnings.util.model.FileAnnotation;
+@@ -20,8 +21,10 @@
+     private int pointsForRemovingAWarning;
+ 
+     public DefaultWarningsRule(int pointsForAddingAWarning, int pointsForRemovingAWarning) {
+-        this.pointsForAddingAWarning = pointsForAddingAWarning;
+-        this.pointsForRemovingAWarning = pointsForRemovingAWarning;
++        this.pointsForAddingAWarning = 
++        	PointsCfg.read("warning.add",pointsForAddingAWarning);
++        this.pointsForRemovingAWarning = 
++        	PointsCfg.read("warning.remove",pointsForRemovingAWarning);
+     }
+ 
+     public RuleResult evaluate(AbstractBuild<?, ?> build) {
+Index: src/main/java/hudson/plugins/cigame/rules/plugins/checkstyle/DefaultCheckstyleRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/plugins/checkstyle/DefaultCheckstyleRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/plugins/checkstyle/DefaultCheckstyleRule.java	(working copy)
+@@ -10,6 +10,7 @@
+ import hudson.plugins.checkstyle.util.model.FileAnnotation;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ 
+ /**
+  * Default rule for the Warnings plugin.
+@@ -20,8 +21,10 @@
+     private int pointsForRemovingAWarning;
+ 
+     public DefaultCheckstyleRule(int pointsForAddingAWarning, int pointsForRemovingAWarning) {
+-        this.pointsForAddingAWarning = pointsForAddingAWarning;
+-        this.pointsForRemovingAWarning = pointsForRemovingAWarning;
++        this.pointsForAddingAWarning = 
++        	PointsCfg.read("checkstyle.warning.add",pointsForAddingAWarning);
++        this.pointsForRemovingAWarning = 
++        	PointsCfg.read("checkstyle.warning.remove",pointsForRemovingAWarning);
+     }
+ 
+     public RuleResult evaluate(AbstractBuild<?, ?> build) {
+Index: src/main/java/hudson/plugins/cigame/rules/unittesting/IncreasingFailedTestsRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/unittesting/IncreasingFailedTestsRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/unittesting/IncreasingFailedTestsRule.java	(working copy)
+@@ -4,6 +4,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ import hudson.tasks.test.AbstractTestResultAction;
+ 
+ import java.util.List;
+@@ -20,7 +21,8 @@
+     }
+ 
+     public IncreasingFailedTestsRule(int points) {
+-        pointsForEachNewFailure = points;
++        pointsForEachNewFailure = 
++        	PointsCfg.read("unittesting.tests.failed.increased",points);
+     }
+ 
+     public String getName() {
+Index: src/main/java/hudson/plugins/cigame/rules/unittesting/IncreasingPassedTestsRule.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/rules/unittesting/IncreasingPassedTestsRule.java	(revision 18318)
++++ src/main/java/hudson/plugins/cigame/rules/unittesting/IncreasingPassedTestsRule.java	(working copy)
+@@ -4,6 +4,7 @@
+ import hudson.model.Result;
+ import hudson.plugins.cigame.model.Rule;
+ import hudson.plugins.cigame.model.RuleResult;
++import hudson.plugins.cigame.rules.PointsCfg;
+ import hudson.tasks.test.AbstractTestResultAction;
+ 
+ import java.util.List;
+@@ -20,7 +21,8 @@
+     }
+ 
+     public IncreasingPassedTestsRule(int points) {
+-        pointsForEachFixedFailure = points;
++        pointsForEachFixedFailure = 
++        	PointsCfg.read("unittesting.tests.passed.increased",points);
+     }
+ 
+     @SuppressWarnings("unchecked")
+Index: src/main/resources/ci-game-scores.properties
+===================================================================
+--- src/main/resources/ci-game-scores.properties	(revision 0)
++++ src/main/resources/ci-game-scores.properties	(revision 0)
+@@ -0,0 +1,16 @@
++warning.add=
++warning.remove=
++build.success=
++build.failure=
++violation.add=
++violation.remove=
++findbugs.warning.fix=
++findbugs.warning.new=
++checkstyle.warning.add=
++checkstyle.warning.remove=
++pmd.annotation.add=
++pmd.annotation.remove=
++opentasks.annotation.add=
++opentasks.annotation.remove=
++unittesting.tests.failed.increased=
++unittesting.tests.passed.increased=
+\ No newline at end of file

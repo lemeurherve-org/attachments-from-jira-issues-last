@@ -1,0 +1,45 @@
+Index: src/main/java/hudson/plugins/japex/JapexReportAction.java
+===================================================================
+--- src/main/java/hudson/plugins/japex/JapexReportAction.java	(revision 12334)
++++ src/main/java/hudson/plugins/japex/JapexReportAction.java	(working copy)
+@@ -14,6 +14,7 @@
+ import java.io.FileFilter;
+ import java.lang.ref.WeakReference;
+ import java.util.ArrayList;
++import java.util.Arrays;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+@@ -126,7 +127,8 @@
+         Map<String,List<TestSuiteReport>> reports = new HashMap<String,List<TestSuiteReport>>();
+         for (Build build : project.getBuilds()) {
+             File dir = JapexPublisher.getJapexReport(build);
+-            File[] files = dir.listFiles(REPORT_FILTER);
++            List<File> files = new ArrayList<File>();
++            listDir(dir, REPORT_FILTER, files);
+             if(files!=null) {
+                 for (File f : files) {
+                     try {
+@@ -160,6 +162,22 @@
+ 
+         return parsed;
+     }
++    
++    private void listDir(File dir, FileFilter filter, List<File> listToFill)
++	{
++		for(File f : dir.listFiles(DIRECTORY_FILTER))
++		{
++			listDir(f, filter, listToFill);
++		}
++		listToFill.addAll(Arrays.asList(dir.listFiles(filter)));
++	}
++	
++	private static final FileFilter DIRECTORY_FILTER = new FileFilter() {
++        public boolean accept(File f) {
++        	
++            return f.isDirectory();
++        }
++    };
+ 
+     private static final FileFilter REPORT_FILTER = new FileFilter() {
+         public boolean accept(File f) {

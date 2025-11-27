@@ -1,0 +1,223 @@
+Index: plugins/subversion/src/main/java/hudson/scm/SubversionSCM.java
+===================================================================
+--- plugins/subversion/src/main/java/hudson/scm/SubversionSCM.java	(revision 31689)
++++ plugins/subversion/src/main/java/hudson/scm/SubversionSCM.java	(working copy)
+@@ -116,6 +116,7 @@
+     private ModuleLocation[] locations = new ModuleLocation[0];
+ 
+     private boolean useUpdate;
++    private boolean doSwitch;
+     private boolean doRevert;
+     private final SubversionRepositoryBrowser browser;
+     private String excludedRegions;
+@@ -132,6 +133,13 @@
+     private String modules;
+ 
+     /**
++     * Checkout actions
++     */
++    private final static int DO_CHECKOUT = 0;
++    private final static int DO_UPDATE = 1;
++    private final static int DO_SWITCH = 2;
++    
++    /**
+      * @deprecated as of 1.286
+      */
+     public SubversionSCM(String[] remoteLocations, String[] localLocations,
+@@ -184,12 +192,12 @@
+      */
+     public SubversionSCM(List<ModuleLocation> locations,
+                          boolean useUpdate, boolean doRevert, SubversionRepositoryBrowser browser, String excludedRegions, String excludedUsers, String excludedRevprop, String excludedCommitMessages) {
+-        this(locations, useUpdate, doRevert, browser, excludedRegions, excludedUsers, excludedRevprop, excludedCommitMessages, null);
++        this(locations, useUpdate, true, doRevert, browser, excludedRegions, excludedUsers, excludedRevprop, excludedCommitMessages, null);
+     }
+     
+     @DataBoundConstructor
+     public SubversionSCM(List<ModuleLocation> locations,
+-                         boolean useUpdate, boolean doRevert, SubversionRepositoryBrowser browser, String excludedRegions, String excludedUsers, String excludedRevprop, String excludedCommitMessages,
++                         boolean useUpdate, boolean doSwitch, boolean doRevert, SubversionRepositoryBrowser browser, String excludedRegions, String excludedUsers, String excludedRevprop, String excludedCommitMessages,
+                          String includedRegions) {
+ 
+         for (Iterator<ModuleLocation> itr = locations.iterator(); itr.hasNext();) {
+@@ -199,6 +207,7 @@
+         this.locations = locations.toArray(new ModuleLocation[locations.size()]);
+ 
+         this.useUpdate = useUpdate;
++	this.doSwitch = doSwitch;
+         this.doRevert = doRevert;
+         this.browser = browser;
+         this.excludedRegions = excludedRegions;
+@@ -585,8 +594,10 @@
+             }
+         }
+ 
+-        Boolean isUpdatable = useUpdate && workspace.act(new IsUpdatableTask(build, this, listener));
+-        return workspace.act(new CheckOutTask(build, this, build.getTimestamp().getTime(), isUpdatable, doRevert, listener));
++        int action = DO_CHECKOUT;
++        if (useUpdate)
++        	action = workspace.act(new IsUpdatableTask(build, this, listener, doSwitch));
++        return workspace.act(new CheckOutTask(build, this, build.getTimestamp().getTime(), action, doRevert, listener));
+     }
+ 
+ 
+@@ -596,17 +607,16 @@
+     private static class CheckOutTask implements FileCallable<List<External>> {
+         private final ISVNAuthenticationProvider authProvider;
+         private final Date timestamp;
+-        // true to "svn update", false to "svn checkout".
+-        private boolean update;
++        private int action; ///< @see DO_* constants
+         private boolean revert;
+         private final TaskListener listener;
+         private final ModuleLocation[] locations;
+         private final RevisionParameterAction revisions;
+ 
+-        public CheckOutTask(AbstractBuild<?, ?> build, SubversionSCM parent, Date timestamp, boolean update, boolean revert, TaskListener listener) {
++        public CheckOutTask(AbstractBuild<?, ?> build, SubversionSCM parent, Date timestamp, int action, boolean revert, TaskListener listener) {
+             this.authProvider = parent.getDescriptor().createAuthenticationProvider(build.getParent());
+             this.timestamp = timestamp;
+-            this.update = update;
++            this.action = action;
+             this.revert = revert;
+             this.listener = listener;
+             this.locations = parent.getLocations(build);
+@@ -619,26 +629,30 @@
+                 final SVNUpdateClient svnuc = manager.getUpdateClient();
+                 final SVNWCClient svnwc = manager.getWCClient();
+                 final List<External> externals = new ArrayList<External>(); // store discovered externals to here
+-                if(update) {
++                if (action != DO_CHECKOUT) {
+                     for (final ModuleLocation l : locations) {
+                         try {
+                             File local = new File(ws, l.getLocalDir());
+                             svnuc.setEventHandler(new SubversionUpdateEventHandler(listener.getLogger(), externals,local,l.getLocalDir()));
+                             
+                             SVNRevision r = getRevision(l);
+-                            
+                             if (revert) {
+                                 listener.getLogger().println("Reverting "+ l.remote);
+                             	svnwc.doRevert(new File [] { local.getCanonicalFile()}, SVNDepth.INFINITY, null);
+                             }
+-                            listener.getLogger().println("Updating "+ l.remote);                            
+-                            svnuc.doUpdate(local.getCanonicalFile(), r, SVNDepth.INFINITY, true, false);
++                            if (action == DO_UPDATE) {
++                              listener.getLogger().println("Updating "+ l.remote);                            
++                              svnuc.doUpdate(local.getCanonicalFile(), r, SVNDepth.INFINITY, true, false);
++                            } else {
++                              listener.getLogger().println("Switching to "+ l.remote);                            
++                              svnuc.doSwitch(local.getCanonicalFile(), l.getSVNURL(), SVNRevision.UNDEFINED, r, SVNDepth.INFINITY, true, false);
++                            }
+ 
+                         } catch (final SVNException e) {
+                             if(e.getErrorMessage().getErrorCode()== SVNErrorCode.WC_LOCKED) {
+                                 // work space locked. try fresh check out
+                                 listener.getLogger().println("Workspace appear to be locked, so getting a fresh workspace");
+-                                update = false;
++                                action = DO_CHECKOUT;
+                                 return invoke(ws,channel);
+                             }
+                             if(e.getErrorMessage().getErrorCode()== SVNErrorCode.WC_OBSTRUCTED_UPDATE) {
+@@ -646,7 +660,7 @@
+                                 // revert to fresh check out
+                                 listener.getLogger().println(e.getMessage()); // show why this happened. Sometimes this is caused by having a build artifact in the repository.
+                                 listener.getLogger().println("Updated failed due to local files. Getting a fresh workspace");
+-                                update = false;
++                                action = DO_CHECKOUT;
+                                 return invoke(ws,channel);
+                             }
+ 
+@@ -964,27 +978,29 @@
+     }
+ 
+     /**
+-     * Returns true if we can use "svn update" instead of "svn checkout"
++     * Returns DO_* constant
+      */
+-    private static class IsUpdatableTask implements FileCallable<Boolean> {
++    private static class IsUpdatableTask implements FileCallable<Integer> {
+         private final TaskListener listener;
+         private final ISVNAuthenticationProvider authProvider;
+         private final ModuleLocation[] locations;
++        private final boolean doSwitch;
+ 
+-        IsUpdatableTask(AbstractBuild<?, ?> build, SubversionSCM parent,TaskListener listener) {
++        IsUpdatableTask(AbstractBuild<?, ?> build, SubversionSCM parent, TaskListener listener, boolean doSwitch) {
+             this.authProvider = parent.getDescriptor().createAuthenticationProvider(build.getParent());
+             this.listener = listener;
+             this.locations = parent.getLocations(build);
++            this.doSwitch = doSwitch;
+         }
+ 
+-        public Boolean invoke(File ws, VirtualChannel channel) throws IOException {
++        public Integer invoke(File ws, VirtualChannel channel) throws IOException {
+             for (ModuleLocation l : locations) {
+                 String moduleName = l.getLocalDir();
+                 File module = new File(ws,moduleName).getCanonicalFile(); // canonicalize to remove ".." and ".". See #474
+ 
+                 if(!module.exists()) {
+                     listener.getLogger().println("Checking out a fresh workspace because "+module+" doesn't exist");
+-                    return false;
++                    return DO_CHECKOUT;
+                 }
+ 
+                 try {
+@@ -993,8 +1009,13 @@
+ 
+                     String url = l.getURL();
+                     if(!svnInfo.url.equals(url)) {
+-                        listener.getLogger().println("Checking out a fresh workspace because the workspace is not "+url);
+-                        return false;
++                    	if (doSwitch) {
++                          listener.getLogger().println("Switching to the new repository URL because the workspace is not "+url);
++                          return DO_SWITCH;
++                    	} else {
++                          listener.getLogger().println("Checking out a fresh workspace because the workspace is not "+url);
++                          return DO_CHECKOUT;
++                    	}
+                     }
+                 } catch (SVNException e) {
+                     if (e.getErrorMessage().getErrorCode()==SVNErrorCode.WC_NOT_DIRECTORY) {
+@@ -1003,10 +1024,10 @@
+                         listener.getLogger().println("Checking out a fresh workspace because Hudson failed to detect the current workspace "+module);
+                         e.printStackTrace(listener.error(e.getMessage()));
+                     }
+-                    return false;
++                    return DO_CHECKOUT;
+                 }
+             }
+-            return true;
++            return DO_UPDATE;
+         }
+         private static final long serialVersionUID = 1L;
+     }
+Index: plugins/subversion/src/main/resources/hudson/scm/SubversionSCM/config.properties
+===================================================================
+--- plugins/subversion/src/main/resources/hudson/scm/SubversionSCM/config.properties	(revision 31689)
++++ plugins/subversion/src/main/resources/hudson/scm/SubversionSCM/config.properties	(working copy)
+@@ -24,6 +24,10 @@
+   If checked, Hudson will use ''svn update'' whenever possible, making the build faster. \
+   But this causes the artifacts from the previous build to remain when a new build starts.
+ 
++switchDescription=\
++  If checked, Hudson will use ''svn switch'' instead of fresh checkout when it notices \
++  that respository URL has changed.
++
+ revertDescription=\
+   If checked, Hudson will do ''svn revert'' before doing ''svn update''.  This slows it \
+-  down, but will prevent files being modified from build to build.
+\ No newline at end of file
++  down, but will prevent files being modified from build to build.
+Index: plugins/subversion/src/main/resources/hudson/scm/SubversionSCM/config.jelly
+===================================================================
+--- plugins/subversion/src/main/resources/hudson/scm/SubversionSCM/config.jelly	(revision 31689)
++++ plugins/subversion/src/main/resources/hudson/scm/SubversionSCM/config.jelly	(working copy)
+@@ -44,6 +44,9 @@
+   <f:entry title="${%Use update}" description="${%updateDescription}" field="useUpdate">
+     <f:checkbox default="true"/>
+   </f:entry>
++  <f:entry title="${%Switch}" description="${%switchDescription}" field="doSwitch">
++    <f:checkbox default="true"/>
++  </f:entry>  
+   <f:entry title="${%Revert}" description="${%revertDescription}" field="doRevert">
+     <f:checkbox default="false"/>
+   </f:entry>

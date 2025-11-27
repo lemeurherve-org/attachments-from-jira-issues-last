@@ -1,0 +1,69 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'module', defaultValue: '', description: 'module')
+
+        string(name: 'version', defaultValue: '', description: 'version')
+
+        string(name: 'buildnumber', defaultValue: '', description: '')
+
+        string(name: 'tag', defaultValue: '', description: '')
+
+        string(name: 'build_mode', defaultValue: 'full', description: '')
+    }
+
+    stages {
+
+       stage('Clone') {
+        steps {
+            script {   // for display purposes
+                    module = "$module"
+                    lastBuild = currentBuild.getPreviousBuild()
+                    while ((lastBuild != null) && !lastBuild.getDisplayName().toString().equals(module.toString())) {
+                        lastBuild = lastBuild.getPreviousBuild()
+                    }
+
+                    currentBuild.displayName = "$module"
+                    currentBuild.description = "$tag"
+                        
+                } 
+           checkout([$class: 'GitSCM', branches: [[name: '$tag']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'ssh://gitserver/$module']]])
+        }
+    
+       }
+       stage('sca') {
+        steps {
+            script {
+            def built = build( job:'Staging/cppcheck-build', parameters: [string(name: 'module', value:module), string(name: 'version', value:version),  string(name: 'buildnumber', value:buildnumber),  string(name: 'tag', value:tag), string(name: 'output_format', value:'xml'),  string(name: 'buildnumber', value:buildnumber),  string(name: 'tag', value:tag), string(name: 'output_format', value:'xml'), string(name: 'build_mode', value:build_mode), string(name: 'flavor_filter', value:'release.dynamic')], propagate: false)
+            copyArtifacts(
+                        projectName: 'Staging/cppcheck-build',
+                        selector: specific("${built.number}"),
+                        target: "${env.WORKSPACE}",
+                        filter: "*.xml"
+                    )
+            }
+        }
+        post {
+            always {
+              // Publish the stage artifacts
+              recordIssues enabledForFailure: true, aggregatingResults: true, tool: cppCheck(pattern: 'cppcheck.*.xml'), qualityGates: [[threshold: 1, type: 'DELTA', unstable: true]]
+              // should add once it will be supported 
+              // referenceJobName: module, referenceBuildId: lastBuild.get().getId()
+             archiveArtifacts artifacts: '*.xml',  fingerprint: true
+                        
+            }            
+        }
+
+       }
+    }
+    post {
+        success {
+                      
+            echo 'I succeeded!'      
+        }
+        always {
+              echo 'Cleaning Folder'
+              deleteDir() /* clean up our workspace */
+            }
+   }
+}

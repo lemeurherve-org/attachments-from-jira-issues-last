@@ -1,0 +1,126 @@
+Index: src/main/webapp/help-profilename.html
+===================================================================
+--- src/main/webapp/help-profilename.html	(revision 0)
++++ src/main/webapp/help-profilename.html	(revision 0)
+@@ -0,0 +1 @@
++<div>A unique name for the FTP site</div>
+Index: src/main/java/com/zanox/hudson/plugins/FTPPublisher.java
+===================================================================
+--- src/main/java/com/zanox/hudson/plugins/FTPPublisher.java	(revision 39041)
++++ src/main/java/com/zanox/hudson/plugins/FTPPublisher.java	(working copy)
+@@ -1,7 +1,6 @@
+ package com.zanox.hudson.plugins;
+ 
+ import hudson.Extension;
+-import hudson.FilePath;
+ import hudson.Launcher;
+ import hudson.Util;
+ import hudson.model.AbstractBuild;
+@@ -127,7 +126,7 @@
+ 			return sites[0];
+ 		}
+ 		for (FTPSite site : sites) {
+-			if (site.getName().equals(siteName)) {
++			if (site.getDisplayName().equals(siteName)) {
+ 				return site;
+ 			}
+ 		}
+Index: src/main/resources/com/zanox/hudson/plugins/FTPPublisher/global.jelly
+===================================================================
+--- src/main/resources/com/zanox/hudson/plugins/FTPPublisher/global.jelly	(revision 39041)
++++ src/main/resources/com/zanox/hudson/plugins/FTPPublisher/global.jelly	(working copy)
+@@ -5,6 +5,9 @@
+       description="FTP sites that projects will want to connect">
+       <f:repeatable var="site" items="${descriptor.sites}">
+         <table width="100%">
++          <f:entry title="Profile Name" help="/plugin/ftppublisher/help-profilename.html">
++            <f:textbox name="ftp.profileName" value="${site.profileName}"/>
++          </f:entry>
+           <f:entry title="hostname" help="/plugin/ftppublisher/help-hostname.html">
+             <f:textbox name="ftp.hostname" value="${site.hostname}"/>
+           </f:entry>
+Index: src/main/java/com/zanox/hudson/plugins/FTPSite.java
+===================================================================
+--- src/main/java/com/zanox/hudson/plugins/FTPSite.java	(revision 39041)
++++ src/main/java/com/zanox/hudson/plugins/FTPSite.java	(working copy)
+@@ -28,6 +28,9 @@
+ 	/** The Constant DEFAULT_FTP_PORT. */
+ 	private static final int DEFAULT_FTP_PORT = 21;
+ 
++	/** The profile name. */
++	private String profileName;
++
+ 	/** The hostname. */
+ 	private String hostname;
+ 
+@@ -59,6 +62,8 @@
+ 	/**
+ 	 * Instantiates a new FTP site.
+ 	 * 
++	 * @param profileName
++	 *          the profile name
+ 	 * @param hostname
+ 	 *          the hostname
+ 	 * @param port
+@@ -72,7 +77,8 @@
+ 	 * @param ftpDir
+ 	 *          the ftp dir
+ 	 */
+-	public FTPSite(String hostname, int port, int timeOut, String username, String password, String ftpDir) {
++	public FTPSite(String profileName, String hostname, int port, int timeOut, String username, String password, String ftpDir) {
++		this.profileName = profileName;
+ 		this.hostname = hostname;
+ 		this.port = port;
+ 		this.timeOut = timeOut;
+@@ -127,6 +133,38 @@
+ 	}
+ 
+ 	/**
++	 * Gets the display name.
++	 * 
++	 * @return the display name
++	 */
++	public String getDisplayName() {
++		if (profileName != null) {
++			return profileName;
++		} else {
++			return hostname;
++		}
++	}
++
++	/**
++	 * Gets the profile name.
++	 * 
++	 * @return the profile name
++	 */
++	public String getProfileName() {
++		return profileName;
++	}
++
++	/**
++	 * Sets the profile name.
++	 * 
++	 * @param profileName
++	 *          the new profile name
++	 */
++	public void setProfileName(String profileName) {
++		this.profileName = profileName;
++	}
++
++	/**
+ 	 * Gets the hostname.
+ 	 * 
+ 	 * @return the hostname
+Index: src/main/resources/com/zanox/hudson/plugins/FTPPublisher/config.jelly
+===================================================================
+--- src/main/resources/com/zanox/hudson/plugins/FTPPublisher/config.jelly	(revision 39041)
++++ src/main/resources/com/zanox/hudson/plugins/FTPPublisher/config.jelly	(working copy)
+@@ -5,7 +5,7 @@
+   <f:entry title="FTP site">
+     <select class="setting-input" name="ftp.siteName" description="Select configured ftp host.Check global hudson config for defining connection properties for this hosts">
+       <j:forEach var="s" items="${descriptor.sites}">
+-        <f:option selected="${s.name==instance.siteName}">${s.name}</f:option>
++        <f:option selected="${s.displayName==instance.siteName}">${s.displayName}</f:option>
+       </j:forEach>
+     </select>
+   </f:entry>

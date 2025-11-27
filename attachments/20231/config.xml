@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Compile Hudson&apos;s static code analysis plug-ins.</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <permission>hudson.model.Item.Workspace:anonymous</permission>
+      <permission>hudson.model.Item.Read:anonymous</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <hudson.plugins.jira.JiraProjectProperty>
+      <siteName>http://issues.hudson-ci.org/</siteName>
+    </hudson.plugins.jira.JiraProjectProperty>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+          <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/analysis-suite</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/analysis-core</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/analysis-test</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/checkstyle</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/dry</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/findbugs</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/pmd</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/tasks</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/warnings</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/analysis-collector</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.jenkins-ci.org/trunk/hudson/plugins/analysis-pom</remote>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+<useUpdate>true</useUpdate>
+    <doRevert>false</doRevert>
+    <browser class="hudson.scm.browsers.FishEyeSVN">
+      <url>http://fisheye.hudson-ci.org/browse/hudson/</url>
+      <rootModule></rootModule>
+    </browser>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>java 6</jdk>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>5 2 * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Maven>
+      <targets>clean install -Dmaven.test.failure.ignore=true</targets>
+      <mavenName>maven 2.2.1</mavenName>
+      <pom>pom.xml</pom>
+      <usePrivateRepository>false</usePrivateRepository>
+    </hudson.tasks.Maven>
+    <hudson.tasks.Shell>
+      <command>find . -path &apos;*test-dependencies*hpi&apos; | xargs /bin/rm -f
+find -name *hpi -exec cp -vf &apos;{}&apos; $HUDSON_HOME/plugins \;</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>**/target/*.hpi</artifacts>
+      <latestOnly>true</latestOnly>
+    </hudson.tasks.ArtifactArchiver>
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>**/surefire-reports/*.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <testDataPublishers/>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.plugins.jira.JiraIssueUpdater/>
+    <hudson.tasks.Mailer>
+      <recipients>ullrich.hafner@gmail.com</recipients>
+      <dontNotifyEveryUnstableBuild>true</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>true</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers/>
+</project>

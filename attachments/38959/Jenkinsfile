@@ -1,0 +1,80 @@
+pipeline {
+
+    agent any
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    environment {
+        REGISTRY = 'bla-bla.com'
+        USERNAME = 'cloud'
+        IMAGE_NAME = 'job-nexus'
+        SERVICE = 'job-nexus'
+        BUILD_FLAGS = ''
+        DIRECTORY = '.'
+        NEXUS_IMAGE = 'sonatype/nexus'
+        NEXUS_VERSION = 'oss'
+    }
+
+    stages {
+
+        stage('Pull docker container') {
+            steps {
+                script {
+                    env.IMAGE_FQN = "${env.REGISTRY}/${env.USERNAME}/${env.IMAGE_NAME}"
+                    println "IMAGE_FQN = ${env.IMAGE_FQN}"
+                }
+                sh '''
+                    GIT_COMMIT_HASH=$(git rev-parse HEAD)
+                    GIT_URL=$(git remote get-url origin)
+
+                    docker pull ${NEXUS_IMAGE}:${NEXUS_VERSION}
+                    docker tag ${NEXUS_IMAGE}:${NEXUS_VERSION} ${IMAGE_FQN}:${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage('Publish docker container') {
+            steps {
+                sh '''
+                    docker push ${IMAGE_FQN}:${BUILD_NUMBER} 2>&1
+                    docker tag ${IMAGE_FQN}:${BUILD_NUMBER} ${IMAGE_FQN}:latest 2>&1
+                    docker push ${IMAGE_FQN}:latest 2>&1
+                '''
+            }
+        }
+
+        stage('Deploy docker container to development') {
+    	    environment {
+    		ENV = 'dev'
+    		SERVICE_PORT = '9901'
+    		STACK = ''
+        	USERNAME = 'deploy'
+        	HOST = 'bla-bla-server.com'
+    	    }
+            steps {
+                sh '''
+                    ssh -o StrictHostKeyChecking=no ${USERNAME}@${HOST} \
+                    "pushd some-dir && ./deploy.sh ${SERVICE} 'N/A' ${ENV} ${BUILD_NUMBER} 2>&1"
+                '''
+                sh '''
+		    curl --silent --fail -H "Content-Type: application/json" \
+		    -d "{\\"name\\": \\"${SERVICE}\\", \\"port\\": ${SERVICE_PORT}, \\"environment\\": \\"${ENV}\\", \\"version\\": ${BUILD_NUMBER}, \\"stack\\": \\"${STACK}\\"}" \
+		    http://bla-bla-services.com:3000/services > /dev/null
+		    echo $?
+                '''
+            }
+        }
+
+    }
+
+    post {
+
+        failure {
+            hipchatSend credentialId: "HipChat-Token", room: 'Alerts', color: "RED", v2enabled: false, sendAs: "Jenkins", notify: true, message: '$JOB_NAME #$BUILD_NUMBER Build failed after $DURATION (<a href="$URL">Open</a>)', failOnError: true
+        }
+
+    }
+
+}

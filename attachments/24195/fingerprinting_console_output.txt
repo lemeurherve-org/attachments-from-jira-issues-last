@@ -1,0 +1,33 @@
+Archiving artifacts
+Recording fingerprints
+ERROR: Failed to record fingerprints
+java.io.FileNotFoundException: C:\Program Files (x86)\Jenkins\fingerprints\3a\1e\c618d7f09e6c9d736b6df5cccd3e.xml (The system cannot find the path specified)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.PrintWriter.<init>(Unknown Source)
+	at hudson.model.Fingerprint.save(Fingerprint.java:1102)
+	at hudson.model.Fingerprint.save(Fingerprint.java:1091)
+	at hudson.model.Fingerprint.<init>(Fingerprint.java:776)
+	at hudson.model.FingerprintMap.create(FingerprintMap.java:90)
+	at hudson.model.FingerprintMap.create(FingerprintMap.java:45)
+	at hudson.util.KeyedDataStorage.get(KeyedDataStorage.java:156)
+	at hudson.model.FingerprintMap.get(FingerprintMap.java:79)
+	at hudson.model.FingerprintMap.get(FingerprintMap.java:45)
+	at hudson.util.KeyedDataStorage.getOrCreate(KeyedDataStorage.java:108)
+	at hudson.model.FingerprintMap.getOrCreate(FingerprintMap.java:65)
+	at hudson.tasks.Fingerprinter$1Record.addRecord(Fingerprinter.java:208)
+	at hudson.tasks.Fingerprinter.record(Fingerprinter.java:252)
+	at hudson.tasks.Fingerprinter.perform(Fingerprinter.java:133)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:19)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:804)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:776)
+	at hudson.model.Build$BuildExecution.post2(Build.java:183)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:726)
+	at hudson.model.Run.execute(Run.java:1622)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:247)
+Build step 'Record fingerprints of files to track usage' changed build result to FAILURE
+Notifying upstream projects of job completion
+Finished: FAILURE

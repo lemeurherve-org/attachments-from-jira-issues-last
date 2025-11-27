@@ -1,0 +1,77 @@
+diff --git a/src/main/java/org/thoughtslive/jenkins/plugins/jira/service/JiraEndPoints.java b/src/main/java/org/thoughtslive/jenkins/plugins/jira/service/JiraEndPoints.java
+index 54f03b0..615610c 100644
+--- a/src/main/java/org/thoughtslive/jenkins/plugins/jira/service/JiraEndPoints.java
++++ b/src/main/java/org/thoughtslive/jenkins/plugins/jira/service/JiraEndPoints.java
+@@ -52,7 +52,15 @@ public interface JiraEndPoints {
+   @PUT("rest/api/2/issue/{issueIdOrKey}")
+   Call<Object> updateIssue(@Path("issueIdOrKey") String issueIdOrKey, @Body Object issue,
+       @QueryMap Map<String, String> queryMap);
+-
++  
++  @PUT("rest/api/2/issue/{issueIdOrKey}")
++  Call<Object> addFixVersionToIssue(@Path("issueIdOrKey") String issueIdOrKey, @Body Object version,
++      @QueryMap Map<String, String> queryMap);
++  
++  @PUT("rest/api/2/issue/{issueIdOrKey}")
++  Call<Object> removeFixVersionFromIssue(@Path("issueIdOrKey") String issueIdOrKey, @Body Object version,
++      @QueryMap Map<String, String> queryMap);
++  
+   @POST("rest/api/2/issue/bulk")
+   Call<Object> createIssues(@Body Object issues);
+ 
+diff --git a/src/main/java/org/thoughtslive/jenkins/plugins/jira/service/JiraService.java b/src/main/java/org/thoughtslive/jenkins/plugins/jira/service/JiraService.java
+index a4bbeb4..3469bdf 100644
+--- a/src/main/java/org/thoughtslive/jenkins/plugins/jira/service/JiraService.java
++++ b/src/main/java/org/thoughtslive/jenkins/plugins/jira/service/JiraService.java
+@@ -6,6 +6,7 @@ import static org.thoughtslive.jenkins.plugins.jira.util.Common.parseResponse;
+ 
+ import com.fasterxml.jackson.databind.ObjectMapper;
+ import com.fasterxml.jackson.datatype.joda.JodaModule;
++import com.google.common.collect.ImmutableList;
+ import com.google.common.collect.ImmutableMap;
+ import com.google.common.collect.Maps;
+ import hudson.ProxyConfiguration;
+@@ -199,6 +200,43 @@ public class JiraService {
+     }
+   }
+ 
++  public ResponseData<Object> addFixVersionToIssue(final String issueIdOrKey, final Object version,
++      final Map<String, String> queryParams) {
++    
++    ImmutableMap.Builder<Object, Object> versionUpdate = ImmutableMap.builder()
++        .put("update", ImmutableMap.builder( ).put("fixVersions", 
++            ImmutableList.builder( ).add(
++                ImmutableMap.builder( ).put("add", 
++                    ImmutableMap.builder( ).put("name", version).build( )
++                    ).build()
++                ).build()
++            ).build() );
++    
++    try {
++      return parseResponse(jiraEndPoints.addFixVersionToIssue(issueIdOrKey, versionUpdate.build(), queryParams).execute());
++    } catch (Exception e) {
++      return buildErrorResponse(e);
++    }
++  }
++  
++  public ResponseData<Object> removeFixVersionFromIssue(final String issueIdOrKey, final Object version,
++      final Map<String, String> queryParams) {
++    
++    ImmutableMap.Builder<Object, Object> versionUpdate = ImmutableMap.builder()
++        .put("update", ImmutableMap.builder( ).put("fixVersions", 
++            ImmutableList.builder( ).add(
++                ImmutableMap.builder( ).put("remove", 
++                    ImmutableMap.builder( ).put("name", version).build( )
++                    ).build()
++                ).build()
++            ).build() );
++    try {
++      return parseResponse(jiraEndPoints.removeFixVersionFromIssue(issueIdOrKey, versionUpdate.build(), queryParams).execute());
++    } catch (Exception e) {
++      return buildErrorResponse(e);
++    }
++  }
++  
+   public ResponseData<Void> assignIssue(final String issueIdorKey, final String userName) {
+     try {
+       Map input = Maps.newHashMap();

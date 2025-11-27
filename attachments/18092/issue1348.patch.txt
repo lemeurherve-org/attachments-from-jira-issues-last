@@ -1,0 +1,94 @@
+Index: model/AbstractProject.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/model/AbstractProject.java,v
+retrieving revision 1.84
+diff -u -r1.84 AbstractProject.java
+--- model/AbstractProject.java	10 Feb 2008 01:37:30 -0000	1.84
++++ model/AbstractProject.java	22 Feb 2008 17:25:55 -0000
+@@ -582,19 +591,24 @@
+         }
+ 
+         try {
+-            FilePath workspace = getWorkspace();
+-            if(workspace==null) {
+-                // workspace offline. build now, or nothing will ever be built
+-                listener.getLogger().println(Messages.AbstractProject_WorkspaceOffline());
+-                return true;
+-            }
+-            if(!workspace.exists()) {
+-                // no workspace. build now, or nothing will ever be built
+-                listener.getLogger().println(Messages.AbstractProject_NoWorkspace());
+-                return true;
+-            }
++        	FilePath workspace = getWorkspace();
++        	if (scm.requiresWorkspaceForPolling()) {
++        		if(workspace==null) {
++        			// workspace offline. build now, or nothing will ever be built
++        			listener.getLogger().println("Workspace is offline.");
++        			listener.getLogger().println("Scheduling a new build to get a workspace.");
++        			return true;
++        		}
++        		if(!workspace.exists()) {
++        			// no workspace. build now, or nothing will ever be built
++        			listener.getLogger().println("No workspace is available, so can't check for updates.");
++        			listener.getLogger().println("Scheduling a new build to get a workspace.");
++        			return true;
++        		}
++        	}
+ 
+-            return scm.pollChanges(this, workspace.createLauncher(listener), workspace, listener );
++        	Launcher launcher = workspace != null ? workspace.createLauncher(listener) : null;
++            return scm.pollChanges(this, launcher, workspace, listener );
+         } catch (AbortException e) {
+             listener.fatalError(Messages.AbstractProject_Aborted());
+             return false;
+Index: scm/SCM.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/scm/SCM.java,v
+retrieving revision 1.26
+diff -u -r1.26 SCM.java
+--- scm/SCM.java	13 Jan 2008 22:05:48 -0000	1.26
++++ scm/SCM.java	26 Jan 2008 19:10:07 -0000
+@@ -80,6 +80,13 @@
+     public boolean supportsPolling() {
+         return true;
+     }
++    
++    /**
++     * Returns true if this SCM requires a checked out workspace for polling
++     */
++    public boolean requiresWorkspaceForPolling() {
++    	return true;
++    }
+ 
+     /**
+      * Checks if there has been any changes to this module in the repository.
+Index: scm/SubversionSCM.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/scm/SubversionSCM.java,v
+retrieving revision 1.125
+diff -u -r1.125 SubversionSCM.java
+--- scm/SubversionSCM.java	8 Feb 2008 02:29:07 -0000	1.125
++++ scm/SubversionSCM.java	9 Feb 2008 08:52:17 -0000
+@@ -56,6 +56,7 @@
+ import org.tmatesoft.svn.core.wc.SVNClientManager;
+ import org.tmatesoft.svn.core.wc.SVNInfo;
+ import org.tmatesoft.svn.core.wc.SVNRevision;
++import org.tmatesoft.svn.core.wc.SVNStatus;
+ import org.tmatesoft.svn.core.wc.SVNUpdateClient;
+ import org.tmatesoft.svn.core.wc.SVNWCClient;
+ import org.tmatesoft.svn.core.wc.SVNWCUtil;
+@@ -1356,4 +1382,12 @@
+ 
+         ch.ethz.ssh2.log.Logger.logLevel = 100;
+     }
++
++    /**
++     * Polling can happen on the master and does not require a workspace.
++     */
++	@Override
++	public boolean requiresWorkspaceForPolling() {
++		return false;
++	}
+ }
+

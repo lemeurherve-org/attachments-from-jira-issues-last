@@ -1,0 +1,42 @@
+From d573f5bc0e9f9d26a8103cb83a60baa7cadcd06f Mon Sep 17 00:00:00 2001
+From: Lubomir Rintel <lkundrak@v3.sk>
+Date: Tue, 28 Jul 2009 09:23:35 +0200
+Subject: [PATCH] Give the client some time to initialize
+
+The client may be fetching the keys from
+http://169.254.169.254/latest/meta-data/public-keys and initializing root's
+authorized_keys after sshd had started (e.g. from rc.local). Give it
+some time to do so; I'm not really convinced if there's much reason for
+having this configurable.
+---
+ .../hudson/plugins/ec2/ssh/EC2UnixLauncher.java    |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+diff --git a/src/main/java/hudson/plugins/ec2/ssh/EC2UnixLauncher.java b/src/main/java/hudson/plugins/ec2/ssh/EC2UnixLauncher.java
+index 769f2f6..5801d55 100644
+--- a/src/main/java/hudson/plugins/ec2/ssh/EC2UnixLauncher.java
++++ b/src/main/java/hudson/plugins/ec2/ssh/EC2UnixLauncher.java
+@@ -36,8 +36,19 @@ public class EC2UnixLauncher extends EC2ComputerLauncher {
+         boolean successful = false;
+ 
+         try {
++            int tries = 20;
++            boolean isAuthenticated = false;
+             KeyPairInfo key = EC2Cloud.get().getKeyPair();
+-            boolean isAuthenticated = conn.authenticateWithPublicKey("root", key.getKeyMaterial().toCharArray(), "");
++
++            while (tries-- > 0) {
++                isAuthenticated = conn.authenticateWithPublicKey("root", key.getKeyMaterial().toCharArray(), "");
++
++                if (isAuthenticated)
++                    break;
++
++                logger.println("Authentication failed. Trying again...");
++                Thread.currentThread().sleep(10000);
++            }
+ 
+             if (!isAuthenticated) {
+                 logger.println("Authentication failed");
+-- 
+1.6.2.5
+

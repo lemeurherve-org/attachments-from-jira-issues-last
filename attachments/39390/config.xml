@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Morning Checkout Script to invoke CPS Manage Servers</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition plugin="nodelabelparameter@1.7.2">
+          <name></name>
+          <description></description>
+          <allowedSlaves/>
+          <defaultSlaves>
+            <string>GAALPA2OPUSIA30</string>
+          </defaultSlaves>
+          <triggerIfResult>multiSelectionDisallowed</triggerIfResult>
+          <allowMultiNodeSelection>false</allowMultiNodeSelection>
+          <triggerConcurrentBuilds>false</triggerConcurrentBuilds>
+          <ignoreOfflineNodes>false</ignoreOfflineNodes>
+          <nodeEligibility class="org.jvnet.jenkins.plugins.nodelabelparameter.node.AllNodeEligibility"/>
+        </org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <com.hpe.application.automation.tools.run.RunLoadRunnerScript plugin="hp-application-automation-tools-plugin@5.2">
+      <scriptsPath>C:\Program Files (x86)\HP\Virtual User Generator\bin\mdrv.exe -usr &quot;E:\RPS_MasterScripts\CPS\CPS_Linux_Managed\CPS_Managed.usr&quot;</scriptsPath>
+    </com.hpe.application.automation.tools.run.RunLoadRunnerScript>
+  </builders>
+  <publishers>
+    <com.hpe.application.automation.tools.results.RunResultRecorder plugin="hp-application-automation-tools-plugin@5.2">
+      <__resultsPublisherModel>
+        <archiveTestResultsMode>PUBLISH_HTML_REPORT</archiveTestResultsMode>
+      </__resultsPublisherModel>
+    </com.hpe.application.automation.tools.results.RunResultRecorder>
+  </publishers>
+  <buildWrappers/>

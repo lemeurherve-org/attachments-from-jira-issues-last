@@ -1,0 +1,139 @@
+[Pipeline] Start of Pipeline
+[Pipeline] podTemplate
+[Pipeline] {
+[Pipeline] node
+Created Pod: kubernetes default/test-k8s-6-74fvl-krj60-s6f1x
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Scheduled] Successfully assigned default/test-k8s-6-74fvl-krj60-s6f1x to xxxxxxxxxx
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Pulled] Container image "maven:3.3.9-jdk-8-alpine" already present on machine
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Created] Created container maven
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Started] Started container maven
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Pulled] Container image "golang:1.8.0" already present on machine
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Created] Created container golang
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Started] Started container golang
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Pulled] Container image "jenkins/inbound-agent:4.3-4" already present on machine
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Created] Created container jnlp
+[Normal][default/test-k8s-6-74fvl-krj60-s6f1x][Started] Started container jnlp
+Still waiting to schedule task
+‘test-k8s-6-74fvl-krj60-s6f1x’ is offline
+Agent test-k8s-6-74fvl-krj60-s6f1x is provisioned from template Test-K8s_6-74fvl-krj60
+---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://10.xxx.xxx.xx:xxxxx/job/Test-K8s/6/"
+    runUrl: "job/Test-K8s/6/"
+  labels:
+    jenkins: "slave"
+    jenkins/label-digest: "e7b9105384d70542336bb98cd1bb1d8b1858736b"
+    jenkins/label: "Test-K8s_6-74fvl"
+  name: "test-k8s-6-74fvl-krj60-s6f1x"
+spec:
+  containers:
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "maven:3.3.9-jdk-8-alpine"
+    name: "maven"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - args:
+    - "9999999"
+    command:
+    - "sleep"
+    image: "golang:1.8.0"
+    name: "golang"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - env:
+    - name: "JENKINS_SECRET"
+      value: "********"
+    - name: "JENKINS_TUNNEL"
+      value: "10.xxx.xxx.xx:xxxxx"
+    - name: "JENKINS_AGENT_NAME"
+      value: "test-k8s-6-74fvl-krj60-s6f1x"
+    - name: "JENKINS_NAME"
+      value: "test-k8s-6-74fvl-krj60-s6f1x"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://10.xxx.xxx.xx:xxxxx/"
+    image: "jenkins/inbound-agent:4.3-4"
+    name: "jnlp"
+    resources:
+      limits: {}
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  nodeSelector:
+    kubernetes.io/os: "linux"
+  restartPolicy: "Never"
+  volumes:
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Running on test-k8s-6-74fvl-krj60-s6f1x in /home/jenkins/agent/workspace/Test-K8s
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Build a Maven project)
+[Pipeline] git
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/jenkinsci/kubernetes-plugin.git
+ > git init /home/jenkins/agent/workspace/Test-K8s # timeout=10
+Fetching upstream changes from https://github.com/jenkinsci/kubernetes-plugin.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.20.1'
+ > git fetch --tags --force --progress -- https://github.com/jenkinsci/kubernetes-plugin.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+Checking out Revision 9eecddaa8a749c1d34ebe775d6d6053c1960a9b1 (refs/remotes/origin/master)
+ > git config remote.origin.url https://github.com/jenkinsci/kubernetes-plugin.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 9eecddaa8a749c1d34ebe775d6d6053c1960a9b1 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git checkout -b master 9eecddaa8a749c1d34ebe775d6d6053c1960a9b1 # timeout=10
+Commit message: "Merge pull request #936 from jenkinsci/dependabot/maven/org.jenkinsci.plugins-kubernetes-credentials-0.8.0"
+First time build. Skipping changelog.
+[Pipeline] container
+[Pipeline] {
+[Pipeline] sh
++ mvn -B clean package
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 0.113 s
+[INFO] Finished at: 2021-02-12T17:43:32+00:00
+[INFO] Final Memory: 6M/106M
+[INFO] ------------------------------------------------------------------------
+[ERROR] The goal you specified requires a project to execute but there is no POM in this directory (/). Please verify you invoked Maven from the correct directory. -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MissingProjectException
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // podTemplate
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+Finished: FAILURE

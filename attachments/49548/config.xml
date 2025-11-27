@@ -1,0 +1,117 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>S2K-Bookmarks SCTR trunk build</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>1</daysToKeep>
+        <numToKeep>1</numToKeep>
+        <artifactDaysToKeep>1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.12.2">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://vaisvn:18080/svn/vai/S2K-Bookmarks/SCTR/trunk</remote>
+        <credentialsId>dd84640c-fe6f-461b-9acc-fae719db2291</credentialsId>
+        <local>S2K-Bookmarks</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+        <cancelProcessOnExternalsFail>true</cancelProcessOnExternalsFail>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
+    <ignoreDirPropChanges>false</ignoreDirPropChanges>
+    <filterChangelog>false</filterChangelog>
+    <quietOperation>true</quietOperation>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <authToken>VAI-Jenkins-GO-S2K-Bookmarks</authToken>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>@yearly</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>awk -f /usr/local/buildbot/scripts/bb2jenkins.awk /usr/local/buildbot/scripts/build/vai/S2K-Bookmarks/build.xml &gt; S2K-Bookmarks/build.xml;
+/usr/local/buildbot/scripts/edgeStamp4Jenkins.sh S2K-Bookmarks</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Ant plugin="ant@1.10">
+      <targets>clean war</targets>
+      <antName>Apache Ant</antName>
+    </hudson.tasks.Ant>
+  </builders>
+  <publishers>
+    <org.jenkinsci.plugins.websphere__deployer.WebSphereDeployerPlugin plugin="websphere-deployer@1.6.1">
+      <ipAddress>192.168.100.143</ipAddress>
+      <connectorType>SOAP</connectorType>
+      <port>10033</port>
+      <artifacts>S2K-Bookmarks/S2K-Bookmarks/S2K-Bookmarks.war</artifacts>
+      <earLevel>5</earLevel>
+      <deploymentTimeout>3</deploymentTimeout>
+      <classLoaderOrder></classLoaderOrder>
+      <classLoaderPolicy></classLoaderPolicy>
+      <operations>2</operations>
+      <context>/PA_S2K-Bookmarks</context>
+      <installPath></installPath>
+      <targets>WebSphere:cell=wps9Cell,node=wps9Node,server=WebSphere_Portal
+WebSphere:cell=wps9Cell,node=wps9Node,server=webserver1</targets>
+      <applicationName>PA_S2K-Bookmarks</applicationName>
+      <virtualHost></virtualHost>
+      <sharedLibName></sharedLibName>
+      <edition></edition>
+      <fullSynchronization>false</fullSynchronization>
+      <precompile>true</precompile>
+      <reloading>true</reloading>
+      <jspReloading>true</jspReloading>
+      <verbose>true</verbose>
+      <distribute>true</distribute>
+      <rollback>false</rollback>
+      <unstableDeploy>false</unstableDeploy>
+      <security>
+        <username>administrator</username>
+        <password>ELIDED-FOR-SECURITY</password>
+        <clientKeyFile></clientKeyFile>
+        <clientKeyPassword></clientKeyPassword>
+        <clientTrustFile></clientTrustFile>
+        <clientTrustPassword></clientTrustPassword>
+        <trustAll>true</trustAll>
+      </security>
+    </org.jenkinsci.plugins.websphere__deployer.WebSphereDeployerPlugin>
+    <hudson.tasks.Mailer plugin="mailer@1.29">
+      <recipients>gvilardi@vai.net</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.37">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter></cleanupParameter>
+      <externalDelete></externalDelete>
+      <disableDeferredWipeout>false</disableDeferredWipeout>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>3</timeoutMinutes>
+      </strategy>
+      <operationList/>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.tasks.AntWrapper plugin="ant@1.10"/>
+  </buildWrappers>
+</project>

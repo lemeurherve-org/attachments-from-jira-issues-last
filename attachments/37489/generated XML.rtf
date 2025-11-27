@@ -1,0 +1,131 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
+{\fonttbl\f0\fnil\fcharset0 AndaleMono;}
+{\colortbl;\red255\green255\blue255;\red47\green255\blue18;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c15686\c99608\c7843;\csgray\c0\c90000;}
+\margl1440\margr1440\vieww16800\viewh14900\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf2 \cb3 \CocoaLigature0 <?xml version="1.0" encoding="utf-8"?>\
+<maven2-moduleset>\
+  <actions/>\
+  <description>fresh maven job&lt;!-- Managed by Jenkins Job Builder --&gt;</description>\
+  <keepDependencies>false</keepDependencies>\
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>\
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>\
+  <concurrentBuild>false</concurrentBuild>\
+  <canRoam>true</canRoam>\
+  <properties>\
+    <hudson.model.ParametersDefinitionProperty>\
+      <parameterDefinitions>\
+        <hudson.model.StringParameterDefinition>\
+          <name>branch</name>\
+          <description>Branch Selector</description>\
+          <defaultValue>master</defaultValue>\
+        </hudson.model.StringParameterDefinition>\
+      </parameterDefinitions>\
+    </hudson.model.ParametersDefinitionProperty>\
+  </properties>\
+  <scm class="hudson.plugins.git.GitSCM">\
+    <configVersion>2</configVersion>\
+    <userRemoteConfigs>\
+      <hudson.plugins.git.UserRemoteConfig>\
+        <name>origin</name>\
+        <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>\
+        <url>https://github.com/ranjitkumar518/myfirstrepo.git</url>\
+        <credentialsId>8e33cb7a-f49a-4b0b-a49b-e5b9ef55a3e9</credentialsId>\
+      </hudson.plugins.git.UserRemoteConfig>\
+    </userRemoteConfigs>\
+    <branches>\
+      <hudson.plugins.git.BranchSpec>\
+        <name>$\{branch\}</name>\
+      </hudson.plugins.git.BranchSpec>\
+    </branches>\
+    <excludedUsers/>\
+    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>\
+    <disableSubmodules>false</disableSubmodules>\
+    <recursiveSubmodules>false</recursiveSubmodules>\
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>\
+    <authorOrCommitter>false</authorOrCommitter>\
+    <wipeOutWorkspace>true</wipeOutWorkspace>\
+    <pruneBranches>false</pruneBranches>\
+    <remotePoll>false</remotePoll>\
+    <gitTool>Default</gitTool>\
+    <submoduleCfg class="list"/>\
+    <relativeTargetDir/>\
+    <reference/>\
+    <gitConfigName/>\
+    <gitConfigEmail/>\
+    <skipTag>false</skipTag>\
+    <scmName/>\
+    <useShallowClone>false</useShallowClone>\
+    <ignoreNotifyCommit>false</ignoreNotifyCommit>\
+    <extensions>\
+      <hudson.plugins.git.extensions.impl.WipeWorkspace/>\
+    </extensions>\
+  </scm>\
+  <builders>\
+    <org.jfrog.hudson.maven3.Maven3Builder>\
+      <mavenName>maven-3.2.1</mavenName>\
+      <goals>clean package -Dmaven.test.skip=true -Pgsf2-app</goals>\
+      <rootPom>pom.xml</rootPom>\
+      <mavenOpts>-Xms1024m  -XX:PermSize=512m</mavenOpts>\
+    </org.jfrog.hudson.maven3.Maven3Builder>\
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>\
+      <condition class="org.jenkins_ci.plugins.run_condition.core.StatusCondition">\
+        <worstResult>\
+          <name>SUCCESS</name>\
+          <ordinal>0</ordinal>\
+          <color>BLUE</color>\
+          <completeBuild>true</completeBuild>\
+        </worstResult>\
+        <bestResult>\
+          <name>SUCCESS</name>\
+          <ordinal>0</ordinal>\
+          <color>BLUE</color>\
+          <completeBuild>true</completeBuild>\
+        </bestResult>\
+      </condition>\
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>\
+      <buildStep class="hudson.plugins.parameterizedtrigger.TriggerBuilder">\
+        <configs>\
+          <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>\
+            <configs>\
+              <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>\
+                <properties>job=$\{JOB_NAME\}\
+server=gsf-dev5\
+artifactName=itracker2</properties>\
+              </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>\
+            </configs>\
+            <projects>DeployGSF2_Dev</projects>\
+            <condition>ALWAYS</condition>\
+            <triggerWithNoParameters>false</triggerWithNoParameters>\
+            <buildAllNodesWithLabel>false</buildAllNodesWithLabel>\
+            <block>\
+              <buildStepFailureThreshold>\
+                <name>FAILURE</name>\
+                <ordinal>2</ordinal>\
+                <color>RED</color>\
+                <completeBuild>true</completeBuild>\
+              </buildStepFailureThreshold>\
+              <unstableThreshold>\
+                <name>UNSTABLE</name>\
+                <ordinal>1</ordinal>\
+                <color>YELLOW</color>\
+                <completeBuild>true</completeBuild>\
+              </unstableThreshold>\
+              <failureThreshold>\
+                <name>FAILURE</name>\
+                <ordinal>2</ordinal>\
+                <color>RED</color>\
+                <completeBuild>true</completeBuild>\
+              </failureThreshold>\
+            </block>\
+          </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>\
+        </configs>\
+      </buildStep>\
+    </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>\
+  </builders>\
+  <publishers/>\
+  <buildWrappers/>\
+</maven2-moduleset>\
+}

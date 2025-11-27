@@ -1,0 +1,697 @@
+#!groovy
+import groovy.json.JsonSlurper 
+import static groovy.io.FileType.FILES
+//add the projects here and in the listObj array as needed
+//////---------------------------------------------------------
+//
+//IMPORTANT: Please update the appspec.yml file accordingly!!!
+//IMPORTANT: Please update the AfterInstall.ps1 file variable $projectsPathsToConfigure as needed!
+//
+//////---------------------------------------------------------
+//also please keep in mind that the project path is used by BuildConfigFilesForEnvs to get the 
+//path for the web.config of each project
+def map0 = [project: 'Data Service\\FMI.Pharma.Services.Data\\FMI.Pharma.Services.Data.csproj', compilationFolder: 'Data Service', webReleaseLocation: 'FMI.Pharma.Services.Data']
+def map1 = [project: 'FMI.Pharma.Agents.CompBio.Mock\\FMI.Pharma.Agents.CompBio.Mock.csproj', compilationFolder: 'CompBioMock', webReleaseLocation: 'FMI.Pharma.Agents.CompBio.Mock']
+
+
+def listObj = [map0,map1]//IMPORTANT: Please update the appspec.yml file accordingly!!!
+
+def version="1.1.0.1719" 
+def isValid = true
+
+def buildProject(String projectPath,String compilationFolder, String webReleaseLocation)
+{
+	println "project path is(first line) : " + projectPath
+  def command= '''echo --------- compiling  '''+ projectPath +'''--------------'''
+  def command1='"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\MSBuild\\15.0\\Bin\\MSBuild.Exe"  /p:OutDir="/Temp/'+compilationFolder+'"  /p:OverwriteReadOnlyFiles="True" /p:DeployOnBuild="True"  /p:Configuration="Release" /p:DeployTarget="WebPublish"  /p:VisualStudioVersion=15.0 /p:PublishProfile="XL_Deploy" "c:\\Temp\\MA\\'+projectPath+'"'
+  def command2= '''(robocopy.exe   "C:\\Temp\\'''+compilationFolder+'''\\_PublishedWebsites"  .\\Publish\\_PublishedWebsites  /e /NFL /NDL /NP  ) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0'''
+
+  bat command
+  bat command1
+  println "project path is(after command1) : " + projectPath
+  //if(!projectPath.contains("sqlproj"))
+  //{
+	  CopyWebReleaseToCompilationFolder(projectPath,"C:\\Temp\\"+compilationFolder+"\\_PublishedWebsites\\",webReleaseLocation )
+  //}
+  
+  bat command2
+}
+
+def GetBasePath(String csprojFullPath)
+{
+	def tmp = csprojFullPath.tokenize("\u005C\u005C")
+	def path=""
+	
+	tmp.each{item->
+		//if(!item.contains("csproj") && !item.contains("sqlproj"))
+		if(!item.contains("csproj"))
+			{
+				if(path == "")
+				{
+					path=item+"\\"
+				}
+				else
+				{
+					path= path + item + "\\"
+				}
+			}
+	}
+	return path
+}
+
+def CopyWebReleaseToCompilationFolder(String projectPath,String outputDir,String webReleaseLocation)
+{
+	def path=GetBasePath(projectPath)
+	//path should contain the name of the web.Release.config file
+	def releasePath='''"c:\\Temp\\MA\\'''+path+'''Web.Release.config" '''
+ 	def copyCommand= '''copy '''+ releasePath   +  '''  ''' + '''"''' + outputDir + '''\\'''+ webReleaseLocation + '''"  /Y'''	
+	bat copyCommand
+}
+
+def buildAllProjects(listObj)
+{
+	bat '''echo --------- Restoring Packages Before compiling --------------''' 
+	bat '''FMI.Pharma.Possum.v2\\.nuget\\nuget.exe restore "c:\\Temp\\MA\\FMI.Pharma.Possum.v2.sln" -OutputDirectory "c:\\Temp\\MA\\packages" '''
+
+	listObj.each{
+		//before compiling change the assemby info file
+		SetDllVersionInfo(it.project,version,"c:\\Temp\\MA\\")
+		buildProject(it.project,it.compilationFolder, it.webReleaseLocation)
+	}
+}
+
+def SetDllVersionInfo(String projectPath,String versionToConfigure,String basePath)
+{
+	def tmp1=GetBasePath(projectPath)
+	def pathOfAssemblyInfo=basePath+tmp1+"Properties\\AssemblyInfo.cs"
+	ReplaceValueInAssemblyFile("1\\.0\\.0\\.0",versionToConfigure,pathOfAssemblyInfo)
+	def releaseString = "Semantic Version: " + params.SemanticVersion + ", Release Version: " + params.ReleaseVersion + ", Product Release Description: " + params.ReleaseDescription
+	ReplaceValueInAssemblyFile("General Release",releaseString,pathOfAssemblyInfo)
+}
+
+ def ReplaceValueInAssemblyFile(String search,String value,String fullPath)
+ {
+ 	println "Processing  file: "+fullPath +" looking for key: "+search
+ 	String fileContents = readFile(fullPath)
+ 	def modfileContents= fileContents.replaceAll(search,value)
+ 	println "Replaced---------------------:" + modfileContents
+ 	SaveAssemblyFile(fullPath,modfileContents)
+ }
+
+def PackBuildOutputToPublishedWebsites()
+{
+	bat '''echo --------- copying built packages to publishedWebsites --------------ENV: '''+ params.DeployTo 
+	
+	bat '''dir /b /s ".\\Publish\\_PublishedWebsites"  	
+	xcopy ".\\CodeDeploy\\*.*" ".\\Publish\\_PublishedWebsites\\CodeDeploy\\" /Y /R /C /F /S
+	xcopy ".\\appspec.yml" ".\\Publish\\_PublishedWebsites\\appspec.yml*"
+	'''
+
+	bat '''echo ------- copying sql files to PublishedWebsites DBScripts folder '''
+	bat '''if not exist ".\\Publish\\_PublishedWebsites\\DBScripts\\" mkdir ".\\Publish\\_PublishedWebsites\\DBScripts\\"
+	xcopy "%CD%\\FMI.Pharma.Possum.v2\\FMI.Pharma.Database\\BackEndDB\\*.*" ".\\Publish\\_PublishedWebsites\\DBScripts\\" /Y /R /C /F /S
+	'''
+
+	bat '''echo --------- copying json files to post to MA endpoint '''
+	bat '''if not exist ".\\Publish\\_PublishedWebsites\\Files\\" mkdir ".\\Publish\\_PublishedWebsites\\Files\\"
+	xcopy "%CD%\\FMI.Pharma.Possum.v2\\Files\\*.*" ".\\Publish\\_PublishedWebsites\\Files\\" /Y /R /C /F /S
+	'''
+
+	bat '''echo --------- creating stash from  publishedWebsites --------------'''
+	stash includes: "Publish/_PublishedWebsites/**/*", name: "buildout"
+}
+
+def InitDirs()
+{
+	bat '''echo ******************Starting to Build artifacts ******************************* roleAccount ''' +GetRoleAccountNumber(params.DeployTo)             
+    bat '''echo --------- Creating temp folder --------------''' 
+    bat '''IF NOT EXIST "C:\\Temp" md "C:\\Temp"  '''
+    bat '''echo --------- Cleaning temp folder --------------''' 
+    bat '''DEL /F/Q/S c:\\Temp\\*.* > NUL'''
+    
+    bat '''echo --------- moving  checked out files to a shorter path --------------''' 
+    bat '''(robocopy.exe   %CD%"\\FMI.Pharma.Possum.v2"  "c:\\Temp\\MA"  /e /NFL /NDL /NP  ) ^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0'''   
+    
+}
+
+
+def ConfigureVersionForWebConfigInAwsParamStore()
+{//TODO maybe in the future get all AssemblyInfo.cs files and change all of them
+
+	//update to new version
+	println "Version from build param: " + params.ApplicationVersion
+	if (params.ApplicationVersion == "1.1.0.1719")
+	{
+		//get the current version from param store
+		def listParams=GetAllParamStoreInfo("/medicalannotator/", params.DeployTo )
+		def oldVersion=FindItemInParams("/medicalannotator/maVersionIdentifier",listParams)
+		version=GetVersion(oldVersion)//NOTE this is a GLOBAL variable line 24
+	}
+	else
+	{
+		version = params.ApplicationVersion
+	}
+	println "Setting version value in aws store params: " + version +" to env: "+params.DeployTo
+	SetStringParameterStoreValue("/medicalannotator/maVersionIdentifier",version, params.DeployTo)
+}
+
+
+def zipFileForStash(String hash,String path)
+{ bat '''echo --------- Zip Hash --------------''' + hash
+  zip(
+	  zipFile: hash+".zip",
+	  dir: path
+	)
+}
+
+def PublishWebPackToCOREForFutureDeployments(String bucket,String hash,String prefix)
+{ // This is done so that ince build is done in DEV, that package can be deployed to any environment	
+	 bat '''echo ---------Moving to CORE --------------hash: '''+hash 
+	script {
+	  aws.withAwsEnvironment("CORE", "us-east-1") {
+			s3Upload(
+			  bucket: bucket,
+			  file: hash+".zip",
+			  path: prefix+"/"+hash+".zip"
+			)
+		}//aws
+	  }//script
+}
+
+
+def deployToDev(String teamName,String appName,String hash)
+{//TODO check if this can be merged somehow with the other envs function
+	  unstash "buildout"
+	  
+	  executeCodeDeploy(
+		  team_name: teamName,
+		  application_name: appName,
+		  code_deploy_application_name: teamName+"-"+appName,
+		  commit: hash,
+		  environment: 'DEV',
+		  source_path: env.source_path,
+		  deployment_group_name: "${teamName}-${appName}",
+		  deployment_config_name: 'CodeDeployDefault.OneAtATime'
+	  )
+}
+
+def DownloadAndUnzipPackageFromCore()
+{
+	// Download artifact from core account
+	// Specify "ArtifactTag" as the build parameter. This is the package name (xxx.zip)
+	script {
+	  aws.withAwsEnvironment("CORE", "us-east-1") {
+			s3Download(
+				file: "${params.ArtifactTag}.zip",
+				bucket: env.s3_bucket,
+				path: "${s3_key_prefix}/${params.ArtifactTag}.zip",
+				force:true
+			)
+	  }
+	}
+	// Unzip artifact
+	//bat '''echo -----deployToEnv----Unziping: "${params.ArtifactTag}.zip"  to: --- ''' + env.sourcePath
+	unzip (
+	  zipFile: "${params.ArtifactTag}.zip",
+	  dir: env.source_path
+	  )
+}
+
+def deployToEnv(String teamName,String appName,String hash,String environment,String source)
+{	
+ 	executeCodeDeploy(
+		  team_name: teamName,
+		  code_deploy_application_name: teamName+"-"+appName,
+		  application_name: appName,
+		  commit: hash,
+		  environment: environment,
+		  source_path: source,
+		  deployment_group_name: "${teamName}-${appName}",
+		  deployment_config_name: 'CodeDeployDefault.OneAtATime'
+		  )
+    //bat '''echo ---------Deploy to dev complete--- '''
+}
+
+
+def  GetRoleAccountNumber(String environment)
+{
+	 def roleAccount='UNK'//this is for dev
+	 switch(environment) {
+	 	case 'DEV':
+	 		roleAccount='XXXXXXXXXXXXX'
+	 		break
+	 	case 'QA':
+	 		roleAccount='XXXXXXXXXXXXX'
+	 		break
+	 	case 'STG':
+	 		roleAccount='XXXXXXXXXXXXXXX'
+	 		break
+		case 'PROD':
+	 		roleAccount='XXXXXXXXXXXXXX'
+	 		break 		
+	 }
+	return roleAccount 	
+}
+
+//NEW - works with jsonslurper - ON DEV and PROD(jenkins)
+def CreateItemsList(txt)
+{
+	def lazyMap = new groovy.json.JsonSlurper().parseText(txt)
+	
+	def map = [:]
+	for ( prop in lazyMap ) 
+	{
+    	map[prop.Name] = prop.Value
+	}
+
+	return map;
+}
+
+//NEW - works with jsonslurper - ON DEV and PROD(jenkins)
+def FindItemInParams(String key,Object list)
+{
+	String resp=''
+	
+	 list.find
+	 {
+		resp = it;
+		def afterEquals = resp.substring(resp.indexOf("=") + 1,resp.length())		
+		def beforeEquals = resp.substring(0,resp.indexOf('='))		
+	 	if(key == beforeEquals)
+	 	{	 	
+	 		resp=afterEquals
+	 		return true
+	 	}
+	 	return false
+ 	}//find	
+	
+	return resp	
+}
+
+
+def CleanUpCommandOutput(String commandOutput)
+{
+	def tmp=commandOutput.split('''\\{Name:Name,Value:Value\\}''')
+	return tmp[1]
+}
+
+
+def SetStringParameterStoreValue(String key,String value,String environment)
+{
+	println("+++++++++++++++++++++ Setting  key: "+key+" with Value: "+value+" in aws param store. environment: "+environment)
+	def commandOutput=""
+	def roleAccount=GetRoleAccountNumber(environment)
+	//this seems to be making the script to fail
+	
+	withAWS(region: 'us-east-1', role: 'FMI-Jenkins-Agent-Role', roleAccount: roleAccount) {
+    	commandOutput=   bat (returnStdout: true, script: '''aws ssm put-parameter --name "'''+key+'''" --value "'''+value+'''" --type "String" --overwrite''')
+    }//withAWS
+    
+}
+
+def GetAllParamStoreInfo(String pathParamStore,String environment)
+{
+	def commandOutput=""
+	def roleAccount=GetRoleAccountNumber(environment)
+	withAWS(region: 'us-east-1', role: 'FMI-Jenkins-Agent-Role', roleAccount: roleAccount) {
+    	commandOutput=   bat (returnStdout: true, script: '''aws ssm get-parameters-by-path --path "'''+pathParamStore+'''" --with-decryption --recursive --query "Parameters[*].{Name:Name,Value:Value}''')
+    }//withAWS
+	def msg=CleanUpCommandOutput(commandOutput)
+	def listParams = CreateItemsList(msg)
+	return listParams
+}
+
+def SaveFile(String webReleasePath,String environment,String fileContents)
+{
+	writeFile file: webReleasePath+"."+environment, text: fileContents
+}
+
+def SaveAssemblyFile(String path,String fileContents)
+{
+	writeFile file: path, text: fileContents, encoding: "UTF-8"
+}
+
+def CreateConfigForEnv(String environment,String webReleasePath)//this needs the path to Release file
+{
+	println("+++++++++++++++++++++ Using file: "+webReleasePath)
+	def globalListOfParams=GetAllParamStoreInfo("/medicalannotator/",environment)//CreateItemsList(CleanUpCommandOutput(msg))//need mod to take env as param
+	String fileContents = readFile(webReleasePath)
+	String output=CheckParameterInFileContents(globalListOfParams,fileContents)
+	SaveFile(webReleasePath,environment,fileContents)
+}
+
+def CheckParameterInFileContents(Object globalListOfParams,String fileContents)
+{
+	
+	def listGlobalListOfParams=GetListOfParams(globalListOfParams)
+	def listWebConfigParams=GetListOfWebConfigParams( fileContents)
+	
+	
+	def notFoundConfig=(listWebConfigParams-listGlobalListOfParams)
+	def uncommonItems=notFoundConfig.size()
+
+	if(uncommonItems > 0)
+	{
+		println("ERROR Items that were not found: "+notFoundConfig)
+		//exit 13//exit with error if not all the params exist
+	}
+	
+	return ReplaceValuesInWebConfig( globalListOfParams, fileContents)
+}
+
+def ReplaceValuesInWebConfig(Object globalListOfParams,String fileContents)
+{
+	globalListOfParams.each{
+		def var="{{" + it.Name.split('/')[2].trim().toUpperCase() + "}}"
+		println ("Replacing value: "+var +" with : "+it.Value )
+		fileContents=fileContents.replace(var,it.Value)
+	}
+	return fileContents
+}
+
+def GetListOfParams(Object globalListOfParams)
+{
+	def listGlobalListOfParams=[]
+	globalListOfParams.each{
+		listGlobalListOfParams.add(it.Name.split('/')[2].trim().toUpperCase())
+	}
+	return listGlobalListOfParams
+}
+
+def GetListOfWebConfigParams(String fileContents)
+{
+	def listWebConfigParams=[]
+	def possiblePlaceholder=""
+	for(int i=0; i< fileContents.size()-1; i++ )
+	{
+		def curChar=fileContents[i]
+		def nextChar=fileContents[i+1]
+		if(curChar == '{' && nextChar == "{")
+		{//possible replace value
+			possiblePlaceholder=""
+			for(int j=i+2; j< fileContents.size()-1; j++ )
+			{//this iterates over the word
+				def curCharEnd=fileContents[j]
+				def nextCharEnd=fileContents[j+1]
+				if(curCharEnd=="}" && nextCharEnd=="}")
+				{//definetely found a placeholder
+					i=j+1
+					break 
+				}
+				possiblePlaceholder=possiblePlaceholder+curCharEnd
+			}
+			if(possiblePlaceholder!="" && !listWebConfigParams.contains(possiblePlaceholder))
+			{
+				listWebConfigParams.add(possiblePlaceholder)	
+			}
+			possiblePlaceholder=""
+		}
+	}
+	return listWebConfigParams
+
+}
+
+def BuildConfigFilesForEnvs(String commaSeparatedEnvironmets,Object listObj)
+{
+	def tm1=commaSeparatedEnvironmets.split(',')
+	tm1.each{
+		env->
+			println("-------------------Configuiring env: "+env+"------------------------")
+			listObj.each{
+				it ->
+				def tmp = it.project.tokenize("\u005C\u005C")
+				def path=""
+				tmp.each{item->
+					if(!item.contains("csproj"))
+						{
+							path=item+"\\"
+						}
+				}
+				CreateConfigForEnv(env,"FMI.Pharma.Possum.v2\\"+path+"Web.Release.config")	
+			}
+	}
+		
+}
+
+                
+def SetParamStoreValuesForAllEnvs(String environment)
+{
+	switch(environment) {
+	 	case 'DEV':
+			println("------------------- Setting Param Store Values DEV -----------------------")
+			cloudformationDeploy(environment: 'DEV', stack_name: 'ma-webapp-parameters',  template_file: 'Parameters/dev-parameters.yaml')
+	 		break
+	 	case 'QA':
+			println("------------------- Setting Param Store Values QA -----------------------")
+			cloudformationDeploy(environment: 'QA',  stack_name: 'ma-webapp-parameters',   template_file: 'Parameters/qa-parameters.yaml')
+			break
+	 	case 'STG':
+			println("------------------- Setting Param Store Values STG -----------------------")
+			cloudformationDeploy(environment: 'STG', stack_name: 'ma-webapp-parameters',  template_file: 'Parameters/stg-parameters.yaml')
+	 		break
+		case 'PROD':
+			println("------------------- Setting Param Store Values PROD -----------------------")
+			cloudformationDeploy(environment: 'PROD', stack_name: 'ma-webapp-parameters', template_file: 'Parameters/prod-parameters.yaml')
+	 		break 		
+	 }
+}
+
+//1.1.0.1719  -> 1.1.0.1720
+def GetVersion(String initialVersion)
+{
+	def tmp =initialVersion.tokenize(".")
+
+	def a=GetIntAndCarryOver(tmp[3].toInteger(),1)
+	def b=GetIntAndCarryOver(tmp[2].toInteger(),a[0].toInteger())
+	def c=GetIntAndCarryOver(tmp[1].toInteger(),b[0].toInteger())
+	def d=GetIntAndCarryOver(tmp[0].toInteger(),c[0].toInteger())
+
+	def resp=d[1]+"."+c[1]+"."+b[1]+"."+a[1]
+	return resp
+}
+
+def GetIntAndCarryOver(Integer value,Integer previousCarry)
+{
+	def min=0
+	def max=9999  //1.1.0.1719  -> 1.1.0.1720
+	def carry=0
+	def calculatedVersion=value
+	def resp= [carry,calculatedVersion]
+
+	if(calculatedVersion>=min && calculatedVersion <max)
+	{
+		if(previousCarry!=0)
+		{
+			calculatedVersion=calculatedVersion+previousCarry
+		}
+	}
+	else
+	{
+		calculatedVersion=0
+		carry=1
+	}
+	return [carry,calculatedVersion]
+}
+
+def CompileProject(String projectPath){
+	println "project to be build: " + projectPath
+	if (!(projectPath.contains('.sqlproj')) ){
+		def buidTestCommand='"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\MSBuild\\15.0\\Bin\\MSBuild.Exe" /p:OverwriteReadOnlyFiles="True" /p:DeployOnBuild="True"  /p:Configuration="Release" /p:VisualStudioVersion=15.0 "'+ projectPath +'"'
+		
+		println "Build project: " + buidTestCommand
+		
+		bat buidTestCommand
+	}
+}
+
+def checkApplicationVersionValidity(){
+	println "checking app version..."
+	if(params.ApplicationVersion ==~ '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+')
+	{		
+		isValid = true
+	}
+	else
+	{
+		error "The application version (" + params.ApplicationVersion + ") provided is incorrect. Make sure the version is formatted as X.X.X.X where X is a valid integer"
+		isValid = false
+	}
+}
+
+
+
+pipeline {
+  agent { label 'dotnet' }
+  environment {
+        appName = 'MA'
+        teamName = "MedicalAnnotator"
+        shortCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim().take(8)
+		// artifact locations
+		s3_bucket = "fmi-code-deploy-artifacts-core-us-east-1"
+		s3_key_prefix = "${teamName}/${appName}"
+		source_path = 'Publish/_PublishedWebsites/'		
+    }
+  options {
+    timestamps()
+    buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '15'))
+  }
+  
+  parameters {
+    string (name: 'ArtifactTag', defaultValue: "current-DEV", description: '8-chars commit SHA or docker tag')
+    string (name: 'DeployTo', defaultValue: "DEV", description: 'Pick environment to deploy to')
+	string (name: 'ApplicationVersion', defaultValue: "1.2.0.001", description: 'Enter the Medical Annotator deployment Version. May leave as default for automatically increment the version. Make sure it is entered in format X.X.X.X where X is a valid integer')
+	string (name: 'SemanticVersion', defaultValue: "1.12.0", description: 'Relevant only when promoting to PROD. Please see someone from the Medical Annotator team for this information.')
+	string (name: 'ReleaseVersion', defaultValue: "1.12.0", description: 'Relevant only when promoting to PROD. Please see someone from the Medical Annotator team for this information.')
+	string (name: 'ReleaseDescription', defaultValue: "General Release", description: 'Enter the information if the release includes specific changes related to a product else leave the default value.')
+  }
+  stages {
+
+	    stage('Initialize Build') {
+	      steps {
+			  	 	checkApplicationVersionValidity()									
+					initBuild(commit: shortCommit)	        				
+	      }//steps
+	    }//stage
+
+//*****START BUILD AND DEPLOY TO DEV ENVIRONMENT**************
+		stage('Build artifacts in DEV ONLY..') 
+		{
+			agent 
+			{ 
+				label 'windows' //this makes sure that all the below stages for DEV environment executes on the same agent
+			}			
+			when 
+			{ 
+				expression 
+				{ 
+					params.DeployTo == "DEV" &&  isValid == true 
+				} 
+			}
+			stages 
+			{
+				stage('Set  Parameter Store values') 
+				{				
+					steps 
+					{				
+						//update the version in the param file
+						ConfigureVersionForWebConfigInAwsParamStore()
+						SetParamStoreValuesForAllEnvs(params.DeployTo)
+					}
+				}
+				stage('Build Artifacts') 
+				{
+					steps 
+					{
+						deleteDir()
+						checkout scm
+						InitDirs()						
+						buildAllProjects(listObj)						
+					}
+				}
+				
+				stage('Prepare Stash Files') 
+				{
+					steps 
+					{
+						PackBuildOutputToPublishedWebsites()
+						zipFileForStash("${shortCommit}",env.source_path)	// upload deployable artifact to Core bucket
+						PublishWebPackToCOREForFutureDeployments(env.s3_bucket,"${shortCommit}","${s3_key_prefix}")
+					}
+				}
+			}
+		}	//*****END BUILD artifacts in DEV ENVIRONMENT************** 
+   		
+		// stage("Deploy to DEV") 
+		// {
+		// 	when {
+		// 		beforeAgent true
+		// 		expression { params.DeployTo == "DEV" && isValid == true }
+		// 	}						
+		// 	steps 
+		// 	{
+		// 		deployToDev(env.teamName,env.appName,env.shortCommit)
+		// 	}
+		// }		
+		
+//*****START BUILD AND DEPLOY TO QA/STG/PROD ENVIRONMENT**************
+		stage('Deploy to QA/STG/PROD..')
+		{
+			agent 
+			{ 
+				label 'windows' 
+			}
+			when 
+			{
+				expression 
+				{ 
+					params.DeployTo != "DEV" && isValid == true 
+				}
+			}
+			stages
+			{
+				stage('Set  Parameter Store values') 
+				{				
+					steps 
+					{				
+						//update the version in the param file
+						ConfigureVersionForWebConfigInAwsParamStore()
+						SetParamStoreValuesForAllEnvs(params.DeployTo)
+					}
+				}
+				// stage("Download/Deploy-QA/STG/PROD") 
+				// { 					
+				// 	steps 
+				// 	{
+				// 		bat '''echo --------- Downloading package from CORE --------------to env:'''+params.DeployTo						
+				// 		DownloadAndUnzipPackageFromCore()
+				// 		deployToEnv(env.teamName,env.appName,params.ArtifactTag,params.DeployTo,env.source_path)
+				// 	}					
+				// } 
+			
+			}
+		} //*****END BUILD AND DEPLOY TO QA/STG/PROD ENVIRONMENT**************
+		
+	
+
+  }//stages
+  post {
+	  		
+			success {
+				script 
+				{
+					if (params.DeployTo == 'DEV')
+					{
+						jiraSendBuildInfo site: 'foundationmedicine.atlassian.net'
+						jiraSendDeploymentInfo site: 'foundationmedicine.atlassian.net', environmentId: params.DeployTo, environmentName: params.DeployTo, environmentType: 'development'
+					}
+					if (params.DeployTo == 'QA')
+					{
+						jiraSendBuildInfo site: 'foundationmedicine.atlassian.net'
+						jiraSendDeploymentInfo site: 'foundationmedicine.atlassian.net', environmentId: params.DeployTo, environmentName: params.DeployTo, environmentType: 'testing'
+					}
+					if (params.DeployTo == 'STG')
+					{
+						jiraSendBuildInfo site: 'foundationmedicine.atlassian.net'
+						jiraSendDeploymentInfo site: 'foundationmedicine.atlassian.net', environmentId: params.DeployTo, environmentName: params.DeployTo, environmentType: 'staging'
+					}
+					if (params.DeployTo == 'PROD')
+					{
+						jiraSendBuildInfo site: 'foundationmedicine.atlassian.net'
+						jiraSendDeploymentInfo site: 'foundationmedicine.atlassian.net', environmentId: params.DeployTo, environmentName: params.DeployTo, environmentType: 'production'
+					}
+							
+				}
+				notify(					
+					email: 'abcd@xyz.com',
+					subject: "XYZ Jenkins pipeline successfully deployed to " + params.DeployTo + ", build no: ${env.BUILD_NUMBER}",
+					message: "XYZ Jenkins pipeline successfully deployed to " + params.DeployTo + ", please take a look at (${env.BUILD_URL})"
+				)
+			}//success
+			failure {
+				notify(				
+				email: 'abcd@xyz.com',
+				subject: "XYZ Jenkins pipeline failed!",
+				message: "XYZ Jenkins pipeline failed, please take a look! (${env.BUILD_URL})"
+				)
+			}//failure
+	}	//notify
+}//pipeline

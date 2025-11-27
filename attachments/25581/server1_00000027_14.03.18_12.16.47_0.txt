@@ -1,0 +1,74 @@
+------Start of DE processing------ = [3/18/14 12:16:46:991 PDT] , key = javax.management.MBeanException com.ibm.ws.management.AdminServiceImpl.invoke 679
+Exception = javax.management.MBeanException
+Source = com.ibm.ws.management.AdminServiceImpl.invoke
+probeid = 679
+Stack Dump = javax.management.MBeanException: Exception thrown in RequiredModelMBean while trying to invoke operation startApplication
+	at javax.management.modelmbean.RequiredModelMBean.invokeMethod(RequiredModelMBean.java:1119)
+	at javax.management.modelmbean.RequiredModelMBean.invoke(RequiredModelMBean.java:973)
+	at com.sun.jmx.mbeanserver.DynamicMetaDataImpl.invoke(DynamicMetaDataImpl.java:231)
+	at com.sun.jmx.mbeanserver.MetaDataImpl.invoke(MetaDataImpl.java:238)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:833)
+	at com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:802)
+	at com.ibm.ws.management.AdminServiceImpl$1.run(AdminServiceImpl.java:1159)
+	at com.ibm.ws.security.util.AccessController.doPrivileged(AccessController.java:118)
+	at com.ibm.ws.management.AdminServiceImpl.invoke(AdminServiceImpl.java:1052)
+	at com.ibm.ws.management.connector.AdminServiceDelegator.invoke(AdminServiceDelegator.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:79)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:619)
+	at com.ibm.ws.management.connector.soap.SOAPConnector.invoke(SOAPConnector.java:408)
+	at com.ibm.ws.management.connector.soap.SOAPConnector.service(SOAPConnector.java:264)
+	at com.ibm.ws.management.connector.soap.SOAPConnection.handleRequest(SOAPConnection.java:64)
+	at com.ibm.ws.http.HttpConnection.readAndHandleRequest(HttpConnection.java:742)
+	at com.ibm.ws.http.HttpConnection.run(HttpConnection.java:528)
+	at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1593)
+Caused by: com.ibm.ws.exception.ConfigurationWarning: Duplicate application, cms-web-ui-ear. Application may already have been started.
+	at com.ibm.ws.runtime.component.ApplicationMgrImpl.initializeApplication(ApplicationMgrImpl.java:448)
+	at com.ibm.ws.runtime.component.ApplicationMgrImpl.startApplication(ApplicationMgrImpl.java:1440)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:79)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:619)
+	at sun.reflect.misc.Trampoline.invoke(MethodUtil.java:68)
+	at sun.reflect.GeneratedMethodAccessor66.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:619)
+	at sun.reflect.misc.MethodUtil.invoke(MethodUtil.java:271)
+	at javax.management.modelmbean.RequiredModelMBean.invokeMethod(RequiredModelMBean.java:1092)
+	... 19 more
+
+Dump of callerThis = 
+Object type = com.ibm.ws.management.AdminServiceImpl$1
+com.ibm.ws.management.AdminServiceImpl$1@28c828c8
+
+parm[0] = WebSphere:name=ApplicationManager,process=server1,platform=proxy,node=IT700024Node02,version=6.1.0.45,type=ApplicationManager,mbeanIdentifier=ApplicationManager,cell=IT700024Node02Cell,spec=1.0
+==> Performing default dump from com.ibm.ws.management.dm.JmxDM  = Tue Mar 18 12:16:47 PDT 2014
+Dump of callerThis = 
+Object type = com.ibm.ws.management.AdminServiceImpl$1
+  val$origName = 
+    oldSerialVersionUID = -5467795090068647408
+    newSerialVersionUID = 1081892073854801359
+    oldSerialPersistentFields = [Ljava.io.ObjectStreamField;@48244824
+    newSerialPersistentFields = {}
+    serialVersionUID = 1081892073854801359
+    serialPersistentFields = this.val$origName.newSerialPersistentFields
+    compat = false
+    _Empty_property_array = {}
+    _EmptyPropertyList = java.util.Hashtable@4b3a4b3a
+    _canonicalName = WebSphere:cell=IT700024Node02Cell,mbeanIdentifier=ApplicationManager,name=ApplicationManager,node=IT700024Node02,platform=proxy,process=server1,spec=1.0,type=ApplicationManager,version=6.1.0.45
+    _kp_array = [Ljavax.management.ObjectName$Property;@43a043a
+    _ca_array = [Ljavax.management.ObjectName$Property;@4560456
+    _domain_length = 9
+    _propertyList = java.util.Hashtable@28da28da
+    _domain_pattern = false
+    _property_pattern = false
+  val$operationName = startApplication
+  val$params = 
+    [0] = cms-web-ui-ear
+  val$signature = 
+    [0] = java.lang.String
+  this$0 = com.ibm.ws.management.AdminServiceImpl@14961496
+
++Data for directive [defaultjmx] obtained. = 
+==> Dump complete for com.ibm.ws.management.dm.JmxDM  = Tue Mar 18 12:16:47 PDT 2014

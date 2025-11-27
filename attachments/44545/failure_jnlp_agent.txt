@@ -1,0 +1,69 @@
+Warning: JnlpProtocol3 is disabled by default, use JNLP_PROTOCOL_OPTS to alter the behavior
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main createEngine
+INFO: Setting up agent: jenkinsslave-rzk3k-x4jhf
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener <init>
+INFO: Jenkins agent is running in headless mode.
+Sep 20, 2018 12:15:05 PM hudson.remoting.Engine startEngine
+INFO: Using Remoting version: 3.23
+Sep 20, 2018 12:15:05 PM hudson.remoting.Engine startEngine
+WARNING: No Working Directory. Using the legacy JAR Cache location: /home/jenkins/.jenkins/cache/jars
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Locating server among [http://10.80.39.92:80/ ]
+Sep 20, 2018 12:15:05 PM org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve
+INFO: Remoting server accepts the following protocols: [JNLP4-connect, Ping]
+Sep 20, 2018 12:15:05 PM org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve
+INFO: Remoting TCP connection tunneling is enabled. Skipping the TCP Agent Listener Port availability check
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Agent discovery successful
+  Agent address: 10.80.5.208
+  Agent port:    50000
+  Identity:      93:b7:b4:1b:2f:f6:d0:c6:47:5a:4a:fa:2b:4a:b2:ad
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Handshaking
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connecting to 10.80.5.208:50000
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Trying protocol: JNLP4-connect
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Remote identity confirmed: 93:b7:b4:1b:2f:f6:d0:c6:47:5a:4a:fa:2b:4a:b2:ad
+Sep 20, 2018 12:15:05 PM org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv
+INFO: [JNLP4-connect connection to jenkins-jnlp.pic.svc.cluster.local/10.80.5.208:50000] Local headers refused by remote: Unknown client name: jenkinsslave-rzk3k-x4jhf
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Protocol JNLP4-connect encountered an unexpected exception
+java.util.concurrent.ExecutionException: org.jenkinsci.remoting.protocol.impl.ConnectionRefusalException: Unknown client name: jenkinsslave-rzk3k-x4jhf
+	at org.jenkinsci.remoting.util.SettableFuture.get(SettableFuture.java:223)
+	at hudson.remoting.Engine.innerRun(Engine.java:614)
+	at hudson.remoting.Engine.run(Engine.java:474)
+Caused by: org.jenkinsci.remoting.protocol.impl.ConnectionRefusalException: Unknown client name: jenkinsslave-rzk3k-x4jhf
+	at org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer.newAbortCause(ConnectionHeadersFilterLayer.java:378)
+	at org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer.onRecvClosed(ConnectionHeadersFilterLayer.java:433)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecvClosed(ProtocolStack.java:832)
+	at org.jenkinsci.remoting.protocol.FilterLayer.onRecvClosed(FilterLayer.java:287)
+	at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.onRecvClosed(SSLEngineFilterLayer.java:172)
+	at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecvClosed(ProtocolStack.java:832)
+	at org.jenkinsci.remoting.protocol.NetworkLayer.onRecvClosed(NetworkLayer.java:154)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer.access$1500(BIONetworkLayer.java:48)
+	at org.jenkinsci.remoting.protocol.impl.BIONetworkLayer$Reader.run(BIONetworkLayer.java:247)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:93)
+	at java.lang.Thread.run(Thread.java:748)
+	Suppressed: java.nio.channels.ClosedChannelException
+		... 7 more
+
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connecting to 10.80.5.208:50000
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Server reports protocol JNLP4-plaintext not supported, skipping
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Protocol JNLP3-connect is not enabled, skipping
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Server reports protocol JNLP2-connect not supported, skipping
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Server reports protocol JNLP-connect not supported, skipping
+Sep 20, 2018 12:15:05 PM hudson.remoting.jnlp.Main$CuiListener error
+SEVERE: The server rejected the connection: None of the protocols were accepted
+java.lang.Exception: The server rejected the connection: None of the protocols were accepted
+	at hudson.remoting.Engine.onConnectionRejected(Engine.java:675)
+	at hudson.remoting.Engine.innerRun(Engine.java:639)
+	at hudson.remoting.Engine.run(Engine.java:474)

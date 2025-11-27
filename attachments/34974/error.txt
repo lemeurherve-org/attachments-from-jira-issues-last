@@ -1,0 +1,51 @@
+[EnvInject] - Loading node environment variables.
+Building on master in workspace C:\Users\Administrator\.jenkins\jobs\test jira\workspace
+Creating Ticket "test".
+ERROR: Build step failed with exception
+RestClientException{statusCode=Optional.of(400), errorCollections=[ErrorCollection{status=400, errors={components=Component/s is required.}, errorMessages=[]}]}
+	at com.atlassian.jira.rest.client.internal.async.DelegatingPromise.claim(DelegatingPromise.java:47)
+	at rocks.inspectit.releaseplugin.JIRAAccessTool.addTicket(JIRAAccessTool.java:329)
+	at rocks.inspectit.releaseplugin.ticketing.AddTicketTemplate.publishTicket(AddTicketTemplate.java:202)
+	at rocks.inspectit.releaseplugin.ticketing.JIRATicketEditor.perform(JIRATicketEditor.java:80)
+	at hudson.tasks.BuildStepMonitor$3.perform(BuildStepMonitor.java:45)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:779)
+	at hudson.model.Build$BuildExecution.build(Build.java:205)
+	at hudson.model.Build$BuildExecution.doRun(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:534)
+	at hudson.model.Run.execute(Run.java:1720)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:401)
+Caused by: RestClientException{statusCode=Optional.of(400), errorCollections=[ErrorCollection{status=400, errors={components=Component/s is required.}, errorMessages=[]}]}
+	at com.atlassian.jira.rest.client.internal.async.AbstractAsynchronousRestClient$2.apply(AbstractAsynchronousRestClient.java:166)
+	at com.atlassian.jira.rest.client.internal.async.AbstractAsynchronousRestClient$2.apply(AbstractAsynchronousRestClient.java:160)
+	at com.atlassian.httpclient.api.ResponsePromiseMapFunction.apply(ResponsePromiseMapFunction.java:48)
+	at com.atlassian.httpclient.api.ResponsePromiseMapFunction.apply(ResponsePromiseMapFunction.java:12)
+	at com.atlassian.util.concurrent.Promises$Of$3.apply(Promises.java:285)
+	at com.atlassian.util.concurrent.Promises$2.onSuccess(Promises.java:162)
+	at com.google.common.util.concurrent.Futures$6.run(Futures.java:975)
+	at com.google.common.util.concurrent.MoreExecutors$SameThreadExecutorService.execute(MoreExecutors.java:253)
+	at com.google.common.util.concurrent.ExecutionList$RunnableExecutorPair.execute(ExecutionList.java:149)
+	at com.google.common.util.concurrent.ExecutionList.execute(ExecutionList.java:134)
+	at com.google.common.util.concurrent.AbstractFuture.set(AbstractFuture.java:170)
+	at com.google.common.util.concurrent.SettableFuture.set(SettableFuture.java:53)
+	at com.atlassian.util.concurrent.Promises$Of$3.apply(Promises.java:285)
+	at com.atlassian.util.concurrent.Promises$2.onSuccess(Promises.java:162)
+	at com.google.common.util.concurrent.Futures$6.run(Futures.java:975)
+	at com.google.common.util.concurrent.MoreExecutors$SameThreadExecutorService.execute(MoreExecutors.java:253)
+	at com.google.common.util.concurrent.ExecutionList$RunnableExecutorPair.execute(ExecutionList.java:149)
+	at com.google.common.util.concurrent.ExecutionList.execute(ExecutionList.java:134)
+	at com.google.common.util.concurrent.AbstractFuture.set(AbstractFuture.java:170)
+	at com.google.common.util.concurrent.SettableFuture.set(SettableFuture.java:53)
+	at com.atlassian.httpclient.apache.httpcomponents.SettableFuturePromiseHttpPromiseAsyncClient$1$1.run(SettableFuturePromiseHttpPromiseAsyncClient.java:46)
+	at com.atlassian.httpclient.apache.httpcomponents.SettableFuturePromiseHttpPromiseAsyncClient$ThreadLocalDelegateRunnable$1.run(SettableFuturePromiseHttpPromiseAsyncClient.java:197)
+	at com.atlassian.httpclient.apache.httpcomponents.SettableFuturePromiseHttpPromiseAsyncClient.runInContext(SettableFuturePromiseHttpPromiseAsyncClient.java:90)
+	at com.atlassian.httpclient.apache.httpcomponents.SettableFuturePromiseHttpPromiseAsyncClient$ThreadLocalDelegateRunnable.run(SettableFuturePromiseHttpPromiseAsyncClient.java:192)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Build step 'JIRA Ticket Editor' marked build as failure
+Collecting metadata...
+Metadata collection done.
+Notifying upstream projects of job completion
+Finished: FAILURE

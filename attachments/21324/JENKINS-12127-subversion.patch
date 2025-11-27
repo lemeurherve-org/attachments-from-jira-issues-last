@@ -1,0 +1,274 @@
+Index: src/test/java/hudson/scm/SubversionChangeLogBuilderTest.java
+===================================================================
+--- src/test/java/hudson/scm/SubversionChangeLogBuilderTest.java	(revision 0)
++++ src/test/java/hudson/scm/SubversionChangeLogBuilderTest.java	(revision 0)
+@@ -0,0 +1,37 @@
++package hudson.scm;
++
++import static org.junit.Assert.assertEquals;
++
++import java.io.IOException;
++import java.net.URISyntaxException;
++import org.junit.Test;
++import org.xml.sax.SAXException;
++
++/**
++ * Tests for {@link SubversionChangeLogBuilder}.
++ * 
++ * @author henryju
++ */
++public class SubversionChangeLogBuilderTest {
++    
++    @Test
++    public void testPathRelativeToWorkspace() throws URISyntaxException, IOException, SAXException {
++        SubversionChangeLogBuilder.WorkspaceRelativeSVNXMLLogHandler handler = new SubversionChangeLogBuilder.WorkspaceRelativeSVNXMLLogHandler(null);
++        
++        testPathRelativeToWorkspace(handler, "http://mysvnserver.com/root/folder1/folder2/trunk/", "/project1", "/folder1/folder2/trunk/my_changed_file.txt", "project1/my_changed_file.txt");
++        testPathRelativeToWorkspace(handler, "http://mysvnserver.com/root/folder1/folder2/trunk", "/project1", "folder1/folder2/trunk/my_changed_file.txt", "project1/my_changed_file.txt");
++        testPathRelativeToWorkspace(handler, "http://mysvnserver.com/root/folder1/folder2/trunk/", "\\project1", "/folder1/folder2/trunk/my_changed_file.txt", "project1/my_changed_file.txt");
++        testPathRelativeToWorkspace(handler, "http://mysvnserver.com/root/folder1/folder2/trunk", "project1", "folder1/folder2/trunk/my_changed_file.txt", "project1/my_changed_file.txt");
++        testPathRelativeToWorkspace(handler, "http://mysvnserver.com/root/folder1/folder2/trunk", "project1", "folder3/folder4/trunk/my_changed_file.txt", "project1/folder3/folder4/trunk/my_changed_file.txt");
++        testPathRelativeToWorkspace(handler, "http://mysvnserver.com/root/folder1/folder2/trunk", "project1/", "folder3/folder4/trunk/my_changed_file.txt", "project1/folder3/folder4/trunk/my_changed_file.txt");
++
++        //SVN externals used to have double '/' in the path
++        testPathRelativeToWorkspace(handler, "http://mysvnserver.com/root/folder3/folder4/trunk", "project1//module1/", "folder3/folder4/trunk/my_changed_file.txt", "project1/module1/my_changed_file.txt");
++    }
++    
++    private void testPathRelativeToWorkspace(SubversionChangeLogBuilder.WorkspaceRelativeSVNXMLLogHandler handler, String remotePrefix, String workspacePrefix, String filePath, String relativePath) {
++        handler.setRemoteAndWorkspacePrefixes(remotePrefix, workspacePrefix);
++        assertEquals(relativePath, handler.getPathRelativeToWorkspace(filePath));
++    }
++    
++}
+
+Property changes on: src/test/java/hudson/scm/SubversionChangeLogBuilderTest.java
+___________________________________________________________________
+Added: svn:mime-type
+   + text/plain
+
+Index: src/main/java/hudson/scm/SubversionChangeLogSet.java
+===================================================================
+--- src/main/java/hudson/scm/SubversionChangeLogSet.java	(revision 40201)
++++ src/main/java/hudson/scm/SubversionChangeLogSet.java	(working copy)
+@@ -186,7 +186,7 @@
+         public Collection<String> getAffectedPaths() {
+             return new AbstractList<String>() {
+                 public String get(int index) {
+-                    return preparePath(paths.get(index).value);
++                    return paths.get(index).value;
+                 }
+                 public int size() {
+                     return paths.size();
+@@ -194,42 +194,6 @@
+             };
+         }
+         
+-        private String preparePath(String path) {
+-            SCM scm = getParent().build.getProject().getScm();
+-            if (!(scm instanceof SubversionSCM)) return path;
+-            ModuleLocation[] locations = ((SubversionSCM)scm).getLocations();
+-            for (int i = 0; i < locations.length; i++) {
+-                String commonPart = findCommonPart(locations[i].remote, path);
+-                if (commonPart != null) {
+-                    if (path.startsWith("/")) {
+-                        path = path.substring(1);
+-                    }
+-                    String newPath = path.substring(commonPart.length());
+-                    if (newPath.startsWith("/")) {
+-                        newPath = newPath.substring(1);
+-                    }
+-                    return newPath;
+-                }
+-            }
+-            return path;
+-        }
+-        
+-        private String findCommonPart(String folder, String filePath) {
+-            if (folder == null || filePath == null) {
+-                return null;
+-            }
+-            if (filePath.startsWith("/")) {
+-                filePath = filePath.substring(1);
+-            }
+-            for (int i = 0; i < folder.length(); i++) {
+-                String part = folder.substring(i);
+-                if (filePath.startsWith(part)) {
+-                    return part;
+-                }
+-            }
+-            return null;
+-        }
+-
+         public void setUser(String author) {
+             this.author = User.get(author);
+         }
+Index: src/main/java/hudson/scm/SubversionSCM.java
+===================================================================
+--- src/main/java/hudson/scm/SubversionSCM.java	(revision 40201)
++++ src/main/java/hudson/scm/SubversionSCM.java	(working copy)
+@@ -31,6 +31,9 @@
+ import static hudson.scm.PollingResult.NO_CHANGES;
+ import static java.util.logging.Level.FINE;
+ import static java.util.logging.Level.WARNING;
++
++import org.apache.commons.io.FilenameUtils;
++
+ import hudson.EnvVars;
+ import hudson.Extension;
+ import hudson.FilePath;
+@@ -961,7 +964,8 @@
+          *      we use this to make the path relative to the entire workspace, not just the particular module.
+          */
+         public External(String modulePath,SVNExternal ext) {
+-            this.path = modulePath+'/'+ext.getPath();
++            //Avoid double '/' in path
++            this.path = FilenameUtils.normalize(FilenameUtils.separatorsToUnix(modulePath + '/' + ext.getPath()));
+             this.url = ext.getResolvedURL().toDecodedString();
+             this.revision = ext.getRevision().getNumber();
+         }
+Index: src/main/java/hudson/scm/SubversionChangeLogBuilder.java
+===================================================================
+--- src/main/java/hudson/scm/SubversionChangeLogBuilder.java	(revision 40201)
++++ src/main/java/hudson/scm/SubversionChangeLogBuilder.java	(working copy)
+@@ -33,6 +33,7 @@
+ import hudson.util.IOException2;
+ import hudson.remoting.VirtualChannel;
+ import hudson.FilePath.FileCallable;
++import org.apache.commons.io.FilenameUtils;
+ import org.tmatesoft.svn.core.SVNException;
+ import org.tmatesoft.svn.core.SVNURL;
+ import org.tmatesoft.svn.core.ISVNLogEntryHandler;
+@@ -44,6 +45,8 @@
+ import org.tmatesoft.svn.core.wc.SVNWCClient;
+ import org.tmatesoft.svn.core.wc.SVNInfo;
+ import org.tmatesoft.svn.core.wc.xml.SVNXMLLogHandler;
++import org.xml.sax.ContentHandler;
++import org.xml.sax.SAXException;
+ import org.xml.sax.helpers.LocatorImpl;
+ 
+ import javax.xml.transform.Result;
+@@ -103,17 +106,19 @@
+             SVNLogClient svnlc = manager.getLogClient();
+             TransformerHandler th = createTransformerHandler();
+             th.setResult(changeLog);
+-            SVNXMLLogHandler logHandler = new SVNXMLLogHandler(th);
++            WorkspaceRelativeSVNXMLLogHandler logHandler = new WorkspaceRelativeSVNXMLLogHandler(th);
+             // work around for http://svnkit.com/tracker/view.php?id=175
+             th.setDocumentLocator(DUMMY_LOCATOR);
+             logHandler.startDocument();
+ 
+             for (ModuleLocation l : scm.getLocations(env, build)) {
++                logHandler.setRemoteAndWorkspacePrefixes(l.getURL(), l.getLocalDir());
+                 changelogFileCreated |= buildModule(l.getURL(), svnlc, logHandler);
+             }
+             for(SubversionSCM.External ext : externals) {
+-                changelogFileCreated |= buildModule(
+-                        getUrlForPath(build.getWorkspace().child(ext.path)), svnlc, logHandler);
++                String extUrl = getUrlForPath(build.getWorkspace().child(ext.path));
++                logHandler.setRemoteAndWorkspacePrefixes(extUrl, ext.path);
++                changelogFileCreated |= buildModule(extUrl, svnlc, logHandler);
+             }
+ 
+             if(changelogFileCreated) {
+@@ -125,6 +130,101 @@
+             manager.dispose();
+         }
+     }
++    
++    /**
++     * Say in a Jenkins job
++     * one SVN module is configured with URL <i>http://mysvnserver.com/root/folder1/folder2/trunk</i>
++     * and checkout directory in workspace is set to <i>project1</i>.</br>
++     * When there is a change SVNKit path in log is relative 
++     * to the remote SVN server URL:<br/>
++     * <i>/folder1/folder2/trunk/my_changed_file.txt</i><br/>
++     * but in fact we would like to have something relative to Jenkins workspace (including root checkout folder):<br/>
++     * <i>/project1/my_changed_file.txt</i><br/>
++     * <br/>
++     * In order to circumvent this issue, this handler will take a remotePrefix 
++     * (e.g. <i>http://mysvnserver.com/root/folder1/folder2/trunk</i>) and a workspacePrefix (e.g. <i>/project1</i>).
++     * Then a match will be done between remotePrefix and path of the modified resource:<br/>
++     * <pre>
++     * http://mysvnserver.com/root/folder1/folder2/trunk
++     *                            /folder1/folder2/trunk/my_changed_file.txt
++     * </pre><br/>
++     * to extract the relative path of the changed resource (<i>/my_changed_file.txt</i> in previous example). 
++     * Then workspacePrefix will be added to produce the final path:<br/>
++     * <i>/project1/my_changed_file.txt</i>.<br/>
++     * <br/>
++     */
++    protected static class WorkspaceRelativeSVNXMLLogHandler extends SVNXMLLogHandler {
++                
++        private String remotePrefix;
++        private String workspacePrefix;
++        
++        public WorkspaceRelativeSVNXMLLogHandler(ContentHandler contentHandler) {
++            super(contentHandler);
++        }
++        
++        /**
++         * Set remote and workspace prefixes.
++         * @param remotePrefix Trailing "/" will be removed.
++         * @param workspacePrefix Leading and trailing "/" will be removed.
++         */
++        public void setRemoteAndWorkspacePrefixes(String remotePrefix, String workspacePrefix) {
++            this.remotePrefix = remotePrefix;
++            if (this.remotePrefix != null && this.remotePrefix.endsWith("/")) {
++                this.remotePrefix = this.remotePrefix.substring(0, this.remotePrefix.length() - 1);
++            }
++            this.workspacePrefix = normalize(workspacePrefix);
++        }
++        
++        @Override
++        protected void addTag(String tagName, String value) throws SAXException {
++            if (PATH_TAG.equals(tagName)) {
++                value = getPathRelativeToWorkspace(value);      
++            }
++            super.addTag(tagName, value);
++        }
++        
++        protected String getPathRelativeToWorkspace(String remoteFilePath) {
++            String relativePart = findRelativePart(remotePrefix, remoteFilePath);
++            if (relativePart != null) {
++                String result = workspacePrefix + "/" + relativePart;
++                return result;
++            }
++            return remoteFilePath;
++        }
++        
++        /**
++         * findRelativePart("http://mysvnserver.com/root/folder1/folder2/trunk",
++         *                  "/folder1/folder2/trunk/my_changed_file.txt")
++         * returns
++         * "my_changed_file.txt"
++         */
++        protected static String findRelativePart(String remotePrefix, String filePath) {
++            if (remotePrefix == null || filePath == null) {
++                return filePath;
++            }
++            for (int i = 0; i < remotePrefix.length(); i++) {
++                String part = remotePrefix.substring(i);
++                if (filePath.startsWith(part)) {
++                    return normalize(filePath.substring(part.length()));
++                }
++            }
++            return normalize(filePath);
++        }
++        
++        /**
++         * Remove leading, trailing and multiple "/" or "\". At the end use "/" as
++         * separator.
++         */
++        private static String normalize(String path) {
++            path = FilenameUtils.separatorsToUnix(FilenameUtils.normalize(path));
++            if (path != null && path.startsWith("/"))
++                path = path.substring(1);
++            if (path != null && path.endsWith("/")) {
++                path = path.substring(0, path.length() - 1);
++            }
++            return path;
++        }
++    }
+ 
+     private String getUrlForPath(FilePath path) throws IOException, InterruptedException {
+         return path.act(new GetUrlForPath(createAuthenticationProvider(build.getProject())));

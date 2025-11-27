@@ -1,0 +1,122 @@
+Started by user Lewisham
+Building remotely on remote-slave-2
+Updating https://svn.dev.java.net/svn/hudson/branches/rc
+At revision 36775
+no change for https://svn.dev.java.net/svn/hudson/branches/rc since the previous build
+[rc] $ /home/tomcat6/.hudson/cislave/tools/maven221/bin/mvn -Dmaven.test.failure.ignore=true -Dbuild.type=rc -Dmaven.repo.local=/home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/.repository clean install
+Warning: JAVA_HOME environment variable is not set.
+[INFO] Scanning for projects...
+[INFO] Reactor build order: 
+[INFO]   Hudson main module
+[INFO]   Hudson remoting layer
+[INFO]   Hudson CLI
+[INFO]   Hudson core
+[INFO]   Hudson Maven PluginManager interceptor
+[INFO]   Hudson Maven CLI agent
+[INFO]   Maven Integration plugin
+[INFO]   Hudson war
+[INFO]   Test harness for Hudson and plugins
+[INFO]   Hudson UI sample plugin
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Hudson main module
+[INFO]    task-segment: [clean, install]
+[INFO] ------------------------------------------------------------------------
+[INFO] artifact org.apache.maven.plugins:maven-enforcer-plugin: checking for updates from m.g.o-public
+[INFO] [clean:clean {execution: default-clean}]
+[INFO] [enforcer:enforce {execution: default}]
+[INFO] [enforcer:display-info {execution: default}]
+[INFO] Maven Version: 2.2.1
+[INFO] JDK Version: 1.6.0_20 normalized as: 1.6.0-20
+[INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.35-22-server
+[INFO] Setting property: classpath.resource.loader.class => 'org.codehaus.plexus.velocity.ContextClassLoaderResourceLoader'.
+[INFO] Setting property: velocimacro.messages.on => 'false'.
+[INFO] Setting property: resource.loader => 'classpath'.
+[INFO] Setting property: resource.manager.logwhenfound => 'false'.
+[INFO] [remote-resources:process {execution: default}]
+[INFO] inceptionYear not specified, defaulting to 2010
+[INFO] [site:attach-descriptor {execution: default-attach-descriptor}]
+[INFO] [install:install {execution: default-install}]
+[INFO] Installing /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/pom.xml to /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/.repository/org/jvnet/hudson/main/pom/1.385-SNAPSHOT/pom-1.385-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Hudson remoting layer
+[INFO]    task-segment: [clean, install]
+[INFO] ------------------------------------------------------------------------
+[INFO] [clean:clean {execution: default-clean}]
+[INFO] Deleting directory /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/target
+[INFO] [enforcer:enforce {execution: default}]
+[INFO] [enforcer:display-info {execution: default}]
+[INFO] Maven Version: 2.2.1
+[INFO] JDK Version: 1.6.0_20 normalized as: 1.6.0-20
+[INFO] OS Info: Arch: amd64 Family: unix Name: linux Version: 2.6.35-22-server
+[INFO] [remote-resources:process {execution: default}]
+[INFO] inceptionYear not specified, defaulting to 2010
+[INFO] [antrun-extended:run {execution: generate-resources}]
+[INFO] Executing tasks
+    [mkdir] Created dir: /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/target/classes/hudson/remoting
+[INFO] Executed tasks
+[INFO] [resources:resources {execution: default-resources}]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] [compiler:compile {execution: default-compile}]
+[INFO] Compiling 62 source files to /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/target/classes
+[WARNING] /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/src/main/java/hudson/remoting/Engine.java:[144,54] sun.misc.BASE64Encoder is internal proprietary API and may be removed in a future release
+
+[WARNING] /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/src/main/java/hudson/remoting/Launcher.java:[220,50] sun.misc.BASE64Encoder is internal proprietary API and may be removed in a future release
+
+[INFO] [antrun-extended:run {execution: process-classes}]
+[INFO] Executing tasks
+    [unjar] Expanding: /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/.repository/args4j/args4j/2.0.16/args4j-2.0.16.jar into /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/target/classes
+[INFO] Executed tasks
+[INFO] [resources:testResources {execution: default-testResources}]
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/src/test/resources
+[INFO] [compiler:testCompile {execution: default-testCompile}]
+[INFO] Compiling 18 source files to /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/target/test-classes
+[INFO] [surefire:test {execution: default-test}]
+[INFO] Surefire report directory: /home/tomcat6/.hudson/cislave/workspace/hudson_rc_branch/rc/remoting/target/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running hudson.remoting.DummyClassLoaderTest
+[Ljava.lang.Object;@37922221
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.07 sec
+Running hudson.remoting.ClassRemotingTest
+Starting test1-local
+hudson.remoting.RemoteClassLoader@676bd8ea
+Resource is 1352 bytes
+file:/tmp/hudson-remoting8336665445908384747/hudson/remoting/test/TestCallable.class
+file:/tmp/hudson-remoting8336665445908384747/hudson/remoting/test/TestCallable.class
+north completed
+Starting test1-local-compatibility
+south completed
+hudson.remoting.RemoteClassLoader@716c9867
+Resource is 1352 bytes
+file:/tmp/hudson-remoting2978247548632019917/hudson/remoting/test/TestCallable.class
+file:/tmp/hudson-remoting2978247548632019917/hudson/remoting/test/TestCallable.class
+north completed
+Starting test1-fork
+forking a new process
+/tmp/surefirebooter6036699349059455925.jar
+south completed
+channel started
+hudson.remoting.RemoteClassLoader@59c9b9ca
+Resource is 1352 bytes
+file:/tmp/hudson-remoting5903309447380197753/hudson/remoting/test/TestCallable.class
+file:/tmp/hudson-remoting5903309447380197753/hudson/remoting/test/TestCallable.class
+channel stopped
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.66 sec
+Running hudson.remoting.PipeTest
+Starting testRemoteWrite-local
+result=5
+north completed
+Starting testLocalWrite-local
+south completed
+result=5
+north completed
+Starting testLocalWrite2-local
+south completed
+result=5
+north completed
+Starting testSaturation-local
+south completed

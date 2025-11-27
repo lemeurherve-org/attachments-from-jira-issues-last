@@ -1,0 +1,103 @@
+From 9162f167f08204bed66dc8fbb92af1943f5c860f Mon Sep 17 00:00:00 2001
+From: Ronny Perinke <sephiroth@sephiroth-j.de>
+Date: Thu, 10 Dec 2020 20:40:50 +0100
+Subject: [PATCH] support targetPath property for webResources - it works for
+ the packaging phase out of the box - for use as part of `hpi:run`, the goals
+ `compile` and `hpi:hpi` must be executed before to ensure that
+ `webappDirectory` exists. otherwise `warSourceDirectory` will be used as
+ before.
+
+#JENKINS-64408
+---
+ .../jenkinsci/maven/plugins/hpi/AbstractHpiMojo.java   | 10 +++++++---
+ .../java/org/jenkinsci/maven/plugins/hpi/HplMojo.java  |  8 ++++++--
+ .../java/org/jenkinsci/maven/plugins/hpi/RunMojo.java  |  7 +++++++
+ 3 files changed, 20 insertions(+), 5 deletions(-)
+
+diff --git src/main/java/org/jenkinsci/maven/plugins/hpi/AbstractHpiMojo.java src/main/java/org/jenkinsci/maven/plugins/hpi/AbstractHpiMojo.java
+index b3fe652..ded67fc 100644
+--- src/main/java/org/jenkinsci/maven/plugins/hpi/AbstractHpiMojo.java
++++ src/main/java/org/jenkinsci/maven/plugins/hpi/AbstractHpiMojo.java
+@@ -129,7 +129,7 @@ public abstract class AbstractHpiMojo extends AbstractJenkinsMojo {
+      * The directory where the webapp is built.
+      */
+     @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}")
+-    private File webappDirectory;
++    protected File webappDirectory;
+ 
+     /**
+      * Single directory for extra files to include in the WAR.
+@@ -407,13 +407,17 @@ public abstract class AbstractHpiMojo extends AbstractJenkinsMojo {
+             if (webappDirectory.exists()) {
+                 String[] fileNames = getWarFiles(resource);
+                 for (String fileName : fileNames) {
++                    File targetDirectory = webappDirectory;
++                    if (StringUtils.isNotBlank(resource.getTargetPath())) {
++                        targetDirectory = new File(webappDirectory, resource.getTargetPath());
++                    }
+                     if (resource.isFiltering()) {
+                         copyFilteredFile(new File(resource.getDirectory(), fileName),
+-                            new File(webappDirectory, fileName), null, getFilterWrappers(),
++                            new File(targetDirectory, fileName), null, getFilterWrappers(),
+                             filterProperties);
+                     } else {
+                         copyFileIfModified(new File(resource.getDirectory(), fileName),
+-                            new File(webappDirectory, fileName));
++                            new File(targetDirectory, fileName));
+                     }
+                 }
+             }
+diff --git src/main/java/org/jenkinsci/maven/plugins/hpi/HplMojo.java src/main/java/org/jenkinsci/maven/plugins/hpi/HplMojo.java
+index 9800ad8..7c909c5 100644
+--- src/main/java/org/jenkinsci/maven/plugins/hpi/HplMojo.java
++++ src/main/java/org/jenkinsci/maven/plugins/hpi/HplMojo.java
+@@ -2,7 +2,6 @@ package org.jenkinsci.maven.plugins.hpi;
+ 
+ import org.apache.commons.lang.StringUtils;
+ import org.apache.maven.artifact.Artifact;
+-import org.apache.maven.artifact.DependencyResolutionRequiredException;
+ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+ import org.apache.maven.model.Resource;
+ import org.apache.maven.plugin.MojoExecutionException;
+@@ -98,7 +97,12 @@ public class HplMojo extends AbstractJenkinsManifestMojo {
+             mainSection.addAttributeAndCheck(new Attribute("Libraries", StringUtils.join(paths, ",")));
+ 
+             // compute Resource-Path entry
+-            mainSection.addAttributeAndCheck(new Attribute("Resource-Path",warSourceDirectory.getAbsolutePath()));
++            if (webappDirectory != null && webappDirectory.isDirectory()) {
++                mainSection.addAttributeAndCheck(new Attribute("Resource-Path",webappDirectory.getAbsolutePath()));
++            } else {
++                getLog().info("webappDirectory does not exist, will use warSourceDirectory");
++                mainSection.addAttributeAndCheck(new Attribute("Resource-Path",warSourceDirectory.getAbsolutePath()));
++            }
+ 
+             printWriter = new PrintWriter(new FileWriter(hplFile));
+             mf.write(printWriter);
+diff --git src/main/java/org/jenkinsci/maven/plugins/hpi/RunMojo.java src/main/java/org/jenkinsci/maven/plugins/hpi/RunMojo.java
+index 0d92b93..11e9c23 100644
+--- src/main/java/org/jenkinsci/maven/plugins/hpi/RunMojo.java
++++ src/main/java/org/jenkinsci/maven/plugins/hpi/RunMojo.java
+@@ -125,6 +125,12 @@ public class RunMojo extends AbstractJettyMojo {
+     @Parameter(defaultValue = "test")
+     protected String dependencyResolution;
+ 
++    /**
++     * The directory where the webapp is built.
++     */
++    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}")
++    private File webappDirectory;
++
+     /**
+      * Single directory for extra files to include in the WAR.
+      */
+@@ -491,6 +497,7 @@ public class RunMojo extends AbstractJettyMojo {
+         hpl.setJenkinsHome(jenkinsHome);
+         hpl.setLog(getLog());
+         hpl.pluginName = getProject().getName();
++        hpl.webappDirectory = webappDirectory;
+         hpl.warSourceDirectory = warSourceDirectory;
+         hpl.scopeFilter = new ScopeArtifactFilter("runtime");
+         hpl.projectBuilder = this.projectBuilder;
+-- 
+2.29.0.windows.1
+

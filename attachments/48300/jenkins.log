@@ -1,0 +1,151 @@
+Aug 08, 2019 5:12:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher
+Creating Pod: jenkins-builds/jenkins-agent-ntf3f
+Aug 08, 2019 5:12:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Building connection to Kubernetes jenkins-builds URL https://1.2.3.4:6443 namespace jenkins-builds
+Aug 08, 2019 5:12:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud
+Connected to Kubernetes jenkins-builds URL https://1.2.3.4:6443/
+Aug 08, 2019 5:12:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.PodTemplateBuilder
+Container workingDir is null, defaulting to /home/jenkins/agent
+Aug 08, 2019 5:12:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.PodTemplateBuilder
+Pod built: Pod(
+    apiVersion=v1,
+    kind=Pod,
+    metadata=ObjectMeta(
+        annotations={},
+        clusterName=null,
+        creationTimestamp=null,
+        deletionGracePeriodSeconds=null,
+        deletionTimestamp=null,
+        finalizers=[],
+        generateName=null,
+        generation=null,
+        initializers=null,
+        labels={jenkins=slave, jenkins/alpine-jdk8-mvn-3.5=true},
+        name=jenkins-agent-jmcfr,
+        namespace=null,
+        ownerReferences=[],
+        resourceVersion=null,
+        selfLink=null,
+        uid=null,
+        additionalProperties={}
+    ),
+    spec=PodSpec(
+        activeDeadlineSeconds=null,
+        affinity=null,
+        automountServiceAccountToken=null,
+        containers=[
+            Container(
+                args=[cat],
+                command=[/bin/bash, -c],
+                env=[
+                    EnvVar(name=JENKINS_SECRET, value=1234, valueFrom=null, additionalProperties={}),
+                    EnvVar(name=JENKINS_AGENT_NAME, value=jenkins-agent-jmcfr, valueFrom=null, additionalProperties={}),
+                    EnvVar(name=JENKINS_NAME, value=jenkins-agent-jmcfr, valueFrom=null, additionalProperties={}),
+                    EnvVar(name=JENKINS_AGENT_WORKDIR, value=/home/jenkins, valueFrom=null, additionalProperties={}),
+                    EnvVar(name=JENKINS_URL, value=http://4.3.2.1:8080/, valueFrom=null, additionalProperties={})
+                ],
+                envFrom=[],
+                image=custom-image/alpine:jdk8-mvn-3.5,
+                imagePullPolicy=Always,
+                lifecycle=null,
+                livenessProbe=null,
+                name=maven,
+                ports=[],
+                readinessProbe=null,
+                resources=ResourceRequirements(
+                    limits={memory=Quantity(amount=8Gi, format=null, additionalProperties={}), cpu=Quantity(amount=4500m, format=null, additionalProperties={})},
+                    requests={memory=Quantity(amount=8Gi, format=null, additionalProperties={}), cpu=Quantity(amount=4500m, format=null, additionalProperties={})},
+                    additionalProperties={}
+                ),
+                securityContext=SecurityContext(
+                    allowPrivilegeEscalation=null, capabilities=null, privileged=false, procMount=null,
+                    readOnlyRootFilesystem=null, runAsGroup=null, runAsNonRoot=null, runAsUser=null,
+                    seLinuxOptions=null, additionalProperties={}
+                ),
+                stdin=null,
+                stdinOnce=null,
+                terminationMessagePath=null,
+                terminationMessagePolicy=null,
+                tty=true,
+                volumeDevices=[],
+                volumeMounts=[
+                    VolumeMount(mountPath=/cache, mountPropagation=null, name=volume-0, readOnly=false, subPath=null, subPathExpr=null, additionalProperties={}),
+                    VolumeMount(mountPath=/etc/node, mountPropagation=null, name=volume-1, readOnly=false, subPath=null, subPathExpr=null, additionalProperties={}),
+                    VolumeMount(mountPath=/home/jenkins, mountPropagation=null, name=workspace-volume, readOnly=false, subPath=null, subPathExpr=null, additionalProperties={})
+                ],
+                workingDir=/home/jenkins,
+                additionalProperties={}
+            ),
+            Container(
+                args=[],
+                command=[],
+                env=[
+                    EnvVar(name=JENKINS_SECRET, value=1234, valueFrom=null, additionalProperties={}),
+                    EnvVar(name=JENKINS_AGENT_NAME, value=jenkins-agent-jmcfr, valueFrom=null, additionalProperties={}),
+                    EnvVar(name=JENKINS_NAME, value=jenkins-agent-jmcfr, valueFrom=null, additionalProperties={}),
+                    EnvVar(name=JENKINS_AGENT_WORKDIR, value=/home/jenkins/agent, valueFrom=null, additionalProperties={}),
+                    EnvVar(name=JENKINS_URL, value=http://4.3.2.1:8080/, valueFrom=null, additionalProperties={})
+                ],
+                envFrom=[],
+                image=jenkins/jnlp-slave:alpine,
+                imagePullPolicy=null, lifecycle=null, livenessProbe=null, name=jnlp, ports=[], readinessProbe=null,
+                resources=null, securityContext=null, stdin=null, stdinOnce=null, terminationMessagePath=null,
+                terminationMessagePolicy=null, tty=null, volumeDevices=[],
+                volumeMounts=[
+                    VolumeMount(mountPath=/cache, mountPropagation=null, name=volume-0, readOnly=false, subPath=null, subPathExpr=null, additionalProperties={}),
+                    VolumeMount(mountPath=/etc/node, mountPropagation=null, name=volume-1, readOnly=false, subPath=null, subPathExpr=null, additionalProperties={}),
+                    VolumeMount(mountPath=/home/jenkins/agent, mountPropagation=null, name=workspace-volume, readOnly=false, subPath=null, subPathExpr=null, additionalProperties={})
+                ],
+                workingDir=null,
+                additionalProperties={}
+            )
+        ],
+        dnsConfig=null,
+        dnsPolicy=null,
+        enableServiceLinks=null,
+        hostAliases=[],
+        hostIPC=null,
+        hostNetwork=null,
+        hostPID=null,
+        hostname=null,
+        imagePullSecrets=[],
+        initContainers=[],
+        nodeName=null,
+        nodeSelector={jenkins-agent=true},
+        priority=null,
+        priorityClassName=null,
+        readinessGates=[],
+        restartPolicy=Never,
+        runtimeClassName=null,
+        schedulerName=null,
+        securityContext=null,
+        serviceAccount=xyz,
+        serviceAccountName=null,
+        shareProcessNamespace=null,
+        subdomain=null,
+        terminationGracePeriodSeconds=null,
+        tolerations=[],
+        volumes=[
+            Volume(
+                hostPath=HostPathVolumeSource(path=/cache, type=null, additionalProperties={}),
+                name=volume-0,
+                additionalProperties={}
+            ),
+            Volume(
+                hostPath=HostPathVolumeSource(path=/etc/hostname, type=null, additionalProperties={}),
+                name=volume-1,
+                additionalProperties={}
+            ),
+            Volume(
+                emptyDir=EmptyDirVolumeSource(medium=Memory, sizeLimit=null, additionalProperties={}),
+                name=workspace-volume,
+                additionalProperties={}
+            )
+        ],
+        additionalProperties={}),
+        status=null,
+        additionalProperties={})
+Aug 08, 2019 5:12:37 PM FINE org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher
+Creating Pod: jenkins-builds/jenkins-agent-jmcfr
+Aug 08, 2019 5:12:37 PM INFO org.csanchez.jenkins.plugins.kubernetes.KubernetesLauncher launch
+Created Pod: jenkins-builds/jenkins-agent-ntf3f

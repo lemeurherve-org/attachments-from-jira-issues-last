@@ -1,0 +1,86 @@
+Index: GrailsBuilder.java
+===================================================================
+--- GrailsBuilder.java	(revision 39417)
++++ GrailsBuilder.java	(working copy)
+@@ -30,6 +30,8 @@
+ 
+ public class GrailsBuilder extends Builder {
+ 
++    private static final String quote = "\"";
++
+     private final String targets;
+     private final String name;
+     private String grailsWorkDir;
+@@ -233,14 +235,55 @@
+         binding.setVariable("env", env);
+         binding.setVariable("sys", System.getProperties());
+         GroovyShell shell = new GroovyShell(binding);
+-        Object result = shell.evaluate("return \"" + target + "\"");
++
++        // make sure the target is in quotes
++        String quotedTarget = getQuotedTarget(target);
++
++        Object result = shell.evaluate("return " + quotedTarget);
+         if (result == null) {
+             return target;
+         } else {
+-            return result.toString().trim();
++            String trimmedResult = result.toString().trim();
++
++            // if the original target was passed in with quotes, make sure the result is returned in quotes
++            return isQuoted(target) ? createQuote(trimmedResult) : trimmedResult;
+         }
+     }
+ 
++    /**
++     * Helper method that determines if a target is surrounded by quotes
++     * @param target the target to check
++     * @return true if the target string is surrounded by quotes, false otherwise
++     */
++    static boolean isQuoted(String target) {
++
++        boolean hasQuotes = target.substring(0, 1).compareTo(quote) == 0 &&
++                            target.substring(target.length() - 1).compareTo(quote) == 0;
++
++        return hasQuotes;
++    }
++
++    /**
++     * Gets a the target surrounded by quotes. If it is already surrounded by quotes, this won't add more quotes.
++     * @param target the target you wish to ensure is surrounded by quotes
++     * @return the target string, surrounded by quotes
++     */
++    static String getQuotedTarget(String target) {
++
++        String quotedTarget = isQuoted(target) ? target : createQuote(target);
++
++        return quotedTarget;
++    }
++
++    /**
++     * Surrounds the given string with quotes
++     * @param str the string to surround with quotes
++     * @return the given string with quotes around it
++     */
++    static String createQuote(String str) {
++        return quote + str + quote;
++    }
++
+     protected List<String[]> getTargetsToRun() {
+         List<String[]> targetsToRun = new ArrayList<String[]>();
+         if(forceUpgrade) {
+@@ -256,6 +299,14 @@
+                 String[] targets = jsapResult.getStringArray("targets");
+                 for (String targetAndArgs : targets) {
+                     String[] pieces = targetAndArgs.split(" ");
++
++                    // get rid of the escape characters
++                    List<String> unescapedPieces = new ArrayList<String>();
++                    for (String piece : pieces) {
++                        String unescapedPiece = piece.replace("\\\\\\\"", "\"");
++                        unescapedPieces.add(unescapedPiece);
++                    }
++                    unescapedPieces.toArray(pieces);
+                     targetsToRun.add(pieces);
+                 }
+             } catch (Exception e) {

@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+  <version>1.0</version>
+  <numExecutors>2</numExecutors>
+  <mode>NORMAL</mode>
+  <useSecurity>true</useSecurity>
+  <authorizationStrategy class="hudson.security.AuthorizationStrategy$Unsecured"/>
+  <securityRealm class="hudson.security.PAMSecurityRealm">
+    <serviceName>sshd</serviceName>
+  </securityRealm>
+  <jdks>
+    <jdk>
+      <name>cos05build_default</name>
+      <home>/usr/java</home>
+    </jdk>
+    <jdk>
+      <name>COSO_jdk-1.6.0</name>
+      <home>/export/build_env/hotd-env/SunOS/i386/jdk1.6.0_07</home>
+    </jdk>
+  </jdks>
+  <clouds/>
+  <slaves>
+    <slave>
+      <name>cos05build-s10</name>
+      <description>Solaris 10 x86 Builder</description>
+      <remoteFS>/export/ciBuilder/Hudson</remoteFS>
+      <numExecutors>2</numExecutors>
+      <mode>EXCLUSIVE</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.slaves.JNLPLauncher"/>
+      <label>solaris solaris-10 solaris-10-x86</label>
+      <nodeProperties>
+        <hudson.slaves.EnvironmentVariablesNodeProperty>
+          <envVars serialization="custom">
+            <unserializable-parents/>
+            <tree-map>
+              <default>
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
+              </default>
+              <int>3</int>
+              <string>BE_TOOLS</string>
+              <string>/export/build_env/hotd-env</string>
+              <string>PATH</string>
+              <string>$SUNWSPRO/bin:/export/build_env/bin:/usr/ccs/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/sfw/bin</string>
+              <string>SUNWSPRO</string>
+              <string>/export/build_env/hotd-env/SUNWspro-i386/SS10/SUNWspro</string>
+            </tree-map>
+          </envVars>
+        </hudson.slaves.EnvironmentVariablesNodeProperty>
+        <hudson.tools.ToolLocationNodeProperty>
+          <locations>
+            <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+              <type>hudson.model.JDK$DescriptorImpl</type>
+              <name>COSO_jdk-1.6.0</name>
+              <home>/export/build_env/hotd-env/SunOS/i386/jdk1.6.0_07</home>
+            </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+            <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+              <type>hudson.tasks.Ant$AntInstallation$DescriptorImpl</type>
+              <name>COSO_ant-1.7.0</name>
+              <home>/export/build_env/hotd-env/apache-ant-1.7.0</home>
+            </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          </locations>
+        </hudson.tools.ToolLocationNodeProperty>
+      </nodeProperties>
+    </slave>
+    <slave>
+      <name>cos05build-linux</name>
+      <description>Linux RHEL 5 Builder</description>
+      <remoteFS>/export/ciBuilder/Hudson</remoteFS>
+      <numExecutors>1</numExecutors>
+      <mode>EXCLUSIVE</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.slaves.JNLPLauncher"/>
+      <label>linux linux-rhel5 linux-rhel5-x86</label>
+      <nodeProperties>
+        <hudson.slaves.EnvironmentVariablesNodeProperty>
+          <envVars serialization="custom">
+            <unserializable-parents/>
+            <tree-map>
+              <default>
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
+              </default>
+              <int>2</int>
+              <string>JAVA_HOME</string>
+              <string>/export/build_env/hotd-env/Linux/i386/jdk1.6.0_07</string>
+              <string>PATH</string>
+              <string>$JAVA_HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+            </tree-map>
+          </envVars>
+        </hudson.slaves.EnvironmentVariablesNodeProperty>
+        <hudson.tools.ToolLocationNodeProperty>
+          <locations>
+            <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+              <type>hudson.model.JDK$DescriptorImpl</type>
+              <name>COSO_jdk-1.6.0</name>
+              <home>/export/build_env/hotd-env/Linux/i386/jdk1.6.0_07</home>
+            </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+            <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+              <type>hudson.tasks.Ant$AntInstallation$DescriptorImpl</type>
+              <name>COSO_ant-1.7.0</name>
+              <home>/export/build_env/hotd-env/apache-ant-1.7.0</home>
+            </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          </locations>
+        </hudson.tools.ToolLocationNodeProperty>
+      </nodeProperties>
+    </slave>
+    <slave>
+      <name>cos05lab22</name>
+      <description>Solaris 10 Sparc Builder</description>
+      <remoteFS>/export/ciBuilder/Hudson</remoteFS>
+      <numExecutors>1</numExecutors>
+      <mode>EXCLUSIVE</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.slaves.JNLPLauncher"/>
+      <label>solaris solaris-10 solaris-10-sparc</label>
+      <nodeProperties>
+        <hudson.slaves.EnvironmentVariablesNodeProperty>
+          <envVars serialization="custom">
+            <unserializable-parents/>
+            <tree-map>
+              <default>
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
+              </default>
+              <int>4</int>
+              <string>BE_TOOLS</string>
+              <string>/export/build_env/hotd-env</string>
+              <string>COSO_LOC</string>
+              <string>/export/build_env</string>
+              <string>PATH</string>
+              <string>$SUNWSPRO/bin:/export/build_env/bin:/usr/ccs/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+              <string>SUNWSPRO</string>
+              <string>$BE_TOOLS/SUNWspro/SS10/SUNWspro</string>
+            </tree-map>
+          </envVars>
+        </hudson.slaves.EnvironmentVariablesNodeProperty>
+        <hudson.tools.ToolLocationNodeProperty>
+          <locations>
+            <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+              <type>hudson.model.JDK$DescriptorImpl</type>
+              <name>COSO_jdk-1.6.0</name>
+              <home>/export/build_env/hotd-env/SunOS/sparc/jdk1.6.0_07</home>
+            </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+            <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+              <type>hudson.tasks.Ant$AntInstallation$DescriptorImpl</type>
+              <name>COSO_ant-1.7.0</name>
+              <home>/export/build_env/hotd-env/apache-ant-1.7.0</home>
+            </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          </locations>
+        </hudson.tools.ToolLocationNodeProperty>
+      </nodeProperties>
+    </slave>
+    <slave>
+      <name>cos05lab23</name>
+      <description>Solaris 10 Sparc Builder</description>
+      <remoteFS>/export/ciBuilder/Hudson</remoteFS>
+      <numExecutors>1</numExecutors>
+      <mode>EXCLUSIVE</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.slaves.JNLPLauncher"/>
+      <label>solaris solaris-10 solaris-10-sparc</label>
+      <nodeProperties>
+        <hudson.slaves.EnvironmentVariablesNodeProperty>
+          <envVars serialization="custom">
+            <unserializable-parents/>
+            <tree-map>
+              <default>
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
+              </default>
+              <int>4</int>
+              <string>BE_TOOLS</string>
+              <string>/export/build_env/hotd-env</string>
+              <string>COSO_LOC</string>
+              <string>/export/build_env</string>
+              <string>PATH</string>
+              <string>$SUNWSPRO/bin:/export/build_env/bin:/usr/ccs/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+              <string>SUNWSPRO</string>
+              <string>$BE_TOOLS/SUNWspro/SS10/SUNWspro</string>
+            </tree-map>
+          </envVars>
+        </hudson.slaves.EnvironmentVariablesNodeProperty>
+        <hudson.tools.ToolLocationNodeProperty>
+          <locations>
+            <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+              <type>hudson.model.JDK$DescriptorImpl</type>
+              <name>COSO_jdk-1.6.0</name>
+              <home>/export/build_env/hotd-env/SunOS/sparc/jdk1.6.0_07</home>
+            </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+            <hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+              <type>hudson.tasks.Ant$AntInstallation$DescriptorImpl</type>
+              <name>COSO_ant-1.7.0</name>
+              <home>/export/build_env/hotd-env/apache-ant-1.7.0</home>
+            </hudson.tools.ToolLocationNodeProperty_-ToolLocation>
+          </locations>
+        </hudson.tools.ToolLocationNodeProperty>
+      </nodeProperties>
+    </slave>
+  </slaves>
+  <quietPeriod>5</quietPeriod>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>All</name>
+    </hudson.model.AllView>
+  </views>
+  <primaryView>All</primaryView>
+  <slaveAgentPort>0</slaveAgentPort>
+  <label>solaris solaris-nv solaris-nv-x86</label>
+  <nodeProperties/>
+  <globalNodeProperties>
+    <hudson.slaves.EnvironmentVariablesNodeProperty>
+      <envVars serialization="custom">
+        <unserializable-parents/>
+        <tree-map>
+          <default>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../../../../slaves/slave[3]/nodeProperties/hudson.slaves.EnvironmentVariablesNodeProperty/envVars/tree-map/default/comparator"/>
+          </default>
+          <int>4</int>
+          <string>BE_TOOLS</string>
+          <string>/export/build_env/hotd-env</string>
+          <string>COSO_LOC</string>
+          <string>/export/build_env</string>
+          <string>PATH</string>
+          <string>$SUNWSPRO/bin:/export/build_env/bin:/usr/ccs/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/sfw/bin</string>
+          <string>SUNWSPRO</string>
+          <string>/export/build_env/hotd-env/SUNWspro-i386/SS10/SUNWspro</string>
+        </tree-map>
+      </envVars>
+    </hudson.slaves.EnvironmentVariablesNodeProperty>
+  </globalNodeProperties>
+  <disabledAdministrativeMonitors>
+    <string>hudson.os.solaris.ZFSInstaller</string>
+  </disabledAdministrativeMonitors>
+</hudson>

@@ -1,0 +1,29 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command:
+    - cat
+    tty: true
+"""
+    }
+  }
+  stages {
+    stage('Do stuff') {
+      environment {
+        FOO="\$BAH"
+      }
+      steps {
+        container('busybox') {
+          sh 'echo "FOO=$FOO"'
+        }
+      }
+    }
+  }
+}

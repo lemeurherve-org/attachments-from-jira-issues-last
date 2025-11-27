@@ -1,0 +1,26 @@
+pipeline {
+    agent none
+    stages {
+        stage('Test') {
+			steps {
+				script {
+					def testStages = [:]
+					testStages['stage 1'] = createStage('stage 1')
+					testStages['stage 2'] = createStage('stage 2')
+					testStages['stage 3'] = createStage('stage 3')
+					parallel testStages
+				}
+			}
+        }
+    }
+}
+
+def createStage(String stageName) {
+	return {
+		node(label: 'small') {
+			stage(stageName) {
+				echo 'hello'
+			}
+		}
+	}
+}

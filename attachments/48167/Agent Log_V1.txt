@@ -1,0 +1,106 @@
+ENTERPRISE SEARCH_ALL - RUi CHROME 
+
+Scenario - TRIGGER_BASIC_ENTERPRISE_SEARCH_ALL_FOR_2356
+SERVER TIME = 4.657 in 1908c3 vs 4.907 sec in 1911c1
+client delay = 4.828 sec Vs 5.159 sec
+
+ENTERPRISE SEARCH_ALL - RUi IE
+scenario - TRIGGER_ADVANCED_ENTERPRISE_SEARCH_ALL_FOR_DESCRIPTION_PERFORMANCE
+SERVER TIME = 0.501sec in 1908c3 vs 0.54 sec in 1911c1
+client delay = 0.711 sec Vs 0.591 sec
+
+
+
+Due to changes to the Pillar or Area for business objects, Foundation & Intergartion (Platform) objects in 1908 is compared with B2B pillar in 1911 as many of the objects under Platform fall under B2B.  In 1911, Platform pillar only has Enterprise Search, where the results are comparable with 1908 C3
+
+
+
+
+RUI+CHROME
+
+SEARCH_OVS_ACCOUNT_FOR_OPPORTUNITIES  (not an issue)
+server delay = 0.16 sec vs 0.181 sec now
+
+CLICK_ON_ADD_PRODUCT_LIST_FOR_SALESORDERS (not an issue)
+server delay = 0.267 sec vs 0.283 sec now
+
+OPEN_QC_SALESORDERS (not an issue)
+server delay = 0.363 sec vs 0.382 sec now
+
+OPEN_TI_SALESORDERS (not an issue)
+server delay = 0.727 sec vs 0.75 sec now
+
+SELECT_FROM_OVS_SALESUNITS_FOR_SALESORDERS  (create a ticket)
+server delay = 0.413 sec vs 0.735 sec now
+
+
+SELECT_FROM_OVS_ACCOUNT_FOR_CONTACTS
+server delay = 0.45 sec vs 0.635 sec now (CREATE A TICKET)
+
+
+OPEN_TI_EMAILS
+server delay = 0.514 sec vs 0.643 sec now (CREATE A TICKET if really an issue)
+
+
+CLICK_ON_TI_ADDNEW ITEM_FOR_IBASE
+server delay = 0.074 sec vs 1.775 sec now (CREATE A TICKET)
+
+
+OPEN_OVS_PRODUCT_FOR_IBASE
+server delay = 0.764 sec vs 0.913 sec now (CREATE A TICKET if really an issue)
+
+CLOSE_CONTAINER_CALENDAR has 6 roundtrips
+
+NAVIGATE_TO_OVERVIEW_ON_TASKS has 3 roundtrips with server delay = 2.26 sec
+
+
+Jul 31, 2019 12:13:29 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Locating server among [http://jentstwin1210.pet.c.eu-de-2.cloud.sap:8080/]
+Jul 31, 2019 12:13:29 PM org.jenkinsci.remoting.engine.JnlpAgentEndpointResolver resolve
+INFO: Remoting server accepts the following protocols: [JNLP4-connect, Ping]
+Jul 31, 2019 12:13:29 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Agent discovery successful
+  Agent address: jentstwin1210.pet.c.eu-de-2.cloud.sap
+  Agent port:    35153
+  Identity:      48:9f:b3:d4:f5:81:45:97:ff:fa:a9:aa:68:ed:a2:d9
+Jul 31, 2019 12:13:29 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Handshaking
+Jul 31, 2019 12:13:29 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connecting to jentstwin1210.pet.c.eu-de-2.cloud.sap:35153
+Jul 31, 2019 12:13:29 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Trying protocol: JNLP4-connect
+Jul 31, 2019 12:13:29 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Remote identity confirmed: 48:9f:b3:d4:f5:81:45:97:ff:fa:a9:aa:68:ed:a2:d9
+Jul 31, 2019 12:13:30 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Connected
+Jul 31, 2019 12:18:50 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Terminated
+Jul 31, 2019 12:18:50 PM hudson.remoting.UserRequest perform
+WARNING: LinkageError while performing UserRequest:hudson.Launcher$RemoteLauncher$KillTask@1b3053d
+java.lang.NoClassDefFoundError: org/acegisecurity/context/SecurityContext
+	at hudson.model.Computer.<clinit>(Computer.java:1363)
+	at hudson.util.ProcessTree.get(ProcessTree.java:415)
+	at hudson.Launcher$RemoteLauncher$KillTask.call(Launcher.java:1103)
+	at hudson.Launcher$RemoteLauncher$KillTask.call(Launcher.java:1094)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:212)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:54)
+	at hudson.remoting.Request$2.run(Request.java:369)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:93)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.ClassNotFoundException: org.acegisecurity.context.SecurityContext
+	at java.net.URLClassLoader.findClass(Unknown Source)
+	at hudson.remoting.RemoteClassLoader.findClass(RemoteClassLoader.java:171)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	... 13 more
+
+Jul 31, 2019 12:18:50 PM hudson.remoting.Request$2 run
+INFO: Failed to send back a reply to the request hudson.remoting.Request$2@11e1df71: hudson.remoting.ChannelClosedException: Channel "hudson.remoting.Channel@4a51fcab:JNLP4-connect connection to jentstwin1210.pet.c.eu-de-2.cloud.sap/10.236.136.6:35153": channel is already closed
+Jul 31, 2019 12:19:00 PM hudson.remoting.jnlp.Main$CuiListener status
+INFO: Performing onReconnect operation.
+Jul 31, 2019 12:19:00 PM jenkins.slaves.restarter.JnlpSlaveRestarterInstaller$FindEffectiveRestarters$1 onReconnect
+INFO: Restarting agent via jenkins.slaves.restarter.WinswSlaveRestarter@2e099a1e

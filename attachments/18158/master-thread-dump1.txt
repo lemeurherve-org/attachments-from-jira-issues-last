@@ -1,0 +1,1025 @@
+2008-05-02 12:34:20
+Full thread dump Java HotSpot(TM) Server VM (10.0-b19 mixed mode):
+
+"process reaper" daemon prio=10 tid=0x08d07800 nid=0x6a62 runnable [0x513ad000..0x513ae130]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.access$500(UNIXProcess.java:20)
+	at java.lang.UNIXProcess$1$1.run(UNIXProcess.java:109)
+
+"Attach Listener" daemon prio=10 tid=0x08252400 nid=0x67ff waiting on condition [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"svn log copier" prio=10 tid=0x4f9f9400 nid=0x64a3 in Object.wait() [0x4dcad000..0x4dcade30]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.io.PipedInputStream.read(PipedInputStream.java:310)
+	- locked <0x892319f0> (a java.io.PipedInputStream)
+	at java.io.PipedInputStream.read(PipedInputStream.java:361)
+	- locked <0x892319f0> (a java.io.PipedInputStream)
+	at java.io.InputStream.read(InputStream.java:85)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:27)
+
+"pool-3-thread-4001" daemon prio=10 tid=0x086ad400 nid=0x62c3 waiting on condition [0x5135c000..0x5135ce30]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x75672ee0> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:198)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:424)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:323)
+	at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:874)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:944)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:906)
+	at java.lang.Thread.run(Thread.java:619)
+
+"pool-3-thread-3998" daemon prio=10 tid=0x08485400 nid=0x6185 waiting on condition [0x4e3fe000..0x4e3ff030]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x75672ee0> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:198)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:424)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:323)
+	at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:874)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:944)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:906)
+	at java.lang.Thread.run(Thread.java:619)
+
+"Channel reader thread: remotely launched channel on hudson.remoting.Channel@1ba2ad8:ci-linux-2" prio=10 tid=0x4e4ef800 nid=0x561f in Object.wait() [0x4dafe000..0x4dafee30]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.io.PipedInputStream.read(PipedInputStream.java:310)
+	- locked <0x86226e90> (a java.io.PipedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2249)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2542)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2552)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1297)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"Channel reader thread: remotely launched channel on hudson.remoting.Channel@17206aa:ci-linux-3" prio=10 tid=0x52afe400 nid=0x54df in Object.wait() [0x4dcfe000..0x4dcff1b0]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.io.PipedInputStream.read(PipedInputStream.java:310)
+	- locked <0x859ec758> (a java.io.PipedInputStream)
+	at java.io.PipedInputStream.read(PipedInputStream.java:361)
+	- locked <0x859ec758> (a java.io.PipedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.read(ObjectInputStream.java:2266)
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2279)
+	at java.io.ObjectInputStream$BlockDataInputStream.readUTFBody(ObjectInputStream.java:3019)
+	at java.io.ObjectInputStream$BlockDataInputStream.readUTF(ObjectInputStream.java:2820)
+	at java.io.ObjectInputStream.readString(ObjectInputStream.java:1599)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1320)
+	at java.io.ObjectInputStream.defaultReadFields(ObjectInputStream.java:1947)
+	at java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:1871)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:1753)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1329)
+	at java.io.ObjectInputStream.readArray(ObjectInputStream.java:1667)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1323)
+	at java.io.ObjectInputStream.defaultReadFields(ObjectInputStream.java:1947)
+	at java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:1871)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:1753)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1329)
+	at java.io.ObjectInputStream.defaultReadFields(ObjectInputStream.java:1947)
+	at java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:1871)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:1753)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1329)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"Channel reader thread: remotely launched channel on hudson.remoting.Channel@86a285:ci-win-1" prio=10 tid=0x510df400 nid=0x2b57 in Object.wait() [0x4e15c000..0x4e15d030]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.io.PipedInputStream.read(PipedInputStream.java:310)
+	- locked <0x84dc0058> (a java.io.PipedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2249)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2542)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2552)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1297)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"Channel reader thread: remotely launched channel on hudson.remoting.Channel@1ca9cfc:ci-linux-4" prio=10 tid=0x5009c800 nid=0x27c0 in Object.wait() [0x4eb5c000..0x4eb5cfb0]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.io.PipedInputStream.read(PipedInputStream.java:310)
+	- locked <0x84d724a8> (a java.io.PipedInputStream)
+	at java.io.PipedInputStream.read(PipedInputStream.java:361)
+	- locked <0x84d724a8> (a java.io.PipedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.read(ObjectInputStream.java:2266)
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2279)
+	at java.io.ObjectInputStream$BlockDataInputStream.readUTFBody(ObjectInputStream.java:3019)
+	at java.io.ObjectInputStream$BlockDataInputStream.readUTF(ObjectInputStream.java:2820)
+	at java.io.ObjectInputStream.readUTF(ObjectInputStream.java:1051)
+	at java.io.ObjectStreamClass.readNonProxy(ObjectStreamClass.java:616)
+	at java.io.ObjectInputStream.readClassDescriptor(ObjectInputStream.java:809)
+	at java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1565)
+	at java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1496)
+	at java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1583)
+	at java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1496)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:1732)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1329)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"pool-6-thread-2" prio=10 tid=0x500d2800 nid=0x6d34 waiting on condition [0x501fe000..0x501fef30]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x7c1431b8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:158)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1925)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:358)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:946)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:906)
+	at java.lang.Thread.run(Thread.java:619)
+
+"pool-6-thread-1" prio=10 tid=0x50045800 nid=0x6d33 waiting on condition [0x4e7ad000..0x4e7adfb0]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x7c1431b8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:158)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1925)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:358)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:946)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:906)
+	at java.lang.Thread.run(Thread.java:619)
+
+"Channel reader thread: ci-win-1" daemon prio=10 tid=0x082f5000 nid=0x69f4 runnable [0x52320000..0x52320eb0]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:199)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:258)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:317)
+	- locked <0x7c13fd80> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.read(ObjectInputStream.java:2266)
+	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2279)
+	at java.io.ObjectInputStream$BlockDataInputStream.readUTFBody(ObjectInputStream.java:3019)
+	at java.io.ObjectInputStream$BlockDataInputStream.readUTF(ObjectInputStream.java:2820)
+	at java.io.ObjectInputStream.readUTF(ObjectInputStream.java:1051)
+	at java.io.ObjectStreamClass.readNonProxy(ObjectStreamClass.java:649)
+	at java.io.ObjectInputStream.readClassDescriptor(ObjectInputStream.java:809)
+	at java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1565)
+	at java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1496)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:1732)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1329)
+	at java.io.ObjectInputStream.defaultReadFields(ObjectInputStream.java:1947)
+	at java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:1871)
+	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:1753)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1329)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"stderr copier for remote agent on ci-win-1" daemon prio=10 tid=0x085fd800 nid=0x69ea runnable [0x4eead000..0x4eeadf30]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:177)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:27)
+
+"process reaper" daemon prio=10 tid=0x08964c00 nid=0x69e6 runnable [0x4d85c000..0x4d85d030]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.UNIXProcess.waitForProcessExit(Native Method)
+	at java.lang.UNIXProcess.access$900(UNIXProcess.java:20)
+	at java.lang.UNIXProcess$1$1.run(UNIXProcess.java:132)
+
+"Channel reader thread: ci-linux-4" daemon prio=10 tid=0x4e4e3c00 nid=0x3326 runnable [0x4ebfe000..0x4ebff0b0]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.Thread.isAlive(Native Method)
+	at java.io.PipedInputStream.checkStateForReceive(PipedInputStream.java:245)
+	at java.io.PipedInputStream.receive(PipedInputStream.java:210)
+	- locked <0x84d724a8> (a java.io.PipedInputStream)
+	at java.io.PipedOutputStream.write(PipedOutputStream.java:132)
+	at java.io.OutputStream.write(OutputStream.java:58)
+	at hudson.remoting.ProxyOutputStream$Chunk.execute(ProxyOutputStream.java:124)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:584)
+
+"stderr copier for remote agent on ci-linux-4" daemon prio=10 tid=0x502b8800 nid=0x3325 runnable [0x4f5fe000..0x4f5ff130]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:177)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:27)
+
+"process reaper" daemon prio=10 tid=0x502b8400 nid=0x3323 runnable [0x4df0c000..0x4df0c1b0]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.UNIXProcess.waitForProcessExit(Native Method)
+	at java.lang.UNIXProcess.access$900(UNIXProcess.java:20)
+	at java.lang.UNIXProcess$1$1.run(UNIXProcess.java:132)
+
+"http-8080-40" daemon prio=10 tid=0x510b8c00 nid=0x2d93 in Object.wait() [0x4df5c000..0x4df5cf30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x7bcc4c00> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-39" daemon prio=10 tid=0x51a08800 nid=0x2d92 in Object.wait() [0x4fbfe000..0x4fbfefb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x7bcc4f68> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-38" daemon prio=10 tid=0x510b7c00 nid=0x2d91 in Object.wait() [0x4eefe000..0x4eeff030]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x7bcce5e8> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-37" daemon prio=10 tid=0x51a09800 nid=0x2d7f in Object.wait() [0x4e35d000..0x4e35d1b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x7bc9d320> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-36" daemon prio=10 tid=0x5004b800 nid=0x2d7e in Object.wait() [0x4f0ad000..0x4f0ade30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x7bc9daf0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-35" daemon prio=10 tid=0x510b8400 nid=0x2d7d in Object.wait() [0x4de69000..0x4de69eb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x7bc9def8> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-34" daemon prio=10 tid=0x50046c00 nid=0x7913 in Object.wait() [0x4dffe000..0x4dfff030]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x7b7d36a8> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"Channel reader thread: ci-linux-4" daemon prio=10 tid=0x08371c00 nid=0x26aa runnable [0x5115c000..0x5115d030]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:199)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x78260568> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2249)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2542)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2552)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1297)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"stderr copier for remote agent on ci-linux-4" daemon prio=10 tid=0x0867e800 nid=0x26a9 runnable [0x4e5fe000..0x4e5ff0b0]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:177)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:27)
+
+"process reaper" daemon prio=10 tid=0x08797000 nid=0x26a7 runnable [0x4e7ff000..0x4e7ff130]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.UNIXProcess.waitForProcessExit(Native Method)
+	at java.lang.UNIXProcess.access$900(UNIXProcess.java:20)
+	at java.lang.UNIXProcess$1$1.run(UNIXProcess.java:132)
+
+"http-8080-33" daemon prio=10 tid=0x08aa6400 nid=0x6453 in Object.wait() [0x4e5ae000..0x4e5ae1b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77e6ee28> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-32" daemon prio=10 tid=0x08c62c00 nid=0x6452 in Object.wait() [0x5015c000..0x5015ce30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77e6eea8> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-31" daemon prio=10 tid=0x089ef000 nid=0x63dd in Object.wait() [0x4e9ff000..0x4e9ff1b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77e33c28> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-30" daemon prio=10 tid=0x089ee800 nid=0x63dc in Object.wait() [0x4e95c000..0x4e95ce30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77e22868> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-29" daemon prio=10 tid=0x08508c00 nid=0x62d3 in Object.wait() [0x523c2000..0x523c2e30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77daf508> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-28" daemon prio=10 tid=0x08507800 nid=0x62d2 in Object.wait() [0x526ec000..0x526eceb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77dafaf8> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-27" daemon prio=10 tid=0x08506c00 nid=0x62d1 in Object.wait() [0x52464000..0x52464f30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77dafe80> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-26" daemon prio=10 tid=0x08506800 nid=0x62d0 in Object.wait() [0x511ad000..0x511adfb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77db0470> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-25" daemon prio=10 tid=0x0878c800 nid=0x5b7e in Object.wait() [0x4e9ad000..0x4e9ae0b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77d77d30> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-24" daemon prio=10 tid=0x0878b800 nid=0x5b7d in Object.wait() [0x4fdae000..0x4fdae130]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77d77c50> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-23" daemon prio=10 tid=0x0878a800 nid=0x5b7c in Object.wait() [0x4ebae000..0x4ebae1b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77d77db0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-22" daemon prio=10 tid=0x0878a400 nid=0x5b7b in Object.wait() [0x52506000..0x52506e30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77d77e30> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-21" daemon prio=10 tid=0x08789c00 nid=0x5b7a in Object.wait() [0x525a8000..0x525a8eb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77d77eb0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-20" daemon prio=10 tid=0x08789800 nid=0x5b73 in Object.wait() [0x52cae000..0x52cae130]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x77d0a630> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-19" daemon prio=10 tid=0x08557000 nid=0x5e32 in Object.wait() [0x517b8000..0x517bb1b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.Request.call(Request.java:88)
+	- locked <0x86a7e3a8> (a hudson.remoting.UserRequest)
+	at hudson.remoting.Channel.call(Channel.java:390)
+	at hudson.util.RemotingDiagnostics.getThreadDump(RemotingDiagnostics.java:40)
+	at hudson.maven.MavenProbeAction.getThreadDump(MavenProbeAction.java:72)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.commons.jexl.util.PropertyExecutor.execute(PropertyExecutor.java:125)
+	at org.apache.commons.jexl.util.introspection.UberspectImpl$VelGetterImpl.invoke(UberspectImpl.java:315)
+	at org.apache.commons.jexl.parser.ASTArrayAccess.evaluateExpr(ASTArrayAccess.java:185)
+	at org.apache.commons.jexl.parser.ASTIdentifier.execute(ASTIdentifier.java:74)
+	at org.apache.commons.jexl.parser.ASTReference.execute(ASTReference.java:83)
+	at org.apache.commons.jexl.parser.ASTReference.value(ASTReference.java:57)
+	at org.apache.commons.jexl.parser.ASTReferenceExpression.value(ASTReferenceExpression.java:51)
+	at org.apache.commons.jexl.ExpressionImpl.evaluate(ExpressionImpl.java:80)
+	at hudson.ExpressionFactory2$JexlExpression.evaluate(ExpressionFactory2.java:71)
+	at org.apache.commons.jelly.expression.ExpressionSupport.evaluateRecurse(ExpressionSupport.java:61)
+	at org.apache.commons.jelly.expression.ExpressionSupport.evaluateAsIterator(ExpressionSupport.java:94)
+	at org.apache.commons.jelly.tags.core.ForEachTag.doTag(ForEachTag.java:89)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.tags.define.InvokeBodyTag.doTag(InvokeBodyTag.java:91)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.tags.core.IfTag.doTag(IfTag.java:42)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.tags.core.JellyTag.doTag(JellyTag.java:45)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.apache.commons.jelly.impl.DynamicTag.doTag(DynamicTag.java:80)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.tags.define.InvokeBodyTag.doTag(InvokeBodyTag.java:91)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+	at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+	at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+	at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+	at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+	at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.tags.core.JellyTag.doTag(JellyTag.java:45)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.apache.commons.jelly.impl.DynamicTag.doTag(DynamicTag.java:80)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+	at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+	at org.apache.commons.jelly.tags.core.JellyTag.doTag(JellyTag.java:45)
+	at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+	at org.kohsuke.stapler.jelly.JellyClassTearOff.invokeScript(JellyClassTearOff.java:78)
+	at org.kohsuke.stapler.MetaClass$3.dispatch(MetaClass.java:119)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:416)
+	at org.kohsuke.stapler.MetaClass$15.dispatch(MetaClass.java:369)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:416)
+	at org.kohsuke.stapler.MetaClass$15.dispatch(MetaClass.java:369)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:416)
+	at org.kohsuke.stapler.MetaClass$9.doDispatch(MetaClass.java:248)
+	at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:30)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:416)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:352)
+	at org.kohsuke.stapler.Stapler.service(Stapler.java:112)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:803)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:52)
+	at hudson.security.UnwrapSecurityExceptionFilter.doFilter(UnwrapSecurityExceptionFilter.java:28)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:55)
+	at org.acegisecurity.ui.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:166)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:55)
+	at org.acegisecurity.providers.anonymous.AnonymousProcessingFilter.doFilter(AnonymousProcessingFilter.java:125)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:55)
+	at hudson.security.BasicAuthenticationFilter.doFilter(BasicAuthenticationFilter.java:89)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:55)
+	at hudson.security.ChainedServletFilter.doFilter(ChainedServletFilter.java:44)
+	at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:82)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:175)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:433)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:286)
+	at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:844)
+	at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:447)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-18" daemon prio=10 tid=0x086a5c00 nid=0x5e31 in Object.wait() [0x51769000..0x51769e30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x7735d108> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-17" daemon prio=10 tid=0x089b2c00 nid=0x2f6 in Object.wait() [0x4f0fe000..0x4f0fef30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76bfa7f0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-16" daemon prio=10 tid=0x08a29400 nid=0x2f5 in Object.wait() [0x4f35c000..0x4f35cfb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76bf1890> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-15" daemon prio=10 tid=0x08522c00 nid=0x27c in Object.wait() [0x4f3fe000..0x4f3ff130]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76bc7728> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-14" daemon prio=10 tid=0x083a2400 nid=0x239 in Object.wait() [0x4f55d000..0x4f55d1b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76bbfa90> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-13" daemon prio=10 tid=0x084ff000 nid=0x238 in Object.wait() [0x513fe000..0x513fee30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76bbfbd0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-12" daemon prio=10 tid=0x082e2400 nid=0x237 in Object.wait() [0x4f5ad000..0x4f5adeb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76b8d8e0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-11" daemon prio=10 tid=0x08525000 nid=0x7853 in Object.wait() [0x4fbad000..0x4fbae130]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76b733d0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-10" daemon prio=10 tid=0x08612400 nid=0x7852 in Object.wait() [0x4fdff000..0x4fdff1b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76b724d0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-9" daemon prio=10 tid=0x085a1c00 nid=0x7851 in Object.wait() [0x4fd5c000..0x4fd5ce30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76b72c50> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-8" daemon prio=10 tid=0x085a1400 nid=0x7850 in Object.wait() [0x5264a000..0x5264aeb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76b73978> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-7" daemon prio=10 tid=0x08a6f400 nid=0x784f in Object.wait() [0x503cf000..0x503cff30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x76b73f20> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-6" daemon prio=10 tid=0x089d9000 nid=0x3f4a in Object.wait() [0x5037e000..0x5037eeb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x769236f8> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"Timer-27" daemon prio=10 tid=0x08503800 nid=0x33ac in Object.wait() [0x5180b000..0x5180c130]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.util.TimerThread.mainLoop(Timer.java:509)
+	- locked <0x762f9a58> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Timer.java:462)
+
+"Java2D Disposer" daemon prio=10 tid=0x53398800 nid=0x16c7 in Object.wait() [0x511fe000..0x511fefb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:116)
+	- locked <0x75f9ff80> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:132)
+	at sun.java2d.Disposer.run(Disposer.java:125)
+	at java.lang.Thread.run(Thread.java:619)
+
+"Channel reader thread: ci-linux-3" daemon prio=10 tid=0x531e7c00 nid=0x15e5 runnable [0x5185c000..0x5185ceb0]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:199)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x7565b9e8> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2249)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2542)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2552)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1297)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"Channel reader thread: ci-linux-2" daemon prio=10 tid=0x089bcc00 nid=0x15e4 runnable [0x518ad000..0x518adf30]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:199)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x75672e40> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2249)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2542)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2552)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1297)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:351)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"stderr copier for remote agent on ci-linux-3" daemon prio=10 tid=0x53dfc800 nid=0x15e1 runnable [0x53743000..0x537440b0]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:177)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:27)
+
+"stderr copier for remote agent on ci-linux-2" daemon prio=10 tid=0x087d1000 nid=0x15e0 runnable [0x5227e000..0x5227f130]
+   java.lang.Thread.State: RUNNABLE
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:177)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:27)
+
+"process reaper" daemon prio=10 tid=0x087d2000 nid=0x15da runnable [0x52371000..0x52371eb0]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.UNIXProcess.waitForProcessExit(Native Method)
+	at java.lang.UNIXProcess.access$900(UNIXProcess.java:20)
+	at java.lang.UNIXProcess$1$1.run(UNIXProcess.java:132)
+
+"process reaper" daemon prio=10 tid=0x08545800 nid=0x15d6 runnable [0x52413000..0x52413fb0]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.UNIXProcess.waitForProcessExit(Native Method)
+	at java.lang.UNIXProcess.access$900(UNIXProcess.java:20)
+	at java.lang.UNIXProcess$1$1.run(UNIXProcess.java:132)
+
+"Executor #0 for ci-win-1" prio=10 tid=0x53073800 nid=0x15d3 in Object.wait() [0x524b5000..0x524b6130]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.Request.call(Request.java:88)
+	- locked <0x84dcc5b8> (a hudson.remoting.UserRequest)
+	at hudson.remoting.Channel.call(Channel.java:390)
+	at hudson.maven.MavenModuleSetBuild$RunnerImpl.doRun(MavenModuleSetBuild.java:298)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:224)
+	at hudson.model.Run.run(Run.java:751)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:189)
+	at hudson.model.ResourceController.execute(ResourceController.java:70)
+	at hudson.model.Executor.run(Executor.java:71)
+
+"Executor #0 for ci-linux-4" prio=10 tid=0x53071400 nid=0x15d1 in Object.wait() [0x52557000..0x52557e30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.Request.call(Request.java:88)
+	- locked <0x84d76ae8> (a hudson.remoting.UserRequest)
+	at hudson.remoting.Channel.call(Channel.java:390)
+	at hudson.maven.MavenModuleSetBuild$RunnerImpl.doRun(MavenModuleSetBuild.java:298)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:224)
+	at hudson.model.Run.run(Run.java:751)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:189)
+	at hudson.model.ResourceController.execute(ResourceController.java:70)
+	at hudson.model.Executor.run(Executor.java:71)
+
+"Executor #0 for ci-linux-3" prio=10 tid=0x53c63000 nid=0x15cf in Object.wait() [0x525f9000..0x525f9f30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.Request.call(Request.java:88)
+	- locked <0x859fffd0> (a hudson.remoting.UserRequest)
+	at hudson.remoting.Channel.call(Channel.java:390)
+	at hudson.maven.MavenModuleSetBuild$RunnerImpl.doRun(MavenModuleSetBuild.java:298)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:224)
+	at hudson.model.Run.run(Run.java:751)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:189)
+	at hudson.model.ResourceController.execute(ResourceController.java:70)
+	at hudson.model.Executor.run(Executor.java:71)
+
+"Executor #0 for ci-linux-2" prio=10 tid=0x53c61c00 nid=0x15cd in Object.wait() [0x5269b000..0x5269c030]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.Request.call(Request.java:88)
+	- locked <0x86231980> (a hudson.remoting.UserRequest)
+	at hudson.remoting.Channel.call(Channel.java:390)
+	at hudson.maven.MavenModuleSetBuild$RunnerImpl.doRun(MavenModuleSetBuild.java:298)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:224)
+	at hudson.model.Run.run(Run.java:751)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:189)
+	at hudson.model.ResourceController.execute(ResourceController.java:70)
+	at hudson.model.Executor.run(Executor.java:71)
+
+"Executor #0 for ci-linux-1" prio=10 tid=0x53c61000 nid=0x15cb in Object.wait() [0x5273d000..0x5273e130]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:28)
+	- locked <0x8913b898> (a hudson.util.OneShotEvent)
+	at hudson.model.Queue.pop(Queue.java:366)
+	at hudson.model.Executor.run(Executor.java:63)
+
+"Executor #0 for master" prio=10 tid=0x531d5000 nid=0x15ca in Object.wait() [0x5278d000..0x5278f1b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at java.lang.UNIXProcess$Gate.waitForExit(UNIXProcess.java:64)
+	- locked <0xaf1c8df0> (a java.lang.UNIXProcess$Gate)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:145)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:65)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:452)
+	at java.lang.Runtime.exec(Runtime.java:593)
+	at java.lang.Runtime.exec(Runtime.java:466)
+	at org.tmatesoft.svn.core.internal.wc.SVNFileUtil.execCommand(SVNFileUtil.java:1088)
+	at org.tmatesoft.svn.core.internal.wc.SVNFileUtil.execCommand(SVNFileUtil.java:1080)
+	at org.tmatesoft.svn.core.internal.wc.SVNFileUtil.isExecutable(SVNFileUtil.java:848)
+	at org.tmatesoft.svn.core.internal.wc.SVNFileUtil.copyFile(SVNFileUtil.java:346)
+	at org.tmatesoft.svn.core.internal.wc.admin.SVNTranslator.translate(SVNTranslator.java:112)
+	at org.tmatesoft.svn.core.internal.wc.admin.SVNTranslator.translate(SVNTranslator.java:84)
+	at org.tmatesoft.svn.core.internal.wc.admin.SVNTranslator.translate(SVNTranslator.java:54)
+	at org.tmatesoft.svn.core.internal.wc.admin.SVNLogRunner.runCommand(SVNLogRunner.java:245)
+	at org.tmatesoft.svn.core.internal.wc.admin.SVNLog.run(SVNLog.java:180)
+	at org.tmatesoft.svn.core.internal.wc.admin.SVNAdminArea.runLogs(SVNAdminArea.java:720)
+	at org.tmatesoft.svn.core.internal.wc.SVNUpdateEditor$SVNDirectoryInfo.runLogs(SVNUpdateEditor.java:859)
+	at org.tmatesoft.svn.core.internal.wc.SVNUpdateEditor.closeDir(SVNUpdateEditor.java:341)
+	at org.tmatesoft.svn.core.internal.wc.SVNCancellableEditor.closeDir(SVNCancellableEditor.java:99)
+	at org.tmatesoft.svn.core.internal.io.dav.handlers.DAVEditorHandler.endElement(DAVEditorHandler.java:268)
+	at org.tmatesoft.svn.core.internal.io.dav.handlers.BasicDAVHandler.endElement(BasicDAVHandler.java:70)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.endElement(AbstractSAXParser.java:601)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanEndElement(XMLDocumentFragmentScannerImpl.java:1772)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2923)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:647)
+	at com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:140)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:508)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:807)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:737)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:107)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1205)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:522)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.readData(HTTPConnection.java:661)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.readData(HTTPConnection.java:626)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPRequest.dispatch(HTTPRequest.java:203)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:288)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:238)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:226)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.doReport(DAVConnection.java:219)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.doReport(DAVConnection.java:211)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVRepository.update(DAVRepository.java:610)
+	at org.tmatesoft.svn.core.wc.SVNUpdateClient.doUpdate(SVNUpdateClient.java:162)
+	at org.tmatesoft.svn.core.wc.SVNUpdateClient.doCheckout(SVNUpdateClient.java:325)
+	at hudson.scm.SubversionSCM$CheckOutTask.invoke(SubversionSCM.java:406)
+	at hudson.scm.SubversionSCM$CheckOutTask.invoke(SubversionSCM.java:352)
+	at hudson.FilePath.act(FilePath.java:312)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:346)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:299)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:566)
+	at hudson.model.AbstractBuild$AbstractRunner.checkout(AbstractBuild.java:244)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:218)
+	at hudson.model.Run.run(Run.java:751)
+	at hudson.model.Build.run(Build.java:102)
+	at hudson.model.ResourceController.execute(ResourceController.java:70)
+	at hudson.model.Executor.run(Executor.java:71)
+
+"http-8080-5" daemon prio=10 tid=0x089f8000 nid=0x15c9 in Object.wait() [0x527df000..0x527dfe30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x755f96c0> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-4" daemon prio=10 tid=0x08aae400 nid=0x15c8 in Object.wait() [0x52830000..0x52830eb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x753812a8> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-3" daemon prio=10 tid=0x0826f400 nid=0x15c7 in Object.wait() [0x528a2000..0x528a2f30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x75381898> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-2" daemon prio=10 tid=0x089fb000 nid=0x15c6 in Object.wait() [0x528f3000..0x528f3fb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x75381e88> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-1" daemon prio=10 tid=0x087b7800 nid=0x15c5 in Object.wait() [0x52c5c000..0x52c5d030]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.await(JIoEndpoint.java:416)
+	- locked <0x75388270> (a org.apache.tomcat.util.net.JIoEndpoint$Worker)
+	at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:442)
+	at java.lang.Thread.run(Thread.java:619)
+
+"Thread-8" prio=10 tid=0x088fc000 nid=0x15c4 in Object.wait() [0x532ad000..0x532ae0b0]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at hudson.model.ViewJob$ReloadThread.getNext(ViewJob.java:136)
+	- locked <0x752f7730> (a java.util.LinkedHashSet)
+	at hudson.model.ViewJob$ReloadThread.run(ViewJob.java:152)
+
+"TP-Monitor" daemon prio=10 tid=0x08446800 nid=0x15c3 in Object.wait() [0x532ff000..0x532ff130]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at org.apache.tomcat.util.threads.ThreadPool$MonitorRunnable.run(ThreadPool.java:565)
+	- locked <0x752f59b0> (a org.apache.tomcat.util.threads.ThreadPool$MonitorRunnable)
+	at java.lang.Thread.run(Thread.java:619)
+
+"TP-Processor4" daemon prio=10 tid=0x0885cc00 nid=0x15c2 runnable [0x5352d000..0x5352e1b0]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:384)
+	- locked <0x752f5f50> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:453)
+	at java.net.ServerSocket.accept(ServerSocket.java:421)
+	at org.apache.jk.common.ChannelSocket.accept(ChannelSocket.java:306)
+	at org.apache.jk.common.ChannelSocket.acceptConnections(ChannelSocket.java:660)
+	at org.apache.jk.common.ChannelSocket$SocketAcceptor.runIt(ChannelSocket.java:870)
+	at org.apache.tomcat.util.threads.ThreadPool$ControlRunnable.run(ThreadPool.java:690)
+	at java.lang.Thread.run(Thread.java:619)
+
+"TP-Processor3" daemon prio=10 tid=0x0856d400 nid=0x15c1 in Object.wait() [0x5369e000..0x5369ee30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	- waiting on <0x752f4358> (a org.apache.tomcat.util.threads.ThreadPool$ControlRunnable)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.threads.ThreadPool$ControlRunnable.run(ThreadPool.java:662)
+	- locked <0x752f4358> (a org.apache.tomcat.util.threads.ThreadPool$ControlRunnable)
+	at java.lang.Thread.run(Thread.java:619)
+
+"TP-Processor2" daemon prio=10 tid=0x08c6dc00 nid=0x15c0 in Object.wait() [0x537fe000..0x537feeb0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	- waiting on <0x752f4590> (a org.apache.tomcat.util.threads.ThreadPool$ControlRunnable)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.threads.ThreadPool$ControlRunnable.run(ThreadPool.java:662)
+	- locked <0x752f4590> (a org.apache.tomcat.util.threads.ThreadPool$ControlRunnable)
+	at java.lang.Thread.run(Thread.java:619)
+
+"TP-Processor1" daemon prio=10 tid=0x08c6d400 nid=0x15bf in Object.wait() [0x53952000..0x53952f30]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	- waiting on <0x752f5778> (a org.apache.tomcat.util.threads.ThreadPool$ControlRunnable)
+	at java.lang.Object.wait(Object.java:485)
+	at org.apache.tomcat.util.threads.ThreadPool$ControlRunnable.run(ThreadPool.java:662)
+	- locked <0x752f5778> (a org.apache.tomcat.util.threads.ThreadPool$ControlRunnable)
+	at java.lang.Thread.run(Thread.java:619)
+
+"http-8080-Acceptor-0" daemon prio=10 tid=0x53865c00 nid=0x15bd runnable [0x52cfe000..0x52cff030]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:384)
+	- locked <0x74ed24a0> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:453)
+	at java.net.ServerSocket.accept(ServerSocket.java:421)
+	at org.apache.tomcat.util.net.DefaultServerSocketFactory.acceptSocket(DefaultServerSocketFactory.java:61)
+	at org.apache.tomcat.util.net.JIoEndpoint$Acceptor.run(JIoEndpoint.java:310)
+	at java.lang.Thread.run(Thread.java:619)
+
+"ContainerBackgroundProcessor[StandardEngine[Catalina]]" daemon prio=10 tid=0x531fa800 nid=0x15bc waiting on condition [0x53252000..0x532530b0]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1579)
+	at java.lang.Thread.run(Thread.java:619)
+
+"Hudson cron thread" prio=10 tid=0x08860c00 nid=0x15bb in Object.wait() [0x5348c000..0x5348d130]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.util.TimerThread.mainLoop(Timer.java:509)
+	- locked <0x75143b08> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Timer.java:462)
+
+"Low Memory Detector" daemon prio=10 tid=0x0811f400 nid=0x15b8 runnable [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"CompilerThread1" daemon prio=10 tid=0x0811d800 nid=0x15b7 waiting on condition [0x00000000..0x540f03f8]
+   java.lang.Thread.State: RUNNABLE
+
+"CompilerThread0" daemon prio=10 tid=0x0811b000 nid=0x15b6 waiting on condition [0x00000000..0x54171478]
+   java.lang.Thread.State: RUNNABLE
+
+"Signal Dispatcher" daemon prio=10 tid=0x0811a000 nid=0x15b5 runnable [0x00000000..0x541c2d10]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" daemon prio=10 tid=0x080ff000 nid=0x15b4 in Object.wait() [0x54413000..0x544140b0]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:116)
+	- locked <0x74eb7710> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:132)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
+
+"Reference Handler" daemon prio=10 tid=0x080fdc00 nid=0x15b3 in Object.wait() [0x54465000..0x54465130]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+	- locked <0x74eb7730> (a java.lang.ref.Reference$Lock)
+
+"main" prio=10 tid=0x08058800 nid=0x15ad runnable [0xb7fdf000..0xb7fe0288]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:384)
+	- locked <0x75303760> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:453)
+	at java.net.ServerSocket.accept(ServerSocket.java:421)
+	at org.apache.catalina.core.StandardServer.await(StandardServer.java:389)
+	at org.apache.catalina.startup.Catalina.await(Catalina.java:642)
+	at org.apache.catalina.startup.Catalina.start(Catalina.java:602)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:288)
+	at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:413)
+
+"VM Thread" prio=10 tid=0x080fa800 nid=0x15b2 runnable 
+
+"GC task thread#0 (ParallelGC)" prio=10 tid=0x0805f400 nid=0x15ae runnable 
+
+"GC task thread#1 (ParallelGC)" prio=10 tid=0x08060400 nid=0x15af runnable 
+
+"GC task thread#2 (ParallelGC)" prio=10 tid=0x08061800 nid=0x15b0 runnable 
+
+"GC task thread#3 (ParallelGC)" prio=10 tid=0x08062800 nid=0x15b1 runnable 
+
+"VM Periodic Task Thread" prio=10 tid=0x08120c00 nid=0x15b9 waiting on condition 
+
+JNI global references: 1426
+

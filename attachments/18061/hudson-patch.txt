@@ -1,0 +1,160 @@
+### Eclipse Workspace Patch 1.0
+#P pom
+Index: core/src/main/java/hudson/scm/SVNLogHandler.java
+===================================================================
+--- core/src/main/java/hudson/scm/SVNLogHandler.java	(revision 0)
++++ core/src/main/java/hudson/scm/SVNLogHandler.java	(revision 0)
+@@ -0,0 +1,134 @@
++package hudson.scm;
++
++import java.util.HashMap;
++import java.util.Map;
++
++import org.tmatesoft.svn.core.SVNException;
++import org.tmatesoft.svn.core.SVNLogEntry;
++import org.tmatesoft.svn.core.SVNLogEntryPath;
++import org.tmatesoft.svn.core.wc.xml.SVNXMLLogHandler;
++import org.xml.sax.ContentHandler;
++
++/**
++ * LogHandler that construct paths in entry 
++ * so that has nothing in common with provided remote url. 
++ * Common part is removed from paths.
++ * 
++ * Default remote url is "".
++ * If null remote url is provided  than url is changed to "".
++ */
++public class SVNLogHandler extends SVNXMLLogHandler {
++	private final static String EMPTY_STRING = "";
++	private String urlRemote = EMPTY_STRING;
++
++	/**
++	 * default constructor
++	 * @param contentHandler
++	 */
++	public SVNLogHandler(ContentHandler contentHandler) {
++		super(contentHandler);
++	}
++
++	/** 
++	 * 
++	 * @return remote url
++	 */
++	public String getUrlRemote() {
++		return urlRemote;
++	}
++
++	/**
++	 * Stores remoteUrl that will be used to transform path.
++	 * If null remoteUrl is "".
++	 * @param urlRemote remote url
++	 */
++	public void setUrlRemote(String urlRemote) {
++		if (urlRemote == null) {
++			urlRemote = EMPTY_STRING;
++		} else {
++			this.urlRemote = urlRemote;
++		}
++	}
++	
++	/**
++	 * {@inheritDoc}
++	 */
++	@Override
++	public void handleLogEntry(SVNLogEntry svnLogEntry) throws SVNException {
++		Map<String, SVNLogEntryPath> transformedPaths = 
++				transformPaths(svnLogEntry.getChangedPaths());
++
++		SVNLogEntry newLogEntry = new SVNLogEntry(transformedPaths, 
++													svnLogEntry.getRevision(),
++													svnLogEntry.getAuthor(),
++													svnLogEntry.getDate(),
++													svnLogEntry.getMessage());
++
++		super.handleLogEntry(newLogEntry);
++	}
++
++	/**
++	 * Transforms paths.
++	 * 
++	 * @param oldPaths path that will be transformed
++	 * @return return new transformed paths
++	 */
++	
++	private Map<String, SVNLogEntryPath> transformPaths(Map<String, SVNLogEntryPath> oldPaths) {
++		
++		Map<String, SVNLogEntryPath> transformedPaths = new HashMap<String, SVNLogEntryPath>();
++
++		for (String oldPath : oldPaths.keySet()) {
++			// changes path in logEntry and puts them into new map
++			SVNLogEntryPath entryPath = oldPaths.get(oldPath);
++			String newPath = transformPath(oldPath);
++			entryPath.setPath(newPath);
++			transformedPaths.put(newPath, entryPath);
++		}
++
++		return transformedPaths;
++	}
++
++	/**
++	 * Transforms path. Part that oldPath and remoteUrl have in common is removed from oldPath and returned.
++	 * 
++	 * @param oldPath
++	 * @return new path that has no common part with remoteUrl
++	 */
++	private String transformPath(String oldPath) {
++
++		int commonPartLength = 0;
++		int urlRemoteIndex = getUrlRemote().length() - 1;
++
++		// find out common part in path
++		// search from the end of the both strings and count common characters
++		// if beginning of remoteUrl is reached or different char is found counting starts from 0 again
++		for (int oldPathIndex = oldPath.length() - 1; oldPathIndex >= 0; oldPathIndex--) {
++			// 
++			if (urlRemoteIndex >= 0
++					&& (getUrlRemote().charAt(urlRemoteIndex) == oldPath.charAt(oldPathIndex))) {
++				// 
++				commonPartLength++;
++				urlRemoteIndex--;
++			} else {
++				// reset urlRemmoteIndex and starts from zero
++				commonPartLength = 0;
++				urlRemoteIndex = getUrlRemote().length() - 1;
++			}
++		}
++
++		// transform new path
++		String newPath  = oldPath;
++		
++		if (commonPartLength == oldPath.length()) {
++			// remoteUrl and oldPath are same
++			newPath = EMPTY_STRING;
++		} else 	if ((commonPartLength) < oldPath.length()) {
++			// remoteUrl and oldPath have common part
++			newPath = oldPath.substring(commonPartLength + 1);
++		}
++
++		return newPath;
++	}
++
++}
+Index: core/src/main/java/hudson/scm/SubversionChangeLogBuilder.java
+===================================================================
+--- core/src/main/java/hudson/scm/SubversionChangeLogBuilder.java	(revision 12689)
++++ core/src/main/java/hudson/scm/SubversionChangeLogBuilder.java	(working copy)
+@@ -65,12 +65,13 @@
+             SVNLogClient svnlc = manager.getLogClient();
+             TransformerHandler th = createTransformerHandler();
+             th.setResult(changeLog);
+-            SVNXMLLogHandler logHandler = new SVNXMLLogHandler(th);
++            SVNLogHandler logHandler = new SVNLogHandler(th);
+             // work around for http://svnkit.com/tracker/view.php?id=175
+             th.setDocumentLocator(DUMMY_LOCATOR);
+             logHandler.startDocument();
+ 
+             for (ModuleLocation l : scm.getLocations(build)) {
++            	logHandler.setUrlRemote(l.remote);
+                 changelogFileCreated |= buildModule(l.remote, svnlc, logHandler);
+             }
+             for(SubversionSCM.External ext : externals) {

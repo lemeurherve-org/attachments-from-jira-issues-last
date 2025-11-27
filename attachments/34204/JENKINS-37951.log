@@ -1,0 +1,124 @@
+Started by user admin
+[Pipeline] node
+Running on agent in /tmp/agent/workspace/p
+[Pipeline] {
+[Pipeline] tool
+Downloading Docker client latest
+ERROR: Failed to download pre-1.11.x URL https://get.docker.com/builds/Linux/x86_64/docker-latest from agent: java.io.IOException: Server returned HTTP response code: 403 for URL: https://get.docker.com/builds/Linux/x86_64/docker-latest
+Unpacking https://get.docker.com/builds/Linux/x86_64/docker-latest.tgz to /tmp/agent/tools/org.jenkinsci.plugins.docker.commons.tools.DockerTool/docker-latest on agent
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[p] Running shell script
++ docker inspect -f . ubuntu
+.
+[Pipeline] withDockerContainer
+$ /tmp/agent/tools/org.jenkinsci.plugins.docker.commons.tools.DockerTool/docker-latest/bin/docker run -t -d -u 1000:1000 -w /tmp/agent/workspace/p -v /tmp/agent/workspace/p:/tmp/agent/workspace/p:rw -v /tmp/agent/workspace/p@tmp:/tmp/agent/workspace/p@tmp:rw -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** --entrypoint cat ubuntu
+[Pipeline] {
+[Pipeline] sh
+[p] Running shell script
+[Pipeline] }
+$ /tmp/agent/tools/org.jenkinsci.plugins.docker.commons.tools.DockerTool/docker-latest/bin/docker stop e56c59e3299e9952efe851e86dc87f48605f05922b03b0041a018859116b3129
+$ /tmp/agent/tools/org.jenkinsci.plugins.docker.commons.tools.DockerTool/docker-latest/bin/docker rm -f e56c59e3299e9952efe851e86dc87f48605f05922b03b0041a018859116b3129
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+java.io.IOException: Cannot run program "docker" (in directory "/tmp/agent/workspace/p"): error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1048)
+	at hudson.Proc$LocalProc.<init>(Proc.java:240)
+	at hudson.Proc$LocalProc.<init>(Proc.java:212)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:815)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:381)
+	at hudson.Launcher$RemoteLaunchCallable.call(Launcher.java:1148)
+	at hudson.Launcher$RemoteLaunchCallable.call(Launcher.java:1113)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:152)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at hudson.remoting.Engine$1$1.run(Engine.java:85)
+	at java.lang.Thread.run(Thread.java:745)
+	at ......remote call to agent(Native Method)
+	at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1416)
+	at hudson.remoting.UserResponse.retrieve(UserRequest.java:253)
+	at hudson.remoting.Channel.call(Channel.java:781)
+	at hudson.Launcher$RemoteLauncher.launch(Launcher.java:928)
+	at hudson.Launcher$DecoratedLauncher.launch(Launcher.java:1038)
+	at org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1.launch(WithContainerStep.java:233)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:381)
+	at org.jenkinsci.plugins.durabletask.BourneShellScript.launchWithCookie(BourneShellScript.java:147)
+	at org.jenkinsci.plugins.durabletask.FileMonitoringTask.launch(FileMonitoringTask.java:61)
+	at org.jenkinsci.plugins.workflow.steps.durable_task.DurableTaskStep$Execution.start(DurableTaskStep.java:158)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:184)
+	at org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:126)
+	at org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:109)
+	at groovy.lang.GroovyObject$invokeMethod.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:48)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:113)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:151)
+	at org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:21)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:115)
+	at org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:149)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:146)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:123)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:123)
+	at org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:123)
+	at com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:16)
+	at WorkflowScript.run(WorkflowScript:4)
+	at org.jenkinsci.plugins.docker.workflow.Docker$Image.inside(jar:file:/var/jenkins_home/plugins/docker-workflow/WEB-INF/lib/docker-workflow.jar!/org/jenkinsci/plugins/docker/workflow/Docker.groovy:123)
+	at ___cps.transform___(Native Method)
+	at com.cloudbees.groovy.cps.impl.ContinuationGroup.methodCall(ContinuationGroup.java:48)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:109)
+	at com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:82)
+	at sun.reflect.GeneratedMethodAccessor304.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
+	at com.cloudbees.groovy.cps.impl.ConstantBlock.eval(ConstantBlock.java:21)
+	at com.cloudbees.groovy.cps.Next.step(Next.java:58)
+	at com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:154)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:18)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:33)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable$1.call(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.GroovySandbox.runInSandbox(GroovySandbox.java:108)
+	at org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:30)
+	at org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:163)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:324)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.access$100(CpsThreadGroup.java:78)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:236)
+	at org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:224)
+	at org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$2.call(CpsVmExecutorService.java:63)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:112)
+	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:248)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:134)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1029)
+	at hudson.Proc$LocalProc.<init>(Proc.java:240)
+	at hudson.Proc$LocalProc.<init>(Proc.java:212)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:815)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:381)
+	at hudson.Launcher$RemoteLaunchCallable.call(Launcher.java:1148)
+	at hudson.Launcher$RemoteLaunchCallable.call(Launcher.java:1113)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:152)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:50)
+	at hudson.remoting.Request$2.run(Request.java:332)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:68)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at hudson.remoting.Engine$1$1.run(Engine.java:85)
+	... 1 more
+Finished: FAILURE

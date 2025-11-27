@@ -1,0 +1,37 @@
+out.println 'Starte Argus Build'
+def argusBuild = build( "argus.BUILD" )
+def buildNumber = argusBuild.build.number
+def versionNumber = '4.2.' + buildNumber
+
+out.println 'BuildNumber  : ' + buildNumber
+out.println 'VersionNumber: ' + versionNumber
+
+parallel (
+  {
+    build("argus.SONAR", PL_BUILD_NUMBER: buildNumber)
+  },
+  {
+    build("argus.SNAPSHOT")
+  },
+  { 
+    out.println 'Starte MEDIUM TESTS #' + buildNumber
+    buildSmallMediumTests = build("argus.SMALL_MEDIUM_TESTS", PL_BUILD_NUMBER: buildNumber)
+    build("argus.SMALL_MEDIUM_TESTS_ANALYZE", WORKING_DIRECTORY:  buildSmallMediumTests.project.workspace)
+  }, 
+  { 
+    build("argus.SITE", PL_BUILD_NUMBER: buildNumber)
+  },
+  {
+    out.println 'Starte LARGE TESTS #' + buildNumber
+    buildLargeTests = build("argus.LARGE_TESTS", PL_BUILD_NUMBER: buildNumber)
+    build("argus.LARGE_TESTS_ANALYZE", WORKING_DIRECTORY:  buildLargeTests.project.workspace)
+
+    out.println 'Starte LARGE TESTS ADMIN #' + buildNumber
+    buildLargeTests = build("argus.LARGE_TESTS_ADMIN", PL_BUILD_NUMBER: buildNumber)
+    build("argus.LARGE_TESTS_ADMIN_ANALYZE", WORKING_DIRECTORY:  buildLargeTests.project.workspace)
+
+  }
+)
+
+build("argus.MVN_DEPLOY", PL_BUILD_NUMBER: buildNumber)
+build("argus.DEPLOY", VERSION: versionNumber)

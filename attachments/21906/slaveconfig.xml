@@ -1,0 +1,13 @@
+    <slave>
+      <name>Master-Admin</name>
+      <description></description>
+      <remoteFS>C:\Jenkins_AdminNode</remoteFS>
+      <numExecutors>4</numExecutors>
+      <mode>EXCLUSIVE</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.slaves.CommandLauncher">
+        <agentCommand>java -jar C:\jenkins\war\WEB-INF\slave.jar -jnlpUrl http://masterhostname:8080/computer/Master-Admin/slave-agent.jnlp</agentCommand>
+      </launcher>
+      <label>AdminNode</label>
+      <nodeProperties/>
+    </slave>

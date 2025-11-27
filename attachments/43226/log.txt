@@ -1,0 +1,89 @@
+Started by user Sven Finsterwalder
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] node
+Running on Slave hhbld03t in /opt/jenkins/workspace/beta-sfin-xUnit-test
+[Pipeline] {
+[Pipeline] deleteDir
+[Pipeline] sleep
+Sleeping for 1 sec
+[Pipeline] parallel
+[Pipeline] [dateiEins] { (Branch: dateiEins)
+[Pipeline] [dateiZwei] { (Branch: dateiZwei)
+[Pipeline] [dateiEins] stage
+[Pipeline] [dateiEins] { (generate xml file 1)
+[Pipeline] [dateiZwei] stage
+[Pipeline] [dateiZwei] { (generate xml file 2)
+[Pipeline] [dateiEins] dir
+[dateiEins] Running in /opt/jenkins/workspace/beta-sfin-xUnit-test/file1
+[Pipeline] [dateiEins] {
+[Pipeline] [dateiZwei] dir
+[dateiZwei] Running in /opt/jenkins/workspace/beta-sfin-xUnit-test/file2
+[Pipeline] [dateiZwei] {
+[Pipeline] [dateiEins] dir
+[dateiEins] Running in /opt/jenkins/workspace/beta-sfin-xUnit-test/file1/test-output
+[Pipeline] [dateiEins] {
+[Pipeline] [dateiZwei] dir
+[dateiZwei] Running in /opt/jenkins/workspace/beta-sfin-xUnit-test/file2/test-output
+[Pipeline] [dateiZwei] {
+[Pipeline] [dateiEins] dir
+[dateiEins] Running in /opt/jenkins/workspace/beta-sfin-xUnit-test/file1/test-output/junit
+[Pipeline] [dateiEins] {
+[Pipeline] [dateiZwei] dir
+[dateiZwei] Running in /opt/jenkins/workspace/beta-sfin-xUnit-test/file2/test-output/junit
+[Pipeline] [dateiZwei] {
+[Pipeline] [dateiEins] writeFile
+[Pipeline] [dateiZwei] writeFile
+[Pipeline] [dateiEins] sh
+[dateiEins] [junit] Running shell script
+[Pipeline] [dateiZwei] sh
+[dateiEins] + ls -l
+[dateiEins] total 8
+[dateiEins] -rw-r--r--. 1 glassfish users 4507 Jun 27 08:03 TEST-de.edict.services.portaltests.SlotSessionTest_ES.xml
+[dateiZwei] [junit] Running shell script
+[Pipeline] [dateiEins] xunit
+[dateiZwei] + ls -l
+[dateiZwei] total 8
+[dateiZwei] -rw-r--r--. 1 glassfish users 5665 Jun 27 08:03 TEST-de.edict.services.backofficetests.bonusoffer.BonusOfferDepositTests--IoM_default.xml
+[dateiEins] INFO: Starting to record.
+[dateiEins] INFO: Processing JUnit
+[dateiEins] INFO: [JUnit] - 1 test report file(s) were found with the pattern 'TEST-*.xml' relative to '/opt/jenkins/workspace/beta-sfin-xUnit-test/file1/test-output/junit' for the testing framework 'JUnit'.
+[dateiEins] INFO: Check 'Failed Tests' threshold.
+[dateiEins] INFO: The total number of tests for this category exceeds the specified "failure" threshold value.
+[dateiEins] INFO: Setting the build status to FAILURE
+[dateiEins] INFO: Stopping recording.
+[Pipeline] [dateiEins] }
+[Pipeline] [dateiEins] // dir
+[Pipeline] [dateiEins] }
+[Pipeline] [dateiZwei] xunit
+[dateiZwei] INFO: Starting to record.
+[dateiZwei] INFO: Processing JUnit
+[dateiZwei] INFO: [JUnit] - 1 test report file(s) were found with the pattern 'TEST-*.xml' relative to '/opt/jenkins/workspace/beta-sfin-xUnit-test/file2/test-output/junit' for the testing framework 'JUnit'.
+[Pipeline] [dateiEins] // dir
+[dateiZwei] WARNING: All test reports are empty.
+[dateiZwei] INFO: Check 'Failed Tests' threshold.
+[dateiZwei] INFO: Check 'Skipped Tests' threshold.
+[dateiZwei] INFO: Setting the build status to FAILURE
+[dateiZwei] INFO: Stopping recording.
+[Pipeline] [dateiEins] }
+[Pipeline] [dateiEins] // dir
+[Pipeline] [dateiEins] }
+[Pipeline] [dateiZwei] }
+[Pipeline] [dateiEins] // stage
+[Pipeline] [dateiZwei] // dir
+[Pipeline] [dateiEins] }
+[Pipeline] [dateiZwei] }
+[Pipeline] [dateiZwei] // dir
+[Pipeline] [dateiZwei] }
+[Pipeline] [dateiZwei] // dir
+[Pipeline] [dateiZwei] }
+[Pipeline] [dateiZwei] // stage
+[Pipeline] [dateiZwei] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // timestamps
+[Pipeline] End of Pipeline
+Finished: FAILURE

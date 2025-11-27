@@ -1,0 +1,56 @@
+BUILD SUCCESSFUL
+Total time: 4 minutes 45 seconds
+[bin] $ /drv1/msm/tools/apache-ant-1.7.1/bin/ant -file build_CodeAnalysis.xml run_checkstyle
+Buildfile: build_CodeAnalysis.xml
+
+analyze_tools_def:
+
+checkstyle:
+[checkstyle] Running Checkstyle 5.0-beta01 on 6615 files
+
+run_checkstyle:
+
+BUILD SUCCESSFUL
+Total time: 4 minutes 1 second
+[FINDBUGS] Collecting findbugs analysis files...
+[FINDBUGS] Successfully parsed file /drv1/msm/.hudson/jobs/CMS_110/workspace/findbugs.xml of module workspace with 8700 warnings.
+[FINDBUGS] A total of 2051 annotations have been found for priority HIGH
+[FINDBUGS] A total of 6649 annotations have been found for priority NORMAL
+[FINDBUGS] A total of 0 annotations have been found for priority LOW
+[CHECKSTYLE] Collecting checkstyle analysis files...
+[CHECKSTYLE] Successfully parsed file /drv1/msm/.hudson/jobs/CMS_110/workspace/checkstyle.xml of module workspace with 683756 warnings.
+FATAL: Java heap space
+java.lang.OutOfMemoryError: Java heap space
+	at java.lang.AbstractStringBuilder.expandCapacity(AbstractStringBuilder.java:99)
+	at java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:575)
+	at java.lang.StringBuilder.append(StringBuilder.java:204)
+	at com.thoughtworks.xstream.mapper.FieldAliasingMapper.key(FieldAliasingMapper.java:50)
+	at com.thoughtworks.xstream.mapper.FieldAliasingMapper.shouldSerializeMember(FieldAliasingMapper.java:80)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at com.thoughtworks.xstream.mapper.MapperWrapper.shouldSerializeMember(MapperWrapper.java:106)
+	at hudson.util.RobustReflectionConverter$2.writeField(RobustReflectionConverter.java:115)
+	at hudson.util.RobustReflectionConverter$2.visit(RobustReflectionConverter.java:108)
+	at com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider.visitSerializableFields(PureJavaReflectionProvider.java:129)
+	at hudson.util.RobustReflectionConverter.doMarshal(RobustReflectionConverter.java:93)
+	at hudson.util.RobustReflectionConverter.marshal(RobustReflectionConverter.java:66)
+	at com.thoughtworks.xstream.core.AbstractReferenceMarshaller.convert(AbstractReferenceMarshaller.java:65)
+	at com.thoughtworks.xstream.core.TreeMarshaller.convertAnother(TreeMarshaller.java:78)
+	at com.thoughtworks.xstream.core.TreeMarshaller.convertAnother(TreeMarshaller.java:63)
+	at com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter.writeItem(AbstractCollectionConverter.java:63)
+	at com.thoughtworks.xstream.converters.collections.ArrayConverter.marshal(ArrayConverter.java:45)
+	at com.thoughtworks.xstream.core.AbstractReferenceMarshaller.convert(AbstractReferenceMarshaller.java:65)
+	at com.thoughtworks.xstream.core.TreeMarshaller.convertAnother(TreeMarshaller.java:78)
+	at com.thoughtworks.xstream.core.TreeMarshaller.convertAnother(TreeMarshaller.java:63)
+	at com.thoughtworks.xstream.core.TreeMarshaller.start(TreeMarshaller.java:98)
+	at com.thoughtworks.xstream.core.AbstractTreeMarshallingStrategy.marshal(AbstractTreeMarshallingStrategy.java:38)
+	at com.thoughtworks.xstream.XStream.marshal(XStream.java:845)
+	at com.thoughtworks.xstream.XStream.marshal(XStream.java:834)
+

@@ -1,0 +1,48 @@
+def userInput
+pipeline {
+    agent any
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    userInput = input(id: 'userInput', message: 'What project will be deployed?', parameters: [[$class     : 'ChoiceParameterDefinition',
+                                                                                                                choices    : ['project1', 'project2', 'project3'].join('\n'),
+                                                                                                                description: 'Description', name: 'project'],
+                                                                                                               [$class: 'TextParameterDefinition', defaultValue: 'x.x.x', description: 'Welche Version soll deployed werden?', name: 'version']
+                    ])
+                    currentBuild.displayName = "${userInput['project']} ${userInput['version']}"
+                }
+            }
+        }
+
+        stage('Deploy on 02-host') {
+            steps {
+                // deploy using sh
+            }
+        }
+
+        stage('Decide Continue Deployment') {
+            steps {
+                script {
+                    env.CONTINUE_DEPLOYMENT = input message: 'Continue with deployment on 01?',
+                            parameters: [choice(name: 'Continue Deployment', choices: 'yes\nno', description: 'Choose "yes" to proceed.')]
+                }
+            }
+        }
+
+        stage('Deploy on 01-host') {
+            when {
+                environment name: 'CONTINUE_DEPLOYMENT', value: 'yes'
+            }
+            steps {
+                // deploy using sh
+            }
+        }
+    }
+}
+

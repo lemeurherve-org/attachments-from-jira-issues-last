@@ -1,0 +1,31 @@
+Index: src/main/java/hudson/plugins/bazaar/BazaarSCM.java
+===================================================================
+--- src/main/java/hudson/plugins/bazaar/BazaarSCM.java	(révision 27794)
++++ src/main/java/hudson/plugins/bazaar/BazaarSCM.java	(copie de travail)
+@@ -110,7 +110,7 @@
+                     .envs(EnvVars.masterEnvVars).stdout(baos).pwd(workspace).join()) != 0) {
+                 logger.warning("bzr revision-info -d " + root + " returned " + ret + ". Command output: \"" + baos.toString() + "\"");
+             } else {
+-              String[] infos = baos.toString().split(" ");
++              String[] infos = baos.toString().split("\\s");
+               rev = infos[1];
+             }
+         } catch (IOException e) {
+@@ -186,7 +186,7 @@
+      */
+     private boolean update(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile) throws InterruptedException, IOException {
+         try {
+-            String oldid = getRevid(launcher, workspace, source);
++            String oldid = getRevid(launcher, workspace, workspace.getRemote());
+ 
+             if (launcher.launch().cmds(getDescriptor().getBzrExe(), "pull", "--overwrite", source)
+                     .envs(build.getEnvironment(listener)).stdout(listener.getLogger()).pwd(workspace).join() != 0) {
+@@ -194,7 +194,7 @@
+                 return false;
+             }
+ 
+-            String newid = getRevid(launcher, workspace, source);
++            String newid = getRevid(launcher, workspace, workspace.getRemote());
+             getLog(launcher, workspace, oldid, newid, changelogFile);
+ 
+         } catch (IOException e) {

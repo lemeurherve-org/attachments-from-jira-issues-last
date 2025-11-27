@@ -1,0 +1,238 @@
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+index 5a96155..d6f7976 100755
+--- a/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenModuleSetBuild.java
+@@ -69,8 +69,10 @@ import java.io.PrintStream;
+ import java.io.Serializable;
+ import java.util.ArrayList;
+ import java.util.Collection;
++import java.util.Collections;
+ import java.util.HashMap;
+ import java.util.HashSet;
++import java.util.Iterator;
+ import java.util.LinkedHashMap;
+ import java.util.LinkedHashSet;
+ import java.util.List;
+@@ -80,6 +82,7 @@ import java.util.Properties;
+ import java.util.Set;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
++import java.util.regex.Pattern;
+ 
+ import org.apache.commons.io.FilenameUtils;
+ import org.apache.commons.lang.StringUtils;
+@@ -193,47 +196,133 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+      * Returns the filtered changeset entries that match the given module.
+      */
+     /*package*/ List<ChangeLogSet.Entry> getChangeSetFor(final MavenModule mod) {
++        return getChangeSetFor(mod, null);
++    }
++    
++    /**
++     * Returns the filtered changeset entries that match the given module.
++     * 
++     * @param mod
++     * @param processedPaths optimisation to avoid reprocessing paths already matched with a module
++     */
++    private List<ChangeLogSet.Entry> getChangeSetFor(final MavenModule mod, final Set<String> processedPaths) {
++
+         return new ArrayList<ChangeLogSet.Entry>() {
++
++            private static final long serialVersionUID = 1L;
++
+             {
+                 // modules that are under 'mod'. lazily computed
+                 List<MavenModule> subsidiaries = null;
+-
+                 for (ChangeLogSet.Entry e : getChangeSet()) {
+-                    if(isDescendantOf(e, mod)) {
+-                        if(subsidiaries==null)
++                    // temporary store for matched paths
++                    final Set<String> matchedPaths = getMatchingPaths(e, mod);
++                    if (!matchedPaths.isEmpty()) {
++                        if (subsidiaries == null) {
+                             subsidiaries = mod.getSubsidiaries();
+-
+-                        // make sure at least one change belongs to this module proper,
+-                        // and not its subsidiary module
+-                        if (notInSubsidiary(subsidiaries, e))
++                        }
++                        
++                        // filter matched paths that are in subsidiaries
++                        filterPathsInSubsidiaries(subsidiaries, matchedPaths);
++                        
++                        // add this module if it matched at least one path
++                        if (!matchedPaths.isEmpty()) {
++                            if (processedPaths != null) {
++                                processedPaths.addAll(matchedPaths);
++                            }
++                            
+                             add(e);
++                        }
+                     }
+                 }
+             }
+ 
+-            private boolean notInSubsidiary(List<MavenModule> subsidiaries, ChangeLogSet.Entry e) {
+-                for (String path : e.getAffectedPaths())
+-                    if(!belongsToSubsidiary(subsidiaries, path))
+-                        return true;
+-                return false;
++            /*
++             * Remove matched paths that match one of this module's subsidiaries
++             * 
++             * @param subsidiaries
++             * @param matchedPaths
++             * @return
++             */
++            private void filterPathsInSubsidiaries(List<MavenModule> subsidiaries, Set<String> matchedPaths) {
++                for (MavenModule sub : subsidiaries) {
++                    for (Iterator<String> i = matchedPaths.iterator(); i.hasNext(); ) {
++                        String path = i.next();
++                        if (pathMatches(sub, path)) {
++                            i.remove();
++                        }
++                    }
++                }
+             }
+ 
+-            private boolean belongsToSubsidiary(List<MavenModule> subsidiaries, String path) {
+-                for (MavenModule sub : subsidiaries)
+-                    if (FilenameUtils.separatorsToUnix(path).startsWith(normalizePath(sub.getRelativePath())))
+-                        return true;
+-                return false;
++            // lazily fetched path to module root
++            List<String> moduleRootPath = null;
++            
++            /*
++             * get workspace relative path from module relative path. path pom.xml becomes module/pom.xml and 
++             * path ../module2/pom.xml becomes module2/pom.xml
++             * 
++             * @param moduleRelativePath
++             * @return the workspace-relative path
++             */
++            private String getWorkspaceRelativePath(final String moduleRelativePath) {
++                if (moduleRootPath == null) {
++                    // get the module root (absolute)
++                    FilePath moduleRootAbsPath = getProject().getScm().getModuleRoot(getWorkspace(), MavenModuleSetBuild.this);
++                    // get the workspace-relative module root
++                    String moduleRootRelPath = moduleRootAbsPath.getRemote().substring(getWorkspace().getRemote().length() + 1);
++                    // split to get individual directories
++                    String[] parts = normalizePath(moduleRootRelPath).split(Pattern.quote(File.separator));
++                    
++                    moduleRootPath = new ArrayList<String>(parts.length);
++                    for (String part : parts) {
++                        if (!part.isEmpty()) {
++                            moduleRootPath.add(part);
++                        }
++                    }
++                }
++                
++                String workspaceRelativePath = moduleRelativePath;
++                int end = moduleRootPath.size();
++                while (workspaceRelativePath.startsWith("..") && (end > 0)) {
++                    workspaceRelativePath = workspaceRelativePath.substring(3); // remove ../
++                    end--;
++                }
++                for (int i = end - 1; i >= 0; i--) { 
++                    workspaceRelativePath = moduleRootPath.get(i) + File.separator + workspaceRelativePath;
++                }
++                
++                return workspaceRelativePath;
++            }
++            
++            /*
++             * Checks if a path matches a module
++             * 
++             * @param mod the module
++             * @param path the path to check (workspace-relative)
++             * @return
++             */
++            private boolean pathMatches(MavenModule mod, String path) {
++                return (normalizePath(path).startsWith(normalizePath(getWorkspaceRelativePath(mod.getRelativePath()))));
+             }
+ 
+-            /**
+-             * Does this change happen somewhere in the given module or its descendants?
++            /*
++             * Get the paths that match this module (or one of it's subsidiaries)
+              */
+-            private boolean isDescendantOf(ChangeLogSet.Entry e, MavenModule mod) {
++            private Set<String> getMatchingPaths(ChangeLogSet.Entry e, MavenModule mod) {
++                
++                final Set<String> matchedPaths = new HashSet<String>();
++                // this assumes that scm will return workspace-relative paths, not module relative
++                // i.e. if module is in folder x in the workspace, a change will be reported on 
++                // path x/whatever/file, not on path whatever/file
+                 for (String path : e.getAffectedPaths()) {
+-                    if (FilenameUtils.separatorsToUnix(path).startsWith(normalizePath(mod.getRelativePath())))
+-                        return true;
++                    if (pathMatches(mod, path)) {
++                        if ((processedPaths == null) || !processedPaths.contains(path)) {
++                            matchedPaths.add(path);
++                        }
++					}
+                 }
+-                return false;
++                return matchedPaths;
+             }
+         };
+     }
+@@ -325,8 +414,25 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+ 
+     private static String normalizePath(String relPath) {
+         // JENKINS-8525 FilenameUtils.normalize for ../foo returns null
+-        if (StringUtils.isEmpty(relPath) || StringUtils.startsWith( relPath, "../" )) {
+-            LOGGER.config("No need to normalize " + (StringUtils.isEmpty(relPath) ? "an empty path" : relPath));
++        if (StringUtils.isEmpty(relPath)) {
++            LOGGER.config("No need to normalize an empty path");
++        } else if (StringUtils.startsWith( relPath, ".." )) {
++            // remove the initial ../ and readd them after normalisation
++            String tmp = relPath;
++            String prefix = "";
++            while (StringUtils.startsWith(tmp, "..") && (tmp.length() >= 3)) {
++                tmp = tmp.substring(3);
++                prefix = prefix + ".." + File.separator;
++            }
++            
++            if (!StringUtils.isEmpty(tmp) && !(tmp.equals(".."))) {
++                tmp = FilenameUtils.normalize(tmp);
++            }
++            
++            tmp = prefix + tmp;
++            
++            LOGGER.config("Normalized path " + relPath + " to "+tmp);
++            relPath = tmp;
+         } else {
+             String tmp = FilenameUtils.normalize( relPath );
+             LOGGER.config("Normalized path " + relPath + " to "+tmp);
+@@ -559,8 +665,18 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+                         SplittableBuildListener slistener = new SplittableBuildListener(listener);
+                         proxies = new HashMap<ModuleName, ProxyImpl2>();
+                         List<String> changedModules = new ArrayList<String>();
+-
+-                        for (MavenModule m : project.sortedActiveModules) {
++                        
++                        // keep track of paths already processed, so they are not reprocessed once matched
++                        final Set<String> processedPaths = new HashSet<String>();
++                        List<MavenModule> sortedActiveModules = new ArrayList<MavenModule>(project.sortedActiveModules);  
++                        // Reverse the sorted modules to start from the leaves, or, deepest modules and work up to the roots
++                        // thus matching the deepest module that applies to a change. 
++                        // E.g. for a change in /a/b/c/d/somefile, match module /a/b/c/pom.xml, rather than it's parents /a/pom.xml 
++                        // and /a/b/pom.xml.
++                        // By reversing the order and keeping track of the processed paths, paths are removed as matches as quickly as
++                        // possible thus reducing the number of times that a path is matched with modules
++                        Collections.reverse(sortedActiveModules);
++                        for (MavenModule m : sortedActiveModules) {
+                             MavenBuild mb = m.newBuild();
+                             // HUDSON-8418
+                             mb.setBuiltOnStr( getBuiltOnStr() );
+@@ -572,7 +688,7 @@ public class MavenModuleSetBuild extends AbstractMavenBuild<MavenModuleSet,Maven
+                                 // Also add it if we've never seen this module before,
+                                 // or if the previous build of this module failed or was unstable.
+                                 if ((mb.getPreviousBuiltBuild() == null) ||
+-                                    (!getChangeSetFor(m).isEmpty()) 
++                                    (!getChangeSetFor(m, processedPaths).isEmpty()) 
+                                     || (mb.getPreviousBuiltBuild().getResult().isWorseThan(Result.SUCCESS))) {
+                                     changedModules.add(m.getModuleName().toString());
+                                 }

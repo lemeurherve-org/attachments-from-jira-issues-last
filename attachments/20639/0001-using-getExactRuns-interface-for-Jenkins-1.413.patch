@@ -1,0 +1,64 @@
+From 1251ce15dba66196767852d9368448483ee5df1f Mon Sep 17 00:00:00 2001
+From: Kevin Cai <kevinc@mozy.com>
+Date: Thu, 21 Jul 2011 11:59:27 +0800
+Subject: [PATCH] using getExactRuns() interface for Jenkins >= 1.413
+
+Signed-off-by: Kevin Cai <kevinc@mozy.com>
+---
+ pom.xml                                            |    2 +-
+ .../hudson/plugins/copyartifact/CopyArtifact.java  |   12 +++++++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 75f2f86..de602c0 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -4,7 +4,7 @@
+     <parent>
+         <groupId>org.jenkins-ci.plugins</groupId>
+         <artifactId>plugin</artifactId>
+-        <version>1.398</version>
++        <version>1.413</version>
+     </parent>
+ 
+     <artifactId>copyartifact</artifactId>
+diff --git a/src/main/java/hudson/plugins/copyartifact/CopyArtifact.java b/src/main/java/hudson/plugins/copyartifact/CopyArtifact.java
+index 2dad8f9..094182a 100644
+--- a/src/main/java/hudson/plugins/copyartifact/CopyArtifact.java
++++ b/src/main/java/hudson/plugins/copyartifact/CopyArtifact.java
+@@ -33,6 +33,7 @@ import hudson.Util;
+ import hudson.diagnosis.OldDataMonitor;
+ import hudson.matrix.MatrixBuild;
+ import hudson.matrix.MatrixProject;
++import hudson.matrix.MatrixRun;
+ import hudson.maven.MavenModuleSet;
+ import hudson.maven.MavenModuleSetBuild;
+ import hudson.model.AbstractBuild;
+@@ -57,6 +58,7 @@ import hudson.tasks.Builder;
+ import hudson.util.DescribableList;
+ import hudson.util.FormValidation;
+ import hudson.util.XStream2;
++import hudson.util.VersionNumber;
+ 
+ import java.io.IOException;
+ import java.io.PrintStream;
+@@ -190,7 +192,15 @@ public class CopyArtifact extends Builder {
+             } else if (run instanceof MatrixBuild) {
+                 boolean ok = false;
+                 // Copy artifacts from all configurations of this matrix build
+-                for (Run r : ((MatrixBuild)run).getRuns())
++                // NOTE: getRuns() method behaviour changed slightly.
++                // Turn to getExactRuns() introduced in 1.413.
++                List<MatrixRun> runs;
++                if (new VersionNumber("1.413").isNewerThan(Hudson.getVersion())) {
++                    runs = ((MatrixBuild)run).getRuns();
++                } else {
++                    runs = ((MatrixBuild)run).getExactRuns();
++                }
++                for (Run r : runs)
+                     // Use subdir of targetDir with configuration name (like "jdk=java6u20")
+                     ok |= perform(r, expandedFilter, targetDir.child(r.getParent().getName()),
+                                   baseTargetDir, copier, console);
+-- 
+1.7.2.3
+

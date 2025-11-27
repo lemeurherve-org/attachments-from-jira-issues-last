@@ -1,0 +1,120 @@
+Started by user ZZZ
+Checking out git ssh://git@xxxx:7999/iiot/zzzz.git into D:\jenkins\jenkins\workspace\pip_linux_zzzz@script\1a48b778cd49d028850a70d133e313f5f92ec7e5f68a13c6addac0a67c4b41cf to read zzzz/Jenkinsfile
+The recommended git tool is: git
+using credential 5a583f57-167b-43ab-a332-6ac454a9d886
+ > git rev-parse --resolve-git-dir D:\jenkins\jenkins\workspace\pip_linux_zzzz@script\1a48b778cd49d028850a70d133e313f5f92ec7e5f68a13c6addac0a67c4b41cf\zzzz\.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url ssh://git@xxxx:7999/iiot/zzzz.git # timeout=10
+Cleaning workspace
+ > git rev-parse --verify HEAD # timeout=10
+Resetting working tree
+ > git reset --hard # timeout=10
+ > git clean -fdx # timeout=10
+Pruning obsolete local branches
+Fetching upstream changes from ssh://git@xxxx:7999/iiot/zzzz.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.25.1.windows.1'
+using GIT_SSH to set credentials 
+Verifying host key using known hosts file, will automatically accept unseen keys
+ > git fetch --tags --force --progress --prune -- ssh://git@xxxx:7999/iiot/zzzz.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+Seen branch in repository origin/develop
+Seen branch in repository origin/master/1.5.0
+Seen branch in repository origin/master/1.6.0
+Seen branch in repository origin/master/2.0.0
+Seen branch in repository origin/master/2.0.1
+Seen branch in repository origin/master/2.1.0
+Seen branch in repository origin/master/2.1.1
+Seen branch in repository origin/master/2.2.0
+Seen branch in repository origin/master/2.3.0
+Seen branch in repository origin/master/2.3.1
+Seen branch in repository origin/master/2.3.2
+Seen branch in repository origin/master/3.0.0
+Seen branch in repository origin/master/3.1.0
+Seen branch in repository origin/master/3.2.0
+Seen branch in repository origin/master/3.3.0
+Seen branch in repository origin/master/3.3.1
+Seen branch in repository origin/master/3.3.2
+Seen branch in repository origin/master/3.4.0
+Seen branch in repository origin/master/3.4.1
+Seen branch in repository origin/master/3.4.2
+Seen branch in repository origin/master/3.5.0
+Seen branch in repository origin/master/3.5.1
+Seen branch in repository origin/master/3.6.0
+Seen branch in repository origin/master/3.7.0
+Seen branch in repository origin/master/3.7.1
+Seen branch in repository origin/patch/3.3.3
+Seen branch in repository origin/patch/testbuild
+Seen branch in repository origin/release/1.4.0
+Seen branch in repository origin/release/1.5.0
+Seen branch in repository origin/release/1.6.0
+Seen 30 remote branches
+ > git show-ref --tags -d # timeout=10
+Checking out Revision 488891ad9ac38a095a7238214a88077ac40cf96a (origin/patch/testbuild)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 488891ad9ac38a095a7238214a88077ac40cf96a # timeout=10
+Commit message: "Umstellung auf Build Parameters"
+ > git rev-list --no-walk 488891ad9ac38a095a7238214a88077ac40cf96a # timeout=10
+[Pipeline] Start of Pipeline
+[Pipeline] properties
+[Pipeline] node
+Running on LinuxAgent in /home/uuuu/jenkins/workspace/pip_linux_zzzz
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: /usr/bin/git
+using credential 5a583f57-167b-43ab-a332-6ac454a9d886
+Cloning the remote Git repository
+ERROR: Error cloning remote repo 'origin'
+hudson.plugins.git.GitException: Command "/usr/bin/git fetch --tags --progress ssh://git@xxxx:7999/iiot/zzzz.git +refs/heads/*:refs/remotes/origin/*" returned status code 128:
+stdout: 
+stderr: command-line line 0: unsupported option "accept-new".
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:2674)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandWithCredentials(CliGitAPIImpl.java:2098)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.access$500(CliGitAPIImpl.java:84)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$1.execute(CliGitAPIImpl.java:618)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$2.execute(CliGitAPIImpl.java:847)
+	at org.jenkinsci.plugins.gitclient.RemoteGitImpl$CommandInvocationHandler$GitCommandMasterToSlaveCallable.call(RemoteGitImpl.java:158)
+	at org.jenkinsci.plugins.gitclient.RemoteGitImpl$CommandInvocationHandler$GitCommandMasterToSlaveCallable.call(RemoteGitImpl.java:151)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:211)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:54)
+	at hudson.remoting.Request$2.run(Request.java:376)
+	at hudson.remoting.InterceptingExecutorService.lambda$wrap$0(InterceptingExecutorService.java:78)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+	Suppressed: hudson.remoting.Channel$CallSiteStackTrace: Remote call to LinuxAgent
+		at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1784)
+		at hudson.remoting.UserRequest$ExceptionResponse.retrieve(UserRequest.java:356)
+		at hudson.remoting.Channel.call(Channel.java:1000)
+		at org.jenkinsci.plugins.gitclient.RemoteGitImpl$CommandInvocationHandler.execute(RemoteGitImpl.java:143)
+		at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+		at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+		at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+		at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+		at org.jenkinsci.plugins.gitclient.RemoteGitImpl$CommandInvocationHandler.invoke(RemoteGitImpl.java:129)
+		at com.sun.proxy.$Proxy101.execute(Unknown Source)
+		at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1226)
+		at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1308)
+		at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:129)
+		at org.jenkinsci.plugins.workflow.steps.scm.SCMStep$StepExecutionImpl.run(SCMStep.java:97)
+		at org.jenkinsci.plugins.workflow.steps.scm.SCMStep$StepExecutionImpl.run(SCMStep.java:84)
+		at org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:47)
+		at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+		at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+		at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+		at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+		at java.base/java.lang.Thread.run(Unknown Source)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: Error cloning remote repo 'origin'
+Finished: FAILURE

@@ -1,0 +1,146 @@
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 21318)
++++ pom.xml	(working copy)
+@@ -29,6 +29,18 @@
+       <artifactId>issuetracker-stats</artifactId>
+       <version>1.1</version>
+     </dependency>
++    <dependency>
++      <groupId>junit</groupId>
++      <artifactId>junit</artifactId>
++      <version>4.6</version>
++      <scope>test</scope>
++    </dependency>
++    <dependency>
++        <groupId>org.mockito</groupId>
++        <artifactId>mockito-core</artifactId>
++        <version>1.7</version> 
++        <scope>test</scope>
++    </dependency>
+     <!--
+       TODO: dependency resolution isn't working correctly.
+       I get copies of jars that are already in hudson-core.
+Index: src/main/java/hudson/plugins/javanet/JavaNetChangeLogAnnotator.java
+===================================================================
+--- src/main/java/hudson/plugins/javanet/JavaNetChangeLogAnnotator.java	(revision 0)
++++ src/main/java/hudson/plugins/javanet/JavaNetChangeLogAnnotator.java	(revision 0)
+@@ -0,0 +1,57 @@
++package hudson.plugins.javanet;
++
++import java.util.regex.Pattern;
++
++import hudson.Extension;
++import hudson.MarkupText;
++import hudson.MarkupText.SubText;
++import hudson.model.AbstractBuild;
++import hudson.scm.ChangeLogAnnotator;
++import hudson.scm.ChangeLogSet.Entry;
++
++@Extension
++public class JavaNetChangeLogAnnotator extends ChangeLogAnnotator {
++
++    @Override
++    public void annotate(AbstractBuild<?, ?> build, Entry change, MarkupText text) {
++        StatsProperty property = build.getParent().getProperty(StatsProperty.class);
++        if(property==null)
++            return; // not configured
++        
++        String projectName = property.getJavaNetProject(build.getParent());
++        if (projectName != null) {
++            String url = String.format("https://%s.dev.java.net", projectName);
++            new LinkMarkup(
++                    String.format("%s-\\s*(NUM)", projectName),
++                    "/issues/show_bug.cgi?id=$1",
++                    Pattern.CASE_INSENSITIVE).process(text, url);
++        }
++    }
++
++    static final class LinkMarkup {
++        private final Pattern pattern;
++        private final String href;
++        
++        LinkMarkup(String pattern, String href) {
++            this(pattern, href, 0);
++        }
++
++        LinkMarkup(String pattern, String href, int flags) {
++            pattern = NUM_PATTERN.matcher(pattern).replaceAll("(\\\\d+)"); // \\\\d becomes \\d when in the expanded text.
++            pattern = ANYWORD_PATTERN.matcher(pattern).replaceAll("((?:\\\\w|[_-])+)");
++            this.pattern = Pattern.compile(pattern, flags);
++            this.href = href;
++        }
++
++        void process(MarkupText text, String url) {
++            for(SubText st : text.findTokens(pattern)) {
++                st.surroundWith(
++                    "<a href='"+url+href+"'>",
++                    "</a>");
++            }
++        }
++
++        private static final Pattern NUM_PATTERN = Pattern.compile("NUM");
++        private static final Pattern ANYWORD_PATTERN = Pattern.compile("ANYWORD");
++    }
++}
+Index: src/main/java/hudson/plugins/javanet/StatsProperty.java
+===================================================================
+--- src/main/java/hudson/plugins/javanet/StatsProperty.java	(revision 21318)
++++ src/main/java/hudson/plugins/javanet/StatsProperty.java	(working copy)
+@@ -34,7 +34,7 @@
+         return new JavaNetStatsAction(job,jnp);
+     }
+ 
+-    private String getJavaNetProject(AbstractProject<?,?> job) {
++    String getJavaNetProject(AbstractProject<?,?> job) {
+         String v = JavaNetStatsAction.readOverrideFile(job);
+         if(v!=null)     return v;
+         return getJavaNetProject(job.getScm());
+Index: src/test/java/hudson/plugins/javanet/JavaNetChangeLogAnnotatorTest.java
+===================================================================
+--- src/test/java/hudson/plugins/javanet/JavaNetChangeLogAnnotatorTest.java	(revision 0)
++++ src/test/java/hudson/plugins/javanet/JavaNetChangeLogAnnotatorTest.java	(revision 0)
+@@ -0,0 +1,43 @@
++package hudson.plugins.javanet;
++
++import static org.junit.Assert.*;
++import static org.mockito.Mockito.*;
++
++import hudson.MarkupText;
++import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
++
++import org.junit.Test;
++
++@SuppressWarnings("unchecked")
++public class JavaNetChangeLogAnnotatorTest {
++    @Test
++    public void assertIssueInBracketsIsAnnotated() {
++        AbstractBuild build = createBuildWithProperty("hudson");
++
++        JavaNetChangeLogAnnotator annotator = new JavaNetChangeLogAnnotator();
++        MarkupText markupText = new MarkupText("Message with HUDSON-1212. Yes a link.");
++        annotator.annotate(build, null, markupText);
++        assertEquals("Message with <a href='https://hudson.dev.java.net/issues/show_bug.cgi?id=1212'>HUDSON-1212</a>. Yes a link.", markupText.toString() );
++    }
++    
++    @Test
++    public void assertFixedIssueInBracketsIsAnnotated() {
++        AbstractBuild build = createBuildWithProperty("hudson");
++
++        JavaNetChangeLogAnnotator annotator = new JavaNetChangeLogAnnotator();
++        MarkupText markupText = new MarkupText("Message with [FIXED HUDSON-1212]. Yes a link.");
++        annotator.annotate(build, null, markupText);
++        assertEquals("Message with [FIXED <a href='https://hudson.dev.java.net/issues/show_bug.cgi?id=1212'>HUDSON-1212</a>]. Yes a link.", markupText.toString() );
++    }
++
++    private AbstractBuild createBuildWithProperty(String projectName) {
++        AbstractBuild build = mock(AbstractBuild.class);
++        AbstractProject<?, ?> project = mock(AbstractProject.class);
++        StatsProperty statsProperty = mock(StatsProperty.class);
++        when(statsProperty.getJavaNetProject(any(AbstractProject.class))).thenReturn(projectName);
++        when(project.getProperty(StatsProperty.class)).thenReturn(statsProperty);
++        when(build.getProject()).thenReturn(project);
++        return build;
++    }
++}

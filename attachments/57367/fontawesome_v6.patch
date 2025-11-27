@@ -1,0 +1,32 @@
+diff --git a/src/main/java/io/jenkins/plugins/datatables/TableColumn.java b/src/main/java/io/jenkins/plugins/datatables/TableColumn.java
+index 6b170f1..8a07b70 100644
+--- a/src/main/java/io/jenkins/plugins/datatables/TableColumn.java
++++ b/src/main/java/io/jenkins/plugins/datatables/TableColumn.java
+@@ -26,7 +26,7 @@ import static j2html.TagCreator.*;
+  */
+ public class TableColumn {
+     @VisibleForTesting
+-    static final String DETAILS_COLUMN_ICON_NAME = "plus-circle";
++    static final String DETAILS_COLUMN_ICON_NAME = "circle-plus";
+ 
+     private final String headerLabel;
+     private final String definition;
+diff --git a/src/main/webapp/js/table.js b/src/main/webapp/js/table.js
+index c713fb2..ced4ed5 100644
+--- a/src/main/webapp/js/table.js
++++ b/src/main/webapp/js/table.js
+@@ -113,12 +113,12 @@ jQuery3(document).ready(function () {
+                 if (row.child.isShown()) {
+                     row.child.hide();
+                     tr.removeClass('shown');
+-                    toggleDetailsColumnIcon(tr, "minus-circle", "plus-circle");
++                    toggleDetailsColumnIcon(tr, "circle-minus", "circle-plus");
+                 }
+                 else {
+                     row.child($(this).data('description')).show();
+                     tr.addClass('shown');
+-                    toggleDetailsColumnIcon(tr, "plus-circle", "minus-circle");
++                    toggleDetailsColumnIcon(tr, "circle-plus", "circle-minus");
+                 }
+             });
+ 

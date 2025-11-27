@@ -1,0 +1,53 @@
+pipeline {
+    agent none
+    options {
+        timestamps()
+    }
+    stages {
+        stage ('Using containerTemplate') {
+            agent {
+                kubernetes {
+                    cloud 'Local Kubernetes cluster'
+                    label 'ubuntu-k8s'
+                    containerTemplate {
+                        name 'nodejs'
+                        image 'node:10-alpine'
+                        ttyEnabled true
+                        command 'cat'
+                    }
+                }
+            }
+            steps {
+                container ('nodejs') {
+                    sh 'node --version'
+                }
+                containerLog 'nodejs'
+            }
+        }
+        stage ('Using yaml') {
+            agent {
+                kubernetes {
+                    cloud 'Local Kubernetes cluster'
+                    label 'ubuntu-k8s'
+                    yaml """
+apiVersion: v1
+kind: Pod
+spec:
+containers:
+- name: nodejs
+  image: node:10-alpine
+  command:
+    - cat
+  tty: true
+"""
+
+            }
+        }
+        steps {
+            container ('nodejs') {
+                sh 'node --version'
+            }
+        }
+    }
+    }
+}

@@ -1,0 +1,36 @@
+Index: src/main/java/it/dockins/dockerslaves/spec/DockerfileContainerDefinition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/it/dockins/dockerslaves/spec/DockerfileContainerDefinition.java	(revision 51bc0c883709ae3cb45168725b48012425b0a016)
++++ src/main/java/it/dockins/dockerslaves/spec/DockerfileContainerDefinition.java	(date 1512323949000)
+@@ -92,6 +92,10 @@
+         return tag;
+     }
+ 
++    public boolean isForcePull() {
++        return forcePull;
++    }
++
+     @Extension
+     public static class DescriptorImpl extends ContainerDefinitionDescriptor {
+ 
+Index: src/main/java/it/dockins/dockerslaves/spec/ImageIdContainerDefinition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/it/dockins/dockerslaves/spec/ImageIdContainerDefinition.java	(revision 51bc0c883709ae3cb45168725b48012425b0a016)
++++ src/main/java/it/dockins/dockerslaves/spec/ImageIdContainerDefinition.java	(date 1512323373000)
+@@ -71,6 +71,10 @@
+         return image;
+     }
+ 
++    public boolean isForcePull() {
++        return forcePull;
++    }
++
+     @Extension(ordinal = 99)
+     public static class DescriptorImpl extends ContainerDefinitionDescriptor {
+ 

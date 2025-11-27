@@ -1,0 +1,229 @@
+### Eclipse Workspace Patch 1.0
+#P nabaztag
+Index: src/main/webapp/help-globalConfig-isNotifyOnBuildStart.html
+===================================================================
+--- src/main/webapp/help-globalConfig-isNotifyOnBuildStart.html	(revision 0)
++++ src/main/webapp/help-globalConfig-isNotifyOnBuildStart.html	(revision 0)
+@@ -0,0 +1,3 @@
++<div>
++	<p>Check this option to be notified on build start</p>
++</div>
+\ No newline at end of file
+Index: src/main/java/de/stephannoske/hudson/tools/NabatzagPublisher.java
+===================================================================
+--- src/main/java/de/stephannoske/hudson/tools/NabatzagPublisher.java	(revision 28559)
++++ src/main/java/de/stephannoske/hudson/tools/NabatzagPublisher.java	(working copy)
+@@ -12,10 +12,8 @@
+ import hudson.tasks.Notifier;
+ import hudson.tasks.Publisher;
+ 
+-import java.io.BufferedReader;
+ import java.io.IOException;
+ import java.io.InputStream;
+-import java.io.InputStreamReader;
+ import java.io.StringReader;
+ import java.io.UnsupportedEncodingException;
+ import java.net.MalformedURLException;
+@@ -34,6 +32,7 @@
+ 
+ import net.sf.json.JSONObject;
+ 
++import org.apache.commons.io.IOUtils;
+ import org.apache.commons.lang.StringUtils;
+ import org.kohsuke.stapler.DataBoundConstructor;
+ import org.kohsuke.stapler.StaplerRequest;
+@@ -57,6 +56,7 @@
+ 		public String nabatzagRecoverTTS = "Hudson Build is back to normal ${projectName} ${buildNumber}";
+ 		public String nabatzagBuildTTS = "Hudson is about to build ${projectName} ${buildNumber}";
+ 		public boolean reportOnSucess = false;
++		public boolean notifyOnBuildStart = true;
+ 	
+ 		protected DescriptorImpl() {
+ 		    super(NabatzagPublisher.class);
+@@ -75,13 +75,13 @@
+ 		    nabatzagSerial = req.getParameter("nabatzagSerial");
+ 		    nabatzagUrl = req.getParameter("nabatzagUrl");
+ 		    nabatzagToken = req.getParameter("nabatzagToken");
+-		    String reportOnSuccessParameter = req.getParameter("reportOnSucess");
+-		    reportOnSucess = reportOnSuccessParameter != null && reportOnSuccessParameter.equals("on");
++		    reportOnSucess = "on".equals(req.getParameter("reportOnSucess"));
+ 			nabatzagFailTTS = req.getParameter("nabatzagFailTTS");
+ 			nabatzagSuccessTTS = req.getParameter("nabatzagSuccessTTS");
+ 			nabatzagRecoverTTS = req.getParameter("nabatzagRecoverTTS");
+ 			nabatzagBuildTTS = req.getParameter("nabatzagBuildTTS");
+-	
++			notifyOnBuildStart = "on".equals(req.getParameter("nabatzagNotifyOnBuildStart"));
++
+ 		    save();
+ 		    return super.configure(req, json);
+ 		}
+@@ -195,6 +195,14 @@
+ 		    this.reportOnSucess = reportOnSucess;
+ 		}
+ 
++		public boolean isNotifyOnBuildStart() {
++			return notifyOnBuildStart;
++		}
++
++		public void setNotifyOnBuildStart(boolean notifyOnBuildStart) {
++			this.notifyOnBuildStart = notifyOnBuildStart;
++		}
++
+     }
+ 
+     /**
+@@ -217,26 +225,28 @@
+      * @return
+      */
+     private String buildRequest(final String message, final String earpos) {
+-		final StringBuffer buf = new StringBuffer();
+-		buf.append(DESCRIPTOR.getNabatzagUrl() + "?");
+-		buf.append("sn=" + DESCRIPTOR.getNabatzagSN());
++		final StringBuilder buf = new StringBuilder();
++		buf.append(DESCRIPTOR.getNabatzagUrl()).append("?");
++		buf.append("sn=").append(DESCRIPTOR.getNabatzagSN());
+ 		buf.append("&");
+-		buf.append("token=" + DESCRIPTOR.getNabatzagToken());
++		buf.append("token=").append(DESCRIPTOR.getNabatzagToken());
+ 		buf.append("&");
+-		buf.append("tts=" + message);
++		buf.append("tts=").append(message);
+ 		buf.append("&");
+-		buf.append("voice=" + DESCRIPTOR.getNabatzagVoice());
++		buf.append("voice=").append(DESCRIPTOR.getNabatzagVoice());
+ 		buf.append("&");
+-		buf.append("" + earpos);
++		buf.append(StringUtils.defaultString(earpos));
+ 		
+ 		return buf.toString();
+     }
+ 
+     @Override
+     public boolean prebuild(final AbstractBuild<?, ?> build, BuildListener listener) {
+-        String msg = DESCRIPTOR.getNabatzagBuildTTS();
+-        log.finest("Nabaztag Build BEGIN");
+-        sendRequest(msg, DESCRIPTOR.getNabatzagBUILDEDpos(), build, listener);
++    	if (DESCRIPTOR.isNotifyOnBuildStart()) {
++	    	String msg = DESCRIPTOR.getNabatzagBuildTTS();
++	        log.finest("Nabaztag Build BEGIN");
++	        sendRequest(msg, DESCRIPTOR.getNabatzagBUILDEDpos(), build, listener);
++    	}
+         return true;
+     }
+ 
+@@ -272,7 +282,7 @@
+ 				log.finest("Nabaztag Build SUCCESS");
+ 			    sendRequest(msg, DESCRIPTOR.getNabatzagSUSSCEEDpos(), build, listener);
+ 			} else {
+-				listener.getLogger().println("User has choosed not to be notified of success, notification has not been sent.");
++				listener.getLogger().println("User has choosen not to be notified of success, notification has not been sent.");
+ 			}
+ 		} else {
+ 			listener.getLogger().println("Build result not handled by Nabaztag notifier, notification has not been sent.");
+@@ -286,8 +296,7 @@
+     }
+ 
+     private boolean isSNAndTokenDefined() {
+-    	return DESCRIPTOR.nabatzagSerial != null && DESCRIPTOR.nabatzagSerial.length() > 0
+-    		&& DESCRIPTOR.nabatzagToken != null && DESCRIPTOR.nabatzagToken.length() > 0;
++    	return StringUtils.isNotBlank(DESCRIPTOR.nabatzagSerial) && StringUtils.isNotBlank(DESCRIPTOR.nabatzagSerial);
+ 	}
+ 
+ 	/**
+@@ -298,6 +307,7 @@
+ 	 * @param build 
+      */
+     private void sendRequest(final String message, final String earpos, AbstractBuild<?,?> build, BuildListener listener) {
++    	
+     	String substituedMessage = StringUtils.replaceEach(
+     			message,
+     			new String[]{"${projectName}", "${buildNumber}"},
+@@ -306,7 +316,6 @@
+     	String urlEncodedMessage = null;
+ 	    URLConnection cnx = null;
+ 	    InputStream inputStream = null;
+-	    BufferedReader bufferedReader = null;
+ 	    try {
+ 	    	urlEncodedMessage = URLEncoder.encode(substituedMessage, "UTF-8");
+ 			String requestString = buildRequest(urlEncodedMessage, earpos);
+@@ -314,12 +323,7 @@
+ 	    	cnx = ProxyConfiguration.open(new URL(requestString));
+ 	    	cnx.connect();
+ 	    	inputStream = cnx.getInputStream();
+-	    	bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+-	    	StringBuilder result = new StringBuilder();
+-	        String strLine;
+-			while ((strLine = bufferedReader.readLine()) != null) {
+-				result.append(strLine);
+-			}
++	    	String result = IOUtils.toString(inputStream);
+ 			log.finest("API call result : " + result.toString());
+ 			analyseResult(result.toString(), listener);
+ 	    } catch (UnsupportedEncodingException notFatal) {
+@@ -332,18 +336,7 @@
+ 	    	log.log(Level.WARNING, "IOException while reading API call result.", notImportant);
+ 			listener.error("Nabaztag has not been successfully notified.");
+ 		} finally {
+-			if (bufferedReader != null)
+-				try {
+-					bufferedReader.close();
+-				} catch (IOException e) {
+-			    	log.log(Level.WARNING, "IOException while closing API connection.", e);
+-				}
+-			if (inputStream != null)
+-				try {
+-					inputStream.close();
+-				} catch (IOException e) {
+-					log.log(Level.WARNING, "IOException while closing API connection.", e);
+-				}
++			IOUtils.closeQuietly(inputStream);
+ 	    }
+     }
+ 
+@@ -379,23 +372,23 @@
+ 
+ 		boolean success = true;
+ 		StringBuilder out = new StringBuilder();
+-		if (expectedCommands.size() > 0) {
++		if (!expectedCommands.isEmpty()) {
+ 			success = false;
+ 			out.append("Following expected confirmations has not been received: ");
+-			out.append(expectedCommands.toString());
++			out.append(expectedCommands);
+ 			out.append("\n");
+ 		}
+-		if (unExpectedCommands.size() > 0) {
++		if (!unExpectedCommands.isEmpty()) {
+ 			success = false;
+ 			out.append("Following unexpected messages has been received: ");
+-			out.append(unExpectedCommands.toString());
++			out.append(unExpectedCommands);
+ 			out.append(". ");
+ 		}
+ 		if (success) {
+ 			listener.getLogger().println("Nabaztag has been successfully notified.");
+ 		} else {
+ 			listener.getLogger().println("Nabaztag has not been successfully notified: ");
+-			listener.getLogger().println(out.toString());
++			listener.getLogger().println(out);
+ 		}
+ 	}
+ 
+Index: src/main/resources/de/stephannoske/hudson/tools/NabatzagPublisher/global.jelly
+===================================================================
+--- src/main/resources/de/stephannoske/hudson/tools/NabatzagPublisher/global.jelly	(revision 28559)
++++ src/main/resources/de/stephannoske/hudson/tools/NabatzagPublisher/global.jelly	(working copy)
+@@ -14,6 +14,13 @@
+ 				value="${descriptor.nabatzagToken}" />
+ 		</f:entry>
+ 
++		<f:entry title="Notify on build start"
++			help="${rootURL}/plugin/nabaztag/help-globalConfig-isNotifyOnBuildStart.html">
++			<f:checkbox name="nabatzagNotifyOnBuildStart" title="Notify on build start"
++				checked="${descriptor.isNotifyOnBuildStart()}">
++			</f:checkbox>
++		</f:entry>
++
+ 		<f:entry title="Report On Success"
+ 			help="${rootURL}/plugin/nabaztag/help-globalConfig-isReportOnSuccess.html">
+ 			<f:checkbox name="reportOnSucess" title="Report On Success"

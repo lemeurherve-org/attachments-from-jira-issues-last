@@ -1,0 +1,37 @@
+Index: C:/entw/hudson-org/main/core/src/main/java/hudson/model/listeners/ItemListener.java
+===================================================================
+--- C:/entw/hudson-org/main/core/src/main/java/hudson/model/listeners/ItemListener.java	(revision 13793)
++++ C:/entw/hudson-org/main/core/src/main/java/hudson/model/listeners/ItemListener.java	(working copy)
+@@ -44,4 +44,10 @@
+      */
+     public void onRenamed(Item item, String oldName, String newName) {
+     }
++
++    /**
++     * Called after a job configuriation is changed.
++     */
++    public void onChanged(Item item) {
++    }
+ }
+Index: C:/entw/hudson-org/main/core/src/main/java/hudson/model/Job.java
+===================================================================
+--- C:/entw/hudson-org/main/core/src/main/java/hudson/model/Job.java	(revision 13793)
++++ C:/entw/hudson-org/main/core/src/main/java/hudson/model/Job.java	(working copy)
+@@ -870,6 +870,8 @@
+                 }
+                 rsp.sendRedirect("rename?newName=" + newName);
+             } else {
++            	for (ItemListener l : Hudson.getInstance().getJobListeners())
++                    l.onChanged(this);
+                 rsp.sendRedirect(".");
+             }
+         } catch (FormException e) {
+@@ -927,6 +929,8 @@
+ 
+             // if everything went well, commit this new version
+             out.commit();
++            for (ItemListener l : Hudson.getInstance().getJobListeners())
++                l.onChanged(this);
+             return;
+         }
+ 

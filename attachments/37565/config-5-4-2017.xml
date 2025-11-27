@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>RefA</name>
+          <description></description>
+          <defaultValue>A</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.5.3">
+          <name>Servers</name>
+          <description></description>
+          <randomName>choice-parameter-6022440270555895</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1.27">
+              <script>try {
+  if(binding.variables.containsKey(&apos;RefA&apos;))
+  {
+    println &quot;&apos;RefA&apos; is defined&quot;
+    xml = &quot;&quot;&quot;
+    &lt;a&gt;
+      &lt;b&gt;
+        &lt;c Name=&quot;I am c&quot;/&gt;
+      &lt;/b&gt;
+    &lt;/a&gt;
+    &quot;&quot;&quot;
+
+    a = new XmlSlurper().parseText(xml)
+    println a.text()
+    def names = []
+    a.b.c.@Name.each
+    {
+      println &quot;Found name &apos;&quot; + it + &quot;&apos;&quot;
+      names &lt;&lt; it
+    }
+    println &quot;Returning list of names...&quot;
+    return names   
+  }
+  else
+  {
+    println &quot;Undefined parameter &apos;RefA&apos;&quot;
+    return [&quot;What&apos;s RefA&quot;]
+  }
+} catch (all) {  // Groovy shortcut: we can omit the Exception class
+                 // if we want to catch all Exception and descendant objects.
+                 // In Java we have to write catch (Exception all).
+  println &quot;Caught exception: &quot; + all
+  println &quot;Returning a list with just &apos;Exception&apos;&quot;
+  return [&apos;Exception&apos;]
+}
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1.27">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>SimplestErrorRepro</projectName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>RefA</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@1.9.0">
+      <maxConcurrentPerNode>0</maxConcurrentPerNode>
+      <maxConcurrentTotal>0</maxConcurrentTotal>
+      <categories class="java.util.concurrent.CopyOnWriteArrayList"/>
+      <throttleEnabled>false</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <limitOneJobWithMatchingParams>false</limitOneJobWithMatchingParams>
+      <paramsToUseForLimit></paramsToUseForLimit>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+    <EnvInjectJobProperty plugin="envinject@2.0">
+      <info>
+        <secureGroovyScript plugin="script-security@1.27">
+          <script></script>
+          <sandbox>false</sandbox>
+        </secureGroovyScript>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+      <on>true</on>
+      <keepJenkinsSystemVariables>true</keepJenkinsSystemVariables>
+      <keepBuildVariables>true</keepBuildVariables>
+      <overrideBuildParameters>false</overrideBuildParameters>
+    </EnvInjectJobProperty>
+    <org.jvnet.hudson.plugins.shelveproject.ShelveProjectProperty plugin="shelve-project-plugin@1.5"/>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>BVTController01</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.groovy.SystemGroovy plugin="groovy@2.0">
+      <source class="hudson.plugins.groovy.StringSystemScriptSource">
+        <script plugin="script-security@1.27">
+          <script>import hudson.FilePath
+
+def myLines = build.getEnvironment()[&quot;Lines&quot;]
+def allLines = []
+allLines = myLines.split(&quot;,&quot;)
+
+def StartingLineNumber = allLines.first()
+def EndingLineNumber =  allLines.last()
+
+def SL1FileName = build.getEnvironment()[&quot;SL1FileName&quot;]
+def SF1FilePath = build.getEnvironment()[&quot;SF1FilePath&quot;]
+def ScriptName = build.getEnvironment()[&quot;ScriptName&quot;]
+
+def RunScriptLine = &quot;RunScript &quot; + StartingLineNumber + &quot; &quot; + EndingLineNumber + &quot; &quot; + SF1FilePath.take(SF1FilePath.length()-4) + &quot; &quot; + ScriptName
+
+def FormattedString = build.getEnvironment()[&quot;FormattedString&quot;]
+println FormattedString
+
+
+def FullFileContent = FormattedString +  &quot;\r\n\r\n&quot; + RunScriptLine + &quot;\r\n&quot;
+
+if(build.workspace.isRemote())
+{
+    channel = build.workspace.channel;
+    fp = new FilePath(channel, build.workspace.toString() + &quot;/&quot; + SL1FileName)
+} else {
+    fp = new FilePath(new File(build.workspace.toString() + &quot;/&quot; + SL1FileName))
+}
+
+fp.write(FullFileContent, null)
+</script>
+          <sandbox>false</sandbox>
+        </script>
+      </source>
+    </hudson.plugins.groovy.SystemGroovy>
+    <hudson.tasks.BatchFile>
+      <command>copy &quot;%WORKSPACE%\%SL1FileName%&quot; &quot;\\%TelexerServerName%\%TestFolderPath%&quot; /Y</command>
+    </hudson.tasks.BatchFile>
+    <hudson.tasks.BatchFile>
+      <command>set RunInteractivelyOneZero=0&#xd;
+if &quot;%RunInteractively%&quot; == &quot;true&quot; (&#xd;
+  set RunInteractivelyOneZero=1&#xd;
+)&#xd;
+perl \\avstgroup.com\engineering\LABBUILD\Automation\AutoBuildTest\BVTController\BVT\BVTScripts\9.0.0\PerlScripts\RunRemoteConfigProcess.pl \\avstgroup.com\engineering\labbuild\Automation\AutoBuildTest\BVTController\PostBVTDevTest\Config %TelexerServerName% %RunInteractivelyOneZero% &quot;%TestFolder%&quot; AT_Telexer.exe &quot;%ScriptName% /N&quot;&#xd;
+</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <EnvInjectBuildWrapper plugin="envinject@2.0">
+      <info>
+        <secureGroovyScript plugin="script-security@1.27">
+          <script>def TestFolderPath = TestFolder.replace(&quot;:&quot;, &apos;$&apos;)
+println &quot;TestFolder =&gt;&quot;+TestFolder
+println &quot;TestFolderPath=&gt;&quot;+TestFolderPath
+
+
+println &quot;ScriptVariables=&quot;+ScriptVariables
+
+def string = ScriptVariables
+
+def List = []
+List = string.split(&quot;,&quot;)
+def FormattedString = &quot;&quot;
+
+List.each {
+  item = it
+  println &quot;item = $item&quot;
+  if ((m = item =~ /^(.*?)\=(.*?)$/))
+  {
+    def varName = m.group(1)
+    def varValue = m.group(2)
+    def str = &quot;&quot;
+    if (varValue =~ /\&quot;/)
+    {
+      str = &quot;definestring&quot;
+    }
+    else
+    {
+      str = &quot;define      &quot;
+    }
+    FormattedString += &quot;$str $varName $varValue\r\n&quot;
+  }
+}
+
+println &quot;FormattedString=$FormattedString&quot;
+
+def varMap = [:]
+varMap[&apos;FormattedString&apos;] = FormattedString
+varMap[&apos;TestFolderPath&apos;] = TestFolderPath
+varMap
+</script>
+          <sandbox>false</sandbox>
+        </secureGroovyScript>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+    </EnvInjectBuildWrapper>
+    <org.jenkinsci.plugins.builduser.BuildUser plugin="build-user-vars-plugin@1.5"/>
+  </buildWrappers>
+</project>

@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                deleteDir()
+                copyArtifacts filter: 'DSL Vertragsverlängerung.Designer.vb', includeBuildNumberInTargetPath: true, projectName: 'archive-an-artifact', selector: lastWithArtifacts()
+                archiveArtifacts artifacts: '**'
+            }
+        }
+    }
+}

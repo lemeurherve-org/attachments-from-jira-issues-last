@@ -1,0 +1,48 @@
+diff --exclude CVS --exclude '*~' --exclude target -rP /home/afeuer/src/hudson-cvs-clean/hudson/hudson/plugins/xvnc/src/main/java/hudson/plugins/xvnc/DisplayAllocator.java xvnc/src/main/java/hudson/plugins/xvnc/DisplayAllocator.java
+17,18c17,18
+<     public synchronized int allocate() {
+<         int i = 10;
+---
+>     public synchronized int allocate(int baseDisplayNumber) {
+>         int i = baseDisplayNumber; 
+diff --exclude CVS --exclude '*~' --exclude target -rP /home/afeuer/src/hudson-cvs-clean/hudson/hudson/plugins/xvnc/src/main/java/hudson/plugins/xvnc/Xvnc.java xvnc/src/main/java/hudson/plugins/xvnc/Xvnc.java
+28a29
+>         int baseDisplayNumber = DESCRIPTOR.baseDisplayNumber; 
+32c33
+<         final int displayNumber = allocator.allocate();
+---
+>         final int displayNumber = allocator.allocate(baseDisplayNumber);
+94a96,100
+>         /*
+>          * Base X display number. 
+>          */
+>         public int baseDisplayNumber = 10;
+> 
+diff --exclude CVS --exclude '*~' --exclude target -rP /home/afeuer/src/hudson-cvs-clean/hudson/hudson/plugins/xvnc/src/main/resources/hudson/plugins/xvnc/Xvnc/global.jelly xvnc/src/main/resources/hudson/plugins/xvnc/Xvnc/global.jelly
+3c3
+<     <f:entry title="command line" help="/plugin/xvnc/help-commandline.html">
+---
+>     <f:entry title="Command line" help="/plugin/xvnc/help-commandline.html">
+6a7,10
+>     <f:entry title="Base display number" help="/plugin/xvnc/help-baseDisplayNumber.html">
+>       <input class="setting-input" name="xvnc.baseDisplayNumber"
+>         type="text" value="${descriptor.baseDisplayNumber}"/>
+>     </f:entry>
+8c12
+< </j:jelly>
+\ No newline at end of file
+---
+> </j:jelly>
+diff --exclude CVS --exclude '*~' --exclude target -rP /home/afeuer/src/hudson-cvs-clean/hudson/hudson/plugins/xvnc/src/main/webapp/help-baseDisplayNumber.html xvnc/src/main/webapp/help-baseDisplayNumber.html
+0a1,5
+> <div>
+>   Base X display number to use when starting Xvnc. Leave it empty to let Hudson figures things out.
+>   <br>
+>   Default is 10. This means the first display will be :10, the second :11, the third :12, and so on. Use a number only, don't prepend the colon (:).
+> </div>
+diff --exclude CVS --exclude '*~' --exclude target -rP /home/afeuer/src/hudson-cvs-clean/hudson/hudson/plugins/xvnc/src/main/webapp/help-commandline.html xvnc/src/main/webapp/help-commandline.html
+11c11
+< </div>
+---
+> </div>
+\ No newline at end of file

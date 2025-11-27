@@ -1,0 +1,97 @@
+### Eclipse Workspace Patch 1.0
+#P ci-game
+Index: src/main/java/hudson/plugins/cigame/model/RuleBook.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/model/RuleBook.java	(revision 16079)
++++ src/main/java/hudson/plugins/cigame/model/RuleBook.java	(working copy)
+@@ -1,8 +1,5 @@
+ package hudson.plugins.cigame.model;
+ 
+-import hudson.Util;
+-
+-import java.util.Collections;
+ import java.util.Iterator;
+ import java.util.LinkedList;
+ import java.util.List;
+@@ -16,6 +13,10 @@
+ 
+     private List<RuleSet> rulesets;
+ 
++    public RuleBook(RuleBook ruleBook) {
++        rulesets = new LinkedList<RuleSet>(ruleBook.rulesets);
++    }
++    
+     public RuleBook() {
+         rulesets = new LinkedList<RuleSet>();
+     }
+Index: src/main/java/hudson/plugins/cigame/GamePublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/GamePublisher.java	(revision 16079)
++++ src/main/java/hudson/plugins/cigame/GamePublisher.java	(working copy)
+@@ -12,6 +12,7 @@
+ import hudson.model.BuildListener;
+ import hudson.model.Descriptor;
+ import hudson.model.Hudson;
++import hudson.model.Result;
+ import hudson.model.User;
+ import hudson.plugins.cigame.model.RuleBook;
+ import hudson.plugins.cigame.model.ScoreCard;
+@@ -39,10 +40,14 @@
+     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+             BuildListener listener) throws InterruptedException, IOException {
+ 
+-        RuleBook ruleBook = PluginImpl.GAME_PUBLISHER_DESCRIPTOR.getRuleBook();
+-
+-        ScoreCard sc = new ScoreCard();
+-        sc.record(build, ruleBook);
++         ScoreCard sc = new ScoreCard();
++	if (build.getResult().isWorseOrEqualTo(Result.FAILURE) || build.getPreviousBuild() == null
++		|| build.getPreviousBuild().getResult().isWorseOrEqualTo(Result.FAILURE)) {
++	    sc.record(build, PluginImpl.GAME_PUBLISHER_DESCRIPTOR.getBuildRuleBook());
++	} else {
++	    sc.record(build, PluginImpl.GAME_PUBLISHER_DESCRIPTOR.getRuleBook());
++	}
++        
+ 
+         ScoreCardAction action = new ScoreCardAction(sc, build);
+         build.getActions().add(action);
+Index: src/main/java/hudson/plugins/cigame/GameDescriptor.java
+===================================================================
+--- src/main/java/hudson/plugins/cigame/GameDescriptor.java	(revision 16079)
++++ src/main/java/hudson/plugins/cigame/GameDescriptor.java	(working copy)
+@@ -23,6 +23,7 @@
+     public static final String ACTION_LOGO_MEDIUM = "/plugin/ci-game/icons/game-22x22.png";
+ 
+     private RuleBook rulebook;
++    private RuleBook buildRulebook;
+ 
+     protected GameDescriptor() {
+         super(GamePublisher.class);
+@@ -33,11 +34,25 @@
+      * 
+      * @return the rule book that is configured for the game.
+      */
++    public RuleBook getBuildRuleBook() {
++        if (buildRulebook == null) {
++            buildRulebook = new RuleBook();
++
++            addRuleSetIfAvailable(buildRulebook, new BuildRuleSet());
++            
++        }
++        return buildRulebook;
++    }
++    
++    /**
++     * Returns the default rule book
++     * 
++     * @return the rule book that is configured for the game.
++     */
+     public RuleBook getRuleBook() {
+         if (rulebook == null) {
+-            rulebook = new RuleBook();
++            rulebook = new RuleBook(getBuildRuleBook());
+ 
+-            addRuleSetIfAvailable(rulebook, new BuildRuleSet());
+             addRuleSetIfAvailable(rulebook, new UnitTestingRuleSet());
+             addRuleSetIfAvailable(rulebook, new OpenTasksRuleSet());
+             addRuleSetIfAvailable(rulebook, new ViolationsRuleSet());

@@ -1,0 +1,71 @@
+Index: src/main/java/com/ds/tools/hudson/crowd/UserDetailsService.java
+===================================================================
+--- src/main/java/com/ds/tools/hudson/crowd/UserDetailsService.java	(revision 0)
++++ src/main/java/com/ds/tools/hudson/crowd/UserDetailsService.java	(revision 0)
+@@ -0,0 +1,48 @@
++package com.ds.tools.hudson.crowd;
++
++import hudson.security.SecurityRealm;
++
++import java.rmi.RemoteException;
++import java.util.Arrays;
++
++import org.acegisecurity.GrantedAuthority;
++
++import com.atlassian.crowd.integration.acegi.user.CrowdUserDetailsServiceImpl;
++import com.atlassian.crowd.integration.exception.InvalidAuthorizationTokenException;
++import com.atlassian.crowd.integration.exception.ObjectNotFoundException;
++
++/**
++ * Retrieves users from Crowd using Crowd's remote API.
++ * <p>
++ * Adds {@link SecurityRealm.AUTHENTICATED_AUTHORITY} to the users' group
++ * memberships if they don't already have it.
++ * 
++ * @author Kutsal Berberoglu
++ */
++public class UserDetailsService extends CrowdUserDetailsServiceImpl {
++
++	/**
++	 * Requests the group memberships of the user from the Crowd Server. Adds
++	 * {@link SecurityRealm.AUTHENTICATED_AUTHORITY} to the list if the user
++	 * doesn't already have it.
++	 */
++	@Override
++	protected GrantedAuthority[] getAuthorities(String username)
++			throws InvalidAuthorizationTokenException, RemoteException,
++			ObjectNotFoundException {
++		GrantedAuthority[] authorities = super.getAuthorities(username);
++		if (authorities != null) {
++			int alen = authorities.length;
++			String auth = SecurityRealm.AUTHENTICATED_AUTHORITY.getAuthority();
++			for (int i = 0; i < alen; i++) {
++				if (authorities[i].getAuthority().equalsIgnoreCase(auth)) {
++					return authorities;
++				}
++			}
++			authorities = Arrays.copyOf(authorities, alen + 1);
++			authorities[alen] = SecurityRealm.AUTHENTICATED_AUTHORITY;
++		}
++		return authorities;
++	}
++
++}
+Index: src/main/resources/com/ds/tools/hudson/crowd/Crowd.groovy
+===================================================================
+--- src/main/resources/com/ds/tools/hudson/crowd/Crowd.groovy	(revision 18618)
++++ src/main/resources/com/ds/tools/hudson/crowd/Crowd.groovy	(working copy)
+@@ -1,11 +1,11 @@
+ import org.acegisecurity.providers.ProviderManager
+ import org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider
+ import org.acegisecurity.providers.rememberme.RememberMeAuthenticationProvider
+-import com.atlassian.crowd.integration.acegi.user.CrowdUserDetailsServiceImpl
++import com.ds.tools.hudson.crowd.UserDetailsService
+ import com.atlassian.crowd.integration.acegi.RemoteCrowdAuthenticationProvider
+ import hudson.model.Hudson
+ 
+-crowdUserDetailsService(CrowdUserDetailsServiceImpl) {
++crowdUserDetailsService(UserDetailsService) {
+     authenticationManager = ref("crowdAuthenticationManager")
+     groupMembershipManager = ref("crowdGroupMembershipManager")
+     userManager = ref("crowdUserManager")

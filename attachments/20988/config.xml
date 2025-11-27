@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project>
+  <actions/>
+  <description>UnitTest_Core_LOD</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.disk__usage.DiskUsageProperty/>
+  </properties>
+  <scm class="hudson.plugins.perforce.PerforceSCM">
+    <p4User>jenkinsci</p4User>
+    <p4Passwd>0f0kqlwaZy92bQ2YWJA=</p4Passwd>
+    <p4Port>192.168.1.7:1666</p4Port>
+    <p4Client>PhyreJenkins_${JOB_NAME}</p4Client>
+    <projectPath>//personal/tfields/Live/Internal/External/UnitTest++/... //personal/tfields/Live/engine/External/UnitTest++/...
+//personal/tfields/Live/Internal/Tests/UnitTests/... //personal/tfields/Live/engine/Tests/UnitTests/...
+//personal/tfields/Live/engine/Build/...
+//personal/tfields/Live/engine/Core/...
+//personal/tfields/Live/engine/Include/...
+//personal/tfields/Live/engine/External/Bullet/...
+//personal/tfields/Live/engine/External/lua/...
+//personal/tfields/Live/engine/External/RecastNavigation/...
+//personal/tfields/Live/engine/Lib/Win32/...
+//personal/tfields/Live/engine/Lib/Win64/...
+//personal/tfields/Live/engine/Lib/PSP2/...
+//personal/tfields/Live/engine/Lib/PS3/...</projectPath>
+    <projectOptions>noallwrite clobber nocompress unlocked nomodtime rmdir</projectOptions>
+    <p4Counter>PHYRE_BUILD_LABEL</p4Counter>
+    <p4Exe>C:\\Program Files\\Perforce\\p4.exe</p4Exe>
+    <p4SysDrive>C:</p4SysDrive>
+    <p4SysRoot>C:\Windows</p4SysRoot>
+    <useClientSpec>false</useClientSpec>
+    <forceSync>false</forceSync>
+    <alwaysForceSync>false</alwaysForceSync>
+    <dontUpdateServer>false</dontUpdateServer>
+    <disableAutoSync>false</disableAutoSync>
+    <disableSyncOnly>false</disableSyncOnly>
+    <useOldClientName>false</useOldClientName>
+    <updateView>true</updateView>
+    <dontRenameClient>false</dontRenameClient>
+    <updateCounterValue>false</updateCounterValue>
+    <dontUpdateClient>false</dontUpdateClient>
+    <exposeP4Passwd>false</exposeP4Passwd>
+    <wipeBeforeBuild>true</wipeBeforeBuild>
+    <wipeRepoBeforeBuild>false</wipeRepoBeforeBuild>
+    <firstChange>0</firstChange>
+    <excludedUsers>jenkinsci</excludedUsers>
+    <slaveClientNameFormat>${basename}-${nodename}</slaveClientNameFormat>
+    <lineEndValue>local</lineEndValue>
+    <useViewMask>false</useViewMask>
+    <useViewMaskForPolling>false</useViewMaskForPolling>
+    <useViewMaskForSyncing>false</useViewMaskForSyncing>
+    <pollOnlyOnMaster>false</pollOnlyOnMaster>
+  </scm>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <canRoam>true</canRoam>
+  <disabled>true</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <hudson.matrix.TextAxis>
+      <name>COMPILER</name>
+      <values>
+        <string>GCC</string>
+        <string>SNC</string>
+        <string>CL</string>
+      </values>
+    </hudson.matrix.TextAxis>
+    <hudson.matrix.TextAxis>
+      <name>CONFIG</name>
+      <values>
+        <string>Debug</string>
+        <string>Release</string>
+      </values>
+    </hudson.matrix.TextAxis>
+    <hudson.matrix.TextAxis>
+      <name>PLATFORM</name>
+      <values>
+        <string>PS3</string>
+        <string>PSP2</string>
+        <string>Win32</string>
+        <string>Win64</string>
+      </values>
+    </hudson.matrix.TextAxis>
+  </axes>
+  <combinationFilter>(PLATFORM==&quot;Win32&quot; &amp;&amp; COMPILER==&quot;CL&quot; &amp;&amp; (CONFIG==&quot;Debug&quot; || CONFIG==&quot;Release&quot;))</combinationFilter>
+  <builders>
+    <hudson.tasks.Ant>
+      <targets>UnitTestsProject</targets>
+      <buildFile>build-jci.xml</buildFile>
+      <properties>project.name=UnitTestsLOD
+project.unittestfoldername=LOD</properties>
+    </hudson.tasks.Ant>
+  </builders>
+  <publishers>
+    <com.thalesgroup.hudson.plugins.xunit.XUnitPublisher>
+      <types>
+        <com.thalesgroup.dtkit.metrics.hudson.model.UnitTestJunitHudsonTestType>
+          <pattern>tfields/Live/engine/Tests/UnitTests/Core/LOD/UnitTestsLODResultsWin32D.xml</pattern>
+          <faildedIfNotNew>false</faildedIfNotNew>
+          <deleteOutputFiles>true</deleteOutputFiles>
+          <stopProcessingIfError>false</stopProcessingIfError>
+        </com.thalesgroup.dtkit.metrics.hudson.model.UnitTestJunitHudsonTestType>
+        <com.thalesgroup.dtkit.metrics.hudson.model.UnitTestJunitHudsonTestType>
+          <pattern>tfields/Live/engine/Tests/UnitTests/Core/LOD/UnitTestsLODResultsWin32.xml</pattern>
+          <faildedIfNotNew>false</faildedIfNotNew>
+          <deleteOutputFiles>true</deleteOutputFiles>
+          <stopProcessingIfError>false</stopProcessingIfError>
+        </com.thalesgroup.dtkit.metrics.hudson.model.UnitTestJunitHudsonTestType>
+      </types>
+    </com.thalesgroup.hudson.plugins.xunit.XUnitPublisher>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper>
+      <includes>build-jci.xml,build-jci.properties,dart.xml,dart.properties,rsync.password,tfields/*.*</includes>
+      <excludes></excludes>
+      <flatten>false</flatten>
+      <includeAntExcludes>false</includeAntExcludes>
+      <hudsonHomeRelative>false</hudsonHomeRelative>
+      <relativeTo>userContent</relativeTo>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper>
+  </buildWrappers>
+  <runSequentially>false</runSequentially>
+  <touchStoneResultCondition>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+  </touchStoneResultCondition>
+</matrix-project>

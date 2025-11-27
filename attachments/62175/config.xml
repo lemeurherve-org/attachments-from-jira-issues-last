@@ -1,0 +1,269 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1400.v7fd111b_ec82f">
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.8.0">
+      <gitLabConnection>gitlab-vancouver</gitLabConnection>
+      <jobCredentialId></jobCredentialId>
+      <useAlternativeCredential>false</useAlternativeCredential>
+    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@330.v645b_7df10e2a_">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>hypervisor</name>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>aws</string>
+              <string>azure</string>
+              <string>vmware</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.8.1">
+          <name>location</name>
+          <randomName>choice-parameter-265145830943</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1326.vdb_c154de8669">
+              <script>
+if (hypervisor == &quot;aws&quot;){
+    list = [
+        &apos;oregon&apos;
+    ]
+} else if(hypervisor == &quot;azure&quot;){
+   list = [&apos;East US&apos;]
+}else {
+    list = [
+        &apos;Pune&apos;
+    ]
+}
+return list
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1326.vdb_c154de8669">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>test-job</projectName>
+          <projectFullName>test-job</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>hypervisor</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.8.1">
+          <name>environment</name>
+          <randomName>choice-parameter-265147306858</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1326.vdb_c154de8669">
+              <script>
+repos = [
+    &apos;dev&apos;,
+    &apos;devops&apos;,
+    &apos;qa&apos;
+]
+if (hypervisor == &quot;vmware&quot;){
+    return repos
+}else if(hypervisor == &quot;aws&quot;){
+ return [&quot;aws-cloud&quot;]
+}else if(hypervisor == &quot;azure&quot;){
+ return [&quot;azure-cloud&quot;] 
+}
+else {
+    list = [&apos;Applicable only for VMWare&apos;]
+}
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1326.vdb_c154de8669">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>test-job</projectName>
+          <projectFullName>test-job</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>hypervisor</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.8.1">
+          <name>esx_host</name>
+          <randomName>choice-parameter-265148507248</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1326.vdb_c154de8669">
+              <script>
+l_esx_hosts_dev = [
+    &apos;10.132.255.3&apos;,
+    &apos;10.132.255.17&apos;
+]
+l_esx_hosts_devops = [
+    &apos;10.132.255.16&apos;,
+    &apos;192.168.63.4&apos;,
+    &apos;192.168.63.5&apos;,
+     &apos;192.168.63.6&apos;,
+    &apos;192.168.63.7&apos;
+]
+l_esx_hosts_qa = [
+    &apos;10.132.253.3&apos;
+]
+if (hypervisor == &quot;vmware&quot;){
+    if (environment == &quot;dev&quot;){
+        return l_esx_hosts_dev
+    } else if (environment == &quot;devops&quot;){
+        return l_esx_hosts_devops
+    } else if (environment == &quot;qa&quot;){
+        return l_esx_hosts_qa
+    }
+} else {
+    list = [&apos;Applicable only for VMWare:disabled:selected&apos;]
+    return list
+}
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1326.vdb_c154de8669">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>test-job</projectName>
+          <projectFullName>test-job</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>environment, hypervisor</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.8.1">
+          <name>host_to_provision</name>
+          <randomName>choice-parameter-265149613328</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1326.vdb_c154de8669">
+              <script>
+l_hosts_dev = [
+    &apos;plain-host&apos;,
+    &quot;fsr-host&quot;
+]
+l_hosts_devops = [
+     &quot;plain-host&quot;,
+    &quot;fsr-host&quot;,
+    &quot;rpm-build-host&quot;,
+    &quot;vapp-build-host&quot;,
+    &quot;yum-repo-host&quot;
+    
+]
+l_hosts_qa = [
+    &apos;plain-host&apos;,
+    &quot;fsr-host&quot;,
+]
+l_hosts_aws=[
+       &apos;plain-host&apos;,
+      &quot;fsr-host&quot;,
+      &quot;custom-ami&quot;,
+]
+l_hosts_azure=[
+       &apos;plain-host&apos;,
+]
+
+if (hypervisor == &quot;vmware&quot;){
+    if (environment == &quot;dev&quot;){
+        return l_hosts_dev
+    } else if (environment == &quot;devops&quot;){
+        return l_hosts_devops
+    } else if (environment == &quot;qa&quot;){
+        return l_hosts_qa
+    } 
+} else if (hypervisor == &quot;aws&quot;){
+        return l_hosts_aws
+} else if (hypervisor == &quot;azure&quot;){
+    return l_hosts_azure
+} else {
+    list = [&apos;Applicable only for VMWare&apos;]
+    return list
+}
+</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1326.vdb_c154de8669">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>test-job</projectName>
+          <projectFullName>test-job</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>environment, hypervisor</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@2.8.1">
+          <name>install_type</name>
+          <randomName>choice-parameter-265150799530</randomName>
+          <visibleItemCount>1</visibleItemCount>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <secureScript plugin="script-security@1326.vdb_c154de8669">
+              <script>List l_install_type=new ArrayList() 
+l_install_type.add(&apos;fresh_install&apos;)
+
+if(hypervisor==&quot;aws&quot; ){
+   if(host_to_provision==&quot;plain-host&quot;){
+       list = [&quot;offical-ami&quot;]
+    }else if (host_to_provision==&quot;custom-ami&quot;){
+        list = [&quot;ami&quot;]
+    }
+    else if (host_to_provision==&quot;fsr-host&quot;){
+         list = [&quot;fresh_install&quot;,&quot;fsr-ami&quot;,]
+    }
+   //l_install_type.add(0,&quot;ami&quot;)
+   //list=l_install_type
+}else if(hypervisor==&quot;vmware&quot; ){
+     if((host_to_provision==&quot;fsr-host&quot;)){
+           l_install_type.add(0,&quot;ova&quot;)
+           list=l_install_type
+      }else { 
+           list=[&quot;iso&quot;, &quot;custom-iso&quot;]
+      }
+}else if(hypervisor==&quot;azure&quot; &amp;&amp; (host_to_provision==&quot;plain-host&quot;)){
+     list=[&quot;azure os image&quot;]
+}
+
+return list</script>
+              <sandbox>false</sandbox>
+            </secureScript>
+            <secureFallbackScript plugin="script-security@1326.vdb_c154de8669">
+              <script></script>
+              <sandbox>false</sandbox>
+            </secureFallbackScript>
+          </script>
+          <projectName>test-job</projectName>
+          <projectFullName>test-job</projectFullName>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>hypervisor,host_to_provision</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+          <filterLength>1</filterLength>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3867.v535458ce43fd">
+    <script></script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

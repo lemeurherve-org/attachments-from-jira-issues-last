@@ -1,0 +1,59 @@
+mai 28, 2018 9:21:55 AM org.jenkinsci.plugins.xunit.service.XUnitService infoSystemLogger
+INFO: [xUnit] - [NUnit-2 (default)] - 14 test report file(s) were found with the pattern '**/target/TestResults.xml' relative to 'C:\jks\ws\Classic-AMIS_2.50.X_Build' for the testing framework 'NUnit-2 (default)'.
+Error on line 59 
+  XPTY0004: A sequence of more than one item is not allowed as the first argument of
+  substring() ("TMService.UnitTests.TMServiceT...", "_IGNOREREASON") 
+  at xsl:for-each (#53)
+     processing /test-results/test-suite[1]/results[1]/test-suite[1]/results[1]/test-suite[1]/results[1]/test-suite[3]
+  at xsl:for-each (#51)
+     processing /test-results/test-suite[1]/results[1]/test-suite[1]/results[1]/test-suite[1]/results[1]/test-suite[3]/results[1]/test-case[1]
+  in built-in template rule
+org.jenkinsci.plugins.xunit.exception.XUnitException: Conversion error Error to convert the input XML document
+	at org.jenkinsci.plugins.xunit.service.XUnitConversionService.convert(XUnitConversionService.java:88)
+	at org.jenkinsci.plugins.xunit.service.XUnitTransformer.invoke(XUnitTransformer.java:145)
+	at org.jenkinsci.plugins.xunit.service.XUnitTransformer.invoke(XUnitTransformer.java:44)
+	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:2918)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:210)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:53)
+	at hudson.remoting.Request$2.run(Request.java:358)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at hudson.remoting.Engine$1$1.run(Engine.java:94)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: org.jenkinsci.lib.dtkit.util.converter.ConversionException: Error to convert the input XML document
+	at org.jenkinsci.lib.dtkit.util.converter.ConversionService.convert(ConversionService.java:356)
+	at org.jenkinsci.lib.dtkit.util.converter.ConversionService.convert(ConversionService.java:172)
+	at org.jenkinsci.lib.dtkit.model.InputMetricXSL.convert(InputMetricXSL.java:181)
+	at org.jenkinsci.lib.dtkit.model.InputMetricXSL.convert(InputMetricXSL.java:189)
+	at org.jenkinsci.plugins.xunit.service.XUnitConversionService.convertInputMetricXSL(XUnitConversionService.java:136)
+	at org.jenkinsci.plugins.xunit.service.XUnitConversionService.convert(XUnitConversionService.java:81)
+	... 12 more
+Caused by: net.sf.saxon.s9api.SaxonApiException: A sequence of more than one item is not allowed as the first argument of substring() ("TMService.UnitTests.TMServiceT...", "_IGNOREREASON") 
+	at net.sf.saxon.s9api.XsltTransformer.transform(XsltTransformer.java:233)
+	at org.jenkinsci.lib.dtkit.util.converter.ConversionService.convert(ConversionService.java:350)
+	... 17 more
+Caused by: net.sf.saxon.trans.XPathException: A sequence of more than one item is not allowed as the first argument of substring() ("TMService.UnitTests.TMServiceT...", "_IGNOREREASON") 
+	at net.sf.saxon.expr.Expression.typeError(Expression.java:981)
+	at net.sf.saxon.expr.CardinalityChecker.evaluateItem(CardinalityChecker.java:270)
+	at net.sf.saxon.functions.Substring.evaluateItem(Substring.java:24)
+	at net.sf.saxon.expr.ValueComparison.effectiveBooleanValue(ValueComparison.java:569)
+	at net.sf.saxon.instruct.Choose.evaluateItem(Choose.java:715)
+	at net.sf.saxon.expr.CastExpression.evaluateItem(CastExpression.java:316)
+	at net.sf.saxon.expr.ExpressionTool.evaluate(ExpressionTool.java:296)
+	at net.sf.saxon.expr.LetExpression.eval(LetExpression.java:339)
+	at net.sf.saxon.expr.LetExpression.process(LetExpression.java:370)
+	at net.sf.saxon.instruct.ForEach.processLeavingTail(ForEach.java:321)
+	at net.sf.saxon.instruct.Instruction.process(Instruction.java:93)
+	at net.sf.saxon.instruct.ForEach.processLeavingTail(ForEach.java:321)
+	at net.sf.saxon.instruct.Instruction.process(Instruction.java:93)
+	at net.sf.saxon.instruct.ElementCreator.processLeavingTail(ElementCreator.java:296)
+	at net.sf.saxon.instruct.Template.applyLeavingTail(Template.java:203)
+	at net.sf.saxon.instruct.ApplyTemplates.applyTemplates(ApplyTemplates.java:345)
+	at net.sf.saxon.instruct.ApplyTemplates.defaultAction(ApplyTemplates.java:378)
+	at net.sf.saxon.instruct.ApplyTemplates.applyTemplates(ApplyTemplates.java:333)
+	at net.sf.saxon.Controller.transformDocument(Controller.java:1807)
+	at net.sf.saxon.Controller.transform(Controller.java:1621)
+	at net.sf.saxon.s9api.XsltTransformer.transform(XsltTransformer.java:231)
+	... 18 more

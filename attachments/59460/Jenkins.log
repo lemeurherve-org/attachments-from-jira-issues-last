@@ -1,0 +1,96 @@
+13:53:16  Started by user ME
+13:53:16  Running as Jenkins
+13:53:16  Lightweight checkout support not available, falling back to full checkout.
+13:53:16  Checking out Windchill RV&S /Test/project.pj into D:\.jenkins\workspace\test_pipeline@script\9354fec9ed01fcc86f4e35c01d11e750375105721795dea7cf616d1f47cdea52 to read Jenkinsfile
+13:53:16  [Local Client] Checkout started using local client for :/Test/project.pj
+13:53:16  Preparing to execute si projectinfo for /Test/project.pj
+13:53:17  [LocalClient] Clean Copy Requested :true
+13:53:17  [LocalClient] Checking sandbox exists for :/Test
+13:53:17  [LocalClient] Existing workspace sandbox :d:\.jenkins\workspace\test_pipeline@script\9354fec9ed01fcc86f4e35c01d11e750375105721795dea7cf616d1f47cdea52\project.pj
+13:53:17  [LocalClient] Checking sandbox. Sandbox Project: /Test/project.pj & Jenkins project: /Test/project.pj
+13:53:17  [LocalClient] Executing ConfigureSandbox :D:\.jenkins\workspace\test_pipeline@script\9354fec9ed01fcc86f4e35c01d11e750375105721795dea7cf616d1f47cdea52
+13:53:17  [LocalClient] ConfigureSandbox response:0
+13:53:17  [LocalClient] Starting Resync Task..
+13:53:17  [LocalClient] Executing IntegrityResyncSandboxTask :D:\.jenkins\workspace\test_pipeline@script\9354fec9ed01fcc86f4e35c01d11e750375105721795dea7cf616d1f47cdea52
+13:53:18  [LocalClient] Populating clean workspace...
+13:53:18  [LocalClient] Executing ResyncSandbox :D:\.jenkins\workspace\test_pipeline@script\9354fec9ed01fcc86f4e35c01d11e750375105721795dea7cf616d1f47cdea52
+13:53:27  [LocalClient] ResyncSandbox Response:0
+13:53:27  [LocalClient] Change log successfully generated: D:\.jenkins\jobs\test_pipeline\builds\9\changelog758298588427383820.xml
+13:53:27  [LocalClient] Resync SandBox Success!
+13:53:27  [LocalClient] Checkout complete!
+13:53:27  [Pipeline] Start of Pipeline
+13:53:29  [Pipeline] node
+13:53:30  Running on BuildNode in d:\.jenkins\workspace\test_pipeline
+13:53:30  [Pipeline] {
+13:53:30  [Pipeline] stage
+13:53:31  [Pipeline] { (Declarative: Checkout SCM)
+13:53:31  [Pipeline] checkout
+13:53:31  [Local Client] Checkout started using local client for :/Test/project.pj
+13:53:31  Preparing to execute si projectinfo for /Test/project.pj
+13:53:31  [LocalClient] Clean Copy Requested :true
+13:53:31  [LocalClient] Starting Resync Task..
+13:53:31  [LocalClient] Checking sandbox exists for :/Test
+13:53:31  [LocalClient] Existing workspace sandbox :d:\.jenkins\workspace\test_pipeline\project.pj
+13:53:31  [LocalClient] Checking sandbox. Sandbox Project: /Test/project.pj & Jenkins project: /Test/project.pj
+13:53:31  [LocalClient] Executing ConfigureSandbox :d:\.jenkins\workspace\test_pipeline
+13:53:31  [LocalClient] ConfigureSandbox response:0
+13:53:31  [LocalClient] Executing IntegrityResyncSandboxTask :d:\.jenkins\workspace\test_pipeline
+13:53:32  [LocalClient] Populating clean workspace...
+13:53:32  [LocalClient] Executing ResyncSandbox :d:\.jenkins\workspace\test_pipeline
+13:53:40  hudson.AbortException: [LocalClient] Failed to resync workspace!
+13:53:40  	at hudson.scm.IntegritySCM.checkoutUsingLocalClient(IntegritySCM.java:443)
+13:53:40  	at hudson.scm.IntegritySCM.checkout(IntegritySCM.java:398)
+13:53:40  	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep.checkout(SCMStep.java:129)
+13:53:40  	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep$StepExecutionImpl.run(SCMStep.java:97)
+13:53:40  	at org.jenkinsci.plugins.workflow.steps.scm.SCMStep$StepExecutionImpl.run(SCMStep.java:84)
+13:53:40  	at org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:47)
+13:53:40  	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+13:53:40  	at java.util.concurrent.FutureTask.run(Unknown Source)
+13:53:40  	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+13:53:40  	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+13:53:40  	at java.lang.Thread.run(Unknown Source)
+13:53:40  [Pipeline] }
+13:53:40  [LocalClient] ResyncSandbox Response:0
+13:53:40  [LocalClient] IntegrityResyncSandboxTask invoke Exception :D:\.jenkins\jobs\test_pipeline\builds\9\changelog7380092039474630480.xml (The system cannot find the path specified)
+13:53:40  java.io.FileNotFoundException: D:\.jenkins\jobs\test_pipeline\builds\9\changelog7380092039474630480.xml (The system cannot find the path specified)
+13:53:40  	at java.io.FileOutputStream.open0(Native Method)
+13:53:40  	at java.io.FileOutputStream.open(Unknown Source)
+13:53:40  	at java.io.FileOutputStream.<init>(Unknown Source)
+13:53:40  	at java.io.FileOutputStream.<init>(Unknown Source)
+13:53:40  	at hudson.scm.localclient.SandboxUtils.generateChangeLogFile(SandboxUtils.java:337)
+13:53:40  	at hudson.scm.localclient.SandboxUtils.resyncSandbox(SandboxUtils.java:330)
+13:53:40  	at hudson.scm.localclient.IntegrityResyncSandboxTask.invoke(IntegrityResyncSandboxTask.java:62)
+13:53:40  	at hudson.scm.localclient.IntegrityResyncSandboxTask.invoke(IntegrityResyncSandboxTask.java:16)
+13:53:40  	at hudson.FilePath$FileCallableWrapper.call(FilePath.java:3502)
+13:53:40  	at hudson.remoting.UserRequest.perform(UserRequest.java:211)
+13:53:40  	at hudson.remoting.UserRequest.perform(UserRequest.java:54)
+13:53:40  	at hudson.remoting.Request$2.run(Request.java:376)
+13:53:40  	at hudson.remoting.InterceptingExecutorService.lambda$wrap$0(InterceptingExecutorService.java:78)
+13:53:40  	at java.util.concurrent.FutureTask.run(Unknown Source)
+13:53:40  	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+13:53:40  	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+13:53:40  	at hudson.remoting.Engine$1.lambda$newThread$0(Engine.java:126)
+13:53:40  	at java.lang.Thread.run(Unknown Source)
+13:53:41  [Pipeline] // stage
+13:53:41  [Pipeline] }
+13:53:42  [Pipeline] // node
+13:53:42  [Pipeline] stage
+13:53:42  [Pipeline] { (Declarative: Post Actions)
+13:53:45  [Pipeline] logParser
+13:53:46  Error when executing always post condition:
+13:53:46  org.jenkinsci.plugins.workflow.steps.MissingContextVariableException: Required context class hudson.FilePath is missing
+13:53:46  Perhaps you forgot to surround the code with a step that provides this, such as: node, dockerNode
+13:53:46  	at org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:90)
+13:53:46  	at org.jenkinsci.plugins.workflow.steps.CoreStep$Execution.run(CoreStep.java:71)
+13:53:46  	at org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:47)
+13:53:46  	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+13:53:46  	at java.util.concurrent.FutureTask.run(Unknown Source)
+13:53:46  	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+13:53:46  	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+13:53:46  	at java.lang.Thread.run(Unknown Source)
+13:53:46  
+13:53:47  [Pipeline] }
+13:53:47  [Pipeline] // stage
+13:53:48  [Pipeline] End of Pipeline
+13:53:48  ERROR: [Local Client] Exception occured during checkout! [LocalClient] Failed to resync workspace!
+13:53:48  Finished: FAILURE

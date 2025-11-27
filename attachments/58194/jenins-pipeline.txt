@@ -1,0 +1,22 @@
+podTemplate(
+        label: "test-node",
+        cloud: 'openshift',
+        inheritFrom: 'maven',
+        showRawYaml: true,
+        containers: [
+            containerTemplate(
+                name: 'jnlp',
+                image: 'image-registry.openshift-image-registry.svc:5000/openshift/jenkins-agent-maven:latest',
+                resourceLimitMemory: '2Gi',
+                resourceLimitCpu: '1'
+            )
+        ],
+    ) {
+node('test-node'){
+stage('test'){
+container('jnlp'){
+sh "echo hello"
+}
+}
+}
+}

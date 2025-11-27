@@ -1,0 +1,36 @@
+[CppUnit] Recording CppUnit tests results.
+[CppUnit] Use the default CppUnit plugin stylesheet.
+FATAL: remote file operation failed
+hudson.util.IOException2: remote file operation failed
+	at hudson.FilePath.act(FilePath.java:672)
+	at hudson.FilePath.act(FilePath.java:660)
+	at hudson.plugins.cppunit.CppUnitPublisher.perform(CppUnitPublisher.java:121)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildStep(AbstractBuild.java:379)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildStep(AbstractBuild.java:367)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:183)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:352)
+	at hudson.model.Run.run(Run.java:969)
+	at hudson.model.Build.run(Build.java:112)
+	at hudson.model.ResourceController.execute(ResourceController.java:93)
+	at hudson.model.Executor.run(Executor.java:116)
+Caused by: java.io.IOException: Unable to serialize hudson.FilePath$FileCallableWrapper@ace075
+	at hudson.remoting.UserRequest.serialize(UserRequest.java:145)
+	at hudson.remoting.UserRequest.<init>(UserRequest.java:61)
+	at hudson.remoting.Channel.call(Channel.java:513)
+	at hudson.FilePath.act(FilePath.java:667)
+	... 10 more
+Caused by: java.io.NotSerializableException: java.io.PrintStream
+	at java.io.ObjectOutputStream.writeObject0(Unknown Source)
+	at java.io.ObjectOutputStream.defaultWriteFields(Unknown Source)
+	at java.io.ObjectOutputStream.writeSerialData(Unknown Source)
+	at java.io.ObjectOutputStream.writeOrdinaryObject(Unknown Source)
+	at java.io.ObjectOutputStream.writeObject0(Unknown Source)
+	at java.io.ObjectOutputStream.defaultWriteFields(Unknown Source)
+	at java.io.ObjectOutputStream.writeSerialData(Unknown Source)
+	at java.io.ObjectOutputStream.writeOrdinaryObject(Unknown Source)
+	at java.io.ObjectOutputStream.writeObject0(Unknown Source)
+	at java.io.ObjectOutputStream.writeObject(Unknown Source)
+	at hudson.remoting.UserRequest._serialize(UserRequest.java:134)
+	at hudson.remoting.UserRequest.serialize(UserRequest.java:143)
+	... 13 more
+

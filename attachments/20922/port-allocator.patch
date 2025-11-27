@@ -1,0 +1,537 @@
+Index: src/main/java/org/jvnet/hudson/plugins/port_allocator/PluginImpl.java
+===================================================================
+--- src/main/java/org/jvnet/hudson/plugins/port_allocator/PluginImpl.java	(revision 39944)
++++ src/main/java/org/jvnet/hudson/plugins/port_allocator/PluginImpl.java	(working copy)
+@@ -12,6 +12,7 @@
+     @Override
+     public void start() throws Exception {
+         PortTypeDescriptor.LIST.add(DefaultPortType.DescriptorImpl.INSTANCE);
++        PortTypeDescriptor.LIST.add(PooledPortType.DescriptorImpl.INSTANCE);
+         PortTypeDescriptor.LIST.add(GlassFishJmxPortType.DescriptorImpl.INSTANCE);
+         PortTypeDescriptor.LIST.add(TomcatShutdownPortType.DescriptorImpl.INSTANCE);
+     }
+Index: src/main/java/org/jvnet/hudson/plugins/port_allocator/PortAllocationManager.java
+===================================================================
+--- src/main/java/org/jvnet/hudson/plugins/port_allocator/PortAllocationManager.java	(revision 39944)
++++ src/main/java/org/jvnet/hudson/plugins/port_allocator/PortAllocationManager.java	(working copy)
+@@ -21,7 +21,6 @@
+ public final class PortAllocationManager {
+     private final Computer node;
+ 
+-
+     /**
+      * Ports currently in use, to the build that uses it.
+      */
+@@ -95,11 +94,19 @@
+ //                // so we need to occasionally wake up to see if the port became available
+ //                wait(10000);
+ //            }
+-//        }
++//
+         ports.put(port,owner);
+         return port;
+     }
+ 
++	public synchronized boolean isFree(AbstractBuild requester, int port) {
++		AbstractBuild owner = ports.get(port);
++		if (owner == null) {
++			return true;
++		}
++		return false;
++	}
++
+     public static PortAllocationManager getManager(Computer node) {
+         PortAllocationManager pam;
+         WeakReference<PortAllocationManager> ref = INSTANCES.get(node);
+Index: src/main/java/org/jvnet/hudson/plugins/port_allocator/PortAllocator.java
+===================================================================
+--- src/main/java/org/jvnet/hudson/plugins/port_allocator/PortAllocator.java	(revision 39944)
++++ src/main/java/org/jvnet/hudson/plugins/port_allocator/PortAllocator.java	(working copy)
+@@ -2,21 +2,19 @@
+ 
+ import hudson.Extension;
+ import hudson.Launcher;
+-import hudson.model.BuildListener;
+-import hudson.model.Computer;
+-import hudson.model.Descriptor;
+-import hudson.model.Executor;
+-import hudson.model.AbstractBuild;
++import hudson.model.*;
+ import hudson.tasks.BuildWrapper;
++import hudson.util.FormValidation;
+ import net.sf.json.JSONObject;
++import org.apache.commons.logging.Log;
++import org.apache.commons.logging.LogFactory;
++import org.kohsuke.stapler.QueryParameter;
+ import org.kohsuke.stapler.StaplerRequest;
+ 
+ import java.io.IOException;
+ import java.io.PrintStream;
+-import java.util.ArrayList;
+-import java.util.HashMap;
+-import java.util.List;
+-import java.util.Map;
++import java.util.*;
++import java.util.regex.Pattern;
+ 
+ /**
+  * Allocates TCP Ports on a Computer for consumption and sets it as
+@@ -32,8 +30,10 @@
+  *
+  * @author Rama Pulavarthi
+  */
+-public class PortAllocator extends BuildWrapper /* implements ResourceActivity */
++public class PortAllocator extends BuildWrapper implements ResourceActivity
+ {
++    private static final Log log = LogFactory.getLog(PortAllocator.class);
++
+     public final PortType[] ports;
+ 
+     private PortAllocator(PortType[] ports){
+@@ -54,6 +54,7 @@
+             }
+         }
+         final PortAllocationManager pam = PortAllocationManager.getManager(cur);
++
+         Map<String,Integer> portMap = new HashMap<String,Integer>();
+         final List<Port> allocated = new ArrayList<Port>();
+ 
+@@ -71,13 +72,11 @@
+         build.addAction(new AllocatedPortAction(portMap));
+ 
+         return new Environment() {
+-
+             @Override
+             public void buildEnvVars(Map<String, String> env) {
+                 for (Port p : allocated)
+                     env.put(p.type.name, String.valueOf(p.get()));
+             }
+-
+             @Override
+             public boolean tearDown(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
+                 for (Port p : allocated)
+@@ -87,6 +86,38 @@
+         };
+     }
+ 
++    public ResourceList getResourceList() {
++        ResourceList resourceList = new ResourceList();
++        for (PortType portType : ports) {
++            if (portType instanceof PooledPortType) {
++                try {
++                    addResource(resourceList, (PooledPortType) portType, DESCRIPTOR.getPoolByName(portType.name).getPortsAsInt().length);
++                } catch (PoolNotDefinedException e) {
++                    log.warn("Unable to add resource", e);
++                }
++            } else {
++                addResource(resourceList, portType, 1);
++            }
++        }
++        return resourceList;
++    }
++
++    private void addResource(ResourceList resourceList, PooledPortType portType, int count) {
++        resourceList.w(
++            new Resource(null, "port pool " + portType.name, count)
++        );
++    }
++
++    private void addResource(ResourceList resourceList, PortType portType, int count) {
++        resourceList.w(
++            new Resource(null, "standalone port " + portType.name, count)
++        );
++    }
++
++    public String getDisplayName() {
++        return "Port exclusion";
++    }
++
+     @Override
+     public Descriptor<BuildWrapper> getDescriptor() {
+         return DESCRIPTOR;
+@@ -96,7 +127,10 @@
+     public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+ 
+     public static final class DescriptorImpl extends Descriptor<BuildWrapper> {
+-        DescriptorImpl() {
++
++        private Pool[] pools = new Pool[] {};
++
++        public DescriptorImpl() {
+             super(PortAllocator.class);
+             load();
+         }
+@@ -118,8 +152,80 @@
+         public BuildWrapper newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+             List<PortType> ports = Descriptor.newInstancesFromHeteroList(
+                     req, formData, "ports", PortTypeDescriptor.LIST);
++
++            HashSet<String> portNames = new HashSet<String>();
++
++            for (PortType p : ports) {
++                if (!portNames.add(p.name)) {
++                    throw new FormException("Cannot add multiple port allocators with the same name!", "name");
++                }
++            }
++
+             return new PortAllocator(ports.toArray(new PortType[ports.size()]));
+         }
++
++        @Override
++        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
++            Pool[] pools = req.bindParametersToList(Pool.class, "pool.").toArray(new Pool[] {});
++            for (Pool p : pools) {
++                p.name = checkPoolName(p.name);
++                checkPortNumbers(p.ports);
++            }
++            this.pools = pools;
++            save();
++            return super.configure(req,formData);
++        }
++
++        public FormValidation doCheckPort(@QueryParameter("value") final String ports) {
++            try {
++                checkPortNumbers(ports);
++                return FormValidation.ok();
++            } catch (FormException e) {
++                return FormValidation.error(e.getMessage());
++            }
++        }
++
++        public FormValidation doCheckName(@QueryParameter("value") final String name) {
++            try {
++                checkPoolName(name);
++                return FormValidation.ok();
++            } catch (FormException e) {
++                return FormValidation.error(e.getMessage());
++            }
++        }
++
++        private String checkPoolName(String name) throws FormException {
++
++            if ("".equals(name)) {
++                throw new FormException("Pool name must not be empty", "name");
++            }
++
++            if (Pattern.matches("\\w+", name)) {
++                return name.toUpperCase();
++            } else {
++                throw new FormException(
++                    "The name: \"" + name + "\" is invalid! It must not contain other than word characters!", "name"
++                );
++            }
++        }
++
++        private void checkPortNumbers(String ports) throws FormException {
++            if (!Pattern.matches("(\\d+,)*\\d+", ports)) {
++                throw new FormException("Need a comma separated list of port numbers", "ports");
++            }
++        }
++
++        public Pool[] getPools() {
++            return pools;
++        }
++
++        public Pool getPoolByName(String poolName) throws PoolNotDefinedException {
++            for (Pool p : pools) {
++                if (p.name.toUpperCase().equals(poolName.toUpperCase())) {
++                    return p;
++                }
++            }
++            throw new PoolNotDefinedException();
++        }
+     }
+-
+ }
+Index: src/main/java/org/jvnet/hudson/plugins/port_allocator/PooledPort.java
+===================================================================
+--- src/main/java/org/jvnet/hudson/plugins/port_allocator/PooledPort.java	(revision 0)
++++ src/main/java/org/jvnet/hudson/plugins/port_allocator/PooledPort.java	(revision 0)
+@@ -0,0 +1,28 @@
++package org.jvnet.hudson.plugins.port_allocator;
++
++import java.io.IOException;
++
++/**
++ * @author pepov@ustream.tv
++ */
++public class PooledPort extends Port {
++
++	private int selectedPort;
++	private PortAllocationManager manager;
++
++	public PooledPort(PortType portType, int selectedPort, PortAllocationManager manager) {
++		super(portType);
++		this.selectedPort = selectedPort;
++		this.manager = manager;
++	}
++
++	@Override
++	public int get() {
++		return selectedPort;
++	}
++	
++	@Override
++	public void cleanUp() throws IOException, InterruptedException {
++		manager.free(selectedPort);
++	}
++}
+Index: src/main/java/org/jvnet/hudson/plugins/port_allocator/PoolNotDefinedException.java
+===================================================================
+--- src/main/java/org/jvnet/hudson/plugins/port_allocator/PoolNotDefinedException.java	(revision 0)
++++ src/main/java/org/jvnet/hudson/plugins/port_allocator/PoolNotDefinedException.java	(revision 0)
+@@ -0,0 +1,7 @@
++package org.jvnet.hudson.plugins.port_allocator;
++
++/**
++ * @author pepov@ustream.tv
++ */
++public class PoolNotDefinedException extends Throwable {
++}
+Index: src/main/java/org/jvnet/hudson/plugins/port_allocator/Pool.java
+===================================================================
+--- src/main/java/org/jvnet/hudson/plugins/port_allocator/Pool.java	(revision 0)
++++ src/main/java/org/jvnet/hudson/plugins/port_allocator/Pool.java	(revision 0)
+@@ -0,0 +1,23 @@
++package org.jvnet.hudson.plugins.port_allocator;
++
++/**
++ * @author pepov@ustream.tv
++ */
++public class Pool {
++    
++    public String name;
++    public String ports;
++
++    public int[] getPortsAsInt() {
++
++        String[] portsItemsAsString = ports.split(",");
++
++        int[] portsItems = new int[portsItemsAsString.length];
++
++        for (int i = 0; i < portsItemsAsString.length; i++) {
++            portsItems[i] = Integer.parseInt(portsItemsAsString[i]);
++        }
++
++        return portsItems;
++    }
++}
+Index: src/main/java/org/jvnet/hudson/plugins/port_allocator/PooledPortType.java
+===================================================================
+--- src/main/java/org/jvnet/hudson/plugins/port_allocator/PooledPortType.java	(revision 0)
++++ src/main/java/org/jvnet/hudson/plugins/port_allocator/PooledPortType.java	(revision 0)
+@@ -0,0 +1,96 @@
++package org.jvnet.hudson.plugins.port_allocator;
++
++import hudson.Extension;
++import hudson.Launcher;
++import hudson.model.AbstractBuild;
++import hudson.model.BuildListener;
++import hudson.util.ListBoxModel;
++import net.sf.json.JSONObject;
++import org.kohsuke.stapler.DataBoundConstructor;
++import org.kohsuke.stapler.StaplerRequest;
++
++import java.io.IOException;
++
++/**
++ * @author pepov@ustream.tv
++ */
++public class PooledPortType extends PortType {
++
++    private int[] pool;
++
++    @DataBoundConstructor
++    public PooledPortType(String name) {
++        super(name);
++    }
++
++    @Override
++    public Port allocate(
++        AbstractBuild<?, ?> build,
++        final PortAllocationManager manager,
++        int prefPort,
++        Launcher launcher,
++        BuildListener buildListener
++    ) throws IOException, InterruptedException {
++
++        try {
++            while (true) {
++
++                Pool pool = PortAllocator.DESCRIPTOR.getPoolByName(name);
++
++                synchronized (pool) {
++                    for (int port : pool.getPortsAsInt()) {
++                        if (manager.isFree(build, port)) {
++                            manager.allocate(build, port);
++                            return new PooledPort(this, port, manager);
++                        }
++                    }
++                    pool.wait(500);
++                }
++            }
++        } catch (PoolNotDefinedException e) {
++            throw new RuntimeException("Undefined pool: " + name);
++        }
++    }
++
++    @Override
++    public DescriptorImpl getDescriptor() {
++        return DescriptorImpl.INSTANCE;
++    }
++
++    @Extension
++    public static final class DescriptorImpl extends PortTypeDescriptor {
++
++        public DescriptorImpl() {
++            super(PooledPortType.class);
++        }
++
++        public PooledPortType newInstance(StaplerRequest req, JSONObject formData) throws FormException {
++
++            if ("".equals(formData.getString("name"))) {
++                throw new FormException(
++                    "Unable to setup port allocator for an undefined pool!" +
++                      " Please configure pools in the global configuration settings!",
++                    "name"
++                );
++            }
++
++            return new PooledPortType(
++                formData.getString("name")
++            );
++        }
++
++        public String getDisplayName() {
++            return "Pooled TCP port";
++        }
++
++        public ListBoxModel doFillNameItems() {
++            ListBoxModel model = new ListBoxModel();
++            for (Pool p : PortAllocator.DESCRIPTOR.getPools()) {
++                model.add(p.name);
++            }
++            return model;
++        }
++
++        public static final DescriptorImpl INSTANCE = new DescriptorImpl();
++    }
++}
+Index: src/main/resources/org/jvnet/hudson/plugins/port_allocator/PortAllocator/global.jelly
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: src/main/resources/org/jvnet/hudson/plugins/port_allocator/PooledPortType/config.jelly
+===================================================================
+--- src/main/resources/org/jvnet/hudson/plugins/port_allocator/PooledPortType/config.jelly	(revision 0)
++++ src/main/resources/org/jvnet/hudson/plugins/port_allocator/PooledPortType/config.jelly	(working copy)
+@@ -1,5 +1,11 @@
+-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+-  <f:entry title="Name" help="/plugin/port-allocator/help-name.html">
+-    <f:textbox name="portType.name" value="${instance.name}" />
+-  </f:entry>
++<j:jelly
++        xmlns:j="jelly:core"
++        xmlns:st="jelly:stapler"
++        xmlns:d="jelly:define"
++        xmlns:l="/lib/layout"
++        xmlns:t="/lib/hudson"
++        xmlns:f="/lib/form">
++    <f:entry title="Pool name" field="name" help="/plugin/port-allocator/help-pool-select.html">
++        <f:select />
++    </f:entry>
+ </j:jelly>
+\ No newline at end of file
+Index: src/main/webapp/help-pool-select.html
+===================================================================
+--- src/main/webapp/help-pool-select.html	(revision 39944)
++++ src/main/webapp/help-pool-select.html	(working copy)
+@@ -1,25 +1,6 @@
+ <div>
+-  <p>
+-    When you run jobs that require TCP/IP ports (such as for testing purpose) in a machine
+-    with multiple executors, multiple jobs that just so happen to run at the same time
+-    may interfere with each other by using the same TCP/IP port.
+-  <p>
+-    You can avoid such a conflict by manually assining unique TCP/IP ports to every job on Hudson,
+-    but that will quickly get very tedious.
+-
+-    This feature solves this problem by letting Hudson do the bookkeeping and allocate
+-    unique port numbers.
+-  <p>
+-    To use this feature, list up such TCP ports by giving them names. Before the build starts,
+-    Hudson will allocate unique ports and pass them as environment variables to the build.
+-    For example, if you add <tt>ABC_PORT</tt> and <tt>DEF_PORT</tt>, you can access them like
+-    <tt>echo $ABC_PORT</tt> from your build.
+-  <p>
+-    By choosing the right TCP port type, you can make Hudson do the clean up processing.
+-    This is particularly useful for taking care of run-away daemon processes.
+-  <p>
+-    This feature also allows jobs to require a certain fixed port. For example, if your job
+-    is testing a mail server, where you'd require port 25 and no other ports would do,
+-    then simply add <tt>25</tt> as the name, so that Hudson can make sure that no two
+-    jobs that require the same port will run on the same node concurrently.
++    <p>
++        The selectable pool definitions can be configured in the global configuration settings,
++        at the "Port allocator configuration" section.
++    </p>
+ </div>
+\ No newline at end of file
+Index: src/main/webapp/help-pool-definition-name.html
+===================================================================
+--- src/main/webapp/help-pool-definition-name.html	(revision 0)
++++ src/main/webapp/help-pool-definition-name.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++    <p>
++        The name of the pool will be used as the exported environment variable name to hold the allocated port.
++    </p>
++</div>
+\ No newline at end of file
+Index: src/main/webapp/help-pool-definition-ports.html
+===================================================================
+--- src/main/webapp/help-pool-definition-ports.html	(revision 0)
++++ src/main/webapp/help-pool-definition-ports.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++    <p>
++        Please define a comma separated list of port numbers, that will be allocated to jobs depending on this pool.
++    </p>
++</div>
+\ No newline at end of file
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 39944)
++++ pom.xml	(working copy)
+@@ -1,17 +1,16 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+-    <groupId>org.jvnet.hudson.plugins</groupId>
++    <groupId>org.jenkins-ci.plugins</groupId>
+     <artifactId>plugin</artifactId>
+-    <version>1.324</version>
+-    <relativePath>../pom.xml</relativePath>
++    <version>1.433</version>
+   </parent>
+ 
+   <artifactId>port-allocator</artifactId>
+   <packaging>hpi</packaging>
+   <version>1.6-SNAPSHOT</version>
+   <name>Hudson Port Allocator Plug-in</name>
+-  <url>http://wiki.hudson-ci.org/display/HUDSON/Port+Allocator+Plugin</url>
++  <url>https://wiki.jenkins-ci.org/display/JENKINS/Port+Allocator+Plugin</url>
+ 
+   <developers>
+     <developer>
+@@ -19,6 +18,10 @@
+       <name>Rama Pulavarthi</name>
+     </developer>
+     <developer>
++      <id>pepov</id>
++      <name>Peter Wilcsinszky</name>
++    </developer>
++    <developer>
+       <id>kohsuke</id>
+       <name>Kohsuke Kawaguchi</name>
+     </developer>

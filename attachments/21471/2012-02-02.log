@@ -1,0 +1,73 @@
+Checking out http://development.xxx.com/svn/svn-projects/Projects/xxx/
+ERROR: Failed to check out http://development.xxx.com/svn/svn-projects/Projects/xxx/
+org.tmatesoft.svn.core.SVNException: svn: OPTIONS /svn/svn-projects/Projects/xxx/
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:298)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:283)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:271)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.exchangeCapabilities(DAVConnection.java:533)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVConnection.open(DAVConnection.java:98)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVRepository.openConnection(DAVRepository.java:1011)
+	at org.tmatesoft.svn.core.internal.io.dav.DAVRepository.getLatestRevision(DAVRepository.java:180)
+	at org.tmatesoft.svn.core.wc.SVNBasicClient.getRevisionNumber(SVNBasicClient.java:482)
+	at org.tmatesoft.svn.core.wc.SVNBasicClient.getLocations(SVNBasicClient.java:876)
+	at org.tmatesoft.svn.core.wc.SVNBasicClient.createRepository(SVNBasicClient.java:534)
+	at org.tmatesoft.svn.core.wc.SVNUpdateClient.doCheckout(SVNUpdateClient.java:901)
+	at hudson.scm.subversion.CheckoutUpdater$1.perform(CheckoutUpdater.java:84)
+	at hudson.scm.subversion.WorkspaceUpdater$UpdateTask.delegateTo(WorkspaceUpdater.java:136)
+	at hudson.scm.subversion.WorkspaceUpdater$UpdateTask.delegateTo(WorkspaceUpdater.java:144)
+	at hudson.scm.subversion.UpdateUpdater$TaskImpl.perform(UpdateUpdater.java:120)
+	at hudson.scm.subversion.WorkspaceUpdater$UpdateTask.delegateTo(WorkspaceUpdater.java:136)
+	at hudson.scm.SubversionSCM$CheckOutTask.perform(SubversionSCM.java:787)
+	at hudson.scm.SubversionSCM$CheckOutTask.invoke(SubversionSCM.java:768)
+	at hudson.scm.SubversionSCM$CheckOutTask.invoke(SubversionSCM.java:752)
+	at hudson.FilePath.act(FilePath.java:788)
+	at hudson.FilePath.act(FilePath.java:770)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:742)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:684)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1195)
+	at hudson.model.AbstractBuild$AbstractRunner.checkout(AbstractBuild.java:576)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:465)
+	at hudson.model.Run.run(Run.java:1409)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+Caused by: org.tmatesoft.svn.core.SVNErrorMessage: svn: OPTIONS /svn/svn-projects/Projects/xxx/
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:200)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:146)
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:89)
+	... 30 more
+Caused by: org.tmatesoft.svn.core.SVNException: svn: OPTIONS request failed on '/svn/svn-projects/Projects/xxx/'
+svn: Invalid argument: setsockopt
+	at org.tmatesoft.svn.core.internal.wc.SVNErrorManager.error(SVNErrorManager.java:64)
+	at org.tmatesoft.svn.core.internal.wc.SVNErrorManager.error(SVNErrorManager.java:51)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection._request(HTTPConnection.java:662)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.request(HTTPConnection.java:292)
+	... 29 more
+Caused by: org.tmatesoft.svn.core.SVNErrorMessage: svn: OPTIONS request failed on '/svn/svn-projects/Projects/xxx/'
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:200)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection._request(HTTPConnection.java:660)
+	... 30 more
+Caused by: org.tmatesoft.svn.core.SVNErrorMessage: svn: Invalid argument: setsockopt
+	at org.tmatesoft.svn.core.SVNErrorMessage.create(SVNErrorMessage.java:101)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection._request(HTTPConnection.java:426)
+	... 30 more
+Caused by: java.net.SocketException: Invalid argument: setsockopt
+	at java.net.PlainSocketImpl.socketSetOption(Native Method)
+	at java.net.PlainSocketImpl.setOption(Unknown Source)
+	at java.net.Socket.setTcpNoDelay(Unknown Source)
+	at org.tmatesoft.svn.core.internal.util.SVNSocketFactory.createPlainSocket(SVNSocketFactory.java:64)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection.connect(HTTPConnection.java:189)
+	at org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection._request(HTTPConnection.java:354)
+	... 30 more
+FATAL: null
+java.lang.NullPointerException
+	at java.util.ArrayList.addAll(Unknown Source)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:742)
+	at hudson.scm.SubversionSCM.checkout(SubversionSCM.java:684)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1195)
+	at hudson.model.AbstractBuild$AbstractRunner.checkout(AbstractBuild.java:576)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:465)
+	at hudson.model.Run.run(Run.java:1409)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)

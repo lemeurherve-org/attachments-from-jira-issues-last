@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject plugin="workflow-multibranch">
+  <views>
+    <hudson.model.AllView>
+      <name>All</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../../.."/>
+    </hudson.model.AllView>
+  </views>
+  <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+  <folderViews class="jenkins.branch.MultiBranchProjectViewHolder" plugin="branch-api">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </folderViews>
+  <healthMetrics>
+    <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric plugin="cloudbees-folder">
+      <nonRecursive>false</nonRecursive>
+    </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+  </healthMetrics>
+  <icon class="jenkins.branch.MetadataActionFolderIcon" plugin="branch-api">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </icon>
+  <orphanedItemStrategy class="com.cloudbees.hudson.plugins.folder.computed.DefaultOrphanedItemStrategy"
+                        plugin="cloudbees-folder">
+    <pruneDeadBranches>true</pruneDeadBranches>
+    <daysToKeep>forever</daysToKeep>
+    <numToKeep>all</numToKeep>
+    <abortBuilds>false</abortBuilds>
+  </orphanedItemStrategy>
+  <triggers/>
+  <sources class="jenkins.branch.MultiBranchProject$BranchSourceList" plugin="branch-api">
+    <data>      
+      <jenkins.branch.BranchSource>
+        <source class="com.atlassian.bitbucket.jenkins.internal.scm.BitbucketSCMSource"
+                plugin="atlassian-bitbucket-server-integration@4.0.0">
+          <id>c593ca82-c6bf-47e6-bb36-1a88d6f62400</id>
+          <cloneUrl>https://mgit001/scm/abc/abc-test-java.git</cloneUrl>
+          <repository>
+            <credentialsId>git_credentials</credentialsId>
+            <mirrorName/>
+            <projectKey>abc</projectKey>
+            <projectName>abc</projectName>
+            <repositoryName>abc-test-java</repositoryName>
+            <repositorySlug>abc-test-java</repositorySlug>
+            <serverId>e035dd46-9350-4e38-acfa-66e303f4f300</serverId>
+            <sshCredentialsId/>
+          </repository>
+          <selfLink>https://mgit001/projects/abc/repos/abc-test-java</selfLink>
+          <traits>
+            <com.atlassian.bitbucket.jenkins.internal.scm.trait.BitbucketBranchDiscoveryTrait/>
+            <com.atlassian.bitbucket.jenkins.internal.scm.trait.BitbucketPullRequestDiscoveryTrait/>
+            <com.atlassian.bitbucket.jenkins.internal.scm.trait.BitbucketTagDiscoveryTrait/>
+            <jenkins.scm.impl.trait.RegexSCMHeadFilterTrait plugin="scm-api@690.vfc8b_54395023">
+              <regex>
+                main|master|develop|integration/.*|feature/.*|bugfix/.*|hotfix/.*|release/.*|PR-.*|v\d+.*
+              </regex>
+            </jenkins.scm.impl.trait.RegexSCMHeadFilterTrait>
+            <jenkins.plugins.git.traits.CleanAfterCheckoutTrait>
+              <extension class="hudson.plugins.git.extensions.impl.CleanCheckout">
+                <deleteUntrackedNestedRepositories>true</deleteUntrackedNestedRepositories>
+              </extension>
+            </jenkins.plugins.git.traits.CleanAfterCheckoutTrait>
+            <jenkins.plugins.git.traits.CloneOptionTrait>
+              <extension class="hudson.plugins.git.extensions.impl.CloneOption">
+                <shallow>false</shallow>
+                <depth>1</depth>
+                <noTags>false</noTags>
+              </extension>
+            </jenkins.plugins.git.traits.CloneOptionTrait>
+            <jenkins.plugins.git.traits.SubmoduleOptionTrait plugin="git@5.2.2">
+              <extension class="hudson.plugins.git.extensions.impl.SubmoduleOption">
+                <disableSubmodules>false</disableSubmodules>
+                <recursiveSubmodules>true</recursiveSubmodules>
+                <trackingSubmodules>false</trackingSubmodules>
+                <parentCredentials>true</parentCredentials>
+                <reference/>
+                <shallow>false</shallow>
+              </extension>
+            </jenkins.plugins.git.traits.SubmoduleOptionTrait>
+            <jenkins.plugins.git.traits.WipeWorkspaceTrait>
+              <extension class="hudson.plugins.git.extensions.impl.WipeWorkspace"/>
+            </jenkins.plugins.git.traits.WipeWorkspaceTrait>
+          </traits>
+          <webhookRegistered>false</webhookRegistered>
+        </source>
+        <strategy class="jenkins.branch.DefaultBranchPropertyStrategy">
+          <properties class="empty-list"/>
+        </strategy>
+        <buildStrategies>
+          <jenkins.branch.buildstrategies.basic.ChangeRequestBuildStrategyImpl
+            plugin="basic-branch-build-strategies@190.v343a_ee70d920">
+            <ignoreTargetOnlyChanges>false</ignoreTargetOnlyChanges>
+            <ignoreUntrustedChanges>false</ignoreUntrustedChanges>
+          </jenkins.branch.buildstrategies.basic.ChangeRequestBuildStrategyImpl>
+          <jenkins.branch.buildstrategies.basic.NamedBranchBuildStrategyImpl
+            plugin="basic-branch-build-strategies@81.v05e333931c7d">
+            <filters>
+              <jenkins.branch.buildstrategies.basic.NamedBranchBuildStrategyImpl_-WildcardsNameFilter>
+                <includes>*</includes>
+                <excludes/>
+                <caseSensitive>false</caseSensitive>
+              </jenkins.branch.buildstrategies.basic.NamedBranchBuildStrategyImpl_-WildcardsNameFilter>
+            </filters>
+          </jenkins.branch.buildstrategies.basic.NamedBranchBuildStrategyImpl>
+          <jenkins.branch.buildstrategies.basic.BranchBuildStrategyImpl
+            plugin="basic-branch-build-strategies@81.v05e333931c7d"/>
+          <jenkins.branch.buildstrategies.basic.TagBuildStrategyImpl
+            plugin="basic-branch-build-strategies@81.v05e333931c7d">
+            <atLeastMillis>-1</atLeastMillis>
+            <atMostMillis>-1</atMostMillis>
+          </jenkins.branch.buildstrategies.basic.TagBuildStrategyImpl>
+        </buildStrategies>
+      </jenkins.branch.BranchSource>
+    </data>
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </sources>
+  <factory class="org.jenkinsci.plugins.workflow.multibranch.WorkflowBranchProjectFactory">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+    <scriptPath>Jenkinsfile-jdk21-cd</scriptPath>
+  </factory>
+  <actions/>
+  <description>&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <displayName>abc-test-java-jdk21-deploy</displayName>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>false</concurrentBuild>
+  <canRoam>true</canRoam>
+  <triggers class="vector">
+    <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger
+      plugin="cloudbees-folder@6.1012.v79a_86a_1ea_c1f">
+      <spec>H H/4 * * *</spec>
+      <interval>86400000</interval>
+    </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
+  </triggers>
+  <publishers/>
+  <buildWrappers/>
+</org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject>

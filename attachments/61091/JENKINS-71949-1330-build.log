@@ -1,0 +1,240 @@
+[2023-09-01T00:47:16.313Z] Started by user XXXX
+[2023-09-01T00:47:16.341Z] [Pipeline] Start of Pipeline
+[2023-09-01T00:47:16.366Z] [Pipeline] node
+[2023-09-01T00:47:16.379Z] Running on Jenkins in /data/jenkins/workspace/pipeline-maven-plugin-bug
+[2023-09-01T00:47:16.387Z] [Pipeline] {
+[2023-09-01T00:47:16.410Z] [Pipeline] stage
+[2023-09-01T00:47:16.414Z] [Pipeline] { (Build)
+[2023-09-01T00:47:16.439Z] [Pipeline] git
+[2023-09-01T00:47:16.448Z] The recommended git tool is: NONE
+[2023-09-01T00:47:16.449Z] No credentials specified
+[2023-09-01T00:47:16.450Z]  > git rev-parse --resolve-git-dir /data/jenkins/workspace/pipeline-maven-plugin-bug/.git # timeout=10
+[2023-09-01T00:47:16.463Z] Fetching changes from the remote Git repository
+[2023-09-01T00:47:16.468Z]  > git config remote.origin.url https://github.com/cyrille-leclerc/multi-module-maven-project # timeout=10
+[2023-09-01T00:47:16.474Z] Fetching upstream changes from https://github.com/cyrille-leclerc/multi-module-maven-project
+[2023-09-01T00:47:16.474Z]  > git --version # timeout=10
+[2023-09-01T00:47:16.478Z]  > git --version # 'git version 2.41.0'
+[2023-09-01T00:47:16.478Z]  > git fetch --tags --force --progress -- https://github.com/cyrille-leclerc/multi-module-maven-project +refs/heads/*:refs/remotes/origin/* # timeout=10
+[2023-09-01T00:47:16.819Z]  > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+[2023-09-01T00:47:16.824Z] Checking out Revision 76860a0ca2145f05c4bdf856abaa9bfa0f895e20 (refs/remotes/origin/master)
+[2023-09-01T00:47:16.824Z]  > git config core.sparsecheckout # timeout=10
+[2023-09-01T00:47:16.828Z]  > git checkout -f 76860a0ca2145f05c4bdf856abaa9bfa0f895e20 # timeout=10
+[2023-09-01T00:47:16.834Z]  > git branch -a -v --no-abbrev # timeout=10
+[2023-09-01T00:47:16.838Z]  > git branch -D master # timeout=10
+[2023-09-01T00:47:16.843Z]  > git checkout -b master 76860a0ca2145f05c4bdf856abaa9bfa0f895e20 # timeout=10
+[2023-09-01T00:47:16.851Z] Commit message: "pom cleanup"
+[2023-09-01T00:47:16.851Z]  > git rev-list --no-walk 76860a0ca2145f05c4bdf856abaa9bfa0f895e20 # timeout=10
+[2023-09-01T00:47:16.873Z] [Pipeline] withMaven
+[2023-09-01T00:47:16.876Z] $ /bin/sh -c "which mvn"
+[2023-09-01T00:47:16.887Z] [Pipeline] {
+[2023-09-01T00:47:16.901Z] [Pipeline] sh
+[2023-09-01T00:47:17.160Z] + ./mvnw clean verify
+[2023-09-01T00:47:17.160Z] Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/data/jenkins/workspace/pipeline-maven-plugin-bug@tmp/withMavenbd27081e/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/data/jenkins/workspace/pipeline-maven-plugin-bug@tmp/withMavenbd27081e" 
+[2023-09-01T00:47:18.071Z] [INFO] Scanning for projects...
+[2023-09-01T00:47:18.322Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:18.322Z] [INFO] Reactor Build Order:
+[2023-09-01T00:47:18.322Z] [INFO] 
+[2023-09-01T00:47:18.323Z] [INFO] demo-parent
+[2023-09-01T00:47:18.323Z] [INFO] shared-core
+[2023-09-01T00:47:18.323Z] [INFO] demo-1
+[2023-09-01T00:47:18.323Z] [INFO] demo-2
+[2023-09-01T00:47:18.323Z] [INFO] 
+[2023-09-01T00:47:18.323Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:18.323Z] [INFO] Building demo-parent 0.0.30-SNAPSHOT
+[2023-09-01T00:47:18.323Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:18.573Z] [INFO] 
+[2023-09-01T00:47:18.573Z] [INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ demo-parent ---
+[2023-09-01T00:47:18.574Z] [INFO] 
+[2023-09-01T00:47:18.574Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:18.574Z] [INFO] Building shared-core 0.0.30-SNAPSHOT
+[2023-09-01T00:47:18.574Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:18.574Z] [INFO] 
+[2023-09-01T00:47:18.574Z] [INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ shared-core ---
+[2023-09-01T00:47:18.574Z] [INFO] Deleting /data/jenkins/workspace/pipeline-maven-plugin-bug/shared-core/target
+[2023-09-01T00:47:18.574Z] [INFO] 
+[2023-09-01T00:47:18.574Z] [INFO] --- jacoco-maven-plugin:0.8.2:prepare-agent (default-prepare-agent) @ shared-core ---
+[2023-09-01T00:47:19.125Z] [INFO] argLine set to -javaagent:/data/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.8.2/org.jacoco.agent-0.8.2-runtime.jar=destfile=/data/jenkins/workspace/pipeline-maven-plugin-bug/shared-core/target/jacoco.exec
+[2023-09-01T00:47:19.125Z] [INFO] 
+[2023-09-01T00:47:19.125Z] [INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ shared-core ---
+[2023-09-01T00:47:19.125Z] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2023-09-01T00:47:19.125Z] [INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[2023-09-01T00:47:19.125Z] [INFO] skip non existing resourceDirectory /data/jenkins/workspace/pipeline-maven-plugin-bug/shared-core/src/main/resources
+[2023-09-01T00:47:19.125Z] [INFO] skip non existing resourceDirectory /data/jenkins/workspace/pipeline-maven-plugin-bug/shared-core/src/main/resources
+[2023-09-01T00:47:19.125Z] [INFO] 
+[2023-09-01T00:47:19.125Z] [INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ shared-core ---
+[2023-09-01T00:47:19.376Z] [INFO] Changes detected - recompiling the module!
+[2023-09-01T00:47:19.376Z] [INFO] Compiling 1 source file to /data/jenkins/workspace/pipeline-maven-plugin-bug/shared-core/target/classes
+[2023-09-01T00:47:19.626Z] [INFO] 
+[2023-09-01T00:47:19.626Z] [INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ shared-core ---
+[2023-09-01T00:47:19.627Z] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2023-09-01T00:47:19.627Z] [INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[2023-09-01T00:47:19.629Z] [INFO] skip non existing resourceDirectory /data/jenkins/workspace/pipeline-maven-plugin-bug/shared-core/src/test/resources
+[2023-09-01T00:47:19.629Z] [INFO] 
+[2023-09-01T00:47:19.629Z] [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ shared-core ---
+[2023-09-01T00:47:19.629Z] [INFO] No sources to compile
+[2023-09-01T00:47:19.629Z] [INFO] 
+[2023-09-01T00:47:19.629Z] [INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ shared-core ---
+[2023-09-01T00:47:19.629Z] [INFO] No tests to run.
+[2023-09-01T00:47:19.629Z] [INFO] 
+[2023-09-01T00:47:19.629Z] [INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ shared-core ---
+[2023-09-01T00:47:19.880Z] [INFO] Building jar: /data/jenkins/workspace/pipeline-maven-plugin-bug/shared-core/target/shared-core-0.0.30-SNAPSHOT.jar
+[2023-09-01T00:47:19.880Z] [INFO] 
+[2023-09-01T00:47:19.880Z] [INFO] >>> spotbugs-maven-plugin:4.2.0:check (default) > :spotbugs @ shared-core >>>
+[2023-09-01T00:47:19.880Z] [INFO] 
+[2023-09-01T00:47:19.880Z] [INFO] --- spotbugs-maven-plugin:4.2.0:spotbugs (spotbugs) @ shared-core ---
+[2023-09-01T00:47:21.229Z] [INFO] Fork Value is true
+[2023-09-01T00:47:21.482Z]      [java] Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/data/jenkins/workspace/pipeline-maven-plugin-bug@tmp/withMavenbd27081e/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/data/jenkins/workspace/pipeline-maven-plugin-bug@tmp/withMavenbd27081e" 
+[2023-09-01T00:47:23.344Z] [INFO] Done SpotBugs Analysis....
+[2023-09-01T00:47:23.344Z] [INFO] 
+[2023-09-01T00:47:23.344Z] [INFO] <<< spotbugs-maven-plugin:4.2.0:check (default) < :spotbugs @ shared-core <<<
+[2023-09-01T00:47:23.344Z] [INFO] 
+[2023-09-01T00:47:23.344Z] [INFO] 
+[2023-09-01T00:47:23.344Z] [INFO] --- spotbugs-maven-plugin:4.2.0:check (default) @ shared-core ---
+[2023-09-01T00:47:23.344Z] [INFO] BugInstance size is 0
+[2023-09-01T00:47:23.344Z] [INFO] Error size is 0
+[2023-09-01T00:47:23.344Z] [INFO] No errors/warnings found
+[2023-09-01T00:47:23.344Z] [INFO] 
+[2023-09-01T00:47:23.344Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:23.344Z] [INFO] Building demo-1 0.0.30-SNAPSHOT
+[2023-09-01T00:47:23.344Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:23.595Z] [INFO] 
+[2023-09-01T00:47:23.595Z] [INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ demo-1 ---
+[2023-09-01T00:47:23.595Z] [INFO] Deleting /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-1/target
+[2023-09-01T00:47:23.595Z] [INFO] 
+[2023-09-01T00:47:23.595Z] [INFO] --- jacoco-maven-plugin:0.8.2:prepare-agent (default-prepare-agent) @ demo-1 ---
+[2023-09-01T00:47:23.595Z] [INFO] argLine set to -javaagent:/data/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.8.2/org.jacoco.agent-0.8.2-runtime.jar=destfile=/data/jenkins/workspace/pipeline-maven-plugin-bug/demo-1/target/jacoco.exec
+[2023-09-01T00:47:23.595Z] [INFO] 
+[2023-09-01T00:47:23.595Z] [INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ demo-1 ---
+[2023-09-01T00:47:23.595Z] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2023-09-01T00:47:23.595Z] [INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[2023-09-01T00:47:23.595Z] [INFO] Copying 1 resource
+[2023-09-01T00:47:23.595Z] [INFO] Copying 0 resource
+[2023-09-01T00:47:23.595Z] [INFO] 
+[2023-09-01T00:47:23.595Z] [INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ demo-1 ---
+[2023-09-01T00:47:23.595Z] [INFO] Changes detected - recompiling the module!
+[2023-09-01T00:47:23.595Z] [INFO] Compiling 1 source file to /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-1/target/classes
+[2023-09-01T00:47:23.595Z] [INFO] 
+[2023-09-01T00:47:23.595Z] [INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ demo-1 ---
+[2023-09-01T00:47:23.595Z] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2023-09-01T00:47:23.595Z] [INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[2023-09-01T00:47:23.595Z] [INFO] skip non existing resourceDirectory /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-1/src/test/resources
+[2023-09-01T00:47:23.595Z] [INFO] 
+[2023-09-01T00:47:23.595Z] [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ demo-1 ---
+[2023-09-01T00:47:23.595Z] [INFO] Changes detected - recompiling the module!
+[2023-09-01T00:47:23.595Z] [INFO] Compiling 1 source file to /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-1/target/test-classes
+[2023-09-01T00:47:23.846Z] [INFO] 
+[2023-09-01T00:47:23.846Z] [INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ demo-1 ---
+[2023-09-01T00:47:23.846Z] [INFO] 
+[2023-09-01T00:47:23.846Z] [INFO] -------------------------------------------------------
+[2023-09-01T00:47:23.846Z] [INFO]  T E S T S
+[2023-09-01T00:47:23.846Z] [INFO] -------------------------------------------------------
+[2023-09-01T00:47:24.757Z] [INFO] 
+[2023-09-01T00:47:24.757Z] [INFO] Results:
+[2023-09-01T00:47:24.757Z] [INFO] 
+[2023-09-01T00:47:24.757Z] [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[2023-09-01T00:47:24.757Z] [INFO] 
+[2023-09-01T00:47:24.757Z] [INFO] 
+[2023-09-01T00:47:24.757Z] [INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ demo-1 ---
+[2023-09-01T00:47:24.757Z] [INFO] Building jar: /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-1/target/demo-1-0.0.30-SNAPSHOT.jar
+[2023-09-01T00:47:25.008Z] [INFO] 
+[2023-09-01T00:47:25.008Z] [INFO] --- spring-boot-maven-plugin:2.5.4:repackage (repackage) @ demo-1 ---
+[2023-09-01T00:47:25.260Z] [INFO] Replacing main artifact with repackaged archive
+[2023-09-01T00:47:25.260Z] [INFO] 
+[2023-09-01T00:47:25.260Z] [INFO] >>> spotbugs-maven-plugin:4.2.0:check (default) > :spotbugs @ demo-1 >>>
+[2023-09-01T00:47:25.260Z] [INFO] 
+[2023-09-01T00:47:25.260Z] [INFO] --- spotbugs-maven-plugin:4.2.0:spotbugs (spotbugs) @ demo-1 ---
+[2023-09-01T00:47:25.260Z] [INFO] Fork Value is true
+[2023-09-01T00:47:25.519Z]      [java] Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/data/jenkins/workspace/pipeline-maven-plugin-bug@tmp/withMavenbd27081e/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/data/jenkins/workspace/pipeline-maven-plugin-bug@tmp/withMavenbd27081e" 
+[2023-09-01T00:47:27.403Z] [INFO] Done SpotBugs Analysis....
+[2023-09-01T00:47:27.403Z] [INFO] 
+[2023-09-01T00:47:27.403Z] [INFO] <<< spotbugs-maven-plugin:4.2.0:check (default) < :spotbugs @ demo-1 <<<
+[2023-09-01T00:47:27.403Z] [INFO] 
+[2023-09-01T00:47:27.403Z] [INFO] 
+[2023-09-01T00:47:27.403Z] [INFO] --- spotbugs-maven-plugin:4.2.0:check (default) @ demo-1 ---
+[2023-09-01T00:47:27.403Z] [INFO] BugInstance size is 0
+[2023-09-01T00:47:27.403Z] [INFO] Error size is 0
+[2023-09-01T00:47:27.403Z] [INFO] No errors/warnings found
+[2023-09-01T00:47:27.403Z] [INFO] 
+[2023-09-01T00:47:27.403Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:27.403Z] [INFO] Building demo-2 0.0.30-SNAPSHOT
+[2023-09-01T00:47:27.403Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:27.403Z] [INFO] 
+[2023-09-01T00:47:27.403Z] [INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ demo-2 ---
+[2023-09-01T00:47:27.403Z] [INFO] Deleting /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-2/target
+[2023-09-01T00:47:27.403Z] [INFO] 
+[2023-09-01T00:47:27.403Z] [INFO] --- jacoco-maven-plugin:0.8.2:prepare-agent (default-prepare-agent) @ demo-2 ---
+[2023-09-01T00:47:27.403Z] [INFO] argLine set to -javaagent:/data/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.8.2/org.jacoco.agent-0.8.2-runtime.jar=destfile=/data/jenkins/workspace/pipeline-maven-plugin-bug/demo-2/target/jacoco.exec
+[2023-09-01T00:47:27.403Z] [INFO] 
+[2023-09-01T00:47:27.403Z] [INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ demo-2 ---
+[2023-09-01T00:47:27.403Z] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2023-09-01T00:47:27.403Z] [INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[2023-09-01T00:47:27.403Z] [INFO] Copying 1 resource
+[2023-09-01T00:47:27.403Z] [INFO] Copying 0 resource
+[2023-09-01T00:47:27.403Z] [INFO] 
+[2023-09-01T00:47:27.403Z] [INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ demo-2 ---
+[2023-09-01T00:47:27.403Z] [INFO] Changes detected - recompiling the module!
+[2023-09-01T00:47:27.403Z] [INFO] Compiling 1 source file to /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-2/target/classes
+[2023-09-01T00:47:27.653Z] [INFO] 
+[2023-09-01T00:47:27.653Z] [INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ demo-2 ---
+[2023-09-01T00:47:27.653Z] [INFO] Using 'UTF-8' encoding to copy filtered resources.
+[2023-09-01T00:47:27.653Z] [INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[2023-09-01T00:47:27.653Z] [INFO] skip non existing resourceDirectory /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-2/src/test/resources
+[2023-09-01T00:47:27.653Z] [INFO] 
+[2023-09-01T00:47:27.653Z] [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ demo-2 ---
+[2023-09-01T00:47:27.653Z] [INFO] Changes detected - recompiling the module!
+[2023-09-01T00:47:27.653Z] [INFO] Compiling 1 source file to /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-2/target/test-classes
+[2023-09-01T00:47:27.653Z] [INFO] 
+[2023-09-01T00:47:27.653Z] [INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ demo-2 ---
+[2023-09-01T00:47:27.653Z] [INFO] 
+[2023-09-01T00:47:27.653Z] [INFO] -------------------------------------------------------
+[2023-09-01T00:47:27.653Z] [INFO]  T E S T S
+[2023-09-01T00:47:27.653Z] [INFO] -------------------------------------------------------
+[2023-09-01T00:47:29.007Z] [INFO] 
+[2023-09-01T00:47:29.007Z] [INFO] Results:
+[2023-09-01T00:47:29.007Z] [INFO] 
+[2023-09-01T00:47:29.007Z] [INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[2023-09-01T00:47:29.007Z] [INFO] 
+[2023-09-01T00:47:29.007Z] [INFO] 
+[2023-09-01T00:47:29.007Z] [INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ demo-2 ---
+[2023-09-01T00:47:29.007Z] [INFO] Building jar: /data/jenkins/workspace/pipeline-maven-plugin-bug/demo-2/target/demo-2-0.0.30-SNAPSHOT.jar
+[2023-09-01T00:47:29.007Z] [INFO] 
+[2023-09-01T00:47:29.007Z] [INFO] --- spring-boot-maven-plugin:2.5.4:repackage (repackage) @ demo-2 ---
+[2023-09-01T00:47:29.007Z] [INFO] Replacing main artifact with repackaged archive
+[2023-09-01T00:47:29.007Z] [INFO] 
+[2023-09-01T00:47:29.007Z] [INFO] >>> spotbugs-maven-plugin:4.2.0:check (default) > :spotbugs @ demo-2 >>>
+[2023-09-01T00:47:29.007Z] [INFO] 
+[2023-09-01T00:47:29.007Z] [INFO] --- spotbugs-maven-plugin:4.2.0:spotbugs (spotbugs) @ demo-2 ---
+[2023-09-01T00:47:29.007Z] [INFO] Fork Value is true
+[2023-09-01T00:47:29.008Z]      [java] Picked up JAVA_TOOL_OPTIONS: -Dmaven.ext.class.path="/data/jenkins/workspace/pipeline-maven-plugin-bug@tmp/withMavenbd27081e/pipeline-maven-spy.jar" -Dorg.jenkinsci.plugins.pipeline.maven.reportsFolder="/data/jenkins/workspace/pipeline-maven-plugin-bug@tmp/withMavenbd27081e" 
+[2023-09-01T00:47:30.880Z] [INFO] Done SpotBugs Analysis....
+[2023-09-01T00:47:31.134Z] [INFO] 
+[2023-09-01T00:47:31.134Z] [INFO] <<< spotbugs-maven-plugin:4.2.0:check (default) < :spotbugs @ demo-2 <<<
+[2023-09-01T00:47:31.134Z] [INFO] 
+[2023-09-01T00:47:31.134Z] [INFO] 
+[2023-09-01T00:47:31.134Z] [INFO] --- spotbugs-maven-plugin:4.2.0:check (default) @ demo-2 ---
+[2023-09-01T00:47:31.134Z] [INFO] BugInstance size is 0
+[2023-09-01T00:47:31.134Z] [INFO] Error size is 0
+[2023-09-01T00:47:31.134Z] [INFO] No errors/warnings found
+[2023-09-01T00:47:31.134Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:31.134Z] [INFO] Reactor Summary:
+[2023-09-01T00:47:31.134Z] [INFO] 
+[2023-09-01T00:47:31.134Z] [INFO] demo-parent ........................................ SUCCESS [  0.156 s]
+[2023-09-01T00:47:31.134Z] [INFO] shared-core ........................................ SUCCESS [  4.809 s]
+[2023-09-01T00:47:31.134Z] [INFO] demo-1 ............................................. SUCCESS [  4.096 s]
+[2023-09-01T00:47:31.135Z] [INFO] demo-2 ............................................. SUCCESS [  3.543 s]
+[2023-09-01T00:47:31.135Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:31.135Z] [INFO] BUILD SUCCESS
+[2023-09-01T00:47:31.135Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:31.135Z] [INFO] Total time: 13.044 s
+[2023-09-01T00:47:31.135Z] [INFO] Finished at: 2023-08-31T20:47:30-04:00
+[2023-09-01T00:47:31.385Z] [INFO] Final Memory: 61M/615M
+[2023-09-01T00:47:31.385Z] [INFO] ------------------------------------------------------------------------
+[2023-09-01T00:47:31.402Z] [Pipeline] }
+[2023-09-01T00:47:31.424Z] [Pipeline] // withMaven
+[2023-09-01T00:47:31.433Z] [Pipeline] }
+[2023-09-01T00:47:31.452Z] [Pipeline] // stage
+[2023-09-01T00:47:31.475Z] [Pipeline] }
+[2023-09-01T00:47:31.505Z] [Pipeline] // node
+[2023-09-01T00:47:31.515Z] [Pipeline] End of Pipeline
+[2023-09-01T00:47:31.627Z] Finished: SUCCESS
+

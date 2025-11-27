@@ -1,0 +1,104 @@
+Index: src/main/java/hudson/scm/SubversionSCM.java
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/java/hudson/scm/SubversionSCM.java,v
+retrieving revision 1.116
+diff -u -r1.116 SubversionSCM.java
+--- src/main/java/hudson/scm/SubversionSCM.java	9 Jan 2008 02:58:58 -0000	1.116
++++ src/main/java/hudson/scm/SubversionSCM.java	11 Jan 2008 19:22:09 -0000
+@@ -81,6 +81,7 @@
+ import org.tmatesoft.svn.core.wc.SVNClientManager;
+ import org.tmatesoft.svn.core.wc.SVNInfo;
+ import org.tmatesoft.svn.core.wc.SVNRevision;
++import org.tmatesoft.svn.core.wc.SVNStatus;
+ import org.tmatesoft.svn.core.wc.SVNUpdateClient;
+ import org.tmatesoft.svn.core.wc.SVNWCClient;
+ import org.tmatesoft.svn.core.wc.SVNWCUtil;
+@@ -111,6 +112,7 @@
+     private ModuleLocation[] locations = new ModuleLocation[0];
+ 
+     private boolean useUpdate;
++    private boolean deleteIfLocked;
+     private final SubversionRepositoryBrowser browser;
+ 
+     // No longer in use but left for serialization compatibility.
+@@ -118,7 +120,7 @@
+     private String modules;
+ 
+     public SubversionSCM(String[] remoteLocations, String[] localLocations,
+-                         boolean useUpdate, SubversionRepositoryBrowser browser) {
++                         boolean useUpdate, boolean deleteIfLocked, SubversionRepositoryBrowser browser) {
+ 
+         List<ModuleLocation> modules = new ArrayList<ModuleLocation>();
+         if (remoteLocations != null && localLocations != null) {
+@@ -177,6 +179,10 @@
+         return useUpdate;
+     }
+ 
++    public boolean isDeleteIfLocked() {
++    	return deleteIfLocked;
++    }
++    
+     @Override
+     public SubversionRepositoryBrowser getBrowser() {
+         return browser;
+@@ -517,6 +523,17 @@
+             manager.dispose();
+         }
+     }
++    
++    private static boolean isWorkingCopyLocked(File workspace) throws SVNException {
++    	final SVNClientManager manager = SVNClientManager.newInstance(SVNWCUtil.createDefaultOptions(true));
++        try {
++	        SVNStatus status = manager.getStatusClient().doStatus(workspace, false);
++	        return status.isLocked();
++        } finally  {
++        	manager.dispose();
++        }
++    	
++    }
+ 
+     /**
+      * Gets the SVN metadata for the remote repository.
+@@ -634,6 +651,14 @@
+                         listener.getLogger().println("Checking out a fresh workspace because the workspace is not "+url);
+                         return false;
+                     }
++                    
++                    if (isWorkingCopyLocked(ws)) {
++                    	listener.getLogger().println("Checking out a fresh workspace because the workspace is locked");
++                    	return false;
++                    } else {
++                    	listener.getLogger().println("Not checking out a fresh workspace because the workspace is not locked");
++                    }
++                    
+                 } catch (SVNException e) {
+                     listener.getLogger().println("Checking out a fresh workspace because Hudson failed to detect the current workspace "+module);
+                     e.printStackTrace(listener.error(e.getMessage()));
+@@ -944,6 +969,7 @@
+                 req.getParameterValues("svn.location_remote"),
+                 req.getParameterValues("svn.location_local"),
+                 req.getParameter("svn_use_update") != null,
++                req.getParameter("svn_delete_if_locked") != null,
+                     RepositoryBrowsers.createInstance(SubversionRepositoryBrowser.class, req, "svn.browser"));
+         }
+ 
+Index: src/main/resources/hudson/scm/SubversionSCM/config.jelly
+===================================================================
+RCS file: /cvs/hudson/hudson/main/core/src/main/resources/hudson/scm/SubversionSCM/config.jelly,v
+retrieving revision 1.13
+diff -u -r1.13 config.jelly
+--- src/main/resources/hudson/scm/SubversionSCM/config.jelly	10 Nov 2007 22:28:34 -0000	1.13
++++ src/main/resources/hudson/scm/SubversionSCM/config.jelly	11 Jan 2008 19:22:09 -0000
+@@ -25,6 +25,11 @@
+       But this causes the artifacts from the previous build to remain when a new build starts.">
+     <f:checkbox name="svn_use_update" checked="${h.defaultToTrue(scm.useUpdate)}"/>
+   </f:entry>
++  <f:entry title="Delete if locked"
++    description="
++      Hudson will check if the workspace is locked, and do a clean checkout if it is.">
++    <f:checkbox name="svn_delete_if_locked" checked="${h.defaultToTrue(scm.isDeleteIfLocked())}"/>
++  </f:entry>
+ 
+   <t:listScmBrowsers name="svn.browser" />  
+ </j:jelly>
+\ No newline at end of file

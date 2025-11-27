@@ -1,0 +1,375 @@
+Full thread dump Java HotSpot(TM) Client VM (1.6.0_02-b06 mixed mode):
+
+"Channel reader thread: locally launched channel on [java, -cp, C:\temp\winstone\hudson.war\WEB-INF\lib\maven-agent-1.176.jar;c:\Java\maven-2.0.4\core\boot\clas
+sworlds-1.1.jar, hudson.maven.agent.Main, c:\Java\maven-2.0.4, C:\temp\winstone\hudson.war\WEB-INF\lib\remoting-1.176.jar, C:\temp\winstone\hudson.war\WEB-INF\l
+ib\maven-interceptor-1.176.jar]" prio=6 tid=0x0b51c000 nid=0xdec runnable [0x0c82f000..0x0c82fc14]
+   java.lang.Thread.State: RUNNABLE
+        at java.io.FileInputStream.readBytes(Native Method)
+        at java.io.FileInputStream.read(Unknown Source)
+        at java.io.BufferedInputStream.fill(Unknown Source)
+        at java.io.BufferedInputStream.read(Unknown Source)
+        - locked <0x03436ee8> (a java.io.BufferedInputStream)
+        at java.io.ObjectInputStream$PeekInputStream.peek(Unknown Source)
+        at java.io.ObjectInputStream$BlockDataInputStream.peek(Unknown Source)
+        at java.io.ObjectInputStream$BlockDataInputStream.peekByte(Unknown Source)
+        at java.io.ObjectInputStream.readObject0(Unknown Source)
+        at java.io.ObjectInputStream.readObject(Unknown Source)
+        at hudson.remoting.Channel$ReaderThread.run(Channel.java:574)
+
+"[Ljava.lang.String;@737611: stderr copier" prio=6 tid=0x0b70c800 nid=0x6bc runnable [0x0c7df000..0x0c7dfc94]
+   java.lang.Thread.State: RUNNABLE
+        at java.io.FileInputStream.readBytes(Native Method)
+        at java.io.FileInputStream.read(Unknown Source)
+        at hudson.util.StreamCopyThread.run(StreamCopyThread.java:27)
+
+"RequestHandlerThread[#3]" daemon prio=6 tid=0x0b48c800 nid=0x150 in Object.wait() [0x0c78d000..0x0c78fd14]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x0386f498> (a hudson.remoting.UserRequest)
+        at java.lang.Object.wait(Object.java:485)
+        at hudson.remoting.Request.call(Request.java:88)
+        - locked <0x0386f498> (a hudson.remoting.UserRequest)
+        at hudson.remoting.Channel.call(Channel.java:390)
+        at hudson.util.RemotingDiagnostics.getThreadDump(RemotingDiagnostics.java:40)
+        at hudson.maven.MavenProbeAction.getThreadDump(MavenProbeAction.java:72)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at org.apache.commons.jexl.util.PropertyExecutor.execute(PropertyExecutor.java:125)
+        at org.apache.commons.jexl.util.introspection.UberspectImpl$VelGetterImpl.invoke(UberspectImpl.java:315)
+        at org.apache.commons.jexl.parser.ASTArrayAccess.evaluateExpr(ASTArrayAccess.java:185)
+        at org.apache.commons.jexl.parser.ASTIdentifier.execute(ASTIdentifier.java:74)
+        at org.apache.commons.jexl.parser.ASTReference.execute(ASTReference.java:83)
+        at org.apache.commons.jexl.parser.ASTReference.value(ASTReference.java:57)
+        at org.apache.commons.jexl.parser.ASTReferenceExpression.value(ASTReferenceExpression.java:51)
+        at org.apache.commons.jexl.ExpressionImpl.evaluate(ExpressionImpl.java:80)
+        at hudson.ExpressionFactory2$JexlExpression.evaluate(ExpressionFactory2.java:71)
+        at org.apache.commons.jelly.expression.ExpressionSupport.evaluateRecurse(ExpressionSupport.java:61)
+        at org.apache.commons.jelly.expression.ExpressionSupport.evaluateAsIterator(ExpressionSupport.java:94)
+        at org.apache.commons.jelly.tags.core.ForEachTag.doTag(ForEachTag.java:89)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.tags.define.InvokeBodyTag.doTag(InvokeBodyTag.java:91)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.tags.core.IfTag.doTag(IfTag.java:42)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.tags.core.JellyTag.doTag(JellyTag.java:45)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.apache.commons.jelly.impl.DynamicTag.doTag(DynamicTag.java:80)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.tags.define.InvokeBodyTag.doTag(InvokeBodyTag.java:91)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+        at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+        at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+        at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+        at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.impl.StaticTag.doTag(StaticTag.java:65)
+        at org.apache.commons.jelly.impl.StaticTagScript.run(StaticTagScript.java:112)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.tags.core.JellyTag.doTag(JellyTag.java:45)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.apache.commons.jelly.impl.DynamicTag.doTag(DynamicTag.java:80)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.apache.commons.jelly.impl.ScriptBlock.run(ScriptBlock.java:95)
+        at org.apache.commons.jelly.TagSupport.invokeBody(TagSupport.java:186)
+        at org.apache.commons.jelly.tags.core.JellyTag.doTag(JellyTag.java:45)
+        at org.apache.commons.jelly.impl.TagScript.run(TagScript.java:262)
+        at org.kohsuke.stapler.jelly.JellyClassTearOff.invokeScript(JellyClassTearOff.java:78)
+        at org.kohsuke.stapler.MetaClass$3.dispatch(MetaClass.java:111)
+        at org.kohsuke.stapler.Stapler.invoke(Stapler.java:361)
+        at org.kohsuke.stapler.MetaClass$15.dispatch(MetaClass.java:361)
+        at org.kohsuke.stapler.Stapler.invoke(Stapler.java:361)
+        at org.kohsuke.stapler.MetaClass$15.dispatch(MetaClass.java:361)
+        at org.kohsuke.stapler.Stapler.invoke(Stapler.java:361)
+        at org.kohsuke.stapler.MetaClass$9.doDispatch(MetaClass.java:240)
+        at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:30)
+        at org.kohsuke.stapler.Stapler.invoke(Stapler.java:361)
+        at org.kohsuke.stapler.Stapler.invoke(Stapler.java:298)
+        at org.kohsuke.stapler.Stapler.service(Stapler.java:98)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:45)
+        at winstone.ServletConfiguration.execute(ServletConfiguration.java:249)
+        at winstone.RequestDispatcher.forward(RequestDispatcher.java:335)
+        at winstone.RequestDispatcher.doFilter(RequestDispatcher.java:378)
+        at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:88)
+        at winstone.FilterConfiguration.execute(FilterConfiguration.java:195)
+        at winstone.RequestDispatcher.doFilter(RequestDispatcher.java:368)
+        at winstone.RequestDispatcher.forward(RequestDispatcher.java:333)
+        at winstone.RequestHandlerThread.processRequest(RequestHandlerThread.java:244)
+        at winstone.RequestHandlerThread.run(RequestHandlerThread.java:150)
+        at java.lang.Thread.run(Unknown Source)
+
+"RequestHandlerThread[#4]" daemon prio=6 tid=0x0b491400 nid=0x5a4 in Object.wait() [0x0c73f000..0x0c73fd94]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x030ab8f0> (a winstone.RequestHandlerThread)
+        at java.lang.Object.wait(Object.java:485)
+        at winstone.RequestHandlerThread.run(RequestHandlerThread.java:216)
+        - locked <0x030ab8f0> (a winstone.RequestHandlerThread)
+        at java.lang.Thread.run(Unknown Source)
+
+"RMI TCP Connection(3)-192.168.38.71" daemon prio=6 tid=0x0b4a9400 nid=0xe5c in Object.wait() [0x0c69e000..0x0c69fa94]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x032d8468> (a com.sun.jmx.remote.internal.ArrayNotificationBuffer)
+        at com.sun.jmx.remote.internal.ArrayNotificationBuffer.fetchNotifications(Unknown Source)
+        - locked <0x032d8468> (a com.sun.jmx.remote.internal.ArrayNotificationBuffer)
+        at com.sun.jmx.remote.internal.ArrayNotificationBuffer$ShareBuffer.fetchNotifications(Unknown Source)
+        at com.sun.jmx.remote.internal.ServerNotifForwarder.fetchNotifs(Unknown Source)
+        at javax.management.remote.rmi.RMIConnectionImpl$2.run(Unknown Source)
+        at javax.management.remote.rmi.RMIConnectionImpl$2.run(Unknown Source)
+        at javax.management.remote.rmi.RMIConnectionImpl.fetchNotifications(Unknown Source)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at sun.rmi.server.UnicastServerRef.dispatch(Unknown Source)
+        at sun.rmi.transport.Transport$1.run(Unknown Source)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at sun.rmi.transport.Transport.serviceCall(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+"RMI TCP Connection(2)-192.168.38.71" daemon prio=6 tid=0x0b4a8c00 nid=0x188 runnable [0x0c64f000..0x0c64fb14]
+   java.lang.Thread.State: RUNNABLE
+        at java.net.SocketInputStream.socketRead0(Native Method)
+        at java.net.SocketInputStream.read(Unknown Source)
+        at java.io.BufferedInputStream.fill(Unknown Source)
+        at java.io.BufferedInputStream.read(Unknown Source)
+        - locked <0x032d4550> (a java.io.BufferedInputStream)
+        at java.io.FilterInputStream.read(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+"JMX server connection timeout 32" daemon prio=6 tid=0x0b6e8400 nid=0xc0 in Object.wait() [0x0c5ff000..0x0c5ffb94]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x032d4778> (a [I)
+        at com.sun.jmx.remote.internal.ServerCommunicatorAdmin$Timeout.run(Unknown Source)
+        - locked <0x032d4778> (a [I)
+        at java.lang.Thread.run(Unknown Source)
+
+"RMI Scheduler(0)" daemon prio=6 tid=0x0b49b800 nid=0x85c waiting on condition [0x0c5af000..0x0c5afc14]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+        at sun.misc.Unsafe.park(Native Method)
+        - parking to wait for  <0x032b3400> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+        at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Unknown Source)
+        at java.util.concurrent.DelayQueue.take(Unknown Source)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+        at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+"RMI TCP Connection(1)-192.168.38.71" daemon prio=6 tid=0x0b6b2400 nid=0x318 runnable [0x0c55f000..0x0c55fc94]
+   java.lang.Thread.State: RUNNABLE
+        at java.net.SocketInputStream.socketRead0(Native Method)
+        at java.net.SocketInputStream.read(Unknown Source)
+        at java.io.BufferedInputStream.fill(Unknown Source)
+        at java.io.BufferedInputStream.read(Unknown Source)
+        - locked <0x032b8088> (a java.io.BufferedInputStream)
+        at java.io.FilterInputStream.read(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+"RMI TCP Accept-0" daemon prio=6 tid=0x0b6d5c00 nid=0xdd8 runnable [0x0c4ef000..0x0c4efd14]
+   java.lang.Thread.State: RUNNABLE
+        at java.net.PlainSocketImpl.socketAccept(Native Method)
+        at java.net.PlainSocketImpl.accept(Unknown Source)
+        - locked <0x032b3930> (a java.net.SocksSocketImpl)
+        at java.net.ServerSocket.implAccept(Unknown Source)
+        at java.net.ServerSocket.accept(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.executeAcceptLoop(Unknown Source)
+        at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+"Timer-0" daemon prio=6 tid=0x0b67ec00 nid=0xc4 in Object.wait() [0x0c48f000..0x0c48fd94]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x032938b0> (a java.util.TaskQueue)
+        at java.lang.Object.wait(Object.java:485)
+        at java.util.TimerThread.mainLoop(Unknown Source)
+        - locked <0x032938b0> (a java.util.TaskQueue)
+        at java.util.TimerThread.run(Unknown Source)
+
+"pool-2-thread-1" prio=6 tid=0x0b6f0800 nid=0xf24 waiting on condition [0x0b5ef000..0x0b5efa14]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+        at sun.misc.Unsafe.park(Native Method)
+        - parking to wait for  <0x0327d150> (a java.util.concurrent.SynchronousQueue$TransferStack)
+        at java.util.concurrent.locks.LockSupport.parkNanos(Unknown Source)
+        at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(Unknown Source)
+        at java.util.concurrent.SynchronousQueue$TransferStack.transfer(Unknown Source)
+        at java.util.concurrent.SynchronousQueue.poll(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor.getTask(Unknown Source)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+"Executor #1 for master" prio=6 tid=0x0b6f7400 nid=0xeb8 in Object.wait() [0x0c43f000..0x0c43fa94]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x033d61e8> (a hudson.util.OneShotEvent)
+        at java.lang.Object.wait(Object.java:485)
+        at hudson.util.OneShotEvent.block(OneShotEvent.java:28)
+        - locked <0x033d61e8> (a hudson.util.OneShotEvent)
+        at hudson.model.Queue.pop(Queue.java:350)
+        at hudson.model.Executor.run(Executor.java:57)
+
+"Executor #0 for master" prio=6 tid=0x0b6bf000 nid=0x7c0 in Object.wait() [0x0c3ef000..0x0c3efb14]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x034490f8> (a hudson.remoting.UserRequest)
+        at java.lang.Object.wait(Object.java:485)
+        at hudson.remoting.Request.call(Request.java:88)
+        - locked <0x034490f8> (a hudson.remoting.UserRequest)
+        at hudson.remoting.Channel.call(Channel.java:390)
+        at hudson.maven.MavenModuleSetBuild$RunnerImpl.doRun(MavenModuleSetBuild.java:269)
+        at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:192)
+        at hudson.model.Run.run(Run.java:656)
+        at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:174)
+        at hudson.model.ResourceController.execute(ResourceController.java:70)
+        at hudson.model.Executor.run(Executor.java:65)
+
+"Hudson cron thread" prio=6 tid=0x0b64a400 nid=0xee4 in Object.wait() [0x0c39f000..0x0c39fb94]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x032773e8> (a java.util.TaskQueue)
+        at java.util.TimerThread.mainLoop(Unknown Source)
+        - locked <0x032773e8> (a java.util.TaskQueue)
+        at java.util.TimerThread.run(Unknown Source)
+
+"Thread-2" prio=6 tid=0x0b18a800 nid=0xaf0 in Object.wait() [0x0c34f000..0x0c34fc14]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x03263810> (a java.util.LinkedHashSet)
+        at hudson.model.ViewJob$ReloadThread.getNext(ViewJob.java:136)
+        - locked <0x03263810> (a java.util.LinkedHashSet)
+        at hudson.model.ViewJob$ReloadThread.run(ViewJob.java:152)
+
+"TCP slave agent listener port=0" prio=6 tid=0x0b43cc00 nid=0x744 runnable [0x0c2ff000..0x0c2ffc94]
+   java.lang.Thread.State: RUNNABLE
+        at java.net.PlainSocketImpl.socketAccept(Native Method)
+        at java.net.PlainSocketImpl.accept(Unknown Source)
+        - locked <0x03250a30> (a java.net.SocksSocketImpl)
+        at java.net.ServerSocket.implAccept(Unknown Source)
+        at java.net.ServerSocket.accept(Unknown Source)
+        at hudson.TcpSlaveAgentListener.run(TcpSlaveAgentListener.java:80)
+
+"DestroyJavaVM" prio=6 tid=0x003e6400 nid=0x758 waiting on condition [0x00000000..0x00a5fd4c]
+   java.lang.Thread.State: RUNNABLE
+
+"LauncherControlThread[ControlPort=-1]" prio=6 tid=0x0b18f800 nid=0x144 waiting on condition [0x0c15f000..0x0c15fd14]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+        at java.lang.Thread.sleep(Native Method)
+        at winstone.Launcher.run(Launcher.java:279)
+        at java.lang.Thread.run(Unknown Source)
+
+"ConnectorThread:[ajp13-8009]" daemon prio=6 tid=0x0b50d800 nid=0xacc runnable [0x0c0cf000..0x0c0cfd94]
+   java.lang.Thread.State: RUNNABLE
+        at java.net.PlainSocketImpl.socketAccept(Native Method)
+        at java.net.PlainSocketImpl.accept(Unknown Source)
+        - locked <0x03250ca0> (a java.net.SocksSocketImpl)
+        at java.net.ServerSocket.implAccept(Unknown Source)
+        at java.net.ServerSocket.accept(Unknown Source)
+        at winstone.ajp13.Ajp13Listener.run(Ajp13Listener.java:111)
+        at java.lang.Thread.run(Unknown Source)
+
+"ConnectorThread:[http-8080]" daemon prio=6 tid=0x0b65c800 nid=0xfc runnable [0x0c07f000..0x0c07fa94]
+   java.lang.Thread.State: RUNNABLE
+        at java.net.PlainSocketImpl.socketAccept(Native Method)
+        at java.net.PlainSocketImpl.accept(Unknown Source)
+        - locked <0x03250dd8> (a java.net.SocksSocketImpl)
+        at java.net.ServerSocket.implAccept(Unknown Source)
+        at java.net.ServerSocket.accept(Unknown Source)
+        at winstone.HttpListener.run(HttpListener.java:127)
+        at java.lang.Thread.run(Unknown Source)
+
+"WinstoneHostConfigurationMgmt:default" daemon prio=6 tid=0x0b71c800 nid=0xe4 waiting on condition [0x0c02f000..0x0c02fa14]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+        at java.lang.Thread.sleep(Native Method)
+        at winstone.HostConfiguration.run(HostConfiguration.java:176)
+        at java.lang.Thread.run(Unknown Source)
+
+"WinstoneObjectPoolMgmt" daemon prio=6 tid=0x0b121800 nid=0x5c8 waiting on condition [0x0b57f000..0x0b57fb94]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+        at java.lang.Thread.sleep(Native Method)
+        at winstone.ObjectPool.run(ObjectPool.java:107)
+        at java.lang.Thread.run(Unknown Source)
+
+"Low Memory Detector" daemon prio=6 tid=0x0ac3b800 nid=0x6d8 runnable [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"CompilerThread0" daemon prio=10 tid=0x0ac36800 nid=0xc58 waiting on condition [0x00000000..0x0ae8f698]
+   java.lang.Thread.State: RUNNABLE
+
+"Attach Listener" daemon prio=10 tid=0x0ac35800 nid=0x8e4 runnable [0x00000000..0x0ae3fcec]
+   java.lang.Thread.State: RUNNABLE
+
+"Signal Dispatcher" daemon prio=10 tid=0x0ac34800 nid=0xa60 waiting on condition [0x00000000..0x00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" daemon prio=8 tid=0x0ac26c00 nid=0x628 in Object.wait() [0x0ad9f000..0x0ad9fa94]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x03006558> (a java.lang.ref.ReferenceQueue$Lock)
+        at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+        - locked <0x03006558> (a java.lang.ref.ReferenceQueue$Lock)
+        at java.lang.ref.ReferenceQueue.remove(Unknown Source)
+        at java.lang.ref.Finalizer$FinalizerThread.run(Unknown Source)
+
+"Reference Handler" daemon prio=10 tid=0x0ac22800 nid=0xe8c in Object.wait() [0x0ad4f000..0x0ad4fb14]
+   java.lang.Thread.State: WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        - waiting on <0x030065e8> (a java.lang.ref.Reference$Lock)
+        at java.lang.Object.wait(Object.java:485)
+        at java.lang.ref.Reference$ReferenceHandler.run(Unknown Source)
+        - locked <0x030065e8> (a java.lang.ref.Reference$Lock)
+
+"VM Thread" prio=10 tid=0x0ac1dc00 nid=0xd04 runnable
+
+"VM Periodic Task Thread" prio=10 tid=0x0ac3cc00 nid=0x464 waiting on condition
+
+JNI global references: 890
+
+Heap
+ def new generation   total 960K, used 496K [0x02b10000, 0x02c10000, 0x02ff0000)
+  eden space 896K,  54% used [0x02b10000, 0x02b89ba0, 0x02bf0000)
+  from space 64K,  14% used [0x02c00000, 0x02c024b8, 0x02c10000)
+  to   space 64K,   0% used [0x02bf0000, 0x02bf0000, 0x02c00000)
+ tenured generation   total 9908K, used 8780K [0x02ff0000, 0x0399d000, 0x06b10000)
+   the space 9908K,  88% used [0x02ff0000, 0x03883240, 0x03883400, 0x0399d000)
+ compacting perm gen  total 21504K, used 21183K [0x06b10000, 0x08010000, 0x0ab10000)
+   the space 21504K,  98% used [0x06b10000, 0x07fbfeb8, 0x07fc0000, 0x08010000)
+No shared spaces configured.

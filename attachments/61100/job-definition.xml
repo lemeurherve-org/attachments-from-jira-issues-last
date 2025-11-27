@@ -1,0 +1,163 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<jenkins.branch.OrganizationFolder plugin="branch-api@2.1122.v09cb_8ea_8a_724">
+  <actions/>
+  <description>[![Build Status](/buildStatus/icon?subject=Apache+HttpComponents&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Fapache-httpcomponents-client-4-api-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Fapache-httpcomponents-client-4-api-plugin/job/master/)
+[![Build Status](/buildStatus/icon?subject=Authorize+project&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Fauthorize-project-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Fauthorize-project-plugin/job/master/)
+[![Build Status](/buildStatus/icon?subject=Elastic+axis&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Felastic-axis-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Felastic-axis-plugin/job/master/)
+[![Build Status](/buildStatus/icon?subject=Git+Client&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Fgit-client-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Fgit-client-plugin/job/master/)
+[![Build Status](/buildStatus/icon?subject=Git+Plugin&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Fgit-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Fgit-plugin/job/master/)
+[![Build Status](/buildStatus/icon?subject=Node+label+parameter&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Fnodelabelparameter-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Fnodelabelparameter-plugin/job/master/)
+[![Build Status](/buildStatus/icon?subject=Platform+labeler&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Fplatformlabeler-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Fplatformlabeler-plugin/job/master/)
+[![Build Status](/buildStatus/icon?subject=Priority+sorter&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Fpriority-sorter-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Fpriority-sorter-plugin/job/master/)
+[![Build Status](/buildStatus/icon?subject=Schedule+build&amp;job=Jenkins-Folder%2FPlugins-Folder-GitLab%2Fmarkewaite-jenkins-plugins%252Fschedule-build-plugin%2Fmaster)](job/markewaite-jenkins-plugins%252Fschedule-build-plugin/job/master/)
+</description>
+  <displayName>Plugins (GitLab)</displayName>
+  <properties>
+    <jenkins.branch.OrganizationChildHealthMetricsProperty>
+      <templates>
+        <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric plugin="cloudbees-folder@6.815.v0dd5a_cb_40e0e">
+          <nonRecursive>false</nonRecursive>
+        </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+      </templates>
+    </jenkins.branch.OrganizationChildHealthMetricsProperty>
+    <jenkins.branch.OrganizationChildOrphanedItemsProperty>
+      <strategy class="jenkins.branch.OrganizationChildOrphanedItemsProperty$Inherit"/>
+    </jenkins.branch.OrganizationChildOrphanedItemsProperty>
+    <jenkins.branch.OrganizationChildTriggersProperty>
+      <templates>
+        <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger plugin="cloudbees-folder@6.815.v0dd5a_cb_40e0e">
+          <spec>H H/4 * * *</spec>
+          <interval>86400000</interval>
+        </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
+      </templates>
+    </jenkins.branch.OrganizationChildTriggersProperty>
+    <org.jenkinsci.plugins.docker.workflow.declarative.FolderConfig plugin="docker-workflow@563.vd5d2e5c4007f">
+      <dockerLabel></dockerLabel>
+      <registry plugin="docker-commons@422.v9d1a_89cede51"/>
+    </org.jenkinsci.plugins.docker.workflow.declarative.FolderConfig>
+    <org.jenkinsci.plugins.workflow.libs.FolderLibraries plugin="pipeline-groovy-lib@656.va_a_ceeb_6ffb_f7">
+      <libraries>
+        <org.jenkinsci.plugins.workflow.libs.LibraryConfiguration>
+          <name>infra</name>
+          <retriever class="org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever">
+            <clone>true</clone>
+            <scm class="org.jenkinsci.plugins.github_branch_source.GitHubSCMSource" plugin="github-branch-source@1728.v859147241f49">
+              <id>9251db70-8866-4ef5-b520-c12ca5dbfee4</id>
+              <apiUri>https://api.github.com</apiUri>
+              <credentialsId>MarkEWaite-github-token-2019-05-25</credentialsId>
+              <repoOwner>MarkEWaite</repoOwner>
+              <repository>pipeline-library</repository>
+              <repositoryUrl>https://github.com/MarkEWaite/pipeline-library</repositoryUrl>
+              <traits>
+                <org.jenkinsci.plugins.github__branch__source.BranchDiscoveryTrait>
+                  <strategyId>1</strategyId>
+                </org.jenkinsci.plugins.github__branch__source.BranchDiscoveryTrait>
+                <org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait>
+                  <strategyId>2</strategyId>
+                </org.jenkinsci.plugins.github__branch__source.OriginPullRequestDiscoveryTrait>
+                <org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait>
+                  <strategyId>2</strategyId>
+                  <trust class="org.jenkinsci.plugins.github_branch_source.ForkPullRequestDiscoveryTrait$TrustPermission"/>
+                </org.jenkinsci.plugins.github__branch__source.ForkPullRequestDiscoveryTrait>
+                <jenkins.plugins.git.traits.CloneOptionTrait plugin="git@5.1.0">
+                  <extension class="hudson.plugins.git.extensions.impl.CloneOption">
+                    <shallow>true</shallow>
+                    <noTags>true</noTags>
+                    <reference></reference>
+                    <depth>1</depth>
+                    <honorRefspec>true</honorRefspec>
+                  </extension>
+                </jenkins.plugins.git.traits.CloneOptionTrait>
+              </traits>
+            </scm>
+          </retriever>
+          <defaultVersion>my-own-master</defaultVersion>
+          <implicit>true</implicit>
+          <allowVersionOverride>true</allowVersionOverride>
+          <includeInChangesets>false</includeInChangesets>
+          <cachingConfiguration>
+            <refreshTimeMinutes>613</refreshTimeMinutes>
+            <excludedVersionsStr></excludedVersionsStr>
+          </cachingConfiguration>
+        </org.jenkinsci.plugins.workflow.libs.LibraryConfiguration>
+      </libraries>
+    </org.jenkinsci.plugins.workflow.libs.FolderLibraries>
+    <org.jenkinsci.plugins.pipeline.maven.MavenConfigFolderOverrideProperty plugin="pipeline-maven@1298.v43b_82f220a_e9">
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="org.jenkinsci.plugins.configfiles.maven.job.MvnGlobalSettingsProvider" plugin="config-file-provider@938.ve2b_8a_591c596">
+        <settingsConfigId>jenkins-maven-global-settings-file</settingsConfigId>
+      </globalSettings>
+      <override>true</override>
+    </org.jenkinsci.plugins.pipeline.maven.MavenConfigFolderOverrideProperty>
+    <jenkins.branch.NoTriggerOrganizationFolderProperty>
+      <branches>.*</branches>
+      <strategy>NONE</strategy>
+    </jenkins.branch.NoTriggerOrganizationFolderProperty>
+  </properties>
+  <folderViews class="jenkins.branch.OrganizationFolderViewHolder">
+    <owner reference="../.."/>
+  </folderViews>
+  <healthMetrics>
+    <com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric plugin="cloudbees-folder@6.815.v0dd5a_cb_40e0e">
+      <nonRecursive>false</nonRecursive>
+    </com.cloudbees.hudson.plugins.folder.health.WorstChildHealthMetric>
+  </healthMetrics>
+  <icon class="jenkins.branch.MetadataActionFolderIcon">
+    <owner class="jenkins.branch.OrganizationFolder" reference="../.."/>
+  </icon>
+  <orphanedItemStrategy class="com.cloudbees.hudson.plugins.folder.computed.DefaultOrphanedItemStrategy" plugin="cloudbees-folder@6.815.v0dd5a_cb_40e0e">
+    <pruneDeadBranches>true</pruneDeadBranches>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>-1</numToKeep>
+    <abortBuilds>true</abortBuilds>
+  </orphanedItemStrategy>
+  <triggers>
+    <com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger plugin="cloudbees-folder@6.815.v0dd5a_cb_40e0e">
+      <spec>H H/4 * * *</spec>
+      <interval>86400000</interval>
+    </com.cloudbees.hudson.plugins.folder.computed.PeriodicFolderTrigger>
+  </triggers>
+  <disabled>false</disabled>
+  <navigators>
+    <io.jenkins.plugins.gitlabbranchsource.GitLabSCMNavigator plugin="gitlab-branch-source@664.v877fdc293c89">
+      <projectOwner>markewaite-jenkins-plugins</projectOwner>
+      <serverName>default</serverName>
+      <credentialsId>gitlab-MarkEWaite-XZM5_KNGVy5U_G9UiC6_-personal-access-token</credentialsId>
+      <traits>
+        <io.jenkins.plugins.gitlabbranchsource.BranchDiscoveryTrait>
+          <strategyId>1</strategyId>
+        </io.jenkins.plugins.gitlabbranchsource.BranchDiscoveryTrait>
+        <io.jenkins.plugins.gitlabbranchsource.OriginMergeRequestDiscoveryTrait>
+          <strategyId>1</strategyId>
+        </io.jenkins.plugins.gitlabbranchsource.OriginMergeRequestDiscoveryTrait>
+        <io.jenkins.plugins.gitlabbranchsource.ForkMergeRequestDiscoveryTrait>
+          <strategyId>1</strategyId>
+          <trust class="io.jenkins.plugins.gitlabbranchsource.ForkMergeRequestDiscoveryTrait$TrustPermission"/>
+          <buildMRForksNotMirror>false</buildMRForksNotMirror>
+        </io.jenkins.plugins.gitlabbranchsource.ForkMergeRequestDiscoveryTrait>
+        <io.jenkins.plugins.gitlabbranchsource.WebhookListenerBuildConditionsTrait>
+          <alwaysBuildMROpen>true</alwaysBuildMROpen>
+          <alwaysBuildMRReOpen>true</alwaysBuildMRReOpen>
+          <alwaysIgnoreMRApproval>false</alwaysIgnoreMRApproval>
+          <alwaysIgnoreMRUnApproval>false</alwaysIgnoreMRUnApproval>
+          <alwaysIgnoreMRApproved>false</alwaysIgnoreMRApproved>
+          <alwaysIgnoreMRUnApproved>false</alwaysIgnoreMRUnApproved>
+          <alwaysIgnoreNonCodeRelatedUpdates>false</alwaysIgnoreNonCodeRelatedUpdates>
+          <alwaysIgnoreMRWorkInProgress>false</alwaysIgnoreMRWorkInProgress>
+        </io.jenkins.plugins.gitlabbranchsource.WebhookListenerBuildConditionsTrait>
+      </traits>
+      <navigatorProjects/>
+      <isGroup>false</isGroup>
+      <wantSubGroupProjects>false</wantSubGroupProjects>
+    </io.jenkins.plugins.gitlabbranchsource.GitLabSCMNavigator>
+  </navigators>
+  <projectFactories>
+    <org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProjectFactory plugin="workflow-multibranch@756.v891d88f2cd46">
+      <scriptPath>Jenkinsfile</scriptPath>
+    </org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProjectFactory>
+  </projectFactories>
+  <buildStrategies/>
+  <strategy class="jenkins.branch.DefaultBranchPropertyStrategy">
+    <properties class="empty-list"/>
+  </strategy>
+</jenkins.branch.OrganizationFolder>

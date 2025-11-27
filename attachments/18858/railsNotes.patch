@@ -1,0 +1,704 @@
+### Eclipse Workspace Patch 1.0
+#P ruby-metrics
+Index: src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesBuildAction.java
+===================================================================
+--- src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesBuildAction.java	(revision 0)
++++ src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesBuildAction.java	(revision 0)
+@@ -0,0 +1,64 @@
++package hudson.plugins.rubyMetrics.railsNotes;
++
++import hudson.model.AbstractBuild;
++import hudson.model.HealthReport;
++import hudson.plugins.rubyMetrics.AbstractRubyMetricsBuildAction;
++import hudson.plugins.rubyMetrics.railsNotes.model.RailsNotesMetrics;
++import hudson.plugins.rubyMetrics.railsNotes.model.RailsNotesResults;
++import hudson.util.ChartUtil;
++import hudson.util.DataSetBuilder;
++import hudson.util.ChartUtil.NumberOnlyBuildLabel;
++
++import java.util.Map;
++
++public class RailsNotesBuildAction extends AbstractRubyMetricsBuildAction {
++    private final RailsNotesResults results;
++
++    public RailsNotesBuildAction(AbstractBuild<?, ?> owner, RailsNotesResults results) {
++        super(owner);
++        this.results = results;
++    }
++
++    public HealthReport getBuildHealth() {
++        // TODO Auto-generated method stub
++        return null;
++    }
++    
++    public RailsNotesResults getResults() {
++        return results;
++    }
++
++    public String getDisplayName() {
++        return "Annotations (Rails notes)";
++    }
++
++    public String getIconFileName() {
++        return "graph.gif";
++    }
++
++    public String getUrlName() {
++        return "railsNotes";
++    }
++
++    @Override
++    protected DataSetBuilder<String, NumberOnlyBuildLabel> getDataSetBuilder() {
++        DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
++        
++        Map<RailsNotesMetrics, Integer> total = results.getTotal();     
++        
++        for (RailsNotesBuildAction a = this; a != null; a = a.getPreviousResult()) {
++            ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(a.owner);
++            
++            for (Map.Entry<RailsNotesMetrics, Integer> entry : total.entrySet()) {
++                dsb.add(entry.getValue(), entry.getKey().toString(), label);
++            }
++        }
++        
++        return dsb;
++    }
++
++    @Override
++    protected String getRangeAxisLabel() {
++        return "Annotations";
++    }
++}
+
+Property changes on: src\main\java\hudson\plugins\rubyMetrics\railsNotes\RailsNotesBuildAction.java
+___________________________________________________________________
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
+Index: src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction/floatingBox.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction/floatingBox.jelly	(revision 0)
++++ src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction/floatingBox.jelly	(revision 0)
+@@ -0,0 +1,5 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
++         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:rcov="/hudson/plugins/rubyMetrics/tags">
++         
++	<rcov:floatingBox title="Annotations (Rails notes)"/>
++</j:jelly>
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesParser.java
+===================================================================
+--- src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesParser.java	(revision 0)
++++ src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesParser.java	(revision 0)
+@@ -0,0 +1,61 @@
++package hudson.plugins.rubyMetrics.railsNotes;
++
++import hudson.plugins.rubyMetrics.railsNotes.model.RailsNotesMetrics;
++import hudson.plugins.rubyMetrics.railsNotes.model.RailsNotesResults;
++
++import java.util.Arrays;
++import java.util.Collection;
++import java.util.Iterator;
++import java.util.LinkedHashSet;
++import java.util.regex.Pattern;
++
++import org.apache.commons.lang.StringUtils;
++import org.codehaus.plexus.util.StringOutputStream;
++
++public class RailsNotesParser {
++    public RailsNotesResults parse(StringOutputStream output) {
++        return parse(output.toString());
++    }
++    
++    public RailsNotesResults parse(String output) {
++        RailsNotesResults response = new RailsNotesResults();
++        
++        String[] aux = output.split("[\n\r]");
++        Collection<String> lines = new LinkedHashSet<String>(Arrays.asList(aux));
++        lines = removeSeparators(lines);
++        
++        // Fortunately a LinkedHashSet has a predictable order, so this can use the filenames
++        Iterator<String> linesIterator = lines.iterator();
++        String lastFile = "";
++        while (linesIterator.hasNext()) {
++            String line = linesIterator.next();
++            if (StringUtils.isEmpty(line.trim())) continue;
++            // Filename lines don't start with a space. Annotation lines do.
++            if (line.charAt(0) != ' ') {
++                lastFile = line.substring(0, line.length() - 1); // remove colon from end of line
++            } else {
++                for (RailsNotesMetrics metric : RailsNotesMetrics.values()) {
++                    // Match "  * [line#] [ANNOTATION]"
++                    Pattern metricPattern = Pattern.compile("^  \\* \\[[\\s\\d]+\\] \\[" + metric.toString() + "\\]");
++                    if (metricPattern.matcher(line).find()) {
++                        response.addAnnotationFor(lastFile, metric);
++                        break; // next line
++                    }
++                }
++            }
++        }
++        
++        response.setOutput(output);
++        return response;
++    }
++    
++    private Collection<String> removeSeparators(Collection<String> lines) {
++        Collection<String> response = new LinkedHashSet<String>();
++        for (String line : lines) {
++            response.add(line.replaceAll("[\\r\\n+-]+", ""));
++        }
++        
++        response.remove("");
++        return response;
++    }
++}
+\ No newline at end of file
+
+Property changes on: src\main\java\hudson\plugins\rubyMetrics\railsNotes\RailsNotesParser.java
+___________________________________________________________________
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
+Index: src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction.java
+===================================================================
+--- src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction.java	(revision 0)
++++ src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction.java	(revision 0)
+@@ -0,0 +1,44 @@
++package hudson.plugins.rubyMetrics.railsNotes;
++
++import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
++import hudson.model.Result;
++import hudson.plugins.rubyMetrics.AbstractRubyMetricsBuildAction;
++import hudson.plugins.rubyMetrics.AbstractRubyMetricsProjectAction;
++import hudson.plugins.rubyMetrics.railsStats.RailsStatsBuildAction;
++
++public class RailsNotesProjectAction extends AbstractRubyMetricsProjectAction {
++    public RailsNotesProjectAction(AbstractProject<?, ?> project) {
++        super(project);
++    }
++    
++    public String getDisplayName() {
++        return "Annotations report";
++    }
++
++    public String getUrlName() {        
++        return "railsNotes";
++    }
++    
++    public RailsNotesBuildAction getLastResult() {
++        for (AbstractBuild<?, ?> b = project.getLastStableBuild(); b != null; b = b.getPreviousNotFailedBuild()) {
++            if (b.getResult() == Result.FAILURE)
++                continue;
++            RailsNotesBuildAction r = b.getAction(RailsNotesBuildAction.class);
++            if (r != null)
++                return r;
++        }
++        return null;
++    }
++    
++    public Integer getLastResultBuild() {
++        for (AbstractBuild<?, ?> b = project.getLastStableBuild(); b != null; b = b.getPreviousNotFailedBuild()) {
++            if (b.getResult() == Result.FAILURE)
++                continue;
++            RailsNotesBuildAction r = b.getAction(RailsNotesBuildAction.class);
++            if (r != null)
++                return b.getNumber();
++        }
++        return null;
++    }
++}
+
+Property changes on: src\main\java\hudson\plugins\rubyMetrics\railsNotes\RailsNotesProjectAction.java
+___________________________________________________________________
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
+Index: src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesPublisher.java	(revision 0)
++++ src/main/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesPublisher.java	(revision 0)
+@@ -0,0 +1,123 @@
++package hudson.plugins.rubyMetrics.railsNotes;
++
++import hudson.Extension;
++import hudson.FilePath;
++import hudson.Launcher;
++import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
++import hudson.model.Action;
++import hudson.model.BuildListener;
++import hudson.model.StreamBuildListener;
++import hudson.plugins.rake.Rake;
++import hudson.plugins.rake.RubyInstallation;
++import hudson.plugins.rubyMetrics.AbstractRubyMetricsPublisher;
++import hudson.plugins.rubyMetrics.railsNotes.model.RailsNotesResults;
++import hudson.tasks.BuildStepDescriptor;
++import hudson.tasks.Publisher;
++
++import java.io.IOException;
++
++import org.codehaus.plexus.util.StringOutputStream;
++import org.kohsuke.stapler.DataBoundConstructor;
++
++/**
++ * Rails notes {@link Publisher}
++ * 
++ * @author Adam Stegman
++ */
++public class RailsNotesPublisher extends AbstractRubyMetricsPublisher {
++    private final Rake rake;
++    private final String rakeInstallation;
++    private final String rakeWorkingDir;
++    
++    @DataBoundConstructor
++    public RailsNotesPublisher(String rakeInstallation, String rakeWorkingDir) {
++        this.rakeInstallation = rakeInstallation;
++        this.rakeWorkingDir = rakeWorkingDir;
++        this.rake = new Rake(this.rakeInstallation, null, "notes", null, this.rakeWorkingDir, true);
++    }
++
++    @Override
++    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
++        
++        FilePath workspace = build.getModuleRoot();
++        
++        if (!isRailsProject(workspace)) {
++            return fail(build, listener, "This is not a rails app directory: " + workspace.getName());
++        }
++        
++        listener.getLogger().println("Publishing rails notes report...");
++        
++        StringOutputStream out = new StringOutputStream();      
++        BuildListener stringListener = new StreamBuildListener(out);
++                
++        if (rake.perform(build, launcher, stringListener)) {
++            final RailsNotesParser parser = new RailsNotesParser();
++            RailsNotesResults results = parser.parse(out);
++            
++            RailsNotesBuildAction action = new RailsNotesBuildAction(build, results);
++            build.getActions().add(action);
++        }               
++        
++        return true;
++    }
++    
++    public String getRakeInstallation() {
++        return rakeInstallation;
++    }
++    
++    public String getRakeWorkingDir() {
++        return rakeWorkingDir;
++    }
++    
++    private boolean isRailsProject(FilePath workspace) {
++        try { //relaxed rails app schema
++            return workspace.isDirectory()
++                && workspace.list("app") != null && workspace.list("config") != null
++                && workspace.list("db") != null && workspace.list("test") != null;
++        } catch (Exception e) {
++            return false;
++        }
++    }   
++    
++        
++    @Override
++    public Action getProjectAction(AbstractProject<?,?> project) {
++        return new RailsNotesProjectAction(project);
++    }
++
++    @Extension
++    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
++
++    public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
++
++        protected DescriptorImpl() {
++            super(RailsNotesPublisher.class);           
++        }
++        
++        @Override
++        public String getHelpFile() {
++            return "/plugin/rubyMetrics/railsNotesHelp.html";
++        }
++
++        @Override
++        public String getDisplayName() {
++            return "Publish Rails Notes report";
++        }
++        
++        public RubyInstallation[] getRakeInstallations() {
++            return Rake.DESCRIPTOR.getInstallations();
++        }
++
++        @Override
++        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
++            return true;
++        }
++
++    }
++
++    @Override
++    public BuildStepDescriptor<Publisher> getDescriptor() {
++        return DESCRIPTOR;
++    }
++}
+\ No newline at end of file
+
+Property changes on: src\main\java\hudson\plugins\rubyMetrics\railsNotes\RailsNotesPublisher.java
+___________________________________________________________________
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
+Index: src/main/java/hudson/plugins/rubyMetrics/railsNotes/model/RailsNotesResults.java
+===================================================================
+--- src/main/java/hudson/plugins/rubyMetrics/railsNotes/model/RailsNotesResults.java	(revision 0)
++++ src/main/java/hudson/plugins/rubyMetrics/railsNotes/model/RailsNotesResults.java	(revision 0)
+@@ -0,0 +1,120 @@
++package hudson.plugins.rubyMetrics.railsNotes.model;
++
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.Comparator;
++import java.util.HashMap;
++import java.util.LinkedHashSet;
++import java.util.List;
++import java.util.Map;
++import java.util.TreeMap;
++
++public class RailsNotesResults {
++    private Map<String, Map<RailsNotesMetrics, Integer>> metrics = new HashMap<String, Map<RailsNotesMetrics,Integer>>();
++    private List<String> sortedLabels = new ArrayList<String>();
++    
++    private class SortLabelsComparator implements Comparator<String> {
++
++        private final List<String> labels;
++        public SortLabelsComparator(List<String> coll) {
++            labels = coll;
++        }
++        
++        public int compare(String o1, String o2) {
++            return new Integer(labels.indexOf(o1)).compareTo(labels.indexOf(o2));
++        }
++        
++    }
++    
++    private String output;
++    
++    public Collection<String> getHeaders() {
++        Collection<String> headers = new LinkedHashSet<String>();
++        headers.add("Filename");
++        
++        for (RailsNotesMetrics metric : RailsNotesMetrics.values()) {
++            headers.add(metric.toString());
++        }
++        
++        return headers;
++    }
++    
++    /**
++     * Add an instance of <code>annotation</code> in the file <code>fileName</code>. This will
++     * create an entry in <code>metrics</code> for <code>fileName</code> if one does not already
++     * exist.
++     * 
++     * @param fileName the filename from the output of Rails notes.
++     * @param annotation the <code>RailsNotesMetrics</code> value associated with the annotation
++     *                   in the report.
++     */
++    public void addAnnotationFor(String fileName, RailsNotesMetrics annotation) {
++        if (!sortedLabels.contains(fileName)) {
++            sortedLabels.add(fileName);
++        }
++        
++        // Create the map if it doesn't already exist, seed each annotation with a count of 0.
++        if (!metrics.containsKey(fileName)) {
++            Map<RailsNotesMetrics, Integer> metric = new TreeMap<RailsNotesMetrics, Integer>();
++            for (RailsNotesMetrics value : RailsNotesMetrics.values()) {
++                metric.put(value, new Integer(0));
++            }
++            metrics.put(fileName, metric);
++        }
++        // Get this file's map and add 1 to the count of that metric.
++        Map<RailsNotesMetrics, Integer> metric = metrics.get(fileName);
++        metric.put(annotation, new Integer(metric.get(annotation).intValue() + 1));
++    }
++    
++    /**
++     * Generate the total count of each annotation by adding together all the annotations in
++     * <code>metrics</code>.
++     * 
++     * @return A <code>Map</code> to insert into <code>metrics</code> with each annotation and a
++     *         total count.
++     */
++    public Map<RailsNotesMetrics, Integer> getTotal() {
++        Map<RailsNotesMetrics, Integer> total = new TreeMap<RailsNotesMetrics, Integer>();
++        // Initialize all the values
++        for (RailsNotesMetrics metric : RailsNotesMetrics.values()) total.put(metric, new Integer(0));
++        
++        // For each class entered, add its counts to the total
++        for (Map<RailsNotesMetrics, Integer> fileEntry : metrics.values()) {
++            for (RailsNotesMetrics metric : fileEntry.keySet()) {
++                total.put(metric, new Integer(total.get(metric).intValue() + fileEntry.get(metric).intValue()));
++            }
++        }
++        
++        return total;
++    }
++    
++    public Map<String, Map<RailsNotesMetrics, Integer>> getMetrics() {
++        Comparator<String> comparator = new SortLabelsComparator(sortedLabels);
++        
++        Map<String, Map<RailsNotesMetrics, Integer>> response = 
++            new TreeMap<String, Map<RailsNotesMetrics,Integer>>(comparator);
++        
++        for (Map.Entry<String, Map<RailsNotesMetrics, Integer>> entry : metrics.entrySet()) {
++            response.put(entry.getKey(), entry.getValue());
++        }
++        
++        // Include the total
++        response.put("Total", getTotal());
++        
++        return response;
++    }
++    
++    /**
++     * @return the output of the "rake notes" command.
++     */
++    public String getOutput() {
++        return output;
++    }
++    
++    /**
++     * @param output the output of the "rake notes" command.
++     */
++    public void setOutput(String output) {
++        this.output = output;
++    }
++}
+\ No newline at end of file
+
+Property changes on: src\main\java\hudson\plugins\rubyMetrics\railsNotes\model\RailsNotesResults.java
+___________________________________________________________________
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
+Index: src/test/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesParserTest.java
+===================================================================
+--- src/test/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesParserTest.java	(revision 0)
++++ src/test/java/hudson/plugins/rubyMetrics/railsNotes/RailsNotesParserTest.java	(revision 0)
+@@ -0,0 +1,34 @@
++package hudson.plugins.rubyMetrics.railsNotes;
++
++import hudson.plugins.rubyMetrics.railsNotes.model.RailsNotesResults;
++import junit.framework.TestCase;
++
++public class RailsNotesParserTest extends TestCase {
++    public void testParse() throws Exception {
++        RailsNotesParser parser = new RailsNotesParser();
++        
++        String out =    "app/controllers/a_controller.rb:\n" +
++                        "  * [ 53] [TODO] do this\n" +
++                        "\n" +
++                        "app/models/b model.rb:\n" +
++                        "  * [  1] [FIXME] [TODO]\n" + // should end up as a FIXME
++                        "\n" +
++                        "app/models/c_model.rb:\n" +
++                        "  * [111] [OPTIMIZE]\n" +
++                        "  * [222] [TODO]\n" +
++                        "\n" +
++                        "test/unit/b test.rb:\n" +
++                        "  * [  2] [TODO]\n" +
++                        "\n" +
++                        "test/unit/c_test.rb:\n" +
++                        "  * [  5] [FIXME]\n" +
++                        "\n" +
++                        "\n";
++        
++        RailsNotesResults metrics = parser.parse(out);
++        
++        assertFalse(metrics.getMetrics().isEmpty());
++        assertNotNull(metrics.getOutput());
++        assertFalse(metrics.getOutput() == "");
++    }
++}
+\ No newline at end of file
+
+Property changes on: src\test\java\hudson\plugins\rubyMetrics\railsNotes\RailsNotesParserTest.java
+___________________________________________________________________
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
+Index: src/main/webapp/railsNotesHelp.html
+===================================================================
+--- src/main/webapp/railsNotesHelp.html	(revision 0)
++++ src/main/webapp/railsNotesHelp.html	(revision 0)
+@@ -0,0 +1 @@
++Run Rake notes task and build a nice report with a trend graph. You have to select the rake version you want to use.
+\ No newline at end of file
+
+Property changes on: src\main\webapp\railsNotesHelp.html
+___________________________________________________________________
+Added: svn:mime-type
+   + text/html
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
+Index: src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesPublisher/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesPublisher/config.jelly	(revision 0)
++++ src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesPublisher/config.jelly	(revision 0)
+@@ -0,0 +1,19 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
++         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
++     
++     <f:entry title="Rake Version">
++	    <select class="setting-input" name="railsStats.rakeInstallation">
++	      <option>(Default)</option>
++	      <j:forEach var="inst" items="${descriptor.rakeInstallations}">
++	        <f:option selected="${inst.name == instance.rakeInstallation}">${inst.name}</f:option>
++	      </j:forEach>
++	    </select>
++  	</f:entry>
++  	
++    <f:advanced>
++        <f:entry title="Rake working directory" description="Specify the rake working directory, by default it's '.'">
++            <f:textbox name="rake.rakeWorkingDir" value="${instance.rakeWorkingDir}"/>
++        </f:entry>
++    </f:advanced>
++      
++</j:jelly>
+\ No newline at end of file
+Index: src/main/java/hudson/plugins/rubyMetrics/railsNotes/model/RailsNotesMetrics.java
+===================================================================
+--- src/main/java/hudson/plugins/rubyMetrics/railsNotes/model/RailsNotesMetrics.java	(revision 0)
++++ src/main/java/hudson/plugins/rubyMetrics/railsNotes/model/RailsNotesMetrics.java	(revision 0)
+@@ -0,0 +1,27 @@
++package hudson.plugins.rubyMetrics.railsNotes.model;
++
++import java.util.Arrays;
++import java.util.Comparator;
++
++public enum RailsNotesMetrics {
++    TODO, FIXME, OPTIMIZE;
++    
++    public static RailsNotesMetrics toRailsNotesMetrics(String name) {
++        try {
++            return RailsNotesMetrics.valueOf(name.toUpperCase());
++        } catch (Exception e) {
++            return null;
++        }
++    }
++    
++    public int getOrder() {
++        return Arrays.asList(RailsNotesMetrics.values()).indexOf(this);
++    }
++    
++    public static class COMPARATOR implements Comparator<RailsNotesMetrics> {
++        public int compare(RailsNotesMetrics o1, RailsNotesMetrics o2) {
++            return new Integer(o1.getOrder()).compareTo(new Integer(o2.getOrder()));
++        }
++        
++    }
++}
+\ No newline at end of file
+
+Property changes on: src\main\java\hudson\plugins\rubyMetrics\railsNotes\model\RailsNotesMetrics.java
+___________________________________________________________________
+Added: svn:keywords
+   + Author Date Id Revision
+Added: svn:eol-style
+   + native
+
+Index: src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction/nodata.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction/nodata.jelly	(revision 0)
++++ src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesProjectAction/nodata.jelly	(revision 0)
+@@ -0,0 +1,9 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
++         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
++    <l:layout xmlns:rcov="/hudson/plugins/rubyMetrics/tags" css="/plugin/rubyMetrics/css/style.css">
++        <st:include it="${it.project}" page="sidepanel.jelly"/>
++        <l:main-panel>
++            <h1>No annotation data available</h1>
++        </l:main-panel>
++    </l:layout>
++</j:jelly>
+
+Property changes on: .
+___________________________________________________________________
+Modified: svn:ignore
+   - .classpath
+.project
+.settings
+target
+rubyMetrics.iml
+
+   + *.patch
+.classpath
+.project
+.settings
+bin
+rubyMetrics.iml
+target
+work
+
+
+Index: src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesBuildAction/index.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesBuildAction/index.jelly	(revision 0)
++++ src/main/resources/hudson/plugins/rubyMetrics/railsNotes/RailsNotesBuildAction/index.jelly	(revision 0)
+@@ -0,0 +1,40 @@
++<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
++         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:rcov="/hudson/plugins/rubyMetrics/tags">
++    <l:layout xmlns:rcov="/hudson/plugins/rubyMetrics/tags" css="/plugin/rubyMetrics/css/style.css">
++    
++	   <st:include it="${it.owner}" page="sidepanel.jelly" />
++	    
++	    <l:main-panel>
++	            <h1>Annotations (Rails notes) report</h1>
++	            
++	            <j:if test="${it.previousResult != null}">
++	            	<img src="graph" width="500px" height="200px"/>
++	            </j:if>
++	            
++	            <table class="report">
++	            	<thead>
++	            		<tr>
++	            			<j:forEach var="header" items="${it.results.headers}">
++	            				<td class='heading'>${header}</td>
++	            			</j:forEach>            			
++				      	</tr>
++				    </thead>
++				    <tbody>
++				    	<j:forEach var="metric" items="${it.results.metrics}">
++				    		<tr>
++					    		<td>${metric.key}</td>
++					    		<j:forEach var="values" items="${metric.value}">
++					    			<td>${values.value}</td>
++					    		</j:forEach>
++					    	</tr>
++				    	</j:forEach>
++				    </tbody>
++				 </table>
++
++                 <h2>Output</h2>				 
++				 <div id="output">
++				 	<pre>${it.results.output}</pre>
++				 </div>
++	        </l:main-panel>
++    </l:layout>
++</j:jelly>
+\ No newline at end of file

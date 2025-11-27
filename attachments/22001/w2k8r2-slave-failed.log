@@ -1,0 +1,23 @@
+Connecting to msbuild01
+
+ERROR: Access is denied. See http://wiki.jenkins-ci.org/display/JENKINS/Windows+slaves+fail+to+start+via+DCOM for more information about how to resolve this.
+org.jinterop.dcom.common.JIException: Message not found for errorCode: 0x00000005
+	at org.jinterop.winreg.smb.JIWinRegStub.winreg_CreateKey(JIWinRegStub.java:297)
+	at org.jinterop.dcom.core.JIComServer.initialise(JIComServer.java:480)
+	at org.jinterop.dcom.core.JIComServer.<init>(JIComServer.java:427)
+	at org.jvnet.hudson.wmi.WMI.connect(WMI.java:59)
+	at hudson.os.windows.ManagedWindowsServiceLauncher.launch(ManagedWindowsServiceLauncher.java:220)
+	at hudson.slaves.SlaveComputer$1.call(SlaveComputer.java:200)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:303)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:138)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+Caused by: org.jinterop.dcom.common.JIRuntimeException: Message not found for errorCode: 0x00000005
+	at org.jinterop.winreg.IJIWinReg$createKey.read(IJIWinReg.java:459)
+	at ndr.NdrObject.decode(NdrObject.java:19)
+	at rpc.ConnectionOrientedEndpoint.call(ConnectionOrientedEndpoint.java:138)
+	at rpc.Stub.call(Stub.java:112)
+	at org.jinterop.winreg.smb.JIWinRegStub.winreg_CreateKey(JIWinRegStub.java:291)
+	... 10 more
+

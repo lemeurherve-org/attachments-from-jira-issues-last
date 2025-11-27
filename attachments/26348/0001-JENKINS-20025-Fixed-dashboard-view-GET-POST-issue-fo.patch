@@ -1,0 +1,48 @@
+From fe768c8c485b82ed7c20e5c4650a3f23669e8835 Mon Sep 17 00:00:00 2001
+From: Chris Bush <christopher.bush@telvent.com>
+Date: Mon, 7 Jul 2014 15:36:09 -0400
+Subject: [PATCH] [JENKINS-20025] Fixed dashboard view GET/POST issue for build
+ portlet
+
+---
+ .../hudson/plugins/view/dashboard/core/JobsPortlet/portlet.jelly      | 4 ++--
+ src/main/webapp/js/dashboard-view.js                                  | 4 ++++
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/src/main/resources/hudson/plugins/view/dashboard/core/JobsPortlet/portlet.jelly b/src/main/resources/hudson/plugins/view/dashboard/core/JobsPortlet/portlet.jelly
+index aa94570..2013efa 100644
+--- a/src/main/resources/hudson/plugins/view/dashboard/core/JobsPortlet/portlet.jelly
++++ b/src/main/resources/hudson/plugins/view/dashboard/core/JobsPortlet/portlet.jelly
+@@ -35,7 +35,7 @@ THE SOFTWARE.
+           <j:if test="${!empty(job)}">
+             <td style="border: 1px solid #bbb;">
+               <j:if test="${job.buildable and job.hasPermission(job.BUILD)}">
+-                <a href="${job.shortUrl}build?delay=0sec">
++                <a onclick="doBuildPost('${job.shortUrl}build');" href="#">
+                   <img src="${imagesURL}/16x16/clock.png"
+                        title="${%Schedule a build}" alt="${%Schedule a build}"
+                        border="0"
+@@ -55,4 +55,4 @@ THE SOFTWARE.
+       <j:set var="i" value="${i + 1}"/>
+     </j:while>
+   </dp:decorate>
+-</j:jelly>
++</j:jelly>
+diff --git a/src/main/webapp/js/dashboard-view.js b/src/main/webapp/js/dashboard-view.js
+index f97083b..e044ff3 100644
+--- a/src/main/webapp/js/dashboard-view.js
++++ b/src/main/webapp/js/dashboard-view.js
+@@ -54,6 +54,10 @@ function startsWith(str, substr) {
+   return (str.match("^"+substr) == substr);
+ }
+ 
++function doBuildPost(url){
++    jQuery.post(url, {delay: "0sec"});
++}
++
+ var cmds = window.document.getElementsByTagName('img');
+ for (var cmdIndex in cmds) {
+   cmd = cmds[cmdIndex];
+-- 
+1.8.4.msysgit.0
+

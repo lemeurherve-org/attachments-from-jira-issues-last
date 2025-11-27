@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.testlink.TestLinkBuilder>
+      <testLinkName>Local Sandbox testlink</testLinkName>
+      <testProjectName>Sandbox</testProjectName>
+      <testPlanName>Test Plan 1</testPlanName>
+      <buildName>Build 1</buildName>
+      <platformName></platformName>
+      <customFields>Java Class</customFields>
+      <executionStatusNotRun>false</executionStatusNotRun>
+      <executionStatusPassed>false</executionStatusPassed>
+      <executionStatusFailed>false</executionStatusFailed>
+      <executionStatusBlocked>false</executionStatusBlocked>
+      <singleBuildSteps>
+        <hudson.tasks.BatchFile>
+          <command>echo Single Build Steps...
+echo TESTLINK_BUILD_NAME=%TESTLINK_BUILD_NAME%
+echo TESTLINK_TESTPLAN_NAME=%TESTLINK_TESTPLAN_NAME%
+echo TESTLINK_TESTPROJECT_NAME=%TESTLINK_TESTPROJECT_NAME%
+echo TESTLINK_TESTCASE_TOTAL=%TESTLINK_TESTCASE_TOTAL%
+echo Single Build Steps End</command>
+        </hudson.tasks.BatchFile>
+      </singleBuildSteps>
+      <iterativeBuildSteps>
+        <hudson.tasks.BatchFile>
+          <command>echo Iterative Test Build Steps...
+
+echo TESTLINK_TESTCASE_ID= %TESTLINK_TESTCASE_ID%
+echo TESTLINK_TESTCASE_NAME= %TESTLINK_TESTCASE_NAME%
+echo TESTLINK_TESTCASE_TESTSUITEID= %TESTLINK_TESTCASE_TESTSUITEID%
+echo TESTLINK_TESTCASE_TESTPROJECTID= %TESTLINK_TESTCASE_TESTPROJECTID%
+echo TESTLINK_TESTCASE_AUTHOR= %TESTLINK_TESTCASE_AUTHOR%
+echo TESTLINK_TESTCASE_SUMMARY= %TESTLINK_TESTCASE_SUMMARY%
+echo TESTLINK_BUILD_NAME= %TESTLINK_BUILD_NAME%
+echo TESTLINK_TESTPLAN_NAME= %TESTLINK_TESTPLAN_NAME%
+echo TESTLINK_TESTPROJECT_NAME= %TESTLINK_TESTPROJECT_NAME%
+echo TESTLINK_TESTCASE_$CUSTOM_FIELD_NAME= %TESTLINK_TESTCASE_$CUSTOM_FIELD_NAME%
+
+echo Iterative Test Build Steps End</command>
+        </hudson.tasks.BatchFile>
+      </iterativeBuildSteps>
+      <transactional>false</transactional>
+      <failedTestsMarkBuildAsFailure>false</failedTestsMarkBuildAsFailure>
+      <failIfNoResults>false</failIfNoResults>
+      <failOnNotRun>false</failOnNotRun>
+      <executionOrderComparator/>
+      <failure>false</failure>
+    </hudson.plugins.testlink.TestLinkBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

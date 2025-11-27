@@ -1,0 +1,240 @@
+Started by user Poessinger Christian
+Obtained Jenkinsfile from git git@code.foo.net:jenkins/pipeline.git
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on rx-int-linux-02.foo.net-75e3eec2 in /home/jenkins_user/jenkins/workspace/Jenkins-Pipeline-Bug
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+using credential 0d211da9-5db8-4112-9bb1-91a24fe18da8
+Cloning the remote Git repository
+Cloning repository git@code.foo.net:jenkins/pipeline.git
+ > /usr/bin/git init /home/jenkins_user/jenkins/workspace/Jenkins-Pipeline-Bug # timeout=10
+Fetching upstream changes from git@code.foo.net:jenkins/pipeline.git
+ > /usr/bin/git --version # timeout=10
+using GIT_SSH to set credentials jm.foo.net/receiver
+ > /usr/bin/git fetch --tags --progress git@code.foo.net:jenkins/pipeline.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git config remote.origin.url git@code.foo.net:jenkins/pipeline.git # timeout=10
+ > /usr/bin/git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > /usr/bin/git config remote.origin.url git@code.foo.net:jenkins/pipeline.git # timeout=10
+Fetching upstream changes from git@code.foo.net:jenkins/pipeline.git
+using GIT_SSH to set credentials jm.foo.net/receiver
+ > /usr/bin/git fetch --tags --progress git@code.foo.net:jenkins/pipeline.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision 107cf539bd7983737e75f0ba0a15693ca9b33983 (refs/remotes/origin/master)
+Commit message: "Jenkins: don't call with 'time'"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Non-Parallel Stage)
+[Pipeline] echo
+[2019-04-29T12:26:30.054Z] This stage will be executed first.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Parallel Stage)
+[Pipeline] parallel
+[Pipeline] { (Branch: Branch A)
+[Pipeline] { (Branch: Branch B)
+[Pipeline] { (Branch: Branch C)
+[Pipeline] { (Branch: Branch D)
+[Pipeline] stage
+[Pipeline] { (Branch A)
+[Pipeline] stage
+[Pipeline] { (Branch B)
+[Pipeline] stage
+[Pipeline] { (Branch C)
+[Pipeline] stage
+[Pipeline] { (Branch D)
+[Pipeline] node
+[2019-04-29T12:26:30.513Z] Running on rx-int-linux-01.foo.net-de322abd in /home/jenkins_user/jenkins/workspace/Jenkins-Pipeline-Bug
+[Pipeline] node
+[2019-04-29T12:26:30.559Z] Running on rx-int-linux-03.foo.net-db9b1072 in /home/jenkins_user/jenkins/workspace/Jenkins-Pipeline-Bug
+[Pipeline] node
+[Pipeline] node
+[Pipeline] {
+[Pipeline] {
+[Pipeline] checkout
+[2019-04-29T12:26:30.707Z] using credential 0d211da9-5db8-4112-9bb1-91a24fe18da8
+[2019-04-29T12:26:30.725Z] Fetching changes from the remote Git repository
+[Pipeline] checkout
+[2019-04-29T12:26:30.759Z] using credential 0d211da9-5db8-4112-9bb1-91a24fe18da8
+[2019-04-29T12:26:30.792Z] Fetching changes from the remote Git repository
+[2019-04-29T12:26:58.293Z]  > /usr/bin/git rev-parse --is-inside-work-tree # timeout=10
+[2019-04-29T12:26:58.304Z]  > /usr/bin/git config remote.origin.url git@code.foo.net:jenkins/pipeline.git # timeout=10
+[2019-04-29T12:26:58.309Z] Fetching upstream changes from git@code.foo.net:jenkins/pipeline.git
+[2019-04-29T12:26:58.309Z]  > /usr/bin/git --version # timeout=10
+[2019-04-29T12:26:58.316Z] using GIT_SSH to set credentials jm.foo.net/receiver
+[2019-04-29T12:26:58.318Z]  > /usr/bin/git fetch --tags --progress git@code.foo.net:jenkins/pipeline.git +refs/heads/*:refs/remotes/origin/*
+ > /usr/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f 107cf539bd7983737e75f0ba0a15693ca9b33983
+ > /usr/bin/git rev-list --no-walk 107cf539bd7983737e75f0ba0a15693ca9b33983 # timeout=10
+[2019-04-29T12:26:31.205Z] Checking out Revision 107cf539bd7983737e75f0ba0a15693ca9b33983 (refs/remotes/origin/master)
+[2019-04-29T12:26:31.208Z] Checking out Revision 107cf539bd7983737e75f0ba0a15693ca9b33983 (refs/remotes/origin/master)
+[2019-04-29T12:26:31.216Z] Commit message: "Jenkins: don't call with 'time'"
+[2019-04-29T12:26:31.218Z] Commit message: "Jenkins: don't call with 'time'"
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] echo
+[2019-04-29T12:26:31.375Z] On Branch B
+[Pipeline] sh
+[Pipeline] echo
+[2019-04-29T12:26:31.440Z] On Branch A
+[Pipeline] sh
+[2019-04-29T12:26:31.663Z] + /usr/bin/stress --cpu 4 --io 4 --vm 2 --vm-bytes 128M --timeout 300s
+[2019-04-29T12:26:31.663Z] stress: info: [27932] dispatching hogs: 4 cpu, 4 io, 2 vm, 0 hdd
+[2019-04-29T12:26:30.051Z]  > /usr/bin/git rev-parse --is-inside-work-tree # timeout=10
+[2019-04-29T12:26:30.060Z]  > /usr/bin/git config remote.origin.url git@code.foo.net:jenkins/pipeline.git # timeout=10
+[2019-04-29T12:26:30.064Z] Fetching upstream changes from git@code.foo.net:jenkins/pipeline.git
+[2019-04-29T12:26:30.064Z]  > /usr/bin/git --version # timeout=10
+[2019-04-29T12:26:30.066Z] using GIT_SSH to set credentials jm.foo.net/receiver
+[2019-04-29T12:26:30.067Z]  > /usr/bin/git fetch --tags --progress git@code.foo.net:jenkins/pipeline.git +refs/heads/*:refs/remotes/origin/*
+[2019-04-29T12:26:30.529Z]  > /usr/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+[2019-04-29T12:26:30.536Z]  > /usr/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+[2019-04-29T12:26:30.542Z]  > /usr/bin/git config core.sparsecheckout # timeout=10
+[2019-04-29T12:26:30.544Z]  > /usr/bin/git checkout -f 107cf539bd7983737e75f0ba0a15693ca9b33983
+[2019-04-29T12:26:31.739Z] + /usr/bin/stress --cpu 4 --io 4 --vm 2 --vm-bytes 128M --timeout 300s
+[2019-04-29T12:26:31.739Z] stress: info: [15640] dispatching hogs: 4 cpu, 4 io, 2 vm, 0 hdd
+[2019-04-29T12:26:58.705Z]  > /usr/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+[2019-04-29T12:26:58.710Z]  > /usr/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+[2019-04-29T12:26:58.717Z]  > /usr/bin/git config core.sparsecheckout # timeout=10
+[2019-04-29T12:26:58.719Z]  > /usr/bin/git checkout -f 107cf539bd7983737e75f0ba0a15693ca9b33983
+[2019-04-29T12:26:45.578Z] Still waiting to schedule task
+[2019-04-29T12:26:45.578Z] Waiting for next available executor on ‘Docker’
+[2019-04-29T12:26:45.623Z] Still waiting to schedule task
+[2019-04-29T12:26:45.623Z] Waiting for next available executor on ‘Docker’
+[2019-04-29T12:31:38.332Z] stress: info: [15640] successful run completed in 300s
+[2019-04-29T12:31:38.340Z] stress: info: [27932] successful run completed in 300s
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] }
+[2019-04-29T12:31:38.413Z] Running on rx-int-linux-01.foo.net-de322abd in /home/jenkins_user/jenkins/workspace/Jenkins-Pipeline-Bug
+[Pipeline] // node
+[Pipeline] // withEnv
+[Pipeline] {
+[Pipeline] }
+[Pipeline] }
+[2019-04-29T12:31:38.517Z] Running on rx-int-linux-03.foo.net-db9b1072 in /home/jenkins_user/jenkins/workspace/Jenkins-Pipeline-Bug
+[Pipeline] // stage
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] }
+[Pipeline] {
+[Pipeline] checkout
+[2019-04-29T12:31:38.598Z] using credential 0d211da9-5db8-4112-9bb1-91a24fe18da8
+[Pipeline] // stage
+[2019-04-29T12:31:38.608Z] Fetching changes from the remote Git repository
+[Pipeline] }
+[Pipeline] checkout
+[2019-04-29T12:31:38.655Z] using credential 0d211da9-5db8-4112-9bb1-91a24fe18da8
+[2019-04-29T12:31:38.666Z] Fetching changes from the remote Git repository
+[2019-04-29T12:31:39.047Z] Checking out Revision 107cf539bd7983737e75f0ba0a15693ca9b33983 (refs/remotes/origin/master)
+[2019-04-29T12:31:39.058Z] Commit message: "Jenkins: don't call with 'time'"
+[2019-04-29T12:31:39.083Z] Checking out Revision 107cf539bd7983737e75f0ba0a15693ca9b33983 (refs/remotes/origin/master)
+[2019-04-29T12:31:39.091Z] Commit message: "Jenkins: don't call with 'time'"
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Nested 1)
+[Pipeline] stage
+[Pipeline] { (Nested 1)
+[Pipeline] echo
+[2019-04-29T12:31:39.542Z] In stage Nested 1 within Branch C
+[Pipeline] sh
+[2019-04-29T12:31:37.940Z]  > /usr/bin/git rev-parse --is-inside-work-tree # timeout=10
+[2019-04-29T12:31:37.945Z]  > /usr/bin/git config remote.origin.url git@code.foo.net:jenkins/pipeline.git # timeout=10
+[2019-04-29T12:31:37.951Z] Fetching upstream changes from git@code.foo.net:jenkins/pipeline.git
+[2019-04-29T12:31:37.951Z]  > /usr/bin/git --version # timeout=10
+[2019-04-29T12:31:37.953Z] using GIT_SSH to set credentials jm.foo.net/receiver
+[2019-04-29T12:31:37.954Z]  > /usr/bin/git fetch --tags --progress git@code.foo.net:jenkins/pipeline.git +refs/heads/*:refs/remotes/origin/*
+[2019-04-29T12:31:38.367Z]  > /usr/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+[2019-04-29T12:31:38.374Z]  > /usr/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+[2019-04-29T12:31:38.384Z]  > /usr/bin/git config core.sparsecheckout # timeout=10
+[2019-04-29T12:31:38.386Z]  > /usr/bin/git checkout -f 107cf539bd7983737e75f0ba0a15693ca9b33983
+[2019-04-29T12:32:06.174Z]  > /usr/bin/git rev-parse --is-inside-work-tree # timeout=10
+[2019-04-29T12:32:06.179Z]  > /usr/bin/git config remote.origin.url git@code.foo.net:jenkins/pipeline.git # timeout=10
+[2019-04-29T12:32:06.183Z] Fetching upstream changes from git@code.foo.net:jenkins/pipeline.git
+[2019-04-29T12:32:06.183Z]  > /usr/bin/git --version # timeout=10
+[2019-04-29T12:32:06.185Z] using GIT_SSH to set credentials jm.foo.net/receiver
+[2019-04-29T12:32:06.186Z]  > /usr/bin/git fetch --tags --progress git@code.foo.net:jenkins/pipeline.git +refs/heads/*:refs/remotes/origin/*
+[2019-04-29T12:32:06.578Z]  > /usr/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+[2019-04-29T12:32:06.589Z]  > /usr/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+[2019-04-29T12:32:06.595Z]  > /usr/bin/git config core.sparsecheckout # timeout=10
+[2019-04-29T12:32:06.596Z]  > /usr/bin/git checkout -f 107cf539bd7983737e75f0ba0a15693ca9b33983
+[Pipeline] echo
+[2019-04-29T12:31:39.671Z] In stage Nested 1 within Branch D
+[Pipeline] sh
+[2019-04-29T12:31:39.849Z] + /usr/bin/stress --cpu 4 --io 4 --vm 2 --vm-bytes 128M --timeout 300s
+[2019-04-29T12:31:39.849Z] stress: info: [15934] dispatching hogs: 4 cpu, 4 io, 2 vm, 0 hdd
+[2019-04-29T12:31:39.972Z] + /usr/bin/stress --cpu 4 --io 4 --vm 2 --vm-bytes 128M --timeout 300s
+[2019-04-29T12:31:39.972Z] stress: info: [28218] dispatching hogs: 4 cpu, 4 io, 2 vm, 0 hdd
+[2019-04-29T12:36:46.384Z] stress: info: [15934] successful run completed in 300s
+[Pipeline] }
+[Pipeline] // stage
+[2019-04-29T12:36:46.483Z] stress: info: [28218] successful run completed in 300s
+[Pipeline] stage
+[Pipeline] { (Nested 2)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Nested 2)
+[Pipeline] echo
+[2019-04-29T12:36:46.609Z] In stage Nested 2 within Branch C
+[Pipeline] sh
+[Pipeline] echo
+[2019-04-29T12:36:46.681Z] In stage Nested 2 within Branch D
+[Pipeline] sh
+[2019-04-29T12:36:46.913Z] + /usr/bin/stress --cpu 4 --io 4 --vm 2 --vm-bytes 128M --timeout 300s
+[2019-04-29T12:36:46.913Z] stress: info: [16202] dispatching hogs: 4 cpu, 4 io, 2 vm, 0 hdd
+[2019-04-29T12:36:46.972Z] + /usr/bin/stress --cpu 4 --io 4 --vm 2 --vm-bytes 128M --timeout 300s
+[2019-04-29T12:36:46.972Z] stress: info: [28474] dispatching hogs: 4 cpu, 4 io, 2 vm, 0 hdd
+[2019-04-29T12:41:53.472Z] stress: info: [16202] successful run completed in 300s
+[Pipeline] }
+[2019-04-29T12:41:53.556Z] stress: info: [28474] successful run completed in 300s
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+[2019-04-29T12:41:54.150Z] One way or another, I have finished
+[Pipeline] deleteDir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timestamps
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

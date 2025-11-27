@@ -1,0 +1,40 @@
+Index: src/main/java/hudson/plugins/libvirt/Hypervisor.java
+===================================================================
+--- src/main/java/hudson/plugins/libvirt/Hypervisor.java	(revision 40685)
++++ src/main/java/hudson/plugins/libvirt/Hypervisor.java	(working copy)
+@@ -209,7 +209,8 @@
+     }
+ 
+     public String constructHypervisorURI() {
+-        return hypervisorType.toLowerCase() + "+ssh://" + username + "@" + hypervisorHost + ":" + hypervisorSshPort + "/" + hypervisorSystemUrl + "?no_tty=1";
++        final String separator = (hypervisorSystemUrl.contains("?")) ? "&" : "?";
++        return hypervisorType.toLowerCase() + "+ssh://" + username + "@" + hypervisorHost + ":" + hypervisorSshPort + "/" + hypervisorSystemUrl + separator + "no_tty=1";
+     }
+ 
+     @Extension
+@@ -251,7 +252,8 @@
+                     return FormValidation.error("Username is not specified");
+                 }
+ 
+-                String hypervisorUri = hypervisorType.toLowerCase() + "+ssh://" + username + "@" + hypervisorHost + ":" + hypervisorSshPort + "/" + hypervisorSystemUrl + "?no_tty=1";
++                final String separator = (hypervisorSystemUrl.contains("?")) ? "&" : "?";
++                String hypervisorUri = hypervisorType.toLowerCase() + "+ssh://" + username + "@" + hypervisorHost + ":" + hypervisorSshPort + "/" + hypervisorSystemUrl + separator + "no_tty=1";
+ 
+                 LogRecord rec = new LogRecord(Level.INFO,
+                         "Testing connection to hypervisor: {0}");
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 40685)
++++ pom.xml	(working copy)
+@@ -1,9 +1,9 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+     <parent>
+-        <groupId>org.jvnet.hudson.plugins</groupId>
++        <groupId>org.jenkins-ci.plugins</groupId>
+         <artifactId>plugin</artifactId>
+-        <version>1.347</version>
++        <version>1.477-SNAPSHOT</version>
+         <relativePath>../pom.xml</relativePath>
+     </parent>
+ 

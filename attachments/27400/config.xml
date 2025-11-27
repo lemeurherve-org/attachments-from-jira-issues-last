@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>60</daysToKeep>
+    <numToKeep>-1</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>20</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>curl https://gist.githubusercontent.com/anonymous/252ade836acf56b992ae/raw/42a7b16d840d2e286aa20b36afdff36e95bb48fa/-</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>false</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <com.chikli.hudson.plugin.naginator.NaginatorPublisher plugin="naginator@1.11">
+      <regexpForRerun>.*(stderr: ssh_exchange_identification: Connection closed by remote host|FATAL: java.io.IOException: SSH channel is closed|ERROR: Error cloning remote repo|FATAL: Failed to fetch from|FATAL: null|ssh_exchange_identification: Connection closed by remote host|Unexpected termination of the channel|jenkinsci-users@googlegroups|\\[FATAL\\] Non-readable settings|Publisher hudson.plugins.warnings.WarningsPublisher aborted due to exception).*</regexpForRerun>
+      <rerunIfUnstable>false</rerunIfUnstable>
+      <checkRegexp>true</checkRegexp>
+      <delay class="com.chikli.hudson.plugin.naginator.FixedDelay">
+        <delay>5</delay>
+      </delay>
+      <maxSchedule>1</maxSchedule>
+    </com.chikli.hudson.plugin.naginator.NaginatorPublisher>
+  </publishers>
+  <buildWrappers/>
+</project>

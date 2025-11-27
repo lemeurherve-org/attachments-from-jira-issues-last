@@ -1,0 +1,14 @@
+Index: main/core/src/main/java/hudson/scm/CVSSCM.java
+===================================================================
+--- main/core/src/main/java/hudson/scm/CVSSCM.java	(revision 13571)
++++ main/core/src/main/java/hudson/scm/CVSSCM.java	(working copy)
+@@ -766,7 +766,8 @@
+                     task.setFailOnError(true);
+                     BufferedOutputStream bufferedOutput = new BufferedOutputStream(out);
+                     task.setDeststream(bufferedOutput);
+-                    task.setBranch(branch);
++                    if(!isTag)
++                      task.setBranch(branch);
+                     task.setStart(startTime);
+                     task.setEnd(endTime);
+                     if(changedFiles!=null) {

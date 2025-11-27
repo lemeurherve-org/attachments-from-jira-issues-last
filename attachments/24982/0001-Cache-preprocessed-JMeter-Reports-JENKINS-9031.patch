@@ -1,0 +1,180 @@
+From ec543ffc71eb4e96d78fffb2c61b5ec4fbf010d2 Mon Sep 17 00:00:00 2001
+From: Michel Marti <mma@objectxp.com>
+Date: Thu, 9 Jan 2014 17:08:02 +0100
+Subject: [PATCH] Cache preprocessed JMeter Reports (JENKINS-9031)
+
+Instead of parsing all available JTL results upon each request,
+we now save the parsed report as a serialized Java object for later
+reuse. The file will be next to the JTL file with a '.serialized'
+suffix. Additionally the report also gets added to a in-memory cache
+with a maximum capacity of 100 reports. This considerably speeds up the
+performance trend display.
+---
+ .../hudson/plugins/performance/HttpSample.java     |    2 +
+ .../hudson/plugins/performance/JMeterParser.java   |    8 ++-
+ .../plugins/performance/PerformanceReport.java     |    2 +
+ .../performance/PerformanceReportParser.java       |   63 ++++++++++++++++++++
+ .../java/hudson/plugins/performance/UriReport.java |    2 +
+ 5 files changed, 76 insertions(+), 1 deletion(-)
+
+diff --git a/src/main/java/hudson/plugins/performance/HttpSample.java b/src/main/java/hudson/plugins/performance/HttpSample.java
+index f635769..2d0e438 100644
+--- a/src/main/java/hudson/plugins/performance/HttpSample.java
++++ b/src/main/java/hudson/plugins/performance/HttpSample.java
+@@ -10,6 +10,8 @@
+  */
+ public class HttpSample implements Serializable, Comparable<HttpSample> {
+ 
++  private static final long serialVersionUID = -1980997520755400556L;
++
+ 	private long duration;
+ 
+ 	private boolean successful;
+diff --git a/src/main/java/hudson/plugins/performance/JMeterParser.java b/src/main/java/hudson/plugins/performance/JMeterParser.java
+index 5edcfa0..cb37708 100644
+--- a/src/main/java/hudson/plugins/performance/JMeterParser.java
++++ b/src/main/java/hudson/plugins/performance/JMeterParser.java
+@@ -59,10 +59,15 @@ public String getDefaultGlobPattern() {
+ 
+     for (File f : reports) {
+       try {
++                PerformanceReport cr = super.getFromCache(f);
++                if (cr != null) {
++                  result.add(cr);
++                  continue;
++                }
+                 SAXParser parser = factory.newSAXParser();
+                 final PerformanceReport r = new PerformanceReport();
+                 r.setReportFileName(f.getName());
+-                logger.println("Performance: Parsing JMeter report file " + f.getName());
++                logger.println("Performance: Parsing JMeter report file " + f.getPath());
+                 parser.parse(f, new DefaultHandler() {
+                 HttpSample currentSample;
+                 int counter = 0;
+@@ -123,6 +128,7 @@ public void endElement(String uri, String localName, String qName) {
+                 }
+                 });
+                 result.add(r);
++                super.addToCache(f, r);
+       } catch (ParserConfigurationException e) {
+         throw new IOException2("Failed to create parser ", e);
+       } catch (SAXException e) {
+diff --git a/src/main/java/hudson/plugins/performance/PerformanceReport.java b/src/main/java/hudson/plugins/performance/PerformanceReport.java
+index 69a57e3..8710531 100644
+--- a/src/main/java/hudson/plugins/performance/PerformanceReport.java
++++ b/src/main/java/hudson/plugins/performance/PerformanceReport.java
+@@ -25,6 +25,8 @@
+ public class PerformanceReport extends AbstractReport implements Serializable,
+     Comparable<PerformanceReport>{
+ 
++  private static final long serialVersionUID = -1422875677867003355L;
++
+   private transient PerformanceBuildAction buildAction;
+ 
+   private HttpSample httpSample;
+diff --git a/src/main/java/hudson/plugins/performance/PerformanceReportParser.java b/src/main/java/hudson/plugins/performance/PerformanceReportParser.java
+index 9c02c3d..8c9e518 100644
+--- a/src/main/java/hudson/plugins/performance/PerformanceReportParser.java
++++ b/src/main/java/hudson/plugins/performance/PerformanceReportParser.java
+@@ -8,8 +8,12 @@
+ import hudson.model.TaskListener;
+ import org.kohsuke.stapler.DataBoundConstructor;
+ 
++import com.google.common.cache.Cache;
++import com.google.common.cache.CacheBuilder;
++
+ import java.io.*;
+ import java.util.Collection;
++import java.util.logging.Logger;
+ 
+ 
+ /**
+@@ -28,6 +32,8 @@
+    */
+   public final String glob;
+   
++  private static final Logger LOGGER = Logger.getLogger(PerformanceReportParser.class.getName());
++  private static final Cache<String, PerformanceReport> reportCache = CacheBuilder.newBuilder().maximumSize(100).build();
+ 
+   @DataBoundConstructor
+   protected PerformanceReportParser(String glob) {
+@@ -50,6 +56,63 @@ public PerformanceReportParserDescriptor getDescriptor() {
+   public abstract String getDefaultGlobPattern();
+ 
+   /**
++   * Add a parsed report to our cache.
++   * @param file the file holding the raw report
++   * @param report the parsed report
++   */
++  protected void addToCache(File file, PerformanceReport report) {
++    String fser = file.getPath() + ".serialized";
++    synchronized(JMeterParser.class) {
++      ObjectOutputStream out = null;
++      try {
++        reportCache.put(fser, report);
++        out = new ObjectOutputStream(new FileOutputStream(fser));
++        out.writeObject(report);
++      } catch (Exception unknown) {
++        LOGGER.warning("Serialization failed. " + unknown);
++      } finally {
++        if (out != null) {
++          try {
++            out.close();
++          } catch (IOException e) {}
++        }
++      }
++    }
++  }
++
++  /**
++   * Get a pre-parsed report from our cache.
++   * @param file the file holding the raw (unparsed) report
++   * @return the cached report
++   */
++  protected PerformanceReport getFromCache(File file) {
++    String fser = file.getPath() + ".serialized";
++    synchronized (PerformanceReportParser.class) {
++      PerformanceReport r = reportCache.getIfPresent(fser);
++      if (r == null) {
++        ObjectInputStream in = null;
++        try {
++            in = new ObjectInputStream(new FileInputStream(fser));
++            r = (PerformanceReport) in.readObject();
++        }
++        catch (FileNotFoundException e) {
++          // This might happen...
++        }
++        catch (Exception unknown) {
++          LOGGER.warning(fser +": Exception during deserialization. " + unknown);
++        } finally {
++          if (in != null) {
++            try {
++              in.close();
++            } catch (Exception e) {}
++          }
++        }
++      }
++      return r;
++    }
++  }
++
++  /**
+    * All registered implementations.
+    */
+   public static ExtensionList<PerformanceReportParser> all() {
+diff --git a/src/main/java/hudson/plugins/performance/UriReport.java b/src/main/java/hudson/plugins/performance/UriReport.java
+index a110e46..8f07c9b 100644
+--- a/src/main/java/hudson/plugins/performance/UriReport.java
++++ b/src/main/java/hudson/plugins/performance/UriReport.java
+@@ -27,6 +27,8 @@
+ public class UriReport extends AbstractReport implements  Serializable, ModelObject,
+     Comparable<UriReport> {
+ 
++  private static final long serialVersionUID = 6377220939528230222L;
++
+   public final static String END_PERFORMANCE_PARAMETER = ".endperformanceparameter";
+ 
+   /**
+-- 
+1.7.10.4
+

@@ -1,0 +1,14 @@
+diff --git a/src/main/resources/hudson/plugins/matrix_configuration_parameter/MatrixCombinationsParameterDefinition/index.groovy b/src/main/resources/hudson/plugins/matrix_configuration_parameter/MatrixCombinationsParameterDefinition/index.groovy
+index 90bf545..3a08bc9 100644
+--- a/src/main/resources/hudson/plugins/matrix_configuration_parameter/MatrixCombinationsParameterDefinition/index.groovy
++++ b/src/main/resources/hudson/plugins/matrix_configuration_parameter/MatrixCombinationsParameterDefinition/index.groovy
+@@ -80,6 +80,9 @@ private void drawMainLinksJS(String nameIt) {
+ }
+ 
+ private int encodeRunResult(MatrixRun run) {
++    if (run.getResult() == null) {
++        return 0
++    };
+     if (Result.SUCCESS.isWorseOrEqualTo(run.getResult())) {
+         return 0
+     };

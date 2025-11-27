@@ -1,0 +1,57 @@
+Mar 15, 2017 10:26:12 AM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@51c47dc1: defining beans [authenticationManager]; root of factory hierarchy
+Mar 15, 2017 10:26:12 AM org.springframework.context.support.AbstractApplicationContext prepareRefresh
+INFO: Refreshing org.springframework.web.context.support.StaticWebApplicationContext@67309cab: display name [Root WebApplicationContext]; startup date [Wed Mar 15 10:26:12 EDT 2017]; root of context hierarchy
+Mar 15, 2017 10:26:12 AM org.springframework.context.support.AbstractApplicationContext obtainFreshBeanFactory
+INFO: Bean factory for application context [org.springframework.web.context.support.StaticWebApplicationContext@67309cab]: org.springframework.beans.factory.support.DefaultListableBeanFactory@1e0af959
+Mar 15, 2017 10:26:12 AM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1e0af959: defining beans [filter,legacy]; root of factory hierarchy
+Mar 15, 2017 10:26:12 AM hudson.WebAppMain$3 run
+INFO: Jenkins is fully up and running
+Mar 15, 2017 10:48:58 AM it.dockins.dockerslaves.ProvisionQueueListener prepareExecutorFor
+INFO: Creating a Container slave to host hudson.model.FreeStyleProject@644e6fc8[Test]#9
+Mar 15, 2017 10:49:00 AM hudson.slaves.CommandLauncher launch
+INFO: agent launched for Container for Test#9
+Mar 15, 2017 10:49:15 AM hudson.model.Run execute
+INFO: Test #9 main build action completed: FAILURE
+Mar 15, 2017 10:49:15 AM it.dockins.dockerslaves.DockerComputer terminate
+INFO: Stopping Docker Slave after build completion
+Mar 15, 2017 10:49:15 AM it.dockins.dockerslaves.DockerComputer terminate
+INFO: Stopping Docker Slave after build completion
+java.io.IOException: Failed to remove container 6f06642c7138f8155c0c65d00725113b17035f1fd2f8957f1a98ea696112ee4b
+        at it.dockins.dockerslaves.drivers.CliDockerDriver.removeContainer(CliDockerDriver.java:353)
+        at it.dockins.dockerslaves.DefaultDockerProvisioner.clean(DefaultDockerProvisioner.java:152)
+        at it.dockins.dockerslaves.DockerComputer.terminate(DockerComputer.java:73)
+        at it.dockins.dockerslaves.api.OneShotComputer.isAlive(OneShotComputer.java:81)
+        at hudson.model.Computer$2.run(Computer.java:1052)
+        at hudson.model.Queue._tryWithLock(Queue.java:1325)
+        at hudson.model.Queue.tryWithLock(Queue.java:1248)
+        at hudson.model.Computer.removeExecutor(Computer.java:1061)
+        at hudson.model.Executor.interrupt(Executor.java:212)
+        at hudson.model.Executor.interrupt(Executor.java:189)
+        at hudson.model.Executor.interrupt(Executor.java:183)
+        at hudson.model.Executor.interrupt(Executor.java:169)
+        at hudson.model.Computer$1.run(Computer.java:883)
+        at hudson.model.Queue._withLock(Queue.java:1309)
+        at hudson.model.Queue.withLock(Queue.java:1186)
+        at hudson.model.Computer.setNumExecutors(Computer.java:878)
+        at hudson.model.Computer.inflictMortalWound(Computer.java:837)
+        at hudson.model.AbstractCIBase$2.run(AbstractCIBase.java:199)
+        at hudson.model.Queue._withLock(Queue.java:1309)
+        at hudson.model.Queue.withLock(Queue.java:1186)
+        at hudson.model.AbstractCIBase.updateComputerList(AbstractCIBase.java:169)
+        at jenkins.model.Jenkins.updateComputerList(Jenkins.java:1567)
+        at jenkins.model.Nodes$5.run(Nodes.java:246)
+        at hudson.model.Queue._withLock(Queue.java:1309)
+        at hudson.model.Queue.withLock(Queue.java:1186)
+        at jenkins.model.Nodes.removeNode(Nodes.java:237)
+        at jenkins.model.Jenkins.removeNode(Jenkins.java:2084)
+        at it.dockins.dockerslaves.api.OneShotComputer.terminate(OneShotComputer.java:88)
+        at it.dockins.dockerslaves.DockerComputer.terminate(DockerComputer.java:79)
+        at it.dockins.dockerslaves.api.OneShotComputer.isAlive(OneShotComputer.java:81)
+        at hudson.model.Computer$2.run(Computer.java:1052)
+        at hudson.model.Queue._tryWithLock(Queue.java:1325)
+        at hudson.model.Queue.tryWithLock(Queue.java:1248)
+        at hudson.model.Computer.removeExecutor(Computer.java:1061)
+        at hudson.model.Executor.finish2(Executor.java:462)
+        at hudson.model.Executor.run(Executor.java:434)

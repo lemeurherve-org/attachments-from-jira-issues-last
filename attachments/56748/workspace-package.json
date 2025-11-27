@@ -1,0 +1,27 @@
+{
+  "name": "@xxx/domshell",
+  "description": "description",
+  "version": "0.1.0",
+  "author": "Dusan Maliarik <dusan@struna.me>",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/"
+  ],
+  "scripts": {
+    "dev": "webpack serve --hot --config webpack.dev.js",
+    "dev-publish": "webpack build --config webpack.devp.js",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
+    "prepublish": "$npm_execpath run build",
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
+    "autotest": "find src tests | entr $npm_execpath test"
+  },
+  "dependencies": {
+    "@xxx/domlib": "0.1.0"
+  },
+  "devDependencies": {}
+}
+

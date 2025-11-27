@@ -1,0 +1,17 @@
+diff --git a/src/com/trilead/ssh2/crypto/cipher/CipherInputStream.java b/src/com/trilead/ssh2/crypto/cipher/CipherInputStream.java
+index c9055ab..9a78f85 100644
+--- a/src/com/trilead/ssh2/crypto/cipher/CipherInputStream.java
++++ b/src/com/trilead/ssh2/crypto/cipher/CipherInputStream.java
+@@ -22,11 +22,11 @@ public class CipherInputStream
+ 	/*
+ 	 * We cannot use java.io.BufferedInputStream, since that is not available in
+ 	 * J2ME. Everything could be improved alot here.
+ 	 */
+ 
+-	final int BUFF_SIZE = 2048;
++	final int BUFF_SIZE = 64 * 1024;
+ 	byte[] input_buffer = new byte[BUFF_SIZE];
+ 	int input_buffer_pos = 0;
+ 	int input_buffer_size = 0;
+ 
+ 	public CipherInputStream(BlockCipher tc, InputStream bi)

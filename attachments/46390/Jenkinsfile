@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+    stages {
+        stage('Parallel Stage') {
+            failFast true
+            parallel {
+              stage('Mac') {
+                  agent any
+                  options {
+                      timestamps()
+                      skipDefaultCheckout()
+                  }
+                  steps {
+                      echo 'Mac stage'
+                      sleep time: 60, unit: 'SECONDS'
+                      echo 'Mac stage done'
+                  }
+                  post {
+                      failure {
+                        echo " **** Mac FAILURE **** "
+                      }
+                      always {
+                        echo " **** Mac ALWAYS ****"
+                      }
+                      aborted {
+                        echo " **** Mac Aborted **** "
+                      }
+                  }
+              }
+              stage('Linux') {
+                    agent any
+                    options {
+                        skipDefaultCheckout()
+                    }
+                    stages {
+                        stage ('Linux Setup') {
+                            steps {
+                              sleep time: 5, unit: 'SECONDS'
+                              // the following line will cause the stage to fail
+                              sh "ls -la /xyz"
+                            }
+
+                        }
+                        stage ('Linux Deps Check') {
+                            steps {
+                                echo 'Linux deps check'
+                            }
+                        }
+                    }
+                    post {
+                        failure {
+                          echo " **** Linux build failed **** "
+                        }
+                        always {
+                            echo " **** Linux ALWAYS POST ****"
+                        }
+                        aborted {
+                          echo " **** Linux Aborted POST   **** "
+                        }
+                    }
+                }
+          }
+
+        }
+    }
+    post {
+        failure {
+          echo " **** Pipeline FAILURE **** "
+        }
+        always {
+          echo " **** Pipeline ALWAYS ****"
+        }
+        aborted {
+          echo " **** Pipeline Aborted **** "
+        }
+    }
+}

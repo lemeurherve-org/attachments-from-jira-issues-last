@@ -1,0 +1,42 @@
+@Library('jenkins-pipeline-libs@master') _
+int minuptime = 300
+int uptime = 0
+
+pipeline {
+  agent { label 'master' }
+  options {
+    disableResume()
+  }
+  stages {
+    stage('Check uptime') {
+      steps {
+        script {
+          uptime = utils.uptimeSeconds() 
+        }
+      }
+    }
+  }
+  post {
+    success {
+      script {
+        if (uptime > minuptime) {
+          println "restarting jenkins"
+          currentBuild.result = "SUCCESS"
+          //utils.safeRestart()
+        } else {
+          println "Jenkins recently restarted, skipping additional restart.  Please wait ${minuptime} seconds before running again."
+        }
+      }
+    }
+  }
+}
+node('master'){
+  stage('Restart Jenkins') {
+    if (uptime > minuptime) {
+      utils.safeRestart()
+    } else {
+      println "Jenkins recently restarted, skipping additional restart.  Please wait ${minuptime} seconds before running again."
+    }
+    currentBuild.description = "SUCCESS (ignore the red ball, its a bug)"
+  }
+}

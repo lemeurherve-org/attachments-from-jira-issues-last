@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+  <version>1.333</version>
+  <numExecutors>1</numExecutors>
+  <mode>NORMAL</mode>
+  <useSecurity>true</useSecurity>
+  <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy"/>
+  <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+    <disableSignup>false</disableSignup>
+  </securityRealm>
+  <jdks/>
+  <clouds/>
+  <slaves/>
+  <quietPeriod>5</quietPeriod>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>All</name>
+    </hudson.model.AllView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Major Release Line</name>
+      <description>This displays all the builds for releasing the next major release.  All of these builds are wired together to keep delivering up the chain 9 to 8 to 7...to 1.</description>
+      <jobNames class="tree-set">
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>deployProductionFromQA</string>
+        <string>Major1-deployToQA</string>
+        <string>Major7-requirements</string>
+        <string>Major7-timecard</string>
+        <string>Major8-projectsvcgwt</string>
+        <string>Major9-mainapp</string>
+      </jobNames>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>ProdQA-ReleaseLine</name>
+      <jobNames class="tree-set">
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>ProdQA-deployToQA</string>
+        <string>ProdQa-mainapp</string>
+        <string>ProdQA-projectsvcgwt</string>
+        <string>ProdQA-requirements</string>
+      </jobNames>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+    </listView>
+  </views>
+  <primaryView>All</primaryView>
+  <slaveAgentPort>0</slaveAgentPort>
+  <label></label>
+  <nodeProperties/>
+  <globalNodeProperties/>
+  <disabledAdministrativeMonitors/>
+</hudson>

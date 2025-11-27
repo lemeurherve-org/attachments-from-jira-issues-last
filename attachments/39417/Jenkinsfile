@@ -1,0 +1,117 @@
+pipeline {
+    agent any
+
+    environment {
+        A_PASSWORD = credentials('credentials1')
+    }
+
+    options {
+        ansiColor('xterm')
+    }
+
+    stages {
+        stage('syntax-check') {
+            steps {
+                // checks the syntax
+                sh 'a command to check the syntax'
+            }
+        }
+
+        stage('DEV') {
+            when {
+                branch 'develop'
+            }
+
+            environment {
+                B_PASSWORD = credentials('credentials2')
+                CREDS = credentials('credentials3')
+            }
+
+            steps {
+                lock('DEV-STAGE') {
+
+                    // another comment
+                    script {
+                         sh "a command"
+                         def VARIABLE1 = sh(returnStdout: true, script: 'a command').trim()
+                         def VARIABLE2 = sh(returnStdout: true, script: 'a command').trim()
+                         if (!VARIABLE1.equals("0")) {
+                            error("${VARIABLE1}")
+                         }
+                         if (!VARIABLE2.equals("0")) {
+                            error("${VARIABLE2}")
+                         }
+                    }
+                }
+            }
+        }
+
+        stage('DEP') {
+
+            environment {
+                C_PASSWORD = credentials('credentials4')
+                CREDS2 = credentials('credentials5')
+            }
+
+            steps {
+                lock('DEP-STAGE') {
+                    // a comment
+                    sh "a command"
+
+                    // a comment
+                    sh "a command"
+
+                    // wait
+                    sleep 40
+
+                    // a comment
+                    sh "a command"
+
+                    // a comment
+                    script {
+                        sh "a command"
+                         def VARIABLE3 = sh(returnStdout: true, script: 'a command').trim()
+                         def VARIABLE4 = sh(returnStdout: true, script: 'a command').trim()
+                         if (!VARIABLE3.equals("0")) {
+                            error("${VARIABLE3}")
+                         }
+                         if (!VARIABLE4.equals("0")) {
+                            error("${VARIABLE4}")
+                         }
+                    }
+
+                }
+            }
+        }
+
+        stage('TEST') {
+            when {
+                branch 'release/*'
+            }
+
+            environment {
+                D_PASSWORD = credentials('credentials6')
+                CREDS3 = credentials('credentials7')
+            }
+
+            // a comment
+            steps {
+                lock('TEST-STAGE') {
+
+                    // a comment
+                    script {
+                         sh "a command"
+                         def VARIABLE5 = sh(returnStdout: true, script: 'a command').trim()
+                         def VARIABLE6 = sh(returnStdout: true, script: 'a command').trim()
+                         if (!VARIABLE5.equals("0")) {
+                            error("${VARIABLE5}")
+                         }
+                         if (!VARIABLE6.equals("0")) {
+                            error("${VARIABLE6}")
+                         }
+                    }
+                }
+            }
+        }
+    }
+}

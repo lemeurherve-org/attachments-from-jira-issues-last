@@ -1,0 +1,2179 @@
+2012-09-17 08:31:10
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (20.4-b02 mixed mode):
+
+"pool-5-thread-6444" daemon prio=6 tid=0x000000000d2dd800 nid=0x1d98 waiting on condition [0x000000000e3cf000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f3f61398> (a java.util.concurrent.SynchronousQueue$TransferStack)
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:196)
+	at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:424)
+	at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:323)
+	at java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:874)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:945)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RMI TCP Connection(1649)-10.220.37.244" daemon prio=6 tid=0x000000000d2dd000 nid=0x1d3c runnable [0x0000000016a5f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x000000060568b808> (a java.io.BufferedInputStream)
+	at java.io.FilterInputStream.read(FilterInputStream.java:66)
+	at sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:517)
+	at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:790)
+	at sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:649)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp140_image1" prio=6 tid=0x0000000009e6a000 nid=0x13dc waiting on condition [0x0000000017e5f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x0000000602e64800> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Ping thread for channel hudson.remoting.Channel@10aec5b:sawnwp140_image1" daemon prio=6 tid=0x000000000d2dc000 nid=0x1ea4 waiting on condition [0x000000001248f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp140_image1" prio=6 tid=0x000000000d006800 nid=0x1e68 runnable [0x000000000dacf000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x0000000602e5dd98> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Pipe writer thread: sawnwp113_cleanup" prio=6 tid=0x000000000d810800 nid=0x1ad8 waiting on condition [0x000000001d98f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f948be38> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"JMX server connection timeout 15247" daemon prio=6 tid=0x000000000d2db800 nid=0x1794 in Object.wait() [0x000000001955f000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at com.sun.jmx.remote.internal.ServerCommunicatorAdmin$Timeout.run(ServerCommunicatorAdmin.java:150)
+	- locked <0x00000005f94ae398> (a [I)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Ping thread for channel hudson.remoting.Channel@39efcdac:sawnwp113_cleanup" daemon prio=6 tid=0x0000000006c0d800 nid=0x678 waiting on condition [0x000000001d88f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp113_cleanup" prio=6 tid=0x000000000d008800 nid=0xe60 runnable [0x000000001d28f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f948c6b0> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Pipe writer thread: sawnwp118_image1" prio=6 tid=0x00000000091ad000 nid=0xd1c waiting on condition [0x000000001795f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f8d600c8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp118_cleanup" prio=6 tid=0x000000000cc4d800 nid=0x10f8 waiting on condition [0x0000000017b5f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f8d6dac8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Ping thread for channel hudson.remoting.Channel@3ca85cac:sawnwp118_image1" daemon prio=6 tid=0x0000000006c0e800 nid=0x1a38 waiting on condition [0x0000000015d5f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp118_image1" prio=6 tid=0x000000000a238000 nid=0xd14 runnable [0x0000000015c5f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f8d59458> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Ping thread for channel hudson.remoting.Channel@ee526e9:sawnwp118_cleanup" daemon prio=6 tid=0x0000000006c0f000 nid=0x1740 waiting on condition [0x0000000015a5f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp118_cleanup" prio=6 tid=0x000000000a231800 nid=0xf5c runnable [0x000000001555f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f8d66cb0> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Pipe writer thread: sawnwp138_image1" prio=6 tid=0x000000000d0a0000 nid=0xe2c waiting on condition [0x000000001d78f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f8cb2f20> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp138_cleanup" prio=6 tid=0x0000000008f7d800 nid=0x1234 waiting on condition [0x0000000018b5f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f8ca5a20> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Ping thread for channel hudson.remoting.Channel@51945b19:sawnwp138_cleanup" daemon prio=6 tid=0x000000000cc4c800 nid=0xd34 waiting on condition [0x000000001975f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@1ed47da:sawnwp138_image1" daemon prio=6 tid=0x000000000d337800 nid=0x153c waiting on condition [0x0000000018d5f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp138_image1" prio=6 tid=0x000000000d09e800 nid=0xcec runnable [0x000000001705f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f8ca62b0> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp138_cleanup" prio=6 tid=0x0000000006c0d000 nid=0x1814 runnable [0x000000001665f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f8c9ec28> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Pipe writer thread: sawnwp117_cleanup" prio=6 tid=0x000000000d09d800 nid=0x1960 waiting on condition [0x000000001bdff000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f835c240> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp117_image1" prio=6 tid=0x00000000100dc800 nid=0x129c waiting on condition [0x000000001905f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f83696f0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Ping thread for channel hudson.remoting.Channel@2bf58975:sawnwp117_cleanup" daemon prio=6 tid=0x0000000009ff0000 nid=0xc98 waiting on condition [0x000000000adff000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@4998791e:sawnwp117_image1" daemon prio=6 tid=0x000000000d334800 nid=0x1140 waiting on condition [0x0000000017a5f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp117_cleanup" prio=6 tid=0x000000000d09d000 nid=0xfe8 runnable [0x0000000016d5f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f834c200> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp117_image1" prio=6 tid=0x0000000006c0c000 nid=0x1410 runnable [0x000000001655f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f835cd70> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Pipe writer thread: sawnwp137_cleanup" prio=6 tid=0x000000000d00d800 nid=0x11d8 waiting on condition [0x000000001d18f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f720a520> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp136_cleanup" prio=6 tid=0x000000000d00d000 nid=0xd70 waiting on condition [0x000000001d08f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f7239ff0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp119_cleanup" prio=6 tid=0x000000000d009000 nid=0x163c waiting on condition [0x000000001cf8f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f7291148> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp116_cleanup" prio=6 tid=0x000000000d00b800 nid=0xb78 waiting on condition [0x000000001935f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f730d620> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp110_cleanup" prio=6 tid=0x000000000d007000 nid=0x1420 waiting on condition [0x0000000018c5f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f7551f10> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp120_image1" prio=6 tid=0x000000000a236000 nid=0x101c waiting on condition [0x000000000e6cf000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f725f978> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp137_image1" prio=6 tid=0x00000000091fe000 nid=0xc40 waiting on condition [0x000000001815f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f71ebee8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp139_cleanup" prio=6 tid=0x0000000008f92000 nid=0x1328 waiting on condition [0x000000001925f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f71a6700> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp135_cleanup" prio=6 tid=0x0000000009ebe800 nid=0x13d4 waiting on condition [0x0000000018f5f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f72da100> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp139_image1" prio=6 tid=0x000000000a5e1000 nid=0xfc8 waiting on condition [0x000000001915f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f7186c28> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"AWT-Windows" daemon prio=6 tid=0x000000000cced800 nid=0x8d0 runnable [0x0000000017c5f000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.awt.windows.WToolkit.eventLoop(Native Method)
+	at sun.awt.windows.WToolkit.run(WToolkit.java:293)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp119_image1" prio=6 tid=0x000000000a236800 nid=0xd78 waiting on condition [0x000000001755f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f72d0f58> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp113_image1" prio=6 tid=0x000000000cc64000 nid=0x15e0 waiting on condition [0x000000000e4cf000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f7cf8f58> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Ping thread for channel hudson.remoting.Channel@62477cf7:sawnwp113_image1" daemon prio=6 tid=0x00000000099a8800 nid=0x14cc waiting on condition [0x0000000018a5f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp113_image1" prio=6 tid=0x00000000099b4800 nid=0x58c runnable [0x000000001895f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f7d03780> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Pipe writer thread: sawnwp120_cleanup" prio=6 tid=0x0000000008f91000 nid=0x1434 waiting on condition [0x000000001635f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f72b3120> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp136_image1" prio=6 tid=0x0000000008f94000 nid=0x738 waiting on condition [0x000000001775f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f7220240> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp116_image1" prio=6 tid=0x000000000a231000 nid=0xe30 waiting on condition [0x000000001765f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f7343220> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RMI Scheduler(0)" daemon prio=6 tid=0x00000000099a9800 nid=0x1b38 waiting on condition [0x000000001288f000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f3ab9b88> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:196)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2025)
+	at java.util.concurrent.DelayQueue.take(DelayQueue.java:164)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:609)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:602)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp110_image1" prio=6 tid=0x000000000a232800 nid=0xb7c waiting on condition [0x000000001695f000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f7522550> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Pipe writer thread: sawnwp135_image1" prio=6 tid=0x0000000009200800 nid=0x18dc waiting on condition [0x000000000ddcf000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <0x00000005f72605d8> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:156)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1987)
+	at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:399)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:947)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:907)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Ping thread for channel hudson.remoting.Channel@5567ba95:sawnwp110_cleanup" daemon prio=6 tid=0x000000000a235800 nid=0x13e8 waiting on condition [0x000000001685f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp110_cleanup" prio=6 tid=0x000000000a234000 nid=0xc14 runnable [0x000000001268f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f754b158> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Ping thread for channel hudson.remoting.Channel@36550ea2:sawnwp110_image1" daemon prio=6 tid=0x000000000a54e000 nid=0x145c waiting on condition [0x000000000e1cf000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp110_image1" prio=6 tid=0x000000000a54d800 nid=0x147c runnable [0x000000000d9cf000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f751ba10> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Ping thread for channel hudson.remoting.Channel@60e5449e:sdwnwp202_image1" daemon prio=6 tid=0x000000000a54c800 nid=0xda0 waiting on condition [0x000000001ad2f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@7234393e:sdwnwp203_image1" daemon prio=6 tid=0x000000000a54c000 nid=0x115c waiting on condition [0x000000001ac2f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sdwnwp203_image1" prio=6 tid=0x000000000a54a800 nid=0x133c runnable [0x00000000199ef000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f710d760> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sdwnwp202_image1" prio=6 tid=0x000000000d39c000 nid=0x1338 runnable [0x000000001675f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f71379f8> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Ping thread for channel hudson.remoting.Channel@5da5b3fb:sawnwp135_image1" daemon prio=6 tid=0x000000000a5e4800 nid=0x11d0 waiting on condition [0x0000000015b5f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@30410015:sawnwp135_cleanup" daemon prio=6 tid=0x000000000a5df000 nid=0x1320 waiting on condition [0x000000001585f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@39bebb16:sawnwp116_image1" daemon prio=6 tid=0x000000000a5de000 nid=0x1318 waiting on condition [0x000000001625f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@32d98139:sawnwp116_cleanup" daemon prio=6 tid=0x000000000a5e2000 nid=0x1314 waiting on condition [0x0000000015f5f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@104486db:sawnwp136_image1" daemon prio=6 tid=0x000000000a5e4000 nid=0x1300 waiting on condition [0x000000001595f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@f1cb8ac:sawnwp136_cleanup" daemon prio=6 tid=0x000000000a5e2800 nid=0x12f0 waiting on condition [0x000000001605f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@42de5b73:sawnwp120_cleanup" daemon prio=6 tid=0x000000000a5e3000 nid=0x1298 waiting on condition [0x000000001615f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@2cb8b75f:sawnwp120_image1" daemon prio=6 tid=0x000000000cc62800 nid=0x128c waiting on condition [0x000000001575f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@2a6abde0:sawnwp139_cleanup" daemon prio=6 tid=0x000000000d39d000 nid=0x127c waiting on condition [0x000000001645f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@63e8bff2:sawnwp137_image1" daemon prio=6 tid=0x000000000d39a000 nid=0xdd0 waiting on condition [0x0000000015e5f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@44465d15:sawnwp137_cleanup" daemon prio=6 tid=0x000000000a547000 nid=0x1264 waiting on condition [0x000000001965f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@4b3c1f80:sawnwp139_image1" daemon prio=6 tid=0x000000000a5e0800 nid=0x125c waiting on condition [0x000000001565f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@130ed4e9:sawnwp119_image1" daemon prio=6 tid=0x000000000cc60000 nid=0x1250 waiting on condition [0x000000000a8ff000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Ping thread for channel hudson.remoting.Channel@36a584e8:sawnwp119_cleanup" daemon prio=6 tid=0x000000000a237800 nid=0x1248 waiting on condition [0x000000001945f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at hudson.remoting.PingThread.run(PingThread.java:86)
+
+"Channel reader thread: sawnwp137_image1" prio=6 tid=0x000000000a233000 nid=0xad4 runnable [0x0000000018e5f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f71d91a0> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp139_image1" prio=6 tid=0x0000000009ebe000 nid=0x112c runnable [0x000000001885f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f7171f68> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp139_cleanup" prio=6 tid=0x0000000009ebd000 nid=0xba0 runnable [0x000000001875f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f719b3c8> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp135_image1" prio=6 tid=0x0000000009ebc800 nid=0xab4 runnable [0x000000001865f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f724e2a8> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp135_cleanup" prio=6 tid=0x0000000009ebb800 nid=0xaa8 runnable [0x000000001855f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f72613a0> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp136_cleanup" prio=6 tid=0x0000000009ebb000 nid=0xab8 runnable [0x000000001845f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f7230fd8> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp136_image1" prio=6 tid=0x0000000009eba000 nid=0xa8c runnable [0x000000001835f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f720b4c8> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp137_cleanup" prio=6 tid=0x0000000009eb9800 nid=0x978 runnable [0x000000001825f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f71ff688> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp116_cleanup" prio=6 tid=0x0000000008f8e800 nid=0x744 runnable [0x000000001725f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f72ff110> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp120_cleanup" prio=6 tid=0x0000000008f8d800 nid=0x740 runnable [0x000000001715f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f7286280> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp120_image1" prio=6 tid=0x000000000d3a0800 nid=0x72c runnable [0x0000000016f5f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f7244778> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp116_image1" prio=6 tid=0x000000000d3a0000 nid=0x728 runnable [0x0000000016e5f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f731d120> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp119_cleanup" prio=6 tid=0x000000000d39e800 nid=0x1a34 runnable [0x0000000016c5f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f727f6a0> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Channel reader thread: sawnwp119_image1" prio=6 tid=0x000000000d39d800 nid=0x71c runnable [0x0000000016b5f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:218)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:237)
+	- locked <0x00000005f72a5ea8> (a java.io.BufferedInputStream)
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2248)
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:2541)
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:2551)
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1296)
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:350)
+	at hudson.remoting.Channel$ReaderThread.run(Channel.java:1127)
+
+"Executor #0 for sawnwp140_cleanup" prio=6 tid=0x000000000cc5f800 nid=0x1254 in Object.wait() [0x000000001545f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp139_cleanup" prio=6 tid=0x000000000cc5e800 nid=0x18bc in Object.wait() [0x000000001535f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp138_cleanup" prio=6 tid=0x000000000cc5e000 nid=0x1b40 in Object.wait() [0x000000001525f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp137_cleanup" prio=6 tid=0x000000000cc5d800 nid=0x1830 in Object.wait() [0x000000001515f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp136_cleanup" prio=6 tid=0x000000000cc5c800 nid=0xf8c in Object.wait() [0x000000001505f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp135_cleanup" prio=6 tid=0x000000000d84e000 nid=0x189c in Object.wait() [0x0000000014f5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp120_cleanup" prio=6 tid=0x000000000d84d000 nid=0xe08 in Object.wait() [0x0000000014e5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp119_cleanup" prio=6 tid=0x000000000d84c800 nid=0x18fc in Object.wait() [0x0000000014d5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp118_cleanup" prio=6 tid=0x000000000d84b800 nid=0x1ae4 in Object.wait() [0x0000000014c5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp117_cleanup : executing publish_artifacts #2574 / waiting for hudson.remoting.Channel@2bf58975:sawnwp117_cleanup" prio=6 tid=0x000000000d84b000 nid=0xf58 in Object.wait() [0x0000000014b5f000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at hudson.remoting.Request.call(Request.java:127)
+	- locked <0x00000006325c5550> (a hudson.remoting.UserRequest)
+	at hudson.remoting.Channel.call(Channel.java:681)
+	at hudson.remoting.RemoteInvocationHandler.invoke(RemoteInvocationHandler.java:158)
+	at $Proxy34.join(Unknown Source)
+	at hudson.Launcher$RemoteLauncher$ProcImpl.join(Launcher.java:859)
+	at hudson.Launcher$ProcStarter.join(Launcher.java:345)
+	at hudson.tasks.CommandInterpreter.perform(CommandInterpreter.java:82)
+	at hudson.tasks.CommandInterpreter.perform(CommandInterpreter.java:58)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:19)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.Build$RunnerImpl.build(Build.java:178)
+	at hudson.model.Build$RunnerImpl.doRun(Build.java:139)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:473)
+	at hudson.model.Run.run(Run.java:1408)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #0 for sawnwp116_cleanup" prio=6 tid=0x000000000d84a000 nid=0x650 in Object.wait() [0x0000000014a5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp113_cleanup" prio=6 tid=0x000000000d849800 nid=0xe70 in Object.wait() [0x000000001495f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp110_cleanup" prio=6 tid=0x000000000d848800 nid=0x1ac8 in Object.wait() [0x000000001485f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sdwnwp203_image1" prio=6 tid=0x000000000d848000 nid=0xf78 in Object.wait() [0x000000001475f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sdwnwp203_image1" prio=6 tid=0x000000000d847800 nid=0x19a0 in Object.wait() [0x000000001465f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sdwnwp202_image1" prio=6 tid=0x000000000d846800 nid=0x18ac in Object.wait() [0x000000001455f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sdwnwp202_image1" prio=6 tid=0x000000000cdcd800 nid=0x19fc in Object.wait() [0x000000001445f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sawnwp140_image1" prio=6 tid=0x000000000cdcc800 nid=0x1968 in Object.wait() [0x000000001435f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp140_image1" prio=6 tid=0x000000000cdcc000 nid=0xd5c in Object.wait() [0x000000001425f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sawnwp139_image1 : executing arrow #1146 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1145" prio=6 tid=0x000000000cdcb800 nid=0x1884 in Object.wait() [0x000000001415e000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x0000000605280428> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #0 for sawnwp139_image1 : executing arrow #1147 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1146" prio=6 tid=0x000000000cdca800 nid=0xf94 in Object.wait() [0x000000001405e000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x0000000605290e70> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #1 for sawnwp138_image1" prio=6 tid=0x000000000cdca000 nid=0x1524 in Object.wait() [0x0000000013f5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp138_image1 : executing arrow #1151 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1150" prio=6 tid=0x000000000cdc9000 nid=0x1560 in Object.wait() [0x0000000013e5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x000000060533ce88> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #1 for sawnwp137_image1 : executing arrow #1140 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1136" prio=6 tid=0x000000000cdc8800 nid=0xfb0 in Object.wait() [0x0000000013d5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x0000000605137998> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #0 for sawnwp137_image1 : executing arrow #1148 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1147" prio=6 tid=0x000000000cdc7800 nid=0x1abc in Object.wait() [0x0000000013c5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x000000060529b8c0> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #1 for sawnwp136_image1 : executing arrow #1150 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1149" prio=6 tid=0x000000000cdc7000 nid=0x192c in Object.wait() [0x0000000013b5f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x00000006052de4f8> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #0 for sawnwp136_image1" prio=6 tid=0x00000000091fb800 nid=0x195c in Object.wait() [0x000000000c7ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sawnwp135_image1 : executing arrow #1144 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1142" prio=6 tid=0x00000000091f7800 nid=0x12c0 in Object.wait() [0x000000000c6fe000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x000000060522f7b0> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #0 for sawnwp135_image1 : executing arrow #1142 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1140" prio=6 tid=0x00000000091f9000 nid=0xeb0 in Object.wait() [0x000000000c5fe000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x00000006051acc00> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #1 for sawnwp120_image1" prio=6 tid=0x00000000091fb000 nid=0x1b28 in Object.wait() [0x000000000c4ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp120_image1" prio=6 tid=0x00000000091f8000 nid=0x18cc in Object.wait() [0x000000000c3ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sawnwp119_image1 : executing arrow #1145 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1144" prio=6 tid=0x00000000091f6000 nid=0x304 in Object.wait() [0x000000000c2ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x0000000605279f00> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #0 for sawnwp119_image1" prio=6 tid=0x00000000091fc800 nid=0x194c in Object.wait() [0x000000000c1ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sawnwp118_image1" prio=6 tid=0x00000000091fa000 nid=0x1860 in Object.wait() [0x000000000c0ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp118_image1" prio=6 tid=0x00000000091f5000 nid=0xe28 in Object.wait() [0x000000000bfff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sawnwp117_image1" prio=6 tid=0x00000000091f6800 nid=0x1afc in Object.wait() [0x000000000beff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp117_image1" prio=6 tid=0x00000000091f3800 nid=0xef0 in Object.wait() [0x000000000bdff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sawnwp116_image1" prio=6 tid=0x00000000091f4800 nid=0x1ad4 in Object.wait() [0x000000000bcff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp116_image1 : executing arrow #1149 : waiting for Check point hudson.plugins.templateproject.ProxyPublisher on arrow #1148" prio=6 tid=0x00000000091f9800 nid=0x123c in Object.wait() [0x000000000bbff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.model.Run$Runner$CheckpointSet.waitForCheckPoint(Run.java:1299)
+	- locked <0x00000006052da5f8> (a hudson.model.Run$Runner$CheckpointSet)
+	at hudson.model.Run.waitForCheckpoint(Run.java:1267)
+	at hudson.model.CheckPoint.block(CheckPoint.java:144)
+	at hudson.tasks.BuildStepMonitor$2.perform(BuildStepMonitor.java:25)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:678)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:656)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:162)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:625)
+	at hudson.model.Run.run(Run.java:1433)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #1 for sawnwp113_image1" prio=6 tid=0x00000000091f3000 nid=0x1628 in Object.wait() [0x000000000baff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #0 for sawnwp113_image1" prio=6 tid=0x0000000008ecc000 nid=0x19cc in Object.wait() [0x000000000b9ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"Executor #1 for sawnwp110_image1 : executing arrow #1136 / waiting for hudson.remoting.Channel@36550ea2:sawnwp110_image1" prio=6 tid=0x0000000008eca000 nid=0x6e4 in Object.wait() [0x000000000b8fe000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at hudson.remoting.Request.call(Request.java:127)
+	- locked <0x00000006051fbe50> (a hudson.remoting.UserRequest)
+	at hudson.remoting.Channel.call(Channel.java:681)
+	at hudson.remoting.RemoteInvocationHandler.invoke(RemoteInvocationHandler.java:158)
+	at $Proxy34.join(Unknown Source)
+	at hudson.Launcher$RemoteLauncher$ProcImpl.join(Launcher.java:859)
+	at hudson.Launcher$ProcStarter.join(Launcher.java:345)
+	at hudson.tasks.CommandInterpreter.perform(CommandInterpreter.java:82)
+	at hudson.tasks.CommandInterpreter.perform(CommandInterpreter.java:58)
+	at hudson.plugins.templateproject.ProxyBuilder.perform(ProxyBuilder.java:83)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:19)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.Build$RunnerImpl.build(Build.java:178)
+	at hudson.model.Build$RunnerImpl.doRun(Build.java:139)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:473)
+	at hudson.model.Run.run(Run.java:1408)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #0 for sawnwp110_image1 : executing phi #4634 / waiting for hudson.remoting.Channel@36550ea2:sawnwp110_image1" prio=6 tid=0x0000000008ecb800 nid=0x1ba4 in Object.wait() [0x000000000b7ff000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at hudson.remoting.Request.call(Request.java:127)
+	- locked <0x000000060297f8e0> (a hudson.remoting.UserRequest)
+	at hudson.remoting.Channel.call(Channel.java:681)
+	at hudson.remoting.RemoteInvocationHandler.invoke(RemoteInvocationHandler.java:158)
+	at $Proxy34.join(Unknown Source)
+	at hudson.Launcher$RemoteLauncher$ProcImpl.join(Launcher.java:859)
+	at hudson.Launcher$ProcStarter.join(Launcher.java:345)
+	at hudson.tasks.CommandInterpreter.perform(CommandInterpreter.java:82)
+	at hudson.tasks.CommandInterpreter.perform(CommandInterpreter.java:58)
+	at hudson.plugins.templateproject.ProxyBuilder.perform(ProxyBuilder.java:83)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:19)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.Build$RunnerImpl.build(Build.java:178)
+	at hudson.model.Build$RunnerImpl.doRun(Build.java:139)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:473)
+	at hudson.model.Run.run(Run.java:1408)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #1 for master : executing cleanup #40" prio=6 tid=0x0000000008ec8000 nid=0x198c in Object.wait() [0x000000000b6fe000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.remoting.AsyncFutureImpl.get(AsyncFutureImpl.java:73)
+	- locked <0x00000006052f5660> (a hudson.model.queue.FutureImpl)
+	at hudson.plugins.parameterizedtrigger.TriggerBuilder.perform(TriggerBuilder.java:110)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:19)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:703)
+	at hudson.model.Build$RunnerImpl.build(Build.java:178)
+	at hudson.model.Build$RunnerImpl.doRun(Build.java:139)
+	at hudson.model.AbstractBuild$AbstractRunner.run(AbstractBuild.java:473)
+	at hudson.model.Run.run(Run.java:1408)
+	at hudson.model.Build.run(Build.java:110)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:238)
+
+"Executor #0 for master" prio=6 tid=0x0000000008ec8800 nid=0xf80 in Object.wait() [0x000000000b5ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at hudson.util.OneShotEvent.block(OneShotEvent.java:72)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Queue.pop(Queue.java:797)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+	at hudson.model.Executor.grabJob(Executor.java:286)
+	at hudson.model.Executor.run(Executor.java:207)
+	- locked <0x00000005f39b19f0> (a hudson.model.Queue)
+
+"JmDNS(sawnwp022.local.).State.Timer" prio=6 tid=0x0000000008ec5800 nid=0x1af0 in Object.wait() [0x000000000b4ff000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.util.TimerThread.mainLoop(Timer.java:509)
+	- locked <0x00000005f6eb5a58> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Timer.java:462)
+
+"JmDNS(sawnwp022.local.).Timer" daemon prio=6 tid=0x0000000008eca800 nid=0xcd0 in Object.wait() [0x000000000b3ff000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.util.TimerThread.mainLoop(Timer.java:509)
+	- locked <0x00000005f6ec1970> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Timer.java:462)
+
+"SocketListener(sawnwp022.local.)" daemon prio=6 tid=0x0000000008ec7000 nid=0xe44 runnable [0x000000000b2ff000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainDatagramSocketImpl.receive0(Native Method)
+	- locked <0x00000005f6eb5d40> (a java.net.PlainDatagramSocketImpl)
+	at java.net.PlainDatagramSocketImpl.receive(PlainDatagramSocketImpl.java:145)
+	- locked <0x00000005f6eb5d40> (a java.net.PlainDatagramSocketImpl)
+	at java.net.DatagramSocket.receive(DatagramSocket.java:725)
+	- locked <0x00000005f6fdb818> (a java.net.DatagramPacket)
+	- locked <0x00000005f6eb5d00> (a java.net.MulticastSocket)
+	at javax.jmdns.impl.SocketListener.run(SocketListener.java:41)
+
+"Jenkins UDP 33848 monitoring thread" prio=6 tid=0x0000000008ec9000 nid=0x11c4 runnable [0x000000000b1ff000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainDatagramSocketImpl.receive0(Native Method)
+	- locked <0x00000005f6ec1d70> (a java.net.PlainDatagramSocketImpl)
+	at java.net.PlainDatagramSocketImpl.receive(PlainDatagramSocketImpl.java:145)
+	- locked <0x00000005f6ec1d70> (a java.net.PlainDatagramSocketImpl)
+	at java.net.DatagramSocket.receive(DatagramSocket.java:725)
+	- locked <0x00000005f6fd94e8> (a java.net.DatagramPacket)
+	- locked <0x00000005f6f760b8> (a java.net.MulticastSocket)
+	at hudson.UDPBroadcastThread.run(UDPBroadcastThread.java:79)
+
+"TCP slave agent listener port=0" prio=6 tid=0x0000000008ec6800 nid=0xe4c runnable [0x000000000b0ff000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:408)
+	- locked <0x00000005f6e28b50> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:462)
+	at java.net.ServerSocket.accept(ServerSocket.java:430)
+	at hudson.TcpSlaveAgentListener.run(TcpSlaveAgentListener.java:127)
+
+"NioSocketAcceptor-1" prio=6 tid=0x000000000cdc6000 nid=0x1ba0 runnable [0x0000000012a8f000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:273)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:255)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:136)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:69)
+	- locked <0x00000005f6ec2300> (a sun.nio.ch.Util$2)
+	- locked <0x00000005f6ec22f0> (a java.util.Collections$UnmodifiableSet)
+	- locked <0x00000005f6ec2078> (a sun.nio.ch.WindowsSelectorImpl)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:80)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:84)
+	at org.apache.mina.transport.socket.nio.NioSocketAcceptor.select(NioSocketAcceptor.java:285)
+	at org.apache.mina.core.polling.AbstractPollingIoAcceptor$Acceptor.run(AbstractPollingIoAcceptor.java:401)
+	at org.apache.mina.util.NamePreservingRunnable.run(NamePreservingRunnable.java:64)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#63]" daemon prio=6 tid=0x000000000ccef800 nid=0xf64 in Object.wait() [0x000000001298f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f5ab2418> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#61]" daemon prio=6 tid=0x000000000ccee000 nid=0xdcc in Object.wait() [0x000000001278f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f99730> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#59]" daemon prio=6 tid=0x000000000cced000 nid=0x19b4 in Object.wait() [0x000000001258f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f979b0> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#57]" daemon prio=6 tid=0x000000000cceb800 nid=0xa3c in Object.wait() [0x000000001238f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f969f0> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#56]" daemon prio=6 tid=0x000000000ccea800 nid=0xfd4 in Object.wait() [0x000000001228f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f999b8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#55]" daemon prio=6 tid=0x000000000ccea000 nid=0x1af4 in Object.wait() [0x000000001218f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f97c38> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#54]" daemon prio=6 tid=0x000000000cce9000 nid=0x1544 in Object.wait() [0x000000001208f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f97728> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#53]" daemon prio=6 tid=0x000000000cce8800 nid=0x1b58 in Object.wait() [0x0000000011f8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f97218> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#51]" daemon prio=6 tid=0x0000000009087000 nid=0xe18 in Object.wait() [0x0000000011d8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f994a8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#50]" daemon prio=6 tid=0x0000000009086000 nid=0x1b10 in Object.wait() [0x0000000011c8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f97f08> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#49]" daemon prio=6 tid=0x0000000009085800 nid=0x894 in Object.wait() [0x0000000011b8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f981d8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#48]" daemon prio=6 tid=0x0000000009084800 nid=0x169c in Object.wait() [0x0000000011a8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f98460> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#47]" daemon prio=6 tid=0x0000000009084000 nid=0xec4 in Object.wait() [0x000000001198f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f5039b98> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#46]" daemon prio=6 tid=0x0000000009083800 nid=0xdd8 in Object.wait() [0x000000001188f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f96cc0> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#45]" daemon prio=6 tid=0x0000000009082800 nid=0x1994 in Object.wait() [0x000000001178f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f964e0> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#44]" daemon prio=6 tid=0x0000000009082000 nid=0x1ba8 runnable [0x000000001168f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.net.SocketInputStream.read(SocketInputStream.java:182)
+	at winstone.WinstoneInputStream.read(WinstoneInputStream.java:49)
+	at javax.servlet.ServletInputStream.readLine(ServletInputStream.java:27)
+	at winstone.WinstoneInputStream.readLine(WinstoneInputStream.java:108)
+	at winstone.HttpListener.parseURI(HttpListener.java:238)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:85)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#43]" daemon prio=6 tid=0x0000000009081000 nid=0xe64 in Object.wait() [0x000000001158f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f96f90> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#42]" daemon prio=6 tid=0x0000000009080800 nid=0x1a84 in Object.wait() [0x000000001148f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f974a0> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#41]" daemon prio=6 tid=0x0000000009d0d000 nid=0x1600 in Object.wait() [0x000000001138f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f5039e20> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#40]" daemon prio=6 tid=0x0000000009d0c000 nid=0x1854 in Object.wait() [0x000000001128f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f99c40> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#39]" daemon prio=6 tid=0x0000000009d0b800 nid=0x180c in Object.wait() [0x000000001118f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f503a0a8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#38]" daemon prio=6 tid=0x0000000009d0a800 nid=0x1b24 in Object.wait() [0x000000001108f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f503a728> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#37]" daemon prio=6 tid=0x0000000009d0a000 nid=0x19f0 in Object.wait() [0x0000000010f8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f98dc8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#36]" daemon prio=6 tid=0x0000000009d09800 nid=0x1a4c in Object.wait() [0x0000000010e8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4f986e8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#35]" daemon prio=6 tid=0x0000000009d08800 nid=0x1a20 in Object.wait() [0x00000000108ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4560178> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#34]" daemon prio=6 tid=0x0000000009d08000 nid=0xfa0 in Object.wait() [0x0000000010d8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f41f4870> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#33]" daemon prio=6 tid=0x0000000009d07000 nid=0x16bc in Object.wait() [0x0000000010c8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f418efa8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#32]" daemon prio=6 tid=0x0000000009d06800 nid=0x1b1c in Object.wait() [0x0000000010b8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f41fe5e8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#31]" daemon prio=6 tid=0x0000000009d05800 nid=0x18c4 in Object.wait() [0x0000000010a8f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f4204b90> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"ViewJob reload thread" daemon prio=6 tid=0x00000000099b7000 nid=0x155c in Object.wait() [0x000000001059f000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at hudson.model.ViewJob$ReloadThread.getNext(ViewJob.java:171)
+	- locked <0x00000005f3f7db90> (a java.util.LinkedHashSet)
+	at hudson.model.ViewJob$ReloadThread.run(ViewJob.java:188)
+
+"RequestHandlerThread[#30]" daemon prio=6 tid=0x00000000099b6800 nid=0x10fc in Object.wait() [0x000000001049f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3e3a128> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#29]" daemon prio=6 tid=0x00000000099b5800 nid=0x1b90 in Object.wait() [0x00000000106ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb0ee8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#28]" daemon prio=6 tid=0x00000000099b5000 nid=0xe3c in Object.wait() [0x000000000f3cf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb02e8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#25]" daemon prio=6 tid=0x00000000099b3000 nid=0xec0 in Object.wait() [0x000000000f0cf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb0080> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#24]" daemon prio=6 tid=0x00000000099b2000 nid=0x1630 in Object.wait() [0x000000000efcf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cafe18> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#23]" daemon prio=6 tid=0x00000000099b1800 nid=0x17a8 in Object.wait() [0x000000000eecf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb1170> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#22]" daemon prio=6 tid=0x00000000099b0800 nid=0x1948 in Object.wait() [0x000000000edcf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb0a18> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#21]" daemon prio=6 tid=0x00000000099b0000 nid=0x1858 in Object.wait() [0x000000000eccf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cac220> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#20]" daemon prio=6 tid=0x00000000099af000 nid=0xf04 in Object.wait() [0x000000000ebcf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3caf220> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#19]" daemon prio=6 tid=0x00000000099ae800 nid=0x1aac in Object.wait() [0x000000000eacf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb1638> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#18]" daemon prio=6 tid=0x00000000099ae000 nid=0xe6c in Object.wait() [0x000000000e9cf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3caf488> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#17]" daemon prio=6 tid=0x00000000099ad000 nid=0xb5c in Object.wait() [0x000000000e8cf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb0550> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#16]" daemon prio=6 tid=0x00000000099ac800 nid=0xfa8 in Object.wait() [0x000000000e7cf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb0c80> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#14]" daemon prio=6 tid=0x00000000099ab000 nid=0xe50 in Object.wait() [0x000000000e5cf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cac488> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#10]" daemon prio=6 tid=0x00000000099a8000 nid=0xe40 in Object.wait() [0x000000000e0cf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3caf6f0> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#9]" daemon prio=6 tid=0x0000000009202000 nid=0x1a90 in Object.wait() [0x000000000dfcf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3cb07b8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Handling GET /job/phi/4691/artifact/image/1232.16.9200.9834/PHI_ROW/Production/RM821_1232.16.1237.0_PROD_apac_australia_new_zeeland_01_23784.ffu : RequestHandlerThread[#8]" daemon prio=6 tid=0x0000000009201800 nid=0xcd4 runnable [0x000000000decd000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:92)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:136)
+	at winstone.ClientOutputStream.write(ClientOutputStream.java:39)
+	at winstone.WinstoneOutputStream.commit(WinstoneOutputStream.java:181)
+	at winstone.WinstoneOutputStream.commit(WinstoneOutputStream.java:119)
+	at winstone.WinstoneOutputStream.write(WinstoneOutputStream.java:112)
+	at org.kohsuke.stapler.Stapler.serveStaticResource(Stapler.java:410)
+	at org.kohsuke.stapler.ResponseImpl.serveFile(ResponseImpl.java:150)
+	at hudson.model.DirectoryBrowserSupport.serveFile(DirectoryBrowserSupport.java:282)
+	at hudson.model.DirectoryBrowserSupport.generateResponse(DirectoryBrowserSupport.java:108)
+	at org.kohsuke.stapler.HttpResponseRenderer$Default.handleHttpResponse(HttpResponseRenderer.java:104)
+	at org.kohsuke.stapler.HttpResponseRenderer$Default.generateResponse(HttpResponseRenderer.java:62)
+	at org.kohsuke.stapler.Function.renderResponse(Function.java:101)
+	at org.kohsuke.stapler.Function.bindAndInvokeAndServeResponse(Function.java:90)
+	at org.kohsuke.stapler.MetaClass$1.doDispatch(MetaClass.java:111)
+	at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:53)
+	at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:563)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:648)
+	at org.kohsuke.stapler.MetaClass$12.dispatch(MetaClass.java:384)
+	at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:563)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:648)
+	at org.kohsuke.stapler.MetaClass$6.doDispatch(MetaClass.java:241)
+	at org.kohsuke.stapler.NameBasedDispatcher.dispatch(NameBasedDispatcher.java:53)
+	at org.kohsuke.stapler.Stapler.tryInvoke(Stapler.java:563)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:648)
+	at org.kohsuke.stapler.Stapler.invoke(Stapler.java:477)
+	at org.kohsuke.stapler.Stapler.service(Stapler.java:159)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:45)
+	at winstone.ServletConfiguration.execute(ServletConfiguration.java:248)
+	at winstone.RequestDispatcher.forward(RequestDispatcher.java:333)
+	at winstone.RequestDispatcher.doFilter(RequestDispatcher.java:376)
+	at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:95)
+	at hudson.plugins.greenballs.GreenBallFilter.doFilter(GreenBallFilter.java:74)
+	at hudson.util.PluginServletFilter$1.doFilter(PluginServletFilter.java:98)
+	at hudson.util.PluginServletFilter.doFilter(PluginServletFilter.java:87)
+	at winstone.FilterConfiguration.execute(FilterConfiguration.java:194)
+	at winstone.RequestDispatcher.doFilter(RequestDispatcher.java:366)
+	at hudson.security.csrf.CrumbFilter.doFilter(CrumbFilter.java:47)
+	at winstone.FilterConfiguration.execute(FilterConfiguration.java:194)
+	at winstone.RequestDispatcher.doFilter(RequestDispatcher.java:366)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:84)
+	at hudson.security.UnwrapSecurityExceptionFilter.doFilter(UnwrapSecurityExceptionFilter.java:51)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:166)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.providers.anonymous.AnonymousProcessingFilter.doFilter(AnonymousProcessingFilter.java:125)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.rememberme.RememberMeProcessingFilter.doFilter(RememberMeProcessingFilter.java:135)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.AbstractProcessingFilter.doFilter(AbstractProcessingFilter.java:271)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.ui.basicauth.BasicProcessingFilter.doFilter(BasicProcessingFilter.java:173)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at jenkins.security.ApiTokenFilter.doFilter(ApiTokenFilter.java:61)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at org.acegisecurity.context.HttpSessionContextIntegrationFilter.doFilter(HttpSessionContextIntegrationFilter.java:249)
+	at hudson.security.HttpSessionContextIntegrationFilter2.doFilter(HttpSessionContextIntegrationFilter2.java:66)
+	at hudson.security.ChainedServletFilter$1.doFilter(ChainedServletFilter.java:87)
+	at hudson.security.ChainedServletFilter.doFilter(ChainedServletFilter.java:76)
+	at hudson.security.HudsonFilter.doFilter(HudsonFilter.java:164)
+	at winstone.FilterConfiguration.execute(FilterConfiguration.java:194)
+	at winstone.RequestDispatcher.doFilter(RequestDispatcher.java:366)
+	at hudson.util.CharacterEncodingFilter.doFilter(CharacterEncodingFilter.java:81)
+	at winstone.FilterConfiguration.execute(FilterConfiguration.java:194)
+	at winstone.RequestDispatcher.doFilter(RequestDispatcher.java:366)
+	at winstone.RequestDispatcher.forward(RequestDispatcher.java:331)
+	at winstone.RequestHandlerThread.processRequest(RequestHandlerThread.java:245)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:148)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#6]" daemon prio=6 tid=0x0000000009200000 nid=0x1928 in Object.wait() [0x000000000dccf000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f3caf958> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#5]" daemon prio=6 tid=0x00000000091ff800 nid=0x19dc runnable [0x000000000dbcf000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.net.SocketInputStream.read(SocketInputStream.java:182)
+	at winstone.WinstoneInputStream.read(WinstoneInputStream.java:49)
+	at javax.servlet.ServletInputStream.readLine(ServletInputStream.java:27)
+	at winstone.WinstoneInputStream.readLine(WinstoneInputStream.java:108)
+	at winstone.HttpListener.parseURI(HttpListener.java:238)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:85)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RequestHandlerThread[#2]" daemon prio=6 tid=0x00000000091fd000 nid=0xf40 in Object.wait() [0x000000000c8ff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f39be8b8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Jenkins cron thread" prio=6 tid=0x0000000008ec5000 nid=0x1834 in Object.wait() [0x000000000afff000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.util.TimerThread.mainLoop(Timer.java:509)
+	- locked <0x00000005f39d2088> (a java.util.TaskQueue)
+	at java.util.TimerThread.run(Timer.java:462)
+
+"RequestHandlerThread[#3]" daemon prio=6 tid=0x0000000009052800 nid=0x1890 in Object.wait() [0x000000000aeff000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at winstone.RequestHandlerThread.run(RequestHandlerThread.java:218)
+	- locked <0x00000005f398efe8> (a winstone.RequestHandlerThread)
+	at java.lang.Thread.run(Thread.java:662)
+
+"DestroyJavaVM" prio=6 tid=0x00000000002bc000 nid=0x18b8 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"LauncherControlThread[ControlPort=-1]" prio=6 tid=0x0000000007e70800 nid=0x1918 waiting on condition [0x000000000acff000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at winstone.Launcher.run(Launcher.java:265)
+	at java.lang.Thread.run(Thread.java:662)
+
+"ConnectorThread:[ajp13-8009]" daemon prio=6 tid=0x00000000096fa800 nid=0x1a9c runnable [0x000000000abff000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:408)
+	- locked <0x00000005f39d2578> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:462)
+	at java.net.ServerSocket.accept(ServerSocket.java:430)
+	at winstone.ajp13.Ajp13Listener.run(Ajp13Listener.java:116)
+	at java.lang.Thread.run(Thread.java:662)
+
+"ConnectorThread:[http-8080]" daemon prio=6 tid=0x0000000009b6f800 nid=0x19ec runnable [0x000000000aaff000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:408)
+	- locked <0x00000005f39e6a60> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:462)
+	at java.net.ServerSocket.accept(ServerSocket.java:430)
+	at winstone.HttpListener.run(HttpListener.java:136)
+	at java.lang.Thread.run(Thread.java:662)
+
+"WinstoneHostConfigurationMgmt:default" daemon prio=6 tid=0x0000000009b6f000 nid=0x1504 waiting on condition [0x000000000a9ff000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at winstone.HostConfiguration.run(HostConfiguration.java:174)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Java2D Disposer" daemon prio=10 tid=0x00000000090e8000 nid=0xe20 in Object.wait() [0x000000000a74f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:118)
+	- locked <0x00000005f3918260> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:134)
+	at sun.java2d.Disposer.run(Disposer.java:127)
+	at java.lang.Thread.run(Thread.java:662)
+
+"WinstoneObjectPoolMgmt" daemon prio=6 tid=0x0000000007ee7000 nid=0x16e0 waiting on condition [0x0000000008e7f000]
+   java.lang.Thread.State: TIMED_WAITING (sleeping)
+	at java.lang.Thread.sleep(Native Method)
+	at winstone.ObjectPool.run(ObjectPool.java:96)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RMI TCP Accept-0" daemon prio=6 tid=0x0000000006c91000 nid=0x18d0 runnable [0x0000000008c7f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:408)
+	- locked <0x00000005f3948898> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:462)
+	at java.net.ServerSocket.accept(ServerSocket.java:430)
+	at sun.management.jmxremote.LocalRMIServerSocketFactory$1.accept(LocalRMIServerSocketFactory.java:34)
+	at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.executeAcceptLoop(TCPTransport.java:369)
+	at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.run(TCPTransport.java:341)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RMI TCP Accept-3333" daemon prio=6 tid=0x0000000006c71800 nid=0x1824 runnable [0x0000000008b7f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:408)
+	- locked <0x00000005f3978d78> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:462)
+	at java.net.ServerSocket.accept(ServerSocket.java:430)
+	at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.executeAcceptLoop(TCPTransport.java:369)
+	at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.run(TCPTransport.java:341)
+	at java.lang.Thread.run(Thread.java:662)
+
+"RMI TCP Accept-0" daemon prio=6 tid=0x0000000007f0e000 nid=0x19e0 runnable [0x0000000008a7f000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.PlainSocketImpl.socketAccept(Native Method)
+	at java.net.PlainSocketImpl.accept(PlainSocketImpl.java:408)
+	- locked <0x00000005f39790c8> (a java.net.SocksSocketImpl)
+	at java.net.ServerSocket.implAccept(ServerSocket.java:462)
+	at java.net.ServerSocket.accept(ServerSocket.java:430)
+	at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.executeAcceptLoop(TCPTransport.java:369)
+	at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.run(TCPTransport.java:341)
+	at java.lang.Thread.run(Thread.java:662)
+
+"Low Memory Detector" daemon prio=6 tid=0x0000000006b6f800 nid=0x1820 runnable [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread1" daemon prio=10 tid=0x0000000006b6d000 nid=0x664 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread0" daemon prio=10 tid=0x0000000006b5e000 nid=0x17e4 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Attach Listener" daemon prio=10 tid=0x0000000006b5b000 nid=0xc20 waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" daemon prio=8 tid=0x0000000006b0b000 nid=0xbdc in Object.wait() [0x0000000007a3f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:118)
+	- locked <0x00000005f3918630> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:134)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
+
+"Reference Handler" daemon prio=10 tid=0x0000000006b04800 nid=0x1bf8 in Object.wait() [0x000000000793f000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	at java.lang.Object.wait(Object.java:485)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+	- locked <0x00000005f39d2d88> (a java.lang.ref.Reference$Lock)
+
+"VM Thread" prio=10 tid=0x0000000006afb000 nid=0x1910 runnable 
+
+"GC task thread#0 (ParallelGC)" prio=6 tid=0x0000000000367800 nid=0x16ec runnable 
+
+"GC task thread#1 (ParallelGC)" prio=6 tid=0x0000000000369800 nid=0x1b0c runnable 
+
+"GC task thread#2 (ParallelGC)" prio=6 tid=0x000000000036b800 nid=0xdf0 runnable 
+
+"GC task thread#3 (ParallelGC)" prio=6 tid=0x000000000036d000 nid=0x161c runnable 
+
+"GC task thread#4 (ParallelGC)" prio=6 tid=0x0000000000370800 nid=0x18e4 runnable 
+
+"GC task thread#5 (ParallelGC)" prio=6 tid=0x0000000000371800 nid=0x1654 runnable 
+
+"GC task thread#6 (ParallelGC)" prio=6 tid=0x0000000000373000 nid=0x186c runnable 
+
+"GC task thread#7 (ParallelGC)" prio=6 tid=0x0000000000374000 nid=0x196c runnable 
+
+"GC task thread#8 (ParallelGC)" prio=6 tid=0x0000000000379800 nid=0x1b6c runnable 
+
+"GC task thread#9 (ParallelGC)" prio=6 tid=0x000000000037c000 nid=0x1828 runnable 
+
+"VM Periodic Task Thread" prio=10 tid=0x0000000006c95000 nid=0x18f4 waiting on condition 
+
+JNI global references: 1452
+

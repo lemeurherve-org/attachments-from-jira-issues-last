@@ -1,0 +1,40 @@
+Publishing Clover coverage results...
+FATAL: Unable to copy coverage from /apps/hudson/workspace/Triage_publish_only/checkout/root/Triage/target/site/clover to /apps/hudson/jobs/Triage_publish_only/builds/2011-09-01_09-12-13
+hudson.util.IOException2: Cannot parse coverage results
+	at hudson.plugins.clover.CloverCoverageParser.parse(CloverCoverageParser.java:92)
+	at hudson.plugins.clover.CloverCoverageParser.parse(CloverCoverageParser.java:54)
+	at hudson.plugins.clover.CloverPublisher.processCloverXml(CloverPublisher.java:202)
+	at hudson.plugins.clover.CloverPublisher.perform(CloverPublisher.java:163)
+	at hudson.tasks.BuildStepMonitor$3.perform(BuildStepMonitor.java:36)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:644)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:623)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:601)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:159)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:570)
+	at hudson.model.Run.run(Run.java:1386)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:145)
+Caused by: org.xml.sax.SAXParseException: XML document structures must start and end within the same entity.
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1231)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:522)
+	at org.apache.commons.digester.Digester.parse(Digester.java:1666)
+	at hudson.plugins.clover.CloverCoverageParser.parse(CloverCoverageParser.java:90)
+	... 13 more
+ERROR: Publisher hudson.plugins.clover.CloverPublisher aborted due to exception
+java.lang.NullPointerException
+	at hudson.plugins.clover.CloverBuildAction.<init>(CloverBuildAction.java:133)
+	at hudson.plugins.clover.CloverBuildAction.load(CloverBuildAction.java:265)
+	at hudson.plugins.clover.CloverPublisher.processCloverXml(CloverPublisher.java:208)
+	at hudson.plugins.clover.CloverPublisher.perform(CloverPublisher.java:163)
+	at hudson.tasks.BuildStepMonitor$3.perform(BuildStepMonitor.java:36)
+	at hudson.model.AbstractBuild$AbstractRunner.perform(AbstractBuild.java:644)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:623)
+	at hudson.model.AbstractBuild$AbstractRunner.performAllBuildSteps(AbstractBuild.java:601)
+	at hudson.model.Build$RunnerImpl.post2(Build.java:159)
+	at hudson.model.AbstractBuild$AbstractRunner.post(AbstractBuild.java:570)
+	at hudson.model.Run.run(Run.java:1386)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+	at hudson.model.ResourceController.execute(ResourceController.java:88)
+	at hudson.model.Executor.run(Executor.java:145)
+

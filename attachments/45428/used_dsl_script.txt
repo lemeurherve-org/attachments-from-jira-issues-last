@@ -1,0 +1,67 @@
+def tests = [
+             [scenarioName: 'scenario 1', description:'description of scenario 1', testId:898, testInstanceId:221, hours:0, minutes:30, groovyFile:'', groovyParams:''],
+             [scenarioName: 'scenario 2', description:'description of scenario 2', testId:899, testInstanceId:222, hours:0, minutes:35, groovyFile:'', groovyParams:''],
+             [scenarioName: 'scenario 3', description:'description of scenario 3', testId:900, testInstanceId:223, hours:0, minutes:40, groovyFile:'', groovyParams:'']
+            ]
+
+tests.each { test ->
+	def jobId = "${test.scenarioName}"
+	job(jobId) { 
+		description("This job executes test ${test.scenarioName}.")
+		
+	steps {
+			if(test.groovyFile != ''){
+				Run the groovy script file with parameters
+				groovyScriptFile(test.groovyFile) {
+					groovyInstallation('Groovy 2.4.6')
+					scriptParam(test.groovyParams)
+				}
+			}
+    }
+	  
+		configure { project ->
+          project / builders <<  'com.microfocus.application.automation.tools.run.PcBuilder' (plugin: 'hp-application-automation-tools-plugin@5.5.3-beta-SNAPSHOT') {
+						  'HTTPSProtocol' 'false'
+						  'addRunToTrendReport' 'ASSOCIATED'
+						  'almDomain' 'MYDOMAIN'
+						  'almProject' 'MYPROJECT'
+						  'autoTestInstanceID' 'MANUAL'
+						  'credentialsId' '98dce5e1-91e9-4299-85a0-c306059f6034'
+						  'credentialsProxyId' ''
+						  'description' test.description
+						  'pcServerName' 'MYPCSERVER'
+						  'postRunAction' 'COLLATE_AND_ANALYZE'
+						  'proxyOutURL' ''
+						  'retry' 'NO_RETRY'
+						  'retryDelay' '5'
+						  'retryOccurrences' '3'
+						  'serverAndPort' 'http://MyJenkinsServer:8080'
+						  'statusBySLA' 'false'
+						  'testId' test.testId
+						  'testInstanceId' test.testInstanceId
+						  'timeslotDurationHours' test.hours
+						  'timeslotDurationMinutes' test.minutes
+						  'trendReportId' ''
+						  'vudsMode' 'false'
+                
+                
+			}
+	    }
+	}
+	
+	job("Report for ${jobId}") { 
+		description("This job generated custom report for the test ${test.scenarioName}.")
+		publishers {
+				// archive the log files so that they are attached to the workspace
+				publishHtml{
+					report('.') {
+						reportName('HTML Report')
+						reportFiles('PerformanceReports.html')
+						keepAll()
+						alwaysLinkToLastBuild()
+					}
+				}
+			}
+
+	}
+}

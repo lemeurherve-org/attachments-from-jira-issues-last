@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project plugin="matrix-project@1.4.1">
+  <actions/>
+  <description></description>
+  <displayName>jervis (master branch)</displayName>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.3.5">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>git://github.com/samrocketman/jervis.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <browser class="hudson.plugins.git.browser.GithubWeb">
+      <url>https://github.com/samrocketman/jervis</url>
+    </browser>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.CloneOption>
+        <shallow>true</shallow>
+        <reference></reference>
+      </hudson.plugins.git.extensions.impl.CloneOption>
+    </extensions>
+  </scm>
+  <assignedNode>jervis-docker</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>true</concurrentBuild>
+  <axes>
+    <hudson.matrix.TextAxis>
+      <name>env</name>
+      <values>
+        <string>env0</string>
+        <string>env1</string>
+        <string>env2</string>
+        <string>env3</string>
+        <string>env4</string>
+        <string>env5</string>
+      </values>
+    </hudson.matrix.TextAxis>
+  </axes>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash -l
+export PS4=&apos;$ &apos;
+echo -n &quot;Hostname: &quot;
+hostname
+echo -n &quot;Distro: &quot;
+head -n1 /etc/issue
+echo -n &quot;Kernel: &quot;
+uname -rms
+echo -n &quot;Bash: &quot;
+bash --version | head -n1
+export JERVIS_RANDOM=&quot;${RANDOM}&quot;
+echo &quot;JERVIS_RANDOM: ${JERVIS_RANDOM}&quot;
+set -axeE
+
+#
+# TOOLCHAINS SECTION
+#
+#env toolchain section
+case ${env} in
+  env0)
+    export GROOVY_VERSION=&quot;1.8.9&quot;
+    ;;
+  env1)
+    export GROOVY_VERSION=&quot;2.0.8&quot;
+    ;;
+  env2)
+    export GROOVY_VERSION=&quot;2.1.9&quot;
+    ;;
+  env3)
+    export GROOVY_VERSION=&quot;2.2.2&quot;
+    ;;
+  env4)
+    export GROOVY_VERSION=&quot;2.3.11&quot;
+    ;;
+  env5)
+    export GROOVY_VERSION=&quot;2.4.3&quot;
+    ;;
+esac
+#jdk toolchain section
+export JAVA_HOME=&quot;/usr/lib/jvm/java-7-openjdk-amd64&quot;
+export PATH=&quot;${JAVA_HOME}/bin:${PATH}&quot;
+java -version
+
+#
+# INSTALL SECTION
+#
+true
+
+#
+# SCRIPT SECTION
+#
+./assemble.sh
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>false</runSequentially>
+  </executionStrategy>
+</matrix-project>

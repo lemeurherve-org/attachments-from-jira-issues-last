@@ -1,0 +1,137 @@
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 40817)
++++ pom.xml	(working copy)
+@@ -4,15 +4,15 @@
+  <parent>
+    <groupId>org.jenkins-ci.plugins</groupId>
+    <artifactId>plugin</artifactId>
+-   <version>1.400</version>
++   <version>1.424</version>
+  </parent>
+-	
+-  <groupId>org.jvnet.hudson.plugins</groupId>
++
++  <groupId>org.jenkins-ci.plugins</groupId>	
+   <artifactId>mstest</artifactId>
+   <packaging>hpi</packaging>
+   <name>JENKINS MSTest plugin</name>
+   <description>Generates test reports for MSTest.</description>
+-  <version>0.8-SNAPSHOT</version>
++  <version>0.8-TimeoutFix</version>
+   <url>http://wiki.jenkins-ci.org/display/JENKINS/MSTest+Plugin</url>
+ 
+   <developers>
+@@ -21,7 +21,7 @@
+       <name>Antonio Marques</name>
+     </developer>
+   </developers>
+-
++  
+   <dependencies>
+     <dependency>
+ 		<groupId>org.jmock</groupId>
+@@ -58,7 +58,45 @@
+       <url>http://repo.jenkins-ci.org/public/</url>
+     </repository>
+   </repositories>
++  
++  
++  <build>
++    <pluginManagement>
++      <plugins>
++        <plugin>
++          <groupId>org.apache.maven.plugins</groupId>
++          <artifactId>maven-compiler-plugin</artifactId>
++          <version>2.3.2</version>
++        </plugin>
++        <plugin>
++          <groupId>org.apache.maven.plugins</groupId>
++          <artifactId>maven-surefire-plugin</artifactId>
++          <version>2.6</version>
++        </plugin>
++        <plugin>
++          <groupId>org.apache.maven.plugins</groupId>
++          <artifactId>maven-enforcer-plugin</artifactId>
++          <version>1.0</version>
++        </plugin>
++        <plugin>
++          <groupId>org.apache.maven.plugins</groupId>
++          <artifactId>maven-release-plugin</artifactId>
++          <version>2.3.2</version>
++        </plugin>
++      </plugins>
++    </pluginManagement>
+ 
++    <plugins>
++      <plugin>
++	<groupId>org.apache.maven.plugins</groupId>
++	<artifactId>maven-release-plugin</artifactId>
++	<configuration>
++	  <goals>deploy</goals>
++	</configuration>
++      </plugin>
++    </plugins>
++  </build>
++
+     <pluginRepositories>
+         <pluginRepository>
+             <id>repo.jenkins-ci.org</id>
+Index: src/main/resources/hudson/plugins/mstest/mstest-to-junit.xsl
+===================================================================
+--- src/main/resources/hudson/plugins/mstest/mstest-to-junit.xsl	(revision 40817)
++++ src/main/resources/hudson/plugins/mstest/mstest-to-junit.xsl	(working copy)
+@@ -6,10 +6,11 @@
+ 			<xsl:variable name="buildName" select="//a:TestRun/@name"/>	
+ 			<xsl:variable name="numberOfTests" select="count(//a:UnitTestResult/@outcome) + count(//b:UnitTestResult/@outcome)"/>
+  			<xsl:variable name="numberOfFailures" select="count(//a:UnitTestResult/@outcome[.='Failed']) + count(//b:UnitTestResult/@outcome[.='Failed'])" />		
+- 			<xsl:variable name="numberSkipped" select="count(//a:UnitTestResult/@outcome[.!='Passed' and .!='Failed']) + count(//b:UnitTestResult/@outcome[.!='Passed' and .!='Failed'])" />	
++ 			<xsl:variable name="numberSkipped" select="count(//a:UnitTestResult/@outcome[.!='Passed' and .!='Failed']) + count(//b:UnitTestResult/@outcome[.!='Passed' and .!='Failed' and .!='Timeout'])" />	
++			<xsl:variable name="numberOfErrors" select="count(//b:UnitTestResult[not(@outcome)])" />	
+ 			<testsuite name="MSTestSuite"
+ 				tests="{$numberOfTests}" time="0"
+-				failures="{$numberOfFailures}"  errors="0"
++				failures="{$numberOfFailures}"  errors="{$numberOfErrors}"
+ 				skipped="{$numberSkipped}">
+ 				
+ 				<xsl:for-each select="//a:UnitTestResult">
+@@ -61,7 +62,7 @@
+ 									name="{$testName}"
+ 									time="{$duration_hours*3600 + $duration_minutes*60 + $duration_seconds }">
+ 
+-									<xsl:if test="contains($outcome, 'Failed')"> 
++									<xsl:if test="contains($outcome, 'Failed') or contains($outcome, 'Timeout')"> 
+ <failure>
+ MESSAGE:
+ <xsl:value-of select="$message" />
+@@ -70,11 +71,29 @@
+ <xsl:value-of select="$stacktrace" />
+ </failure>
+ 								</xsl:if>
++								<xsl:if test="not($outcome)"> 
++<error>
++MESSAGE:
++<xsl:value-of select="$message" />
+++++++++++++++++++++
++STACK TRACE:
++<xsl:value-of select="$stacktrace" />
++</error>
++								</xsl:if>
+ 							</testcase>
+ 						</xsl:if>
+ 					</xsl:for-each>
+ 				</xsl:for-each>
+-				
++				<xsl:variable name="testRunError" select="//b:ResultSummary/b:Output/b:DebugTrace"/>	
++				<xsl:if test="$testRunError != ''">
++<system-err>
++	<xsl:value-of select="$testRunError" />
++	<xsl:for-each select="//b:ResultSummary/b:RunInfos/b:RunInfo">
++Test Run <xsl:value-of select="@outcome"/> - <xsl:value-of select="@timestamp"/>:
++<xsl:value-of select="./b:Text"/>	
++	</xsl:for-each>
++</system-err>
++				</xsl:if>
+ 			</testsuite>
+ 		</testsuites>
+ 	</xsl:template>

@@ -1,0 +1,94 @@
+final P4_USER = 'user';
+final P4_CLIENT_NAME = 'workspace-name';
+final P4_BRANCH_MAPPING_NAME = 'BranchMappingToBeUsed'
+final NO_FILES_TO_RESOLVE_CODE = '554768771'
+
+pipeline {
+    agent any
+    stages {
+		stage('Checkout') {
+			steps {
+				checkout perforce(
+					credential: 'perforce-credentials',
+					workspace: manualSpec(
+						charset: 'winansi',
+						cleanup: false,
+						name: 'workspace-name',
+						pinHost: false,
+						spec: clientSpec(
+							allwrite: false,
+							backup: true,
+							clobber: true,
+							compress: false,
+							line: 'UNIX',
+							locked: false,
+							modtime: true,
+							rmdir: true,
+							type: 'WRITABLE',
+							streamName: '//streamName',
+							view: '//streamName/... //workspace-name/...'
+						)
+					)
+				)
+			}
+		}
+		stage('Integration') {
+			steps {
+				script {
+					def p4 = p4(
+						credential: 'perforce-credentials',
+						populate: autoClean(
+							delete: true,
+							modtime: false,
+							quiet: true,
+							replace: true,
+							tidy: false
+						),
+						workspace: manualSpec(
+							charset: 'winansi',
+							cleanup: false,
+							name: 'workspace-name',
+							pinHost: false,
+							spec: clientSpec(
+								allwrite: false,
+								backup: true,
+								clobber: true,
+								compress: false,
+								line: 'UNIX',
+								locked: false,
+								modtime: true,
+								rmdir: true,
+								type: 'WRITABLE',
+								streamName: '//streamName',
+								view: '//streamName/... //workspace-name/...'
+							)
+						)
+					)
+					def cl = p4.fetch('change', '')
+					cl.put('Change', 'new')
+					cl.put('Client', P4_CLIENT_NAME)
+					cl.put('User', P4_USER)
+					cl.put('Status', 'new')
+					cl.put('Description', 'Automatical branch synchronization by jenkins')
+					def clToBeUsed = p4.save('change', cl)
+					changeListToBeUsed = ((clToBeUsed.getAt('change').first() =~ /([0-9]+)/)[0][1])
+					if (changeListToBeUsed == null) {
+						error("Could not create change list. Resulting string: "+clToBeUsed.getAt('change').first())
+					}
+					p4.run('integrate', '-t', '-Rbds', '-c', changeListToBeUsed, '-b', P4_BRANCH_MAPPING_NAME)
+					def createdChangelist = p4.run('describe', changeListToBeUsed)
+					if (createdChangelist.first().get('depotFile0')==null) {
+						echo 'No changes in upstream branch. Nothing to do.'
+					} else {
+						p4.run('resolve', '-am', '-Aactmdb', '-c', changeListToBeUsed)
+						def filesToBeResolved = p4.run('resolve', '-n', '-c', changeListToBeUsed)
+						if (!(filesToBeResolved.size()==1 && filesToBeResolved.first().get('code0')==NO_FILES_TO_RESOLVE_CODE)) {
+							error("Could not resolve all merge conflicts. Synchronization needs to be done manually")
+						}
+					}
+				}
+			}
+		}
+	}
+
+}

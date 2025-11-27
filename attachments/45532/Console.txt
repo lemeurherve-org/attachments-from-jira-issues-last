@@ -1,0 +1,155 @@
+Started by user mathieuw
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] stage
+[Pipeline] { (Git)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+Git
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+Build
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Parallel Run Test)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] parallel
+[Pipeline] { (Branch: EpsAgent103)
+[Pipeline] { (Branch: EpsAgent130)
+[Pipeline] { (Branch: EpsAgent153)
+[Pipeline] node
+Running on EpsAgent103 in C:\Jenkins\workspace\Sandbox
+[Pipeline] node
+Running on EpsAgent130 in C:\Jenkins\workspace\Sandbox
+[Pipeline] node
+Running on EpsAgent153 in c:\Jenkins\workspace\Sandbox
+[Pipeline] {
+[Pipeline] {
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Pull Test to EpsAgent103)
+[Pipeline] stage
+[Pipeline] { (Pull Test to EpsAgent130)
+[Pipeline] stage
+[Pipeline] { (Pull Test to EpsAgent153)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+Pull
+[Pipeline] }
+[Pipeline] echo
+Pull
+[Pipeline] }
+[Pipeline] echo
+Pull
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] // script
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] // stage
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Run Test on EpsAgent103)
+[Pipeline] stage
+[Pipeline] { (Run Test on EpsAgent130)
+[Pipeline] stage
+[Pipeline] { (Run Test on EpsAgent153)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+Test
+[Pipeline] }
+[Pipeline] echo
+Test
+[Pipeline] }
+[Pipeline] echo
+Test
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] // script
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] // stage
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish Results from EpsAgent103)
+[Pipeline] stage
+[Pipeline] { (Publish Results from EpsAgent130)
+[Pipeline] stage
+[Pipeline] { (Publish Results from EpsAgent153)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+Publish
+[Pipeline] }
+[Pipeline] echo
+Publish
+[Pipeline] }
+[Pipeline] echo
+Publish
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] // script
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] // stage
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] // node
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] }
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Final)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+Final
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] End of Pipeline
+Finished: SUCCESS

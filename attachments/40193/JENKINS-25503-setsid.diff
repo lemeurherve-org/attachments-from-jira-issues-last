@@ -1,0 +1,60 @@
+diff --git a/src/main/java/org/jenkinsci/plugins/durabletask/BourneShellScript.java b/src/main/java/org/jenkinsci/plugins/durabletask/BourneShellScript.java
+index 3a414e0..63ae36f 100644
+--- a/src/main/java/org/jenkinsci/plugins/durabletask/BourneShellScript.java
++++ b/src/main/java/org/jenkinsci/plugins/durabletask/BourneShellScript.java
+@@ -29,10 +29,10 @@ import hudson.Extension;
+ import hudson.FilePath;
+ import hudson.Launcher;
+ import hudson.LauncherDecorator;
+-import hudson.Platform;
+ import hudson.Util;
+ import hudson.model.TaskListener;
+ import hudson.tasks.Shell;
++import java.io.File;
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.Arrays;
+@@ -54,7 +54,8 @@ public final class BourneShellScript extends FileMonitoringTask {
+ 
+     private static final Logger LOGGER = Logger.getLogger(BourneShellScript.class.getName());
+ 
+-    private static enum OsType {DARWIN, UNIX, WINDOWS}
++    private static final String SETSID_EXECUTABLE = "/usr/bin/setsid";
++    private enum OsType {UNIX_WITH_SETSID, UNIX_WITHOUT_SETSID, WINDOWS}
+ 
+     /** Number of times we will show launch diagnostics in a newly encountered workspace before going mute to save resources. */
+     @SuppressWarnings("FieldMayBeFinal")
+@@ -107,10 +108,10 @@ public final class BourneShellScript extends FileMonitoringTask {
+         scriptPath = shf.getRemote();
+         List<String> args = new ArrayList<>();
+ 
+-        OsType os = ws.act(new getOsType());
++        OsType os = ws.act(new getOsType()); // TODO cache by Launcher
+ 
+-        if (os != OsType.DARWIN) { // JENKINS-25848
+-            args.add("nohup");
++        if (os == OsType.UNIX_WITH_SETSID) { // JENKINS-25503
++            args.add(SETSID_EXECUTABLE);
+         }
+         if (os == OsType.WINDOWS) { // JENKINS-40255
+             scriptPath= scriptPath.replace("\\", "/"); // cygwin sh understands mixed path  (ie : "c:/jenkins/workspace/script.sh" )
+@@ -231,13 +232,14 @@ public final class BourneShellScript extends FileMonitoringTask {
+ 
+     private static final class getOsType extends MasterToSlaveCallable<OsType,RuntimeException> {
+         @Override public OsType call() throws RuntimeException {
+-            if (Platform.isDarwin()) {
+-              return OsType.DARWIN;
+-            } else if (Platform.current() == Platform.WINDOWS) {
+-              return OsType.WINDOWS;
++            if (File.separatorChar == '\\') {
++                return OsType.WINDOWS;
++            } else if (new File(SETSID_EXECUTABLE).canExecute()) { // TODO rather use Launcher, in case we are inside a Docker container
++                return OsType.UNIX_WITH_SETSID;
+             } else {
+-              return OsType.UNIX; // Default Value
++                return OsType.UNIX_WITHOUT_SETSID;
+             }
+         }
++        private static final long serialVersionUID = 1;
+     }
+ }

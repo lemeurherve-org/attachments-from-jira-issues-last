@@ -1,0 +1,58 @@
+Sep 19, 2019 12:00:09 PM hudson.plugins.ec2.EC2Cloud provision
+INFO: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Attempting to provision slave needed by excess workload of 1 units
+Sep 19, 2019 12:00:09 PM hudson.plugins.ec2.SlaveTemplate logProvisionInfo
+INFO: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Considering launching
+Sep 19, 2019 12:00:09 PM hudson.plugins.ec2.SlaveTemplate logProvisionInfo
+INFO: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Setting Instance Initiated Shutdown Behavior : ShutdownBehavior.Terminate
+Sep 19, 2019 12:00:09 PM hudson.plugins.ec2.SlaveTemplate logProvisionInfo
+INFO: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Looking for existing instances with describe-instance: {Filters: [{Name: image-id,Values: [ami-0c****7d]}, {Name: instance-type,Values: [t2.nano]}, {Name: key-name,Values: [jenkins-internal-ec2-jan-2018]}, {Name: availability-zone,Values: [us-east-1a]}, {Name: subnet-id,Values: [subnet-****]}, {Name: instance.group-id,Values: [sg-a***d]}, {Name: tag:Management,Values: [jenkins2]}, {Name: tag:jenkins_server_url,Values: [https://jenkins.localhost/]}, {Name: tag:jenkins_slave_type,Values: [demand_aws-ec2-audit]}, {Name: tag:Name,Values: [aws-audit-ec2]}],InstanceIds: [],}
+Sep 19, 2019 12:00:11 PM hudson.plugins.ec2.CloudHelper getInstance
+INFO: Unexpected number of reservations reported by EC2 for instance id 'i-006****c2', expected 1 result, found []. Instance seems to be dead.
+Sep 19, 2019 12:00:11 PM hudson.plugins.ec2.EC2Cloud provision
+WARNING: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Exception during provisioning
+com.amazonaws.AmazonClientException: Unexpected number of reservations reported by EC2 for instance id 'i-006****c2', expected 1 result, found []. Instance seems to be dead.
+	at hudson.plugins.ec2.CloudHelper.getInstance(CloudHelper.java:54)
+	at hudson.plugins.ec2.CloudHelper.getInstanceWithRetry(CloudHelper.java:25)
+	at hudson.plugins.ec2.EC2AbstractSlave.fetchLiveInstanceData(EC2AbstractSlave.java:566)
+	at hudson.plugins.ec2.EC2AbstractSlave.<init>(EC2AbstractSlave.java:165)
+	at hudson.plugins.ec2.EC2OndemandSlave.<init>(EC2OndemandSlave.java:56 
+	at hudson.plugins.ec2.SlaveTemplate.newOndemandSlave(SlaveTemplate.java:1113)
+	at hudson.plugins.ec2.SlaveTemplate.toSlaves(SlaveTemplate.java:782)
+	at hudson.plugins.ec2.SlaveTemplate.provisionOndemand(SlaveTemplate.java:754)
+	at hudson.plugins.ec2.SlaveTemplate.provisionOndemand(SlaveTemplate.java:594)
+	at hudson.plugins.ec2.SlaveTemplate.provision(SlaveTemplate.java:549)
+	at hudson.plugins.ec2.EC2Cloud.getNewOrExistingAvailableSlave(EC2Cloud.java:589)
+	at hudson.plugins.ec2.EC2Cloud.provision(EC2Cloud.java:615)
+	at hudson.slaves.NodeProvisioner$StandardStrategyImpl.apply(NodeProvisioner.java:715)
+	at hudson.slaves.NodeProvisioner.update(NodeProvisioner.java:320)
+	at hudson.slaves.NodeProvisioner.access$000(NodeProvisioner.java:62)
+	at hudson.slaves.NodeProvisioner$NodeProvisionerInvoker.doRun(NodeProvisioner.java:809)
+	at hudson.triggers.SafeTimerTask.run(SafeTimerTask.java:72)
+	at jenkins.security.ImpersonatingScheduledExecutorService$1.run(ImpersonatingScheduledExecutorService.java:58)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+Sep 19, 2019 12:00:11 PM hudson.plugins.ec2.EC2Cloud provision
+
+
+INFO: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Attempting to provision slave needed by excess workload of 1 units
+Sep 19, 2019 12:00:19 PM hudson.plugins.ec2.EC2Cloud getNewOrExistingAvailableSlave
+INFO: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Cannot provision - no capacity for instances: 0
+Sep 19, 2019 12:00:19 PM hudson.plugins.ec2.EC2Cloud provision
+WARNING: Can't raise nodes for SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}
+Sep 19, 2019 12:00:21 PM com.tsystems.sbs.LogFileFilterOutputStream <init>
+WARNING: LogFileFilter config not found! Retrieving it now.
+
+Sep 19, 2019 12:00:29 PM hudson.plugins.ec2.EC2Cloud provision
+INFO: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Attempting to provision slave needed by excess workload of 1 units
+Sep 19, 2019 12:00:29 PM hudson.plugins.ec2.EC2Cloud getNewOrExistingAvailableSlave
+INFO: SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}. Cannot provision - no capacity for instances: 0
+Sep 19, 2019 12:00:29 PM hudson.plugins.ec2.EC2Cloud provision
+WARNING: Can't raise nodes for SlaveTemplate{ami='ami-0c****7d', labels='aws-audit-ec2'}
+Sep 19, 2019 12:00:33 PM hudson.plugins.ec2.EC2Cloud$1 call
+

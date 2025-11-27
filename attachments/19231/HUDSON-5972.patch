@@ -1,0 +1,43 @@
+Index: src/main/java/join/JoinTrigger.java
+===================================================================
+--- src/main/java/join/JoinTrigger.java	(revision 28789)
++++ src/main/java/join/JoinTrigger.java	(working copy)
+@@ -94,11 +94,13 @@
+             if (buildTrigger != null) {
+                 for(hudson.plugins.parameterizedtrigger.BuildTriggerConfig config : buildTrigger.getConfigs()) {
+                     for(AbstractProject project : config.getProjectList()) {
++                        if (!project.isDisabled()) {
+                         ret.add(project.getName());
+                     }
+                 }
+             }
+         }
++        }
+         return ret;
+     }
+ 
+Index: src/main/java/join/JoinAction.java
+===================================================================
+--- src/main/java/join/JoinAction.java	(revision 28789)
++++ src/main/java/join/JoinAction.java	(working copy)
+@@ -30,13 +30,15 @@
+     private Result overallResult;
+     
+     public JoinAction(JoinTrigger joinTrigger, BuildTrigger buildTrigger, ArrayList<String> otherDownstream) {
+-        String[] downstreamProjects = buildTrigger==null ? 
+-                new String[0] : buildTrigger.getChildProjectsValue().split(",");
+         this.pendingDownstreamProjects = new LinkedList<String>();
+-        for(String proj : otherDownstream) {
+-            this.pendingDownstreamProjects.add(proj.trim());
++        if(buildTrigger != null) {
++            for(AbstractProject project : buildTrigger.getChildProjects()) {
++                if(!project.isDisabled()) {
++                    this.pendingDownstreamProjects.add(project.getName());
++                }
+         }
+-        for(String proj : downstreamProjects) {
++        }
++        for(String proj : otherDownstream) {
+             this.pendingDownstreamProjects.add(proj.trim());
+         }
+         this.joinProjects = joinTrigger.getJoinProjectsValue();

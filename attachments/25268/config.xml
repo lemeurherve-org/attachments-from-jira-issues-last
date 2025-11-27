@@ -1,0 +1,39 @@
+<buildWrappers>
+  <hudson.plugins.release.ReleaseWrapper plugin="release@2.4.1">
+    <releaseVersionTemplate/>
+    <doNotKeepLog>true</doNotKeepLog>
+    <overrideBuildParameters>false</overrideBuildParameters>
+    <parameterDefinitions/>
+    <preBuildSteps>
+      <hudson.tasks.Maven>
+	<targets>
+	  build-helper:parse-version versions:set -DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}-${SVN_REVISION}
+	</targets>
+	<usePrivateRepository>false</usePrivateRepository>
+	<settings class="jenkins.mvn.DefaultSettingsProvider"/>
+	<globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      </hudson.tasks.Maven>
+    </preBuildSteps>
+    <postBuildSteps>
+      <hudson.tasks.Shell>
+	<command>echo immer</command>
+      </hudson.tasks.Shell>
+    </postBuildSteps>
+    <postSuccessfulBuildSteps>
+      <hudson.tasks.Maven>
+	<targets>scm:tag</targets>
+	<properties>
+	  connectionUrl=scm:svn:http://subversion.hv.devk.de/svnrepos/path/to/trunk/code/test-job
+	</properties>
+	<usePrivateRepository>false</usePrivateRepository>
+	<settings class="jenkins.mvn.DefaultSettingsProvider"/>
+	<globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      </hudson.tasks.Maven>
+    </postSuccessfulBuildSteps>
+    <postFailedBuildSteps>
+      <hudson.tasks.Shell>
+	<command>echo fehl</command>
+      </hudson.tasks.Shell>
+    </postFailedBuildSteps>
+  </hudson.plugins.release.ReleaseWrapper>
+</buildWrappers>

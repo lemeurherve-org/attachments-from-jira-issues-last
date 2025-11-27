@@ -1,0 +1,94 @@
+Client View:
+View:
+	//SCM/Tools/Test/... //JENKINS-36883/SCM/Tools/Test/...
+	"//SCM/buildinfo/sub dir/..." "//JENKINS-36883/buildinfo/sub dir/..."
+
+Poll1 
+Perforce Software Polling Log
+
+Started on Sep 27, 2016 15:25:00 PM
+Polling SCM changes on master
+P4: Polling on: master with:JENKINS-36883
+... p4 client -o JENKINS-36883 +
+... p4 info +
+
+P4 Task: establishing connection.
+... server: 10.1.3.212:1666
+... node: vm-swarm-test-swarmcurrent
+P4: Polling with range: 250,now
+... p4 changes -m100 //JENKINS-36883/...@250,now +
+... p4 change -o 259 +
+... p4 describe -s 259 +
+... p4 change -o 258 +
+... p4 describe -s 258 +
+... p4 change -o 256 +
+... p4 describe -s 256 +
+... found change: 256
+Done. Took 81 ms
+Changes found
+
+
+Poll2 (overlapping previous job)
+Perforce Software Polling Log
+
+Started on Sep 27, 2016 15:27:00 PM
+Polling SCM changes on master
+P4: Polling on: master with:JENKINS-36883
+... p4 client -o JENKINS-36883 +
+... p4 info +
+
+P4 Task: establishing connection.
+... server: 10.1.3.212:1666
+... node: vm-swarm-test-swarmcurrent
+P4: Polling with range: 250,now
+... p4 changes -m100 //JENKINS-36883/...@250,now +
+... p4 change -o 262 +
+... p4 describe -s 262 +
+... p4 change -o 261 +
+... p4 describe -s 261 +
+... p4 change -o 260 +
+... p4 describe -s 260 +
+... found change: 260
+... p4 change -o 259 +
+... p4 describe -s 259 +
+... p4 change -o 258 +
+... p4 describe -s 258 +
+... p4 change -o 256 +
+... p4 describe -s 256 +
+... found change: 256
+Done. Took 0.1 sec
+Changes found
+
+Change 265 on 2016/09/27 15:27:19 by super@test_ws 'Submit of buildinfo/sub dir/f26'
+Change 264 on 2016/09/27 15:27:18 by super@test_ws 'Submit of buildinfo/sub dir/f26'
+Change 263 on 2016/09/27 15:27:16 by super@test_ws 'Submit of Tools/Test/f263 '
+
+Change 262 on 2016/09/27 15:25:16 by super@test_ws 'Submit of buildinfo/sub dir/f26'
+Change 261 on 2016/09/27 15:25:14 by super@test_ws 'Submit of buildinfo/sub dir/f26'
+Change 260 on 2016/09/27 15:25:10 by super@test_ws 'Submit of Tools/Test/f260 '        **** Job 36 builds this - output of 2nd poll. 
+
+Change 259 on 2016/09/27 15:23:20 by super@test_ws 'Submit of buildinfo/sub dir/f25'
+Change 258 on 2016/09/27 15:23:17 by super@test_ws 'Submit of buildinfo/sub dir/f25'
+Change 256 on 2016/09/27 15:23:01 by super@test_ws 'Submit of Tools/Test/f256 '
+
+Change 255 on 2016/09/27 15:21:42 by super@test_ws 'Submit of buildinfo/sub dir/f25'
+
+
+Job#36
+15:28:01 Started by an SCM change
+15:28:01 Started by an SCM change
+15:28:01 Building on master in workspace /home/jenkins/.jenkins/workspace/JENKINS-36883
+...cut...
+15:28:01 
+... p4 sync -f /home/jenkins/.jenkins/workspace/JENKINS-36883/...@260 +
+
+Job#37
+16:32:01 Started by an SCM change
+16:32:01 Started by an SCM change
+16:32:01 Building on master in workspace /home/jenkins/.jenkins/workspace/JENKINS-36883
+...cut...
+16:32:01 
+... p4 sync -f /home/jenkins/.jenkins/workspace/JENKINS-36883/...@263 +
+
+
+

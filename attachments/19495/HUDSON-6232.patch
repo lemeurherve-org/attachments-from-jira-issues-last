@@ -1,0 +1,29 @@
+Index: src/main/java/hudson/plugins/descriptionsetter/DescriptionSetterPublisher.java
+===================================================================
+--- src/main/java/hudson/plugins/descriptionsetter/DescriptionSetterPublisher.java	(revision 31298)
++++ src/main/java/hudson/plugins/descriptionsetter/DescriptionSetterPublisher.java	(working copy)
+@@ -22,8 +22,6 @@
+ import java.io.FileReader;
+ import java.io.IOException;
+ import java.io.ObjectStreamException;
+-import java.net.MalformedURLException;
+-import java.net.URL;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+ 
+@@ -161,12 +159,9 @@
+ 	}
+ 
+ 	private String urlify(String text) {
+-		try {
+-			new URL(text);
+-			return String.format("<a href=\"%s\">%s</a>", text, text);
+-		} catch (MalformedURLException e) {
+-			return text;
+-		}
++		String regex = "([\\w.+-]+:/+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
++		
++		return text.replaceAll(regex, "<a href=\"$1\">$1</a>");
+ 	}
+ 
+ 	@Extension

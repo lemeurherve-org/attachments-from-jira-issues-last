@@ -1,0 +1,102 @@
+Hi,
+Our proposed soloution for issue4099 is to do the following modifications described below.
+
+Regards
+Tobias Rundgren
+Johan Abrahamsson
+
+
+
+In source file: /src/main/java/hudson/plugins/clearcase/history/DefaultFilter.java
+
+Merge/insert the lines:
+if  (entry.getActivityName().equals(""))
+            return false;
+	  
+	
+example:
+
+public class DefaultFilter implements Filter {
+
+    @Override
+    public boolean accept(HistoryEntry entry) {
+        if (entry.getVersionId().endsWith("/0"))
+            return false;
+
+        if (entry.getVersionId().endsWith("\\0"))
+            return false;
+        if  (entry.getEvent().equalsIgnoreCase("create branch"))
+            return false;
+        if  (entry.getActivityName().equals(""))
+            return false;
+                
+        return true;
+    }
+
+}
+
+
+Also we have noticed a similar problem when you use clearcase plugin for a non enabled UCM project. 
+The activity will than becomes empty and the clearcase plugins fails to find changsets for a empty activity. 
+
+This solves that problem:
+
+In source file: /src/main/java/hudson/plugins/clearcase/history/HistoryEntry.java
+Define a default String that needs to be set when you retrieve history from a non UCM enabled clearcase project.
+
+Merge/insert the line:
+String activityName = "undefined_for_non_ucm";
+
+
+public class HistoryEntry {
+
+    Date date;
+    String dateText;
+    String element;
+    String versionId;
+    String event;
+    String user;
+    String operation;
+    String activityName = "undefined_for_non_ucm";
+    String comment;
+    String activityHeadline;
+    String line;
+
+
+
+Finaly we also seen that update command is just supporting to avoid update log creation on windows.
+We added this for unix/linux support: 
+
+I source file: /src/main/java/hudson/plugins/clearcase/ClearToolSnapshot.java
+
+    public void update(String viewName, String loadRules) throws IOException, InterruptedException {
+        ArgumentListBuilder cmd = new ArgumentListBuilder();
+        cmd.add("update");
+        cmd.add("-force");
+        
+        if (launcher.getLauncher().isUnix()) {
+            cmd.add("-log", "/dev/null");
+            
+        } else {
+            cmd.add("-log", "NUL");
+        }
+        
+        
+        if (loadRules == null) {
+            cmd.add(viewName);
+        } else {
+            cmd.add("-add_loadrules");
+            // We're assuming loadRules already has a leading slash or backslash, since the only place
+            // I can find where it's called like this is in UcmSnapshotCheckoutAction, where we
+            // definitely put the slash/backslash.
+            String loadRulesLocation = PathUtil.convertPathForOS(viewName + loadRules, getLauncher().getLauncher());
+            if (loadRulesLocation.matches(".*\\s.*")) {
+                cmd.addQuoted(loadRulesLocation);
+            }
+            else {
+                cmd.add(loadRulesLocation);
+            }
+        }
+        
+        launcher.run(cmd.toCommandArray(), null, null, null);
+    }

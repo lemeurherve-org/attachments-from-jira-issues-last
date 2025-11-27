@@ -1,0 +1,13 @@
+Index: src/main/java/be/certipost/hudson/plugin/SCPSite.java
+===================================================================
+--- src/main/java/be/certipost/hudson/plugin/SCPSite.java	(revision 33992)
++++ src/main/java/be/certipost/hudson/plugin/SCPSite.java	(working copy)
+@@ -130,7 +130,7 @@
+ 	}
+ 
+ 	public String getName() {
+-		return hostname;
++		return username + "@" + hostname + ":" + rootRepositoryPath;
+ 	}
+ 
+ 	public Session createSession(PrintStream logger) throws JSchException {

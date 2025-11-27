@@ -1,0 +1,44 @@
+Started by user Jenkins
+[EnvInject] - Loading node environment variables.
+Building on master in workspace /var/lib/jenkins/jobs/sample-freestyle/workspace
+Cloning the remote Git repository
+Cloning repository http://bitbucket/scm/project/public.git
+ >  init /var/lib/jenkins/jobs/sample-freestyle/workspace # timeout=10
+ERROR: Error cloning remote repo 'origin'
+hudson.plugins.git.GitException: Could not init /var/lib/jenkins/jobs/sample-freestyle/workspace
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:663)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$2.execute(CliGitAPIImpl.java:464)
+	at hudson.plugins.git.GitSCM.retrieveChanges(GitSCM.java:1057)
+	at hudson.plugins.git.GitSCM.checkout(GitSCM.java:1097)
+	at hudson.scm.SCM.checkout(SCM.java:495)
+	at hudson.model.AbstractProject.checkout(AbstractProject.java:1269)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.defaultCheckout(AbstractBuild.java:604)
+	at jenkins.scm.SCMCheckoutStrategy.checkout(SCMCheckoutStrategy.java:86)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:529)
+	at hudson.model.Run.execute(Run.java:1741)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:98)
+	at hudson.model.Executor.run(Executor.java:410)
+Caused by: hudson.plugins.git.GitException: Error performing command:  init /var/lib/jenkins/jobs/sample-freestyle/workspace
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1791)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1757)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1753)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommand(CliGitAPIImpl.java:1409)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl$5.execute(CliGitAPIImpl.java:661)
+	... 12 more
+Caused by: java.io.IOException: Cannot run program "" (in directory "/var/lib/jenkins/jobs/sample-freestyle/workspace"): error=2, No such file or directory
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1041)
+	at hudson.Proc$LocalProc.<init>(Proc.java:240)
+	at hudson.Proc$LocalProc.<init>(Proc.java:212)
+	at hudson.Launcher$LocalLauncher.launch(Launcher.java:815)
+	at hudson.Launcher$ProcStarter.start(Launcher.java:381)
+	at org.jenkinsci.plugins.gitclient.CliGitAPIImpl.launchCommandIn(CliGitAPIImpl.java:1780)
+	... 16 more
+Caused by: java.io.IOException: error=2, No such file or directory
+	at java.lang.UNIXProcess.forkAndExec(Native Method)
+	at java.lang.UNIXProcess.<init>(UNIXProcess.java:186)
+	at java.lang.ProcessImpl.start(ProcessImpl.java:130)
+	at java.lang.ProcessBuilder.start(ProcessBuilder.java:1022)
+	... 21 more
+ERROR: null
+Finished: FAILURE

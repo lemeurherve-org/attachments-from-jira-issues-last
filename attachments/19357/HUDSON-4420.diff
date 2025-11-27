@@ -1,0 +1,245 @@
+commit 49298498b54d2d8db8ff64f6824c86c81f5ae8fb
+Author: Bijan Vakili <bvakili@oanda.com>
+Date:   Tue Apr 20 19:21:08 2010 -0400
+
+    Fix for Redmine #7348 (Hudson JIRA 4420, 3966):
+    Extended clean option to include 3 different strategies:
+    a) no clean
+    b) use git clean -fdx
+    c) erase the workspace directory
+    
+    Option 'c' will be used in AF 3.0 by default.
+
+diff --git a/src/main/java/hudson/plugins/git/GitCleanStrategy.java b/src/main/java/hudson/plugins/git/GitCleanStrategy.java
+new file mode 100644
+index 0000000..0481514
+--- /dev/null
++++ b/src/main/java/hudson/plugins/git/GitCleanStrategy.java
+@@ -0,0 +1,61 @@
++package hudson.plugins.git;
++
++import java.io.Serializable;
++
++/**
++ * Clean strategy for git builds
++ * 
++ * NONE             - No action
++ * GIT_CLEAN        - Use "git clean -fdx"
++ * REMOTE_WORKSPACE - Recursively delete the workspace folder prior to the build
++ * 
++ */
++public enum GitCleanStrategy implements Serializable {
++	
++	NONE("NONE"),
++	GIT_CLEAN("GIT_CLEAN"),
++	REMOVE_WORKSPACE("REMOVE_WORKSPACE");
++	
++	private static final long serialVersionUID = 1;
++	
++	/** string representation of the strategy */
++	private final String strategy;
++	
++	
++	/**
++	 * Constructor
++	 * @param strategy name of cleaning strategy
++	 */
++	private GitCleanStrategy( final String strategy ) {
++		this.strategy = strategy;
++	}
++	
++	
++	/**
++	 * Returns the string representation of the strategy
++	 */
++	public @Override String toString() {
++		return strategy;
++	}
++	
++	
++	/**
++	 * Constructs an enumeration from the string representation
++	 * 
++	 * @param strategy string represenation
++	 * @return clean strategy enumeration
++	 * 
++	 * @throws GitException
++	 */
++	public static GitCleanStrategy fromString( String strategy )
++		throws GitException
++	{
++		// search for the matching string
++		for ( GitCleanStrategy e: GitCleanStrategy.values() ) {
++			if ( e.toString().equalsIgnoreCase(strategy) )
++				return e;
++		}
++		
++		throw new GitException("Invalid clean strategy");
++	}
++}
+diff --git a/src/main/java/hudson/plugins/git/GitSCM.java b/src/main/java/hudson/plugins/git/GitSCM.java
+index 96b58e4..59db4f7 100644
+--- a/src/main/java/hudson/plugins/git/GitSCM.java
++++ b/src/main/java/hudson/plugins/git/GitSCM.java
+@@ -5,6 +5,7 @@ import hudson.Extension;
+ import hudson.FilePath;
+ import hudson.Launcher;
+ import hudson.Proc;
++import hudson.Util;
+ import hudson.FilePath.FileCallable;
+ import hudson.matrix.MatrixBuild;
+ import hudson.matrix.MatrixRun;
+@@ -88,7 +89,7 @@ public class GitSCM extends SCM implements Serializable {
+ 
+     private boolean doGenerateSubmoduleConfigurations;
+ 
+-	private boolean clean;
++	private GitCleanStrategy cleanStrategy;
+ 
+ 	private GitWeb browser;
+ 
+@@ -109,7 +110,7 @@ public class GitSCM extends SCM implements Serializable {
+ 	        PreBuildMergeOptions mergeOptions,
+ 	        boolean doGenerateSubmoduleConfigurations,
+ 	        Collection<SubmoduleConfig> submoduleCfg,
+-	        boolean clean,
++	        String cleanStrategy,
+ 	        GitWeb browser) {
+ 
+ 		// normalization
+@@ -123,7 +124,7 @@ public class GitSCM extends SCM implements Serializable {
+ 		this.doGenerateSubmoduleConfigurations = doGenerateSubmoduleConfigurations;
+ 		this.submoduleCfg = submoduleCfg;
+ 
+-		this.clean = clean;
++		this.cleanStrategy = GitCleanStrategy.fromString(cleanStrategy);
+ 
+ 		this.configVersion = 1L;
+ 	}
+@@ -142,6 +143,7 @@ public class GitSCM extends SCM implements Serializable {
+    			branches = new ArrayList<BranchSpec>();
+    			doGenerateSubmoduleConfigurations = false;
+    			mergeOptions = new PreBuildMergeOptions();
++   			cleanStrategy = GitCleanStrategy.NONE;
+ 
+ 
+     	   try {
+@@ -187,8 +189,8 @@ public class GitSCM extends SCM implements Serializable {
+ 		return browser;
+ 	}
+ 
+-	public boolean getClean() {
+-		return this.clean;
++	public String getCleanStrategy() {
++		return this.cleanStrategy.toString();
+ 	}
+ 
+ 	public List<RemoteConfig> getRepositories() {
+@@ -400,6 +402,7 @@ public class GitSCM extends SCM implements Serializable {
+ 			throws IOException, InterruptedException {
+ 
+ 	    listener.getLogger().println("Checkout:" + workspace.getName() + " / " + workspace.getRemote() + " - " + workspace.getChannel());
++	    listener.getLogger().println("Clean strategy: " + cleanStrategy.toString());
+ 
+ 		final String projectName = build.getProject().getName();
+ 		final int buildNumber = build.getNumber();
+@@ -436,7 +439,13 @@ public class GitSCM extends SCM implements Serializable {
+ 			private static final long serialVersionUID = 1L;
+ 			public Revision invoke(File localWorkspace, VirtualChannel channel)
+ 					throws IOException {
++				
+ 			    FilePath ws = new FilePath(localWorkspace);
++				// perform full workspace clean if selected
++				if ( cleanStrategy == GitCleanStrategy.REMOVE_WORKSPACE ) {
++					listener.getLogger().println("Recursively removing:" + ws.getName() + " / " + ws.getRemote() + " - " + ws.getChannel());
++					Util.deleteContentsRecursive(localWorkspace);
++				}
+ 			    listener.getLogger().println("Checkout:" + ws.getName() + " / " + ws.getRemote() + " - " + ws.getChannel());
+ 
+                 IGitAPI git = new GitAPI(gitExe, ws, listener, environment);
+@@ -674,8 +683,8 @@ public class GitSCM extends SCM implements Serializable {
+ 
+                 buildChooser.revisionBuilt(revToBuild, buildNumber, null);
+ 
+-                if (getClean()) {
+-    				listener.getLogger().println("Cleaning workspace");
++                if (cleanStrategy == GitCleanStrategy.GIT_CLEAN) {
++    				listener.getLogger().println("Cleaning workspace using git");
+                     git.clean();
+                 }
+ 
+@@ -839,13 +848,18 @@ public class GitSCM extends SCM implements Serializable {
+ 				}
+ 			}
+ 
++			String cleanStrategy = req.getParameter("git.cleanStrategy");
++			if ( cleanStrategy == null )
++				cleanStrategy = GitCleanStrategy.NONE.toString();
++			cleanStrategy = cleanStrategy.trim();
++			
+ 			return new GitSCM(
+ 					remoteRepositories,
+ 					branches,
+ 					mergeOptions,
+ 				    req.getParameter("git.generate") != null,
+ 					submoduleCfg,
+-					req.getParameter("git.clean") != null,
++					cleanStrategy,
+ 					gitWeb);
+ 		}
+ 
+diff --git a/src/main/resources/hudson/plugins/git/GitSCM/config.jelly b/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
+index 9e187b8..2bea638 100644
+--- a/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
++++ b/src/main/resources/hudson/plugins/git/GitSCM/config.jelly
+@@ -116,8 +116,28 @@
+ 	  	
+ 	  </f:entry>
+ 
+-    <f:entry title="Clean after checkout" help="/plugin/git/clean.html">
+-      <f:checkbox name="git.clean" checked="${scm.clean}" />
++    <f:entry name="git.cleanStrategy" title="Cleaning strategy" help="/plugin/git/clean.html" field="git.cleanStrategy">
++    
++    	<select name="git.cleanStrategy" id="combobox_cleanStrategy">
++			<option value="NONE">No clean</option>
++			<option value="GIT_CLEAN">Use git</option>
++			<option value="REMOVE_WORKSPACE">Delete workspace</option>
++			
++	    	<script><![CDATA[
++	    	
++	    	var cleanOptions = document.getElementById("combobox_cleanStrategy").options; 
++	    	
++	    	for (var i = 0; i < cleanOptions.length; ++i) {
++	    		if ( cleanOptions[i].value == "${scm.cleanStrategy}" ) {
++	    			cleanOptions[i].selected = true;
++	    			break;
++	    		}
++	    	}
++	    	
++	    	]]></script>
++			
++    	</select>
++    	
+     </f:entry>
+   </f:advanced>
+   
+diff --git a/src/main/webapp/clean.html b/src/main/webapp/clean.html
+index 8ba289d..068049d 100644
+--- a/src/main/webapp/clean.html
++++ b/src/main/webapp/clean.html
+@@ -1,3 +1,14 @@
+ <div>
+-  Run "git clean -fdx" after every checkout to ensure a clean build.
++  Determine how artifacts should be removed during checkout prior to executing the build.
++  <p>
++  'No clean' will not perform any changes to the workspace.  This can leave file artifacts
++  in your build that may be unwanted.  However, this is the default.
++  <p>
++  'Use git' will use the command "git clean -fdx" to remove any artifacts after fetching and merging
++  but prior to executing the build.  This is fast but relies on the git CLI to ensure there are no 
++  artifacts.
++  <p>
++  'Delete workspace' will recursively remove the build workspace folder prior to merging and
++  executing the build.  This is the safest way to ensure that there are no artifacts when performing
++  builds.  Howeever, it is slower since it needs to fetch all the history before every build.
+ </div>

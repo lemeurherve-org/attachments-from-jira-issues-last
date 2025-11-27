@@ -1,0 +1,21 @@
+pipeline {
+  agent {
+    label 'armv7l_pi'
+  }
+  stages {
+    stage('Hello') {
+      steps {
+        echo 'hello'
+        sh 'env'
+      }
+    }
+  }
+  post {
+    success {
+      echo 'Success'
+    }
+    failure {
+      echo 'Failure'
+    }
+  }
+}

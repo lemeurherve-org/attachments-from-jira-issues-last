@@ -1,0 +1,55 @@
+From b0dd57e14a101658e3103d9a9f51dbeb184dc4a6 Mon Sep 17 00:00:00 2001
+From: Marc van Kalmthout <Marc.van.Kalmthout@sioux.eu>
+Date: Thu, 8 Aug 2024 20:27:18 +0200
+Subject: [PATCH] Format the log timestamps with the timestamper plugin
+
+Fixed format "yyyy-MM-dd HH:MM:ss.SSS" as that is most close to the format
+Note: consider to make the format a global configuration variable.
+
+See https://issues.jenkins.io/browse/JENKINS-70291
+---
+ pom.xml                                                     | 4 ++++
+ src/main/java/hudson/plugins/logparser/LogParserParser.java | 5 +++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 08aae18..111933a 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -146,6 +146,10 @@
+             <artifactId>mailer</artifactId>
+             <scope>test</scope>
+         </dependency>
++        <dependency>
++            <groupId>org.jenkins-ci.plugins</groupId>
++            <artifactId>timestamper</artifactId>
++        </dependency>
+ 
+     </dependencies>
+ 
+diff --git a/src/main/java/hudson/plugins/logparser/LogParserParser.java b/src/main/java/hudson/plugins/logparser/LogParserParser.java
+index 17dc153..6f6cc6b 100755
+--- a/src/main/java/hudson/plugins/logparser/LogParserParser.java
++++ b/src/main/java/hudson/plugins/logparser/LogParserParser.java
+@@ -5,6 +5,7 @@ import hudson.console.ConsoleNote;
+ import hudson.model.AbstractBuild;
+ import hudson.model.Run;
+ import hudson.remoting.VirtualChannel;
++import hudson.plugins.timestamper.api.TimestamperAPI;
+ 
+ import java.io.InputStreamReader;
+ import java.io.BufferedReader;
+@@ -350,8 +351,8 @@ public class LogParserParser {
+ 
+         // Read log file from start - line by line and apply the statuses as
+         // found by the threads.
+-        try (InputStreamReader streamReader = new InputStreamReader(build.getLogInputStream(), charset);
+-             BufferedReader reader = new BufferedReader(streamReader)) {
++        String query = "time=yyyy-MM-dd HH:MM:ss.SSS&appendLog";
++        try (BufferedReader reader = TimestamperAPI.get().read(build, query)) {
+             String line;
+             String status;
+             int line_num = 0;
+-- 
+2.45.2.windows.1
+

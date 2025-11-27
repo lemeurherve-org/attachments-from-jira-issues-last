@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.12.1">
+  <actions>
+    <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.1.5">
+      <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
+        <mappedUrl>blue/organizations/jenkins/xxx%2Fxxx/branches</mappedUrl>
+      </blueOceanUrlObject>
+    </io.jenkins.blueocean.service.embedded.BlueOceanUrlAction>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.1.9">
+      <jobProperties>
+        <string>org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty</string>
+      </jobProperties>
+      <triggers/>
+      <parameters/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+    <org.jenkinsci.plugins.workflow.multibranch.BranchJobProperty plugin="workflow-multibranch@2.16">
+      <branch plugin="branch-api@2.0.11">
+        <sourceId>com.cloudbees.jenkins.plugins.bitbucket.BitbucketSCMNavigator::http://stash::xxx::xxx</sourceId>
+        <head class="com.cloudbees.jenkins.plugins.bitbucket.BranchSCMHead" plugin="cloudbees-bitbucket-branch-source@2.2.3">
+          <name>dev</name>
+          <repositoryType>GIT</repositoryType>
+        </head>
+        <scm class="hudson.plugins.git.GitSCM" plugin="git@3.5.0">
+          <configVersion>2</configVersion>
+          <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+              <name>origin</name>
+              <refspec>+refs/heads/dev:refs/remotes/origin/dev</refspec>
+              <url>ssh://git@stash:7999/xxx/xxx.git</url>
+              <credentialsId>xxxxxxxxxxxxxxxxxxxx</credentialsId>
+            </hudson.plugins.git.UserRemoteConfig>
+          </userRemoteConfigs>
+          <branches class="singleton-list">
+            <hudson.plugins.git.BranchSpec>
+              <name>dev</name>
+            </hudson.plugins.git.BranchSpec>
+          </branches>
+          <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+          <browser class="hudson.plugins.git.browser.BitbucketWeb">
+            <url>http://stash/projects/xxx/repos/xxx</url>
+          </browser>
+          <submoduleCfg class="empty-list"/>
+          <extensions>
+            <hudson.plugins.git.extensions.impl.LocalBranch>
+              <localBranch>**</localBranch>
+            </hudson.plugins.git.extensions.impl.LocalBranch>
+            <jenkins.plugins.git.GitSCMSourceDefaults>
+              <includeTags>false</includeTags>
+            </jenkins.plugins.git.GitSCMSourceDefaults>
+          </extensions>
+        </scm>
+        <properties/>
+        <actions>
+          <com.cloudbees.jenkins.plugins.bitbucket.BitbucketLink plugin="cloudbees-bitbucket-branch-source@2.2.3">
+            <iconClassName>icon-bitbucket-branch</iconClassName>
+            <url>http://stash/projects/xxx/repos/xxx/compare/commits?sourceBranch=refs%2Fheads%2Fdev</url>
+          </com.cloudbees.jenkins.plugins.bitbucket.BitbucketLink>
+          <jenkins.scm.api.metadata.ObjectMetadataAction plugin="scm-api@2.2.0">
+            <objectUrl>http://stash/projects/xxx/repos/xxx/compare/commits?sourceBranch=refs%2Fheads%2Fdev</objectUrl>
+          </jenkins.scm.api.metadata.ObjectMetadataAction>
+          <jenkins.scm.api.metadata.PrimaryInstanceMetadataAction plugin="scm-api@2.2.0"/>
+        </actions>
+      </branch>
+    </org.jenkinsci.plugins.workflow.multibranch.BranchJobProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.19.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.multibranch.SCMBinder" plugin="workflow-multibranch@2.16">
+    <scriptPath>Jenkinsfile</scriptPath>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

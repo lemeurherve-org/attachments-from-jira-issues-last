@@ -1,0 +1,73 @@
+May 04, 2017 1:24:59 AM org.springframework.context.support.AbstractApplicationContext prepareRefresh
+INFO: Refreshing org.springframework.web.context.support.StaticWebApplicationContext@3099d6f3: display name [Root WebApplicationContext]; startup date [Thu May 04 01:24:59 UTC 2017]; root of context hierarchy
+May 04, 2017 1:24:59 AM org.springframework.context.support.AbstractApplicationContext obtainFreshBeanFactory
+INFO: Bean factory for application context [org.springframework.web.context.support.StaticWebApplicationContext@3099d6f3]: org.springframework.beans.factory.support.DefaultListableBeanFactory@416ffa8c
+May 04, 2017 1:24:59 AM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@416ffa8c: defining beans [authenticationManager]; root of factory hierarchy
+May 04, 2017 1:24:59 AM org.springframework.context.support.AbstractApplicationContext prepareRefresh
+INFO: Refreshing org.springframework.web.context.support.StaticWebApplicationContext@3f4ddcec: display name [Root WebApplicationContext]; startup date [Thu May 04 01:24:59 UTC 2017]; root of context hierarchy
+May 04, 2017 1:24:59 AM org.springframework.context.support.AbstractApplicationContext obtainFreshBeanFactory
+INFO: Bean factory for application context [org.springframework.web.context.support.StaticWebApplicationContext@3f4ddcec]: org.springframework.beans.factory.support.DefaultListableBeanFactory@7d85da28
+May 04, 2017 1:24:59 AM org.springframework.beans.factory.support.DefaultListableBeanFactory preInstantiateSingletons
+INFO: Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@7d85da28: defining beans [filter,legacy]; root of factory hierarchy
+May 04, 2017 1:25:05 AM org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+May 04, 2017 1:25:14 AM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud provision
+INFO: Excess workload after pending Spot instances: 1
+May 04, 2017 1:25:14 AM hudson.slaves.NodeProvisioner$StandardStrategyImpl apply
+INFO: Started provisioning Kubernetes Pod Template from kubernetes with 1 executors. Remaining excess workload: 0
+May 04, 2017 1:25:14 AM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback call
+INFO: Created Pod: kubernetes-8bc92b750f5b4427a1d25963f95474e4-6673e16106d
+May 04, 2017 1:25:14 AM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback call
+INFO: Waiting for Pod to be scheduled (0/100): kubernetes-8bc92b750f5b4427a1d25963f95474e4-6673e16106d
+May 04, 2017 1:25:16 AM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #14 from /172.17.0.1:39576
+May 04, 2017 1:25:20 AM org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback call
+SEVERE: Error in provisioning; slave=KubernetesSlave name: kubernetes-8bc92b750f5b4427a1d25963f95474e4-6673e16106d, template=org.csanchez.jenkins.plugins.kubernetes.PodTemplate@37da61df
+May 04, 2017 1:25:20 AM jenkins.slaves.DefaultJnlpSlaveReceiver channelClosed
+WARNING: Computer.threadPoolForRemoting [#74] for kubernetes-8bc92b750f5b4427a1d25963f95474e4-6673e16106d terminated
+java.nio.channels.ClosedChannelException
+    at org.jenkinsci.remoting.protocol.impl.ChannelApplicationLayer.onReadClosed(ChannelApplicationLayer.java:208)
+    at org.jenkinsci.remoting.protocol.ApplicationLayer.onRecvClosed(ApplicationLayer.java:222)
+    at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.onRecvClosed(ProtocolStack.java:832)
+    at org.jenkinsci.remoting.protocol.FilterLayer.onRecvClosed(FilterLayer.java:287)
+    at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.onRecvClosed(SSLEngineFilterLayer.java:181)
+    at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.switchToNoSecure(SSLEngineFilterLayer.java:283)
+    at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.processWrite(SSLEngineFilterLayer.java:503)
+    at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.processQueuedWrites(SSLEngineFilterLayer.java:248)
+    at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.doSend(SSLEngineFilterLayer.java:200)
+    at org.jenkinsci.remoting.protocol.impl.SSLEngineFilterLayer.doCloseSend(SSLEngineFilterLayer.java:213)
+    at org.jenkinsci.remoting.protocol.ProtocolStack$Ptr.doCloseSend(ProtocolStack.java:800)
+    at org.jenkinsci.remoting.protocol.ApplicationLayer.doCloseWrite(ApplicationLayer.java:173)
+    at org.jenkinsci.remoting.protocol.impl.ChannelApplicationLayer$ByteBufferCommandTransport.closeWrite(ChannelApplicationLayer.java:311)
+    at hudson.remoting.Channel.close(Channel.java:1295)
+    at hudson.remoting.Channel.close(Channel.java:1263)
+    at hudson.slaves.SlaveComputer.closeChannel(SlaveComputer.java:704)
+    at hudson.slaves.SlaveComputer.access$800(SlaveComputer.java:96)
+    at hudson.slaves.SlaveComputer$3.run(SlaveComputer.java:626)
+    at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
+    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+    at java.lang.Thread.run(Thread.java:745)
+
+May 04, 2017 1:25:20 AM org.jenkinsci.plugins.workflow.job.WorkflowRun finish
+May 04, 2017 1:25:24 AM hudson.slaves.NodeProvisioner$2 run
+WARNING: Unexpected exception encountered while provisioning agent Kubernetes Pod Template
+java.lang.IllegalStateException: Containers are terminated with exit codes: {maven=0}
+    at org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback.call(KubernetesCloud.java:684)
+    at org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud$ProvisioningCallback.call(KubernetesCloud.java:581)
+    at jenkins.util.ContextResettingExecutorService$2.call(ContextResettingExecutorService.java:46)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+    at java.lang.Thread.run(Thread.java:745)
+
+May 04, 2017 1:25:31 AM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #15 from /172.17.0.1:39604
+May 04, 2017 1:25:31 AM org.jenkinsci.remoting.protocol.impl.ConnectionHeadersFilterLayer onRecv
+INFO: [JNLP4-connect connection from /172.17.0.1:39604] Refusing headers from remote: Unknown client name: kubernetes-8bc92b750f5b4427a1d25963f95474e4-6673e16106d
+May 04, 2017 1:25:31 AM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #16 from /172.17.0.1:39608
+May 04, 2017 1:25:32 AM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #17 from /172.17.0.1:39612

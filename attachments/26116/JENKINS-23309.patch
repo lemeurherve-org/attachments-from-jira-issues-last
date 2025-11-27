@@ -1,0 +1,19 @@
+commit a6149656858104caf9f2fbfe4a54bff233c001aa
+Author: Regis Desgroppes <regis.desgroppes@here.com>
+Date:   Wed Jun 18 12:33:40 2014 +0200
+
+    [FIXED JENKINS-23309] changes are now displayed for upstream jobs residing within the same folder (i.e. CloudBees Folders plugin).
+
+diff --git a/src/main/java/jenkins/plugins/displayupstreamchanges/DisplayUpstreamChangesSummaryAction.java b/src/main/java/jenkins/plugins/displayupstreamchanges/DisplayUpstreamChangesSummaryAction.java
+index 8465890..471e113 100644
+--- a/src/main/java/jenkins/plugins/displayupstreamchanges/DisplayUpstreamChangesSummaryAction.java
++++ b/src/main/java/jenkins/plugins/displayupstreamchanges/DisplayUpstreamChangesSummaryAction.java
+@@ -117,7 +117,7 @@ public class DisplayUpstreamChangesSummaryAction implements Action {
+     private static AbstractBuild getUpstreamByCause(AbstractBuild build) {
+         for(Cause cause: (List<Cause>) build.getCauses()){
+             if(cause instanceof Cause.UpstreamCause) {
+-                TopLevelItem upstreamProject = Hudson.getInstance().getItem(((Cause.UpstreamCause)cause).getUpstreamProject());
++                TopLevelItem upstreamProject = Hudson.getInstance().getItemByFullName(((Cause.UpstreamCause)cause).getUpstreamProject(), TopLevelItem.class);
+                 if(upstreamProject instanceof AbstractProject){
+                     int buildId = ((Cause.UpstreamCause)cause).getUpstreamBuild();
+                     Run run = ((AbstractProject) upstreamProject).getBuildByNumber(buildId);

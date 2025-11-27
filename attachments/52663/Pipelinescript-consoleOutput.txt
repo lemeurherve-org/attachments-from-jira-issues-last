@@ -1,0 +1,140 @@
+Started by user unknown or anonymous
+Checking out git git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git into /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD@script to read jenkins/TestNGTestQuarkusToDoFile
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git
+ > git init /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD@script # timeout=10
+Fetching upstream changes from git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.11.0'
+ > git fetch --tags --progress -- git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision ebb6e4c160fe22a8e0de9a8fbb50c60861f56425 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f ebb6e4c160fe22a8e0de9a8fbb50c60861f56425 # timeout=10
+Commit message: "try changed jenkins file"
+ > git rev-list --no-walk ebb6e4c160fe22a8e0de9a8fbb50c60861f56425 # timeout=10
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git
+ > git init /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD # timeout=10
+Fetching upstream changes from git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.11.0'
+ > git fetch --tags --progress -- git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@git.altemista.cloud:fbergemann-repos/quarkus-todo-app-ta-nobdd.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision ebb6e4c160fe22a8e0de9a8fbb50c60861f56425 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f ebb6e4c160fe22a8e0de9a8fbb50c60861f56425 # timeout=10
+Commit message: "try changed jenkins file"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Clean workspace (mvn clean))
+[Pipeline] sh
++ mvn -f pom.xml clean
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------< com.nttdata.toolchain:MyTestautomation >---------------
+[INFO] Building MyFirstTestautomation 1.1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ MyTestautomation ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.289 s
+[INFO] Finished at: 2020-09-23T13:16:35Z
+[INFO] ------------------------------------------------------------------------
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Run TestNG tests and create deployment package (mvn package))
+[Pipeline] sh
++ mvn -f pom.xml -Dexec.args=-reporter org.testng.reporters.XMLReporter:generateTestResultAttributes=true,generateGroupsAttribute=true -outputDirectory=FirstTestautomation/target/surefire-reports –useDefaultListeners false -Dmaven.test.failure.ignore=true compile test install
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------< com.nttdata.toolchain:MyTestautomation >---------------
+[INFO] Building MyFirstTestautomation 1.1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The POM for org.testng:testng:jar:5.14.3 is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+[WARNING] The POM for com.beust:jcommander:jar:1.66 is missing, no dependency information available
+[INFO] 
+[INFO] --- maven-resources-plugin:2.4:resources (default-resources) @ MyTestautomation ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 4 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.7.0:compile (default-compile) @ MyTestautomation ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 14 source files to /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD/target/classes
+[INFO] /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD/src/main/java/com/nttdata/toolchain/service/utilities/PageManager.java: /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD/src/main/java/com/nttdata/toolchain/service/utilities/PageManager.java uses unchecked or unsafe operations.
+[INFO] /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD/src/main/java/com/nttdata/toolchain/service/utilities/PageManager.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.4:resources (default-resources) @ MyTestautomation ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 4 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.7.0:compile (default-compile) @ MyTestautomation ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.4:testResources (default-testResources) @ MyTestautomation ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.7.0:testCompile (default-testCompile) @ MyTestautomation ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 15 source files to /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD/target/test-classes
+[INFO] /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD/src/test/java/com/nttdata/toolchain/testcases/BaseTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD/src/test/java/com/nttdata/toolchain/testcases/BaseTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M4:test (default-test) @ MyTestautomation ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running TestSuite
+java.io.FileNotFoundException: /var/jenkins_home/workspace/Quarkus-Todo-TA-noBDD\src\main\resources\properties\object.properties (No such file or directory)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:219)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:157)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:112)
+	at com.nttdata.toolchain.service.utilities.PropertyManager.getInstance(PropertyManager.java:24)
+	at com.nttdata.toolchain.service.utilities.ReportManager.<clinit>(ReportManager.java:14)
+	at com.nttdata.toolchain.listeners.Hooks.<clinit>(Hooks.java:20)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at java.base/java.lang.Class.newInstance(Class.java:584)
+	at org.testng.internal.ClassHelper.newInstance(ClassHelper.java:69)
+	at org.testng.TestNG.addListeners(TestNG.java:949)
+	at org.testng.TestNG.initializeConfiguration(TestNG.java:912)
+	at org.testng.TestNG.initializeEverything(TestNG.java:996)
+	at org.testng.TestNG.run(TestNG.java:1009)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:283)
+	at org.apache.maven.surefire.testng.TestNGXmlTestSuite.execute(TestNGXmlTestSuite.java:75)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:120)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:377)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:138)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:465)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:451)
+[ERROR] 
+Cannot instantiate class com.nttdata.toolchain.listeners.Hooks

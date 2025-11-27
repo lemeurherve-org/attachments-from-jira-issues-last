@@ -1,0 +1,565 @@
+Index: src/main/java/hudson/plugins/parameterizedtrigger/BuildTrigger.java
+===================================================================
+--- src/main/java/hudson/plugins/parameterizedtrigger/BuildTrigger.java	(.../2.4)	(revision 141673)
++++ src/main/java/hudson/plugins/parameterizedtrigger/BuildTrigger.java	(.../2.6)	(revision 141673)
+@@ -5,11 +5,11 @@
+ import hudson.matrix.MatrixAggregatable;
+ import hudson.matrix.MatrixAggregator;
+ import hudson.matrix.MatrixBuild;
+-import hudson.model.AbstractBuild;
+-import hudson.model.AbstractProject;
+ import hudson.model.BuildListener;
+ import hudson.model.DependecyDeclarer;
+ import hudson.model.DependencyGraph;
++import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
+ import hudson.tasks.BuildStepDescriptor;
+ import hudson.tasks.BuildStepMonitor;
+ import hudson.tasks.Notifier;
+@@ -52,13 +52,13 @@
+ 		return BuildStepMonitor.NONE;
+ 	}
+ 
+-	@Override @SuppressWarnings("deprecation")
+-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+-			BuildListener listener) throws InterruptedException, IOException {
++	@Override
++	@SuppressWarnings("deprecation")
++	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+ 		// In Hudson 1.341+ builds will be triggered via DependencyGraph
+ 		if (canDeclare(build.getProject())) return true;
+ 
+-		for (BuildTriggerConfig config : configs) {
++		for(BuildTriggerConfig config : configs) {
+ 			config.perform(build, launcher, listener);
+ 		}
+ 
+@@ -70,18 +70,18 @@
+ 		// Can only add dependencies in Hudson 1.341 or higher
+ 		if (!canDeclare(owner)) return;
+ 
+-		for (BuildTriggerConfig config : configs)
+-			for (AbstractProject project : config.getProjectList())
++		for(BuildTriggerConfig config : configs)
++			for(AbstractProject project : config.getProjectList())
+ 				ParameterizedDependency.add(owner, project, config, graph);
+ 	}
+ 
+ 	private boolean canDeclare(AbstractProject owner) {
+ 		// Inner class added in Hudson 1.341
+ 		return DependencyGraph.class.getClasses().length > 0
+-                        // See HUDSON-6274 -- currently Maven projects call scheduleProject
+-                        // directly, so would not get parameters from DependencyGraph.
+-                        // Remove this condition when HUDSON-6274 is implemented.
+-                        && !owner.getClass().getName().equals("hudson.maven.MavenModuleSet");
++		// See HUDSON-6274 -- currently Maven projects call scheduleProject
++		// directly, so would not get parameters from DependencyGraph.
++		// Remove this condition when HUDSON-6274 is implemented.
++				&& !owner.getClass().getName().equals("hudson.maven.MavenModuleSet");
+ 	}
+ 
+ 	public MatrixAggregator createAggregator(MatrixBuild build, Launcher launcher, BuildListener listener) {
+@@ -97,8 +97,7 @@
+ 	public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+ 
+ 		@Override
+-		public Publisher newInstance(StaplerRequest req, JSONObject json)
+-				throws FormException {
++		public Publisher newInstance(StaplerRequest req, JSONObject json) throws FormException {
+ 			List<BuildTriggerConfig> result = new ArrayList<BuildTriggerConfig>();
+ 			Object c = json.get("configs");
+ 			if (c instanceof JSONObject) {
+@@ -107,7 +106,7 @@
+ 			}
+ 			if (c instanceof JSONArray) {
+ 				JSONArray a = (JSONArray) c;
+-				for (Object o : a) {
++				for(Object o : a) {
+ 					if (o instanceof JSONObject) {
+ 						JSONObject j = (JSONObject) o;
+ 						result.add(bindBuildTrigger(req, j));
+@@ -117,11 +116,8 @@
+ 			return new BuildTrigger(result);
+ 		}
+ 
+-		private BuildTriggerConfig bindBuildTrigger(StaplerRequest req,
+-				JSONObject o) throws FormException {
+-			return new BuildTriggerConfig(o.getString("projects"),
+-					ResultCondition.valueOf(o.getString("condition")),
+-					newInstancesFromHeteroList(req, o, "configs", CONFIGS));
++		private BuildTriggerConfig bindBuildTrigger(StaplerRequest req, JSONObject o) throws FormException {
++			return new BuildTriggerConfig(o.getString("projects"), ResultCondition.valueOf(o.getString("condition")), o.getString("script"), newInstancesFromHeteroList(req, o, "configs", CONFIGS));
+ 		}
+ 
+ 		@Override
+@@ -148,8 +144,7 @@
+ 		}
+ 
+ 	}
+-	
+-	public static final DescriptorList<AbstractBuildParameters> CONFIGS = new DescriptorList<AbstractBuildParameters>(
+-			AbstractBuildParameters.class);
+ 
++	public static final DescriptorList<AbstractBuildParameters> CONFIGS = new DescriptorList<AbstractBuildParameters>(AbstractBuildParameters.class);
++
+ }
+Index: src/main/java/hudson/plugins/parameterizedtrigger/BuildTriggerConfig.java
+===================================================================
+--- src/main/java/hudson/plugins/parameterizedtrigger/BuildTriggerConfig.java	(.../2.4)	(revision 141673)
++++ src/main/java/hudson/plugins/parameterizedtrigger/BuildTriggerConfig.java	(.../2.6)	(revision 141673)
+@@ -1,18 +1,18 @@
+ package hudson.plugins.parameterizedtrigger;
+ 
+ import hudson.Launcher;
++import hudson.model.Action;
++import hudson.model.BuildListener;
++import hudson.model.Items;
++import hudson.model.ParameterValue;
++import hudson.model.TaskListener;
+ import hudson.model.AbstractBuild;
+ import hudson.model.AbstractProject;
+-import hudson.model.Action;
+-import hudson.model.BuildListener;
+ import hudson.model.Cause;
+-import hudson.model.Items;
+ import hudson.model.ParameterDefinition;
+-import hudson.model.ParameterValue;
+ import hudson.model.ParametersAction;
+ import hudson.model.ParametersDefinitionProperty;
+ import hudson.model.Run;
+-import hudson.model.TaskListener;
+ import hudson.plugins.parameterizedtrigger.AbstractBuildParameters.DontTriggerException;
+ 
+ import java.io.IOException;
+@@ -27,17 +27,21 @@
+ 	private final List<AbstractBuildParameters> configs;
+ 
+ 	private String projects;
++	private String script;
+ 	private final ResultCondition condition;
+ 
+-	public BuildTriggerConfig(String projects, ResultCondition condition,
+-			List<AbstractBuildParameters> configs) {
++	public BuildTriggerConfig(String projects, ResultCondition condition, String script, List<AbstractBuildParameters> configs) {
+ 		this.configs = configs;
+ 		this.projects = projects;
+ 		this.condition = condition;
++		this.script = script;
+ 	}
+ 
+-	public BuildTriggerConfig(String projects, ResultCondition condition,
+-			AbstractBuildParameters... configs) {
++	public BuildTriggerConfig(String projects, ResultCondition condition, List<AbstractBuildParameters> configs) {
++		this(projects, condition, null, configs);
++	}
++
++	public BuildTriggerConfig(String projects, ResultCondition condition, AbstractBuildParameters... configs) {
+ 		this(projects, condition, Arrays.asList(configs));
+ 	}
+ 
+@@ -49,6 +53,10 @@
+ 		return projects;
+ 	}
+ 
++	public String getScript() {
++		return script;
++	}
++
+ 	public ResultCondition getCondition() {
+ 		return condition;
+ 	}
+@@ -58,38 +66,36 @@
+ 	}
+ 
+ 	private static ParametersAction mergeParameters(ParametersAction base, ParametersAction overlay) {
+-		LinkedHashMap<String,ParameterValue> params = new LinkedHashMap<String,ParameterValue>();
+-		for (ParameterValue param : base.getParameters())
++		LinkedHashMap<String, ParameterValue> params = new LinkedHashMap<String, ParameterValue>();
++		for(ParameterValue param : base.getParameters())
+ 			params.put(param.getName(), param);
+-		for (ParameterValue param : overlay.getParameters())
++		for(ParameterValue param : overlay.getParameters())
+ 			params.put(param.getName(), param);
+ 		return new ParametersAction(params.values().toArray(new ParameterValue[params.size()]));
+ 	}
+ 
+-	private static ParametersAction getDefaultParameters(AbstractProject<?,?> project) {
++	private static ParametersAction getDefaultParameters(AbstractProject<?, ?> project) {
+ 		ParametersDefinitionProperty property = project.getProperty(ParametersDefinitionProperty.class);
+ 		if (property == null) {
+ 			return null;
+ 		}
+-		
++
+ 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+-		for (ParameterDefinition pd : property.getParameterDefinitions()) {
++		for(ParameterDefinition pd : property.getParameterDefinitions()) {
+ 			ParameterValue param = pd.getDefaultParameterValue();
+ 			if (param != null) parameters.add(param);
+ 		}
+-		
++
+ 		return new ParametersAction(parameters);
+ 	}
+-	
+-	List<Action> getBaseActions(AbstractBuild<?,?> build, TaskListener listener)
+-			throws IOException, InterruptedException, DontTriggerException {
++
++	List<Action> getBaseActions(AbstractBuild<?, ?> build, TaskListener listener) throws IOException, InterruptedException, DontTriggerException {
+ 		List<Action> actions = new ArrayList<Action>();
+ 		ParametersAction params = null;
+-		for (AbstractBuildParameters config : configs) {
++		for(AbstractBuildParameters config : configs) {
+ 			Action a = config.getAction(build, listener);
+ 			if (a instanceof ParametersAction) {
+-				params = params == null ? (ParametersAction)a
+-					: mergeParameters(params, (ParametersAction)a);
++				params = params == null ? (ParametersAction) a : mergeParameters(params, (ParametersAction) a);
+ 			} else if (a != null) {
+ 				actions.add(a);
+ 			}
+@@ -98,41 +104,37 @@
+ 		return actions;
+ 	}
+ 
+-        List<Action> getBuildActions(List<Action> baseActions, AbstractProject project) {
++	List<Action> getBuildActions(List<Action> baseActions, AbstractProject project) {
+ 		List<Action> actions = new ArrayList<Action>(baseActions);
+ 
+ 		ParametersAction defaultParameters = getDefaultParameters(project);
+ 		if (defaultParameters != null) {
+ 			Action a = null;
+-			for (ListIterator<Action> it = actions.listIterator(); it.hasNext();)
++			for(ListIterator<Action> it = actions.listIterator(); it.hasNext();)
+ 				if ((a = it.next()) instanceof ParametersAction) {
+-					it.set(mergeParameters(defaultParameters, (ParametersAction)a));
++					it.set(mergeParameters(defaultParameters, (ParametersAction) a));
+ 					break;
+-                                }
+-			if (!(a instanceof ParametersAction))
+-				actions.add(defaultParameters);
++				}
++			if (!(a instanceof ParametersAction)) actions.add(defaultParameters);
+ 		}
+ 		return actions;
+ 	}
+ 
+ 	/**
+-	 * @deprecated since 2.3 with Hudson 1.341+
+-	 * (see {@link BuildTrigger#buildDependencyGraph(AbstractProject, hudson.model.DependencyGraph)})
++	 * @deprecated since 2.3 with Hudson 1.341+ (see
++	 * {@link BuildTrigger#buildDependencyGraph(AbstractProject, hudson.model.DependencyGraph)})
+ 	 */
+ 	@Deprecated
+-	public void perform(AbstractBuild<?, ?> build, Launcher launcher,
+-			BuildListener listener) throws InterruptedException, IOException {
++	public void perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+ 
+ 		try {
+ 			if (condition.isMet(build.getResult())) {
+ 				List<Action> actions = getBaseActions(build, listener);
+ 				if (!actions.isEmpty()) {
+-					for (AbstractProject project : getProjectList()) {
++					for(AbstractProject project : getProjectList()) {
+ 						List<Action> list = getBuildActions(actions, project);
+-						
+-						project.scheduleBuild(project.getQuietPeriod(),
+-								new Cause.UpstreamCause((Run)build),
+-								list.toArray(new Action[list.size()]));
++
++						project.scheduleBuild(project.getQuietPeriod(), new Cause.UpstreamCause((Run) build), list.toArray(new Action[list.size()]));
+ 					}
+ 				}
+ 			}
+@@ -142,35 +144,34 @@
+ 		}
+ 	}
+ 
+-        public boolean onJobRenamed(String oldName, String newName) {
+-            boolean changed = false;
+-            String[] list = projects.split(",");
+-            for (int i = 0; i < list.length; i++) {
+-                if (list[i].trim().equals(oldName)) {
+-                    list[i] = newName;
+-                    changed = true;
+-                }
+-            }
+-            if (changed) {
+-                StringBuilder buf = new StringBuilder();
+-                for (int i = 0; i < list.length; i++) {
+-                    if (list[i] == null) continue;
+-                    if (buf.length() > 0) buf.append(',');
+-                    buf.append(list[i]);
+-                }
+-                projects = buf.toString();
+-            }
+-            return changed;
+-        }
++	public boolean onJobRenamed(String oldName, String newName) {
++		boolean changed = false;
++		String[] list = projects.split(",");
++		for(int i = 0; i < list.length; i++) {
++			if (list[i].trim().equals(oldName)) {
++				list[i] = newName;
++				changed = true;
++			}
++		}
++		if (changed) {
++			StringBuilder buf = new StringBuilder();
++			for(int i = 0; i < list.length; i++) {
++				if (list[i] == null) continue;
++				if (buf.length() > 0) buf.append(',');
++				buf.append(list[i]);
++			}
++			projects = buf.toString();
++		}
++		return changed;
++	}
+ 
+-        public boolean onDeleted(String oldName) {
+-            return onJobRenamed(oldName, null);
+-        }
++	public boolean onDeleted(String oldName) {
++		return onJobRenamed(oldName, null);
++	}
+ 
+ 	@Override
+ 	public String toString() {
+-		return "BuildTriggerConfig [projects=" + projects + ", condition="
+-				+ condition + ", configs=" + configs + "]";
++		return "BuildTriggerConfig [projects=" + projects + ", condition=" + condition + ", script=" + script + ", configs=" + configs + "]";
+ 	}
+ 
+ }
+Index: src/main/java/hudson/plugins/parameterizedtrigger/ParameterizedDependency.java
+===================================================================
+--- src/main/java/hudson/plugins/parameterizedtrigger/ParameterizedDependency.java	(.../2.4)	(revision 141673)
++++ src/main/java/hudson/plugins/parameterizedtrigger/ParameterizedDependency.java	(.../2.6)	(revision 141673)
+@@ -1,54 +1,89 @@
+ package hudson.plugins.parameterizedtrigger;
+ 
+-import hudson.model.AbstractBuild;
+-import hudson.model.AbstractProject;
+ import hudson.model.Action;
+ import hudson.model.DependencyGraph;
+ import hudson.model.DependencyGraph.Dependency;
+ import hudson.model.TaskListener;
++import hudson.model.AbstractBuild;
++import hudson.model.AbstractProject;
+ 
+ import java.util.List;
+ 
++import javax.script.Invocable;
++import javax.script.ScriptEngine;
++import javax.script.ScriptEngineManager;
++
++import org.apache.commons.lang.StringUtils;
++
+ /**
+- * Invoke downstream projects with applicable parameters using Hudson's
+- * DependencyGraph.Dependency interface.
++ * Invoke downstream projects with applicable parameters using Hudson's DependencyGraph.Dependency interface.
+  * @author Alan.Harder@sun.com
+  */
+ public class ParameterizedDependency extends Dependency {
+ 	private BuildTriggerConfig config;
+ 
+-	public ParameterizedDependency(AbstractProject upstream, AbstractProject downstream,
+-			BuildTriggerConfig config) {
++	public ParameterizedDependency(AbstractProject upstream, AbstractProject downstream, BuildTriggerConfig config) {
+ 		super(upstream, downstream);
+ 		this.config = config;
+ 	}
+ 
+-	public static void add(AbstractProject upstream, AbstractProject downstream,
+-			BuildTriggerConfig config, DependencyGraph graph) {
++	public static void add(AbstractProject upstream, AbstractProject downstream, BuildTriggerConfig config, DependencyGraph graph) {
+ 		// Keeping graph.addDependency() call in this class so classloader
+ 		// won't look for DependencyGraph.Dependency when running on older Hudson
+ 		graph.addDependency(new ParameterizedDependency(upstream, downstream, config));
+ 	}
+ 
+-	@Override
+-	public boolean shouldTriggerBuild(AbstractBuild build, TaskListener listener,
+-					  List<Action> actions) {
+-		if (!config.getCondition().isMet(build.getResult()))
++	protected boolean isConditionMet(AbstractBuild build, TaskListener listener) {
++		// Normal condition first
++		if (config.getCondition().isMet(build.getResult())) {
++			// Checks for the script
++			String script = config.getScript();
++			if (StringUtils.isNotBlank(script)) {
++				// Engine manager
++				ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
++				// Gets the Groovy engine
++				ScriptEngine engine = scriptEngineManager.getEngineByName("groovy");
++				// Creates the script and the function entry point, with all parameters
++				String function = String.format("def check (build, listener) { %s }", script);
++				try {
++					// Evaluates the script
++					engine.eval(function);
++					// Gets the function
++					Invocable invocable = (Invocable) engine;
++					// Invokes the function
++					Boolean result = (Boolean) invocable.invokeFunction("check", new Object[] { build, listener });
++					// Returns the result
++					return result;
++				} catch (Exception ex) {
++					String message = String.format("Couldn't evaluate script %s", script);
++					throw new RuntimeException(message, ex);
++				}
++			}
++			// No script, OK
++			else {
++				return true;
++			}
++		} else {
+ 			return false;
++		}
++	}
+ 
++	@Override
++	public boolean shouldTriggerBuild(AbstractBuild build, TaskListener listener, List<Action> actions) {
++		if (!isConditionMet(build, listener)) return false;
++
+ 		try {
+ 			List<Action> actionList = config.getBaseActions(build, listener);
+ 			if (!actionList.isEmpty()) {
+ 				actions.addAll(config.getBuildActions(actionList, getDownstreamProject()));
+ 				return true;
+ 			}
+-                        return false;
++			return false;
+ 		} catch (AbstractBuildParameters.DontTriggerException ex) {
+ 			// don't trigger on this configuration
+ 			return false;
+ 		} catch (Exception ex) {
+-			listener.error("Failed to build parameters to trigger project: "
+-				+ getDownstreamProject().getName());
++			listener.error("Failed to build parameters to trigger project: " + getDownstreamProject().getName());
+ 			ex.printStackTrace(listener.getLogger());
+ 			return false;
+ 		}
+Index: src/main/resources/hudson/plugins/parameterizedtrigger/BuildTrigger/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/parameterizedtrigger/BuildTrigger/config.jelly	(.../2.4)	(revision 141673)
++++ src/main/resources/hudson/plugins/parameterizedtrigger/BuildTrigger/config.jelly	(.../2.6)	(revision 141673)
+@@ -12,6 +12,10 @@
+ 		      </j:forEach>
+ 		    </select>
+ 		  </f:entry>
++		  <f:entry title="Trigger when script is true" help="/plugin/parameterized-trigger/help/script.html">
++			<f:textarea name="script" value="${config.script}" />
++		  </f:entry>
++		  
+ 	    <f:block>
+ 
+ 	      <f:hetero-list name="configs" hasHeader="true"
+Index: src/main/webapp/help/script.html
+===================================================================
+--- src/main/webapp/help/script.html	(.../2.4)	(revision 0)
++++ src/main/webapp/help/script.html	(.../2.6)	(revision 141673)
+@@ -0,0 +1,12 @@
++<div>
++	Groovy script that checks additional conditions on the build. Leave the script empty
++	to disable any script execution.
++	<p>
++		The script takes several parameters:
++		<ul>
++			<li><code>build</code> - <a href="https://hudson.dev.java.net/nonav/javadoc/hudson/model/AbstractBuild.html">Hudson Build</a></li>
++			<li><code>listener</code> - <a href="https://hudson.dev.java.net/nonav/javadoc/hudson/model/TaskListener.html">Task listener</a>, useful to log information</li>
++		</ul>
++	</p>
++</div>
++ 
+\ No newline at end of file
+Index: pom.xml
+===================================================================
+--- pom.xml	(.../2.4)	(revision 141673)
++++ pom.xml	(.../2.6)	(revision 141673)
+@@ -10,7 +10,7 @@
+ 
+     <artifactId>parameterized-trigger</artifactId>
+     <packaging>hpi</packaging>
+-    <version>2.5-SNAPSHOT</version>
++    <version>2.6-ISABEL</version>
+     <name>Hudson Parameterized Trigger plugin</name>
+     <url>http://wiki.hudson-ci.org/display/HUDSON/Parameterized+Trigger+Plugin</url>
+ 
+@@ -27,30 +27,41 @@
+     		<artifactId>subversion</artifactId>
+     		<version>[1.4,)</version>
+     	</dependency>
++		<!-- Groovy -->
++		<dependency>
++			<groupId>org.codehaus.groovy</groupId>
++			<artifactId>groovy</artifactId>
++			<version>1.7.0</version>
++		</dependency>
+     </dependencies>
+ 
+-    <build>
+-      <plugins>
+-        <plugin>
+-          <!-- make sure our code doesn't have 1.6 dependencies except where we know it -->
+-          <groupId>org.jvnet</groupId>
+-          <artifactId>animal-sniffer</artifactId>
+-          <version>1.2</version>
+-          <executions>
+-            <execution>
+-              <goals>
+-                <goal>check</goal>
+-              </goals>
+-              <configuration>
+-                <signature>
+-                  <groupId>org.jvnet.animal-sniffer</groupId>
+-                  <artifactId>java1.5</artifactId>
+-                  <version>1.0</version>
+-                </signature>
+-              </configuration>
+-            </execution>
+-          </executions>
+-        </plugin>
+-      </plugins>
+-    </build>
++	<build>
++
++		<pluginManagement>
++			<plugins>
++
++				<plugin>
++					<groupId>org.apache.maven.plugins</groupId>
++					<artifactId>maven-compiler-plugin</artifactId>
++					<version>2.3.1</version>
++				</plugin>
++
++			</plugins>
++		</pluginManagement>
++
++		<plugins>
++
++			<!-- Compiles with JDK6 -->
++			<plugin>
++				<groupId>org.apache.maven.plugins</groupId>
++				<artifactId>maven-compiler-plugin</artifactId>
++				<configuration>
++					<source>1.6</source>
++					<target>1.6</target>
++				</configuration>
++			</plugin>
++
++		</plugins>
++	</build>
++	
+ </project>
+
+Property changes on: .
+___________________________________________________________________
+Added: svn:ignore
+   + .settings
+target
+work
+.classpath
+.project
+
+

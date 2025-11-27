@@ -1,0 +1,29 @@
+Using checkout strategy: Default
+Last Built Revision: Revision d37bbd7efa93f1badbe20f517ff224bd13e7e901 (refs/remotes/origin/master)
+Unpacking http://myfileserver.mydomain.com/~jenkins/tools/git/2.10.0/PortableGit-2.10.0-Win64.zip to C:\J\tools\git on myslave
+Cloning the remote Git repository
+Cloning repository https://github.com/mygitarea/myrepository.git
+ > C:\J\tools\git\bin\git.exe init C:\J\workspace\MyProjectName # timeout=10
+Fetching upstream changes from https://github.com/mygitarea/myrepository.git
+ > C:\J\tools\git\bin\git.exe --version # timeout=10
+using GIT_ASKPASS to set credentials My_Jenkins_Credentials_For_Git
+ > C:\J\tools\git\bin\git.exe fetch --tags --progress https://github.com/mygitarea/myrepository.git +refs/heads/*:refs/remotes/origin/*
+ > C:\J\tools\git\bin\git.exe config remote.origin.url https://github.com/mygitarea/myrepository.git # timeout=10
+ > C:\J\tools\git\bin\git.exe config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > C:\J\tools\git\bin\git.exe config remote.origin.url https://github.com/mygitarea/myrepository.git # timeout=10
+Fetching upstream changes from https://github.com/mygitarea/myrepository.git
+using GIT_ASKPASS to set credentials My_Jenkins_Credentials_For_Git
+ > C:\J\tools\git\bin\git.exe fetch --tags --progress https://github.com/mygitarea/myrepository.git +refs/heads/*:refs/remotes/origin/*
+getCandidateRevisions(false,origin/master,,,hudson.plugins.git.util.BuildData@902f5c5c[scmName=<null>,remoteUrls=[https://github.com/mygitarea/myrepository.git],buildsByBranchName={refs/remotes/origin/Medusa=Build #8671 of Revision b75ba442f5290edc638355c015f2bb9b450aa339 (refs/remotes/origin/Medusa), refs/remotes/origin/release=Build #10488 of Revision ef2c1c42ebb34d73e3eb97966fc96f331feb99e4 (refs/remotes/origin/release), refs/remotes/origin/master=Build #12302 of Revision d37bbd7efa93f1badbe20f517ff224bd13e7e901 (refs/remotes/origin/master)},lastBuild=Build #12302 of Revision d37bbd7efa93f1badbe20f517ff224bd13e7e901 (refs/remotes/origin/master)]) considering branches to build
+Qualifying origin/master as a branch in repository origin -> refs/remotes/origin/master
+Qualifying origin/master as a branch in repository origin -> refs/remotes/origin/origin/master
+ > C:\J\tools\git\bin\git.exe rev-parse "refs/remotes/origin/master^{commit}" # timeout=10
+rev-parse refs/remotes/origin/master -> AnyObjectId[0bb7ed476caf39124ac14ee3fb95062126e15380]
+Found a new commit AnyObjectId[0bb7ed476caf39124ac14ee3fb95062126e15380] to be built on refs/remotes/origin/master
+ > C:\J\tools\git\bin\git.exe rev-parse "refs/remotes/origin/origin/master^{commit}" # timeout=10
+Failed to rev-parse: refs/remotes/origin/origin/master
+Checking out Revision 0bb7ed476caf39124ac14ee3fb95062126e15380 (refs/remotes/origin/master)
+ > C:\J\tools\git\bin\git.exe config core.sparsecheckout # timeout=10
+ > C:\J\tools\git\bin\git.exe checkout -f 0bb7ed476caf39124ac14ee3fb95062126e15380
+Commit message: "Fix keyboard shortcut for expand"
+ > C:\J\tools\git\bin\git.exe rev-list --no-walk d37bbd7efa93f1badbe20f517ff224bd13e7e901 # timeout=10

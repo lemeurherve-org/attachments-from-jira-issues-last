@@ -1,0 +1,44 @@
+diff --git i/src/main/java/com/cloudbees/jenkins/plugins/bitbucket/BitbucketSCMSource.java w/src/main/java/com/cloudbees/jenkins/plugins/bitbucket/BitbucketSCMSource.java
+index 64be0e3..4bf925f 100644
+--- i/src/main/java/com/cloudbees/jenkins/plugins/bitbucket/BitbucketSCMSource.java
++++ w/src/main/java/com/cloudbees/jenkins/plugins/bitbucket/BitbucketSCMSource.java
+@@ -365,8 +365,8 @@ public class BitbucketSCMSource extends SCMSource {
+                         new ContributorMetadataAction(pull.getAuthorLogin(), null, null)
+                 );
+                 observe(criteria, observer, listener,
+-                        pull.getSource().getRepository().getOwnerName(),
+-                        pull.getSource().getRepository().getRepositoryName(),
++                        pull.getDestination().getRepository().getOwnerName(),
++                        pull.getDestination().getRepository().getRepositoryName(),
+                         pull.getSource().getBranch().getName(),
+                         hash,
+                         pull);
+@@ -434,7 +434,7 @@ public class BitbucketSCMSource extends SCMSource {
+                 public boolean exists(@NonNull String path) throws IOException {
+                     try {
+                         // TODO should be checking the revision not the head
+-                        return bitbucket.checkPathExists(branchName, path);
++                        return bitbucket.checkPathExists(hash, path);
+                     } catch (InterruptedException e) {
+                         throw new IOException("Interrupted", e);
+                     }
+@@ -467,6 +467,10 @@ public class BitbucketSCMSource extends SCMSource {
+         BitbucketApi bitbucket = head instanceof PullRequestSCMHead
+                 ? buildBitbucketClient((PullRequestSCMHead) head)
+                 : buildBitbucketClient();
++        if (head instanceof PullRequestSCMHead) {
++            BitbucketPullRequest pr = bitbucket.getPullRequestById(Integer.valueOf(((PullRequestSCMHead) head).getId()));
++            return new AbstractGitSCMSource.SCMRevisionImpl(head, pr.getSource().getBranch().getRawNode());
++        }
+         String branchName = head instanceof PullRequestSCMHead ? ((PullRequestSCMHead) head).getBranchName() : head.getName();
+         List<? extends BitbucketBranch> branches = bitbucket.getBranches();
+         for (BitbucketBranch b : branches) {
+@@ -579,7 +583,7 @@ public class BitbucketSCMSource extends SCMSource {
+     protected List<UserRemoteConfig> getGitRemoteConfigs(PullRequestSCMHead head) {
+         List<UserRemoteConfig> result = new ArrayList<UserRemoteConfig>();
+         String remote = getRemote(head.getRepoOwner(), head.getRepository(), BitbucketRepositoryType.GIT);
+-        result.add(new UserRemoteConfig(remote, getRemoteName(), "+refs/heads/" + head.getBranchName(), getCheckoutEffectiveCredentials()));
++        result.add(new UserRemoteConfig(remote, getRemoteName(), "+refs/pull-requests/" + head.getId() + "/from:" + head.getBranchName(), getCheckoutEffectiveCredentials()));
+         return result;
+     }
+ 

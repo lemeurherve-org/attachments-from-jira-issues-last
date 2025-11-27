@@ -1,0 +1,142 @@
+diff --git a/pom.xml b/pom.xml
+index 5e26137..c14c21b 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -6,12 +6,12 @@
+     <groupId>org.jenkins-ci.plugins</groupId>
+     <artifactId>plugin</artifactId>
+     <!-- See https://github.com/jenkinsci/plugin-pom/blob/master/CHANGELOG.md -->
+-    <version>4.47</version>
++    <version>4.71</version>
+     <relativePath />
+   </parent>
+ 
+   <artifactId>sonar</artifactId>
+-  <version>2.15</version>
++  <version>2.15.1</version>
+   <packaging>hpi</packaging>
+ 
+   <name>SonarQube Scanner for Jenkins</name>
+@@ -45,7 +45,7 @@
+   </ciManagement>
+ 
+   <properties>
+-    <revision>2.15</revision>
++    <revision>2.15.1</revision>
+     <changelist>-SNAPSHOT</changelist>
+     <gitHubRepo>jenkinsci/sonarqube-plugin</gitHubRepo>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+@@ -53,9 +53,8 @@
+     <sonar.exclusions>target/generated-sources/**/*</sonar.exclusions>
+     <gitRepositoryName>sonar-scanner-jenkins</gitRepositoryName>
+     <version.artifactory.plugin>2.6.1</version.artifactory.plugin>
+-    <jenkins.version>2.361.1</jenkins.version>
++    <jenkins.version>2.401.3</jenkins.version>
+     <version.cyclonedx.plugin>2.5.3</version.cyclonedx.plugin>
+-    <java.level>8</java.level>
+     <findbugs.failOnError>false</findbugs.failOnError>
+     <!-- Disable parallel tests on Travis -->
+     <concurrency>1</concurrency>
+@@ -72,17 +71,15 @@
+     <license.mailto>mailto:info AT sonarsource DOT com</license.mailto>
+ 
+     <artifactsToPublish>${project.groupId}:${project.artifactId}:hpi${project.groupId}:${project.artifactId}:json:cyclonedx</artifactsToPublish>
+-
+-    <maven.compiler.release>8</maven.compiler.release>
+   </properties>
+ 
+   <dependencyManagement>
+     <dependencies>
+       <!-- Resolve dependency conflicts of plugins used during tests (workflow) -->
+       <dependency>
+-        <groupId>com.google.protobuf</groupId>
+-        <artifactId>protobuf-java</artifactId>
+-        <version>3.16.3</version>
++          <groupId>org.jetbrains.kotlin</groupId>
++          <artifactId>kotlin-stdlib-common</artifactId>
++          <version>1.6.20</version>
+       </dependency>
+       <dependency>
+         <groupId>com.jcraft</groupId>
+@@ -91,8 +88,8 @@
+       </dependency>
+       <dependency>
+         <groupId>io.jenkins.tools.bom</groupId>
+-        <artifactId>bom-2.361.x</artifactId>
+-        <version>1607.va_c1576527071</version>
++        <artifactId>bom-2.401.x</artifactId>
++        <version>2357.v1043f8578392</version>
+         <scope>import</scope>
+         <type>pom</type>
+       </dependency>
+@@ -161,7 +158,7 @@
+     <dependency>
+       <groupId>org.sonarsource.sonarqube</groupId>
+       <artifactId>sonar-ws</artifactId>
+-      <version>6.7</version>
++      <version>10.1.0.73491</version>
+     </dependency>
+     <dependency>
+       <!-- needed for SonarPublisher -->
+diff --git a/src/test/java/hudson/plugins/sonar/client/HttpClientTest.java b/src/test/java/hudson/plugins/sonar/client/HttpClientTest.java
+index 82cd6a3..16ff2d7 100644
+--- a/src/test/java/hudson/plugins/sonar/client/HttpClientTest.java
++++ b/src/test/java/hudson/plugins/sonar/client/HttpClientTest.java
+@@ -19,8 +19,21 @@
+  */
+ package hudson.plugins.sonar.client;
+ 
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++import static org.mockito.ArgumentMatchers.any;
++import static org.mockito.Mockito.mock;
++import static org.mockito.Mockito.verify;
++import static org.mockito.Mockito.when;
++
+ import java.io.IOException;
+ import java.nio.charset.StandardCharsets;
++
++import org.junit.Before;
++import org.junit.Test;
++import org.mockito.ArgumentCaptor;
++import org.sonarqube.ws.client.HttpException;
++
+ import okhttp3.Call;
+ import okhttp3.Credentials;
+ import okhttp3.OkHttpClient;
+@@ -29,17 +42,6 @@
+ import okhttp3.Response;
+ import okhttp3.ResponseBody;
+ import okio.BufferedSource;
+-import org.junit.Before;
+-import org.junit.Test;
+-import org.mockito.ArgumentCaptor;
+-import org.sonarqube.ws.client.HttpException;
+-
+-import static org.assertj.core.api.Assertions.assertThat;
+-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+-import static org.mockito.ArgumentMatchers.any;
+-import static org.mockito.Mockito.mock;
+-import static org.mockito.Mockito.verify;
+-import static org.mockito.Mockito.when;
+ 
+ public class HttpClientTest {
+   private static final String URL = "http://sonarqube.org";
+@@ -49,7 +51,7 @@
+   BufferedSource source = mock(BufferedSource.class);
+   HttpClient underTest = new HttpClient(okHttpClient);
+   Request request = new Request.Builder().url(URL).build();
+-  Response response = new Response.Builder().code(200).body(body).protocol(Protocol.HTTP_2).request(request).build();
++  Response response = new Response.Builder().code(200).body(body).protocol(Protocol.HTTP_2).request(request).message("foo").build();
+ 
+   @Before
+   public void setUp() throws IOException {
+@@ -72,7 +74,7 @@
+ 
+   @Test
+   public void request_fail_should_throw_http_exception() throws IOException {
+-    Response failedResponse = new Response.Builder().code(401).body(body).protocol(Protocol.HTTP_2).request(request).build();
++    Response failedResponse = new Response.Builder().code(401).body(body).protocol(Protocol.HTTP_2).request(request).message("foo").build();
+     when(call.execute()).thenReturn(failedResponse);
+ 
+     assertThatThrownBy(() -> underTest.getHttp(URL, null))

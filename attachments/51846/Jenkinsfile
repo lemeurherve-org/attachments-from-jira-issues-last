@@ -1,0 +1,29 @@
+pipeline
+{
+  agent { label 'master' }
+  stages
+  {
+    stage('Clean')
+    {
+      steps
+      {
+        bat "_clean.cmd"
+      }
+    }
+    stage('Build')
+    {
+      steps
+      {
+        bat "_build.cmd"
+        archiveArtifacts artifacts: '**/output/*', fingerprint: true, onlyIfSuccessful: true
+      }
+    }
+    stage('FinalClean')
+    {
+      steps
+      {
+        bat "_clean.cmd"
+      }
+    }
+  }
+}

@@ -1,0 +1,383 @@
+Index: src/main/java/hudson/plugins/synergy/impl/FindUseCommand.java
+===================================================================
+--- src/main/java/hudson/plugins/synergy/impl/FindUseCommand.java	(revision 20211)
++++ src/main/java/hudson/plugins/synergy/impl/FindUseCommand.java	(working copy)
+@@ -17,14 +17,14 @@
+ 	/**
+ 	 * The Synergy projects we are interesting in knowing the use they makes of the object.
+ 	 */
+-	private Set<String> projects;
++	protected Set<String> projects;
+ 	
+ 	/**
+ 	 * The Synergy version delimiter.
+ 	 */
+-	private String delimiter;
++	protected String delimiter;
+ 	
+-	private String path;
++	protected String path;
+ 	
+ 	public FindUseCommand(String object, Set<String> projects, String delimiter) {
+ 		super();
+Index: src/main/java/hudson/plugins/synergy/impl/FindUseWithoutVersionCommand.java
+===================================================================
+--- src/main/java/hudson/plugins/synergy/impl/FindUseWithoutVersionCommand.java	(revision 0)
++++ src/main/java/hudson/plugins/synergy/impl/FindUseWithoutVersionCommand.java	(revision 0)
+@@ -0,0 +1,57 @@
++package hudson.plugins.synergy.impl;
++
++import java.io.BufferedReader;
++import java.io.IOException;
++import java.io.StringReader;
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Set;
++
++/**
++ * Performs finduse on specified object but ignoring the project version.
++ */
++public class FindUseWithoutVersionCommand extends FindUseCommand {
++	
++	public FindUseWithoutVersionCommand(String object, Set<String> projects, String delimiter) {
++		super(object, projects, delimiter);
++	}
++
++	@Override
++	public void parseResult(String result) {
++
++		// Trim the version out of projects
++		List<String> trimmedProjects = new ArrayList<String>();
++		for (String project : projects)
++		{
++			int versionDelimIndex = project.indexOf(delimiter);
++			if (versionDelimIndex != -1) {
++				trimmedProjects.add(project.substring(0, versionDelimIndex));
++			} else {
++				trimmedProjects.add(project);
++			}
++		}
++
++		// Find the object in various projects
++		BufferedReader reader = new BufferedReader(new StringReader(result));
++		try {
++			String line = reader.readLine();
++			while (line!=null) {				
++				int projectIndex = line.indexOf('@');
++				if (projectIndex!=-1) {
++					String usingProject = line.substring(projectIndex+1);
++					int versionDelimIndex = usingProject.indexOf(delimiter);
++					if (versionDelimIndex != -1) {
++						usingProject = usingProject.substring(0, versionDelimIndex);
++					}
++					if (trimmedProjects.contains(usingProject)) {
++						path = line.substring(0, line.indexOf(delimiter)).trim();
++						break;
++					}
++				}				
++				line = reader.readLine();
++			}
++		} catch (IOException e) {
++			throw new RuntimeException(e);
++		}
++	}
++}
+Index: src/main/java/hudson/plugins/synergy/impl/TaskShowObjectsCommand.java
+===================================================================
+--- src/main/java/hudson/plugins/synergy/impl/TaskShowObjectsCommand.java	(revision 0)
++++ src/main/java/hudson/plugins/synergy/impl/TaskShowObjectsCommand.java	(revision 0)
+@@ -0,0 +1,69 @@
++package hudson.plugins.synergy.impl;
++
++import java.io.BufferedReader;
++import java.io.IOException;
++import java.io.StringReader;
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.List;
++
++/**
++ * Performs 'ccm task -show objects taskXYZ' and returns list of modified
++ * objects by that task.
++ * @author galetm
++ */
++public class TaskShowObjectsCommand extends Command {
++
++    private final Collection<String> tasks;
++    private List<String> objects = new ArrayList<String>();
++
++    public TaskShowObjectsCommand(Collection<String> tasks) {
++	this.tasks = tasks;
++    }
++
++    @Override
++    public String[] buildCommand(String ccmExe) {
++	List<String> command = new ArrayList<String>();
++	command.add(ccmExe);
++	command.add("task");
++	command.add("-show");
++	command.add("objects");
++	command.addAll(tasks);
++
++	// eg: ccm task -show objects task452~1:task:pmaf task453~1:task:pmaf
++	return command.toArray(new String[command.size()]);
++    }
++
++    @Override
++    public void parseResult(String result) {
++	objects = new ArrayList<String>();
++	
++	BufferedReader reader = new BufferedReader(new StringReader(result));
++	try {
++	    String line = reader.readLine();
++	    while (line != null) {
++		if (line.contains(") ")) {
++
++		    int index = line.indexOf(") ");
++		    if (index < 0)
++			continue;
++
++		    String sub = line.substring(index+2);
++		    sub = sub.substring(0, sub.indexOf(" "));
++		    objects.add(sub);
++		}
++		line = reader.readLine();
++	    }
++	} catch (IOException e) {
++	    throw new RuntimeException(e);
++	}
++    }
++
++    /**
++     * Returns list of modified objects by the specified task.
++     * @return list of modified objects (ex. "SampleClass.java~3:java:pmaf#2")
++     */
++    public List<String> getObjects() {
++	return objects;
++    }
++}
+Index: src/main/java/hudson/plugins/synergy/SynergySCM.java
+===================================================================
+--- src/main/java/hudson/plugins/synergy/SynergySCM.java	(revision 20211)
++++ src/main/java/hudson/plugins/synergy/SynergySCM.java	(working copy)
+@@ -15,6 +15,7 @@
+ import hudson.plugins.synergy.impl.FindAssociatedTaskCommand;
+ import hudson.plugins.synergy.impl.FindCompletedSinceDateCommand;
+ import hudson.plugins.synergy.impl.FindUseCommand;
++import hudson.plugins.synergy.impl.FindUseWithoutVersionCommand;
+ import hudson.plugins.synergy.impl.GetDelimiterCommand;
+ import hudson.plugins.synergy.impl.GetProjectAttributeCommand;
+ import hudson.plugins.synergy.impl.GetProjectInBaselineCommand;
+@@ -26,6 +27,7 @@
+ import hudson.plugins.synergy.impl.SynergyException;
+ import hudson.plugins.synergy.impl.TaskCompleted;
+ import hudson.plugins.synergy.impl.TaskInfoCommand;
++import hudson.plugins.synergy.impl.TaskShowObjectsCommand;
+ import hudson.plugins.synergy.impl.UpdateCommand;
+ import hudson.plugins.synergy.impl.WorkareaSnapshotCommand;
+ import hudson.plugins.synergy.impl.WriteObjectCommand;
+@@ -46,6 +48,7 @@
+ import java.util.ArrayList;
+ import java.util.Calendar;
+ import java.util.Collection;
++import java.util.Collections;
+ import java.util.HashMap;
+ import java.util.HashSet;
+ import java.util.List;
+@@ -131,7 +134,8 @@
+ 					"true".equals(req.getParameter("synergy.detectConflict")), 
+ 					"true".equals(req.getParameter("synergy.replaceSubprojects")), 
+ 					"true".equals(req.getParameter("synergy.checkForUpdateWarnings")),
+-					"true".equals(req.getParameter("synergy.leaveSessionOpen")));
++					"true".equals(req.getParameter("synergy.leaveSessionOpen")),
++					"true".equals(req.getParameter("synergy.checkTaskModifiedObjects")));
+ 		}
+ 
+ 		/**
+@@ -219,6 +223,11 @@
+ 	 */
+ 	private boolean detectConflict;
+ 
++	/**
++	 * Detect conflict flag.
++	 */
++	private boolean checkTaskModifiedObjects;
++
+ 	private transient Commands commands;
+ 
+ 	/**
+@@ -239,7 +248,7 @@
+ 	@DataBoundConstructor
+ 	public SynergySCM(String project, String database, String release, String purpose, String username, String password, String engine,
+ 			String oldProject, String baseline, String oldBaseline, boolean remoteClient, boolean detectConflict, 
+-			boolean replaceSubprojects, boolean checkForUpdateWarnings, boolean leaveSessionOpen) {
++			boolean replaceSubprojects, boolean checkForUpdateWarnings, boolean leaveSessionOpen, boolean checkTaskModifiedObjects) {
+ 
+ 		this.project = project;
+ 		this.database = database;
+@@ -256,6 +265,7 @@
+ 		this.replaceSubprojects = replaceSubprojects;
+ 		this.checkForUpdateWarnings = checkForUpdateWarnings;
+ 		this.leaveSessionOpen = leaveSessionOpen;
++		this.checkTaskModifiedObjects = checkTaskModifiedObjects;
+ 	}
+ 
+ 	@Override
+@@ -873,7 +883,12 @@
+ 			FindCompletedSinceDateCommand findCommand = new FindCompletedSinceDateCommand(date, release);
+ 			commands.executeSynergyCommand(path, findCommand);
+ 			List<String> result = findCommand.getTasks();
+-			return result != null && !result.isEmpty();
++
++			if (checkTaskModifiedObjects) {
++			    return checkTaskModifiedObjects(result, path);
++			} else {
++			    return result != null && !result.isEmpty();
++			}
+ 		} catch (SynergyException e) {
+ 			return false;
+ 		} finally {
+@@ -886,6 +901,31 @@
+ 		}
+ 	}
+ 
++	private boolean checkTaskModifiedObjects(List<String> result, FilePath path) throws SynergyException, InterruptedException, IOException {
++		if (result == null || result.isEmpty()) {
++			return false;
++		}
++
++		// Find if the task updated some files
++		TaskShowObjectsCommand showObjectsCommand = new TaskShowObjectsCommand(result);
++		commands.executeSynergyCommand(path, showObjectsCommand);
++		List<String> modifiedObjects = showObjectsCommand.getObjects();
++
++		// Get project use of those files
++		GetDelimiterCommand getDelim = new GetDelimiterCommand();
++		commands.executeSynergyCommand(path, getDelim);
++		String delimiter = getDelim.getDelimiter();
++		Set<String> projects = Collections.singleton(this.project);
++		for (String modifiedObject : modifiedObjects) {
++			FindUseWithoutVersionCommand findUseCommand = new FindUseWithoutVersionCommand(modifiedObject, projects, delimiter);
++			commands.executeSynergyCommand(path, findUseCommand);
++			if (findUseCommand.getPath() != null) {
++				return true;
++			}
++		}
++		return false;
++	}
++
+ 	public String getProject() {
+ 		return project;
+ 	}
+@@ -968,4 +1008,12 @@
+ 	public boolean isLeaveSessionOpen() {
+ 		return leaveSessionOpen;
+ 	}
++
++	public boolean isCheckTaskModifiedObjects() {
++		return checkTaskModifiedObjects;
++	}
++
++	public void setCheckTaskModifiedObjects(boolean checkTaskModifiedObjects) {
++		this.checkTaskModifiedObjects = checkTaskModifiedObjects;
++	}
+ }
+\ No newline at end of file
+Index: src/main/resources/hudson/plugins/synergy/SynergySCM/config.jelly
+===================================================================
+--- src/main/resources/hudson/plugins/synergy/SynergySCM/config.jelly	(revision 20211)
++++ src/main/resources/hudson/plugins/synergy/SynergySCM/config.jelly	(working copy)
+@@ -23,6 +23,9 @@
+ 	<f:entry title="Check for update Warnings" help="/plugin/synergy/checkForUpdateWarnings.html">
+ 		<f:checkbox name="synergy.checkForUpdateWarnings" value="true" checked="${scm.isCheckForUpdateWarnings()}" />
+ 	</f:entry>
++	<f:entry title="Check for modifications" help="/plugin/synergy/checkTaskModifiedObjects.html">
++		<f:checkbox name="synergy.checkTaskModifiedObjects" value="true" checked="${scm.isCheckTaskModifiedObjects()}" />
++	</f:entry>
+ 	<f:entry title="Replace Subprojects" help="/plugin/synergy/replaceSubprojects.html">
+ 		<f:checkbox name="synergy.replaceSubprojects" value="true" checked="${scm.isReplaceSubprojects()}" />
+ 	</f:entry>
+Index: src/main/webapp/checkTaskModifiedObjects.html
+===================================================================
+--- src/main/webapp/checkTaskModifiedObjects.html	(revision 0)
++++ src/main/webapp/checkTaskModifiedObjects.html	(revision 0)
+@@ -0,0 +1,5 @@
++<div>
++  Skips the build if there are no changes to the project files. <br/>
++  Particularly useful when multiple projects share the same release and the task
++  would trigger the build for all projects even when there are no modifications.
++</div>
+Index: src/test/java/hudson/plugins/synergy/impl/FindUseWithoutVersionCommandTest.java
+===================================================================
+--- src/test/java/hudson/plugins/synergy/impl/FindUseWithoutVersionCommandTest.java	(revision 0)
++++ src/test/java/hudson/plugins/synergy/impl/FindUseWithoutVersionCommandTest.java	(revision 0)
+@@ -0,0 +1,23 @@
++package hudson.plugins.synergy.impl;
++
++import java.util.Collections;
++import org.junit.Test;
++import static org.junit.Assert.*;
++
++public class FindUseWithoutVersionCommandTest {
++
++	@Test
++	public void testParseResult() {
++		String result = "InMemoryDataStore.java~2 integrate rmaboj java myproj pmaf#1 pmaf#493\n"+
++			"myproj/api/src/main/java/com/sample/InMemoryDataStore.java~2@myproj~rmaboj\n" +
++			"myproj/api/src/main/java/com/sample/InMemoryDataStore.java~2@myproj~croftl\n";
++
++		FindUseWithoutVersionCommand command = new
++			FindUseWithoutVersionCommand("InMemoryDataStore.java~2", Collections.singleton("myproj~abcd"), "~");
++
++		command.parseResult(result);
++		assertNotNull(command.getPath());
++		assertEquals("myproj/api/src/main/java/com/sample/InMemoryDataStore.java", command.getPath());
++	}
++
++}
+\ No newline at end of file
+Index: src/test/java/hudson/plugins/synergy/impl/TaskShowObjectsCommandTest.java
+===================================================================
+--- src/test/java/hudson/plugins/synergy/impl/TaskShowObjectsCommandTest.java	(revision 0)
++++ src/test/java/hudson/plugins/synergy/impl/TaskShowObjectsCommandTest.java	(revision 0)
+@@ -0,0 +1,39 @@
++package hudson.plugins.synergy.impl;
++
++import org.junit.Before;
++import org.junit.Test;
++import static org.junit.Assert.*;
++
++public class TaskShowObjectsCommandTest {
++
++    private TaskShowObjectsCommand command;
++
++    @Before
++    public void setUp()
++    {
++	command = new TaskShowObjectsCommand(null);
++    }
++
++    @Test
++    public void testParseSingleResult() {
++	String toParse = "1) DeliverSM.java~3:java:pmaf#2 integrate kovacicm\n";
++
++	command.parseResult(toParse);
++	assertEquals(1, command.getObjects().size());
++	assertEquals("DeliverSM.java~3:java:pmaf#2", command.getObjects().get(0));
++    }
++
++    @Test
++    public void testParseMultipleResult() {
++	String toParse =    " 1) DeliverSM.java~3:java:pmaf#2         integrate kovacicm\n" +
++			    " 2) Makefile~3:makefile:pmaf#12          integrate hrdyt\n" +
++			    " 3) mplus-core-common.spec~2:spec:pmaf#1 integrate hrdyt\n" +
++			    " 4) mplus-core-mm7.spec~2:spec:pmaf#1    integrate hrdyt\n" +
++			    "10) mplus-core-smtp.spec~2:spec:pmaf#1   integrate hrdyt\n";
++
++	command.parseResult(toParse);
++	assertEquals(5, command.getObjects().size());
++	assertEquals("DeliverSM.java~3:java:pmaf#2", command.getObjects().get(0));
++	assertEquals("mplus-core-smtp.spec~2:spec:pmaf#1", command.getObjects().get(4));
++    }
++}
+\ No newline at end of file

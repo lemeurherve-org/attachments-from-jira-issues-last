@@ -1,0 +1,122 @@
+gradleProps = [:]
+
+pipeline {
+    agent any
+    stages {
+        stage('build') {
+            agent { 
+                docker {
+                    image 'openjdk:8u111-jdk'
+                }
+            }
+            steps {
+                checkout scm
+                sh "./gradlew clean build"
+                script {
+                    gradleProps = gradleProperties()
+                }
+            }
+            post {
+                always {
+                    junit 'build/**/TEST-*.xml'
+                }
+            }
+        }
+        stage('qa') {
+            agent { 
+                docker {
+                    image 'openjdk:8u111-jdk'
+                }
+            }
+            steps {
+                sh './gradlew sonarqube'
+            }
+        }
+        stage('image') {
+            steps {
+                script {
+                    def versionName = gradleProps['version'].replaceAll("\\+", "_")
+                    buildAndPushDockerContainer(gradleProps['dockerImageName'], versionName)
+                }
+            }
+        }
+        stage('deploy-dev') {
+            agent { 
+                docker 'local-docker-repo/rancher-compose:0.0.2'
+            }
+            steps {
+                script {
+                    installToRancherEnv(RANCHER_DEV, "dev", gradleProps['projectName'], true)
+                    echo 'Should run smoke tests now...'
+                    confirmUpgradeToRancherEnv(RANCHER_DEV, "dev", gradleProps['projectName'])
+                }
+            }
+        }
+        stage('publish') {
+            agent { 
+                docker {
+                    image 'openjdk:8u111-jdk'
+                }
+            }
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "nexus-releases", passwordVariable: 'NEXUS_INTERNAL_PASSWORD', usernameVariable: 'NEXUS_INTERNAL_USERNAME']]) {
+                    sh './gradlew publish'
+                }
+            }
+        }
+    } 
+}
+
+def gradleProperties() {
+    def gradleProps = sh(script: "./gradlew -Prelease.useLastTag=true properties -q", returnStdout: true)
+    return parseProperties(gradleProps)
+}
+
+@NonCPS
+def parseProperties(props) {
+    def map = [:]
+    props.splitEachLine(': ') { items ->
+        map.put(items[0], items[1])
+    }
+    return map
+}
+
+//Build a container and return handle to it
+def buildAndPushDockerContainer(name, version) {
+    def dockerApp
+    echo "Using docker registry: ${DOCKER_REGISTRY}"
+    docker.withRegistry(DOCKER_REGISTRY, 'docker-registry') {
+        dockerApp = docker.build("${name}:${version}", "build")
+        dockerApp.push()
+    }
+    dockerApp
+}
+
+def installToRancherEnv(url, envName, projectName, doPull = false) {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "rancher-${envName}", passwordVariable: 'password', usernameVariable: 'username']]) {
+        // Jenkins bug JENKINS-33510, dir doesn't work
+//        dir("build/resources/rancher") {
+            def pull = doPull ? "--pull" : ""
+            sh "rancher-compose --debug --project-name ${projectName} --url ${url} --access-key $username --secret-key $password -f build/resources/rancher/docker-compose.yml -r build/resources/rancher/rancher-compose.yml up -d --upgrade ${pull} --interval 10000 --batch-size 1"
+//        }
+    }
+}
+
+def confirmUpgradeToRancherEnv(url, envName, projectName) {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "rancher-${envName}", passwordVariable: 'password', usernameVariable: 'username']]) {
+        // Jenkins bug JENKINS-33510, dir doesn't work
+//        dir("build/resources/rancher") {
+            sh "rancher-compose --debug --project-name ${projectName} --url ${url} --access-key $username --secret-key $password -f build/resources/rancher/docker-compose.yml -r build/resources/rancher/rancher-compose.yml up -d --upgrade --confirm-upgrade"
+//        }
+    }
+}
+
+def rollbackUpgradeToRancherEnv(url, envName, projectName) {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "rancher-${envName}", passwordVariable: 'password', usernameVariable: 'username']]) {
+        // Jenkins bug JENKINS-33510, dir doesn't work
+//        dir("build/resources/rancher") {
+            sh "rancher-compose --debug --project-name ${projectName} --url ${url} --access-key $username --secret-key $password -f build/resources/rancher/docker-compose.yml -r build/resources/rancher/rancher-compose.yml up -d --upgrade --rollback"
+//        }
+    }
+}
+

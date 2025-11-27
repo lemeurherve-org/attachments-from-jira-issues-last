@@ -1,0 +1,68 @@
+Cloud Foundry Plugin:
+WARNING: No manifest value for hostname. Using app name: node-example-app
+Pushing node-example-app app to https://api.pcf.xxxxx.xxxxxx
+App already exists, resetting.
+App deleted.
+Creating new app.
+Pushing app bits.
+Starting application.
+Successfully created container
+Downloading app package...
+Downloaded app package (3.2M)
+Staging...
+-------> Buildpack version 1.5.14
+-----> Creating runtime environment
+       
+       NPM_CONFIG_LOGLEVEL=error
+       NPM_CONFIG_PRODUCTION=true
+       NODE_MODULES_CACHE=true
+       NODE_ENV=production
+-----> Installing binaries
+       engines.npm (package.json):   unspecified (use default)
+       engines.node (package.json):  unspecified
+       
+       Downloading and installing node 4.4.4...
+       Downloaded [file:///tmp/buildpacks/cff882edd7d814965dfaad524237fa73/dependencies/https___pivotal-buildpacks.s3.amazonaws.com_concourse-binaries_node_node-4.4.4-linux-x64.tgz]
+       Using default npm version: 2.15.1
+-----> Restoring cache
+       Skipping cache restore (new runtime signature)
+-----> Building dependencies
+       Pruning any extraneous modules
+       Installing node modules (package.json)
+       npm ERR! Linux 3.19.0-69-generic
+       npm ERR! argv "/tmp/app/.heroku/node/bin/node" "/tmp/app/.heroku/node/bin/npm" "install" "--unsafe-perm" "--userconfig" "/tmp/app/.npmrc"
+       npm ERR! node v4.4.4
+       npm ERR! npm  v2.15.1
+       npm ERR! code ENETUNREACH
+       npm ERR! errno ENETUNREACH
+       npm ERR! syscall connect
+       
+       npm ERR! connect ENETUNREACH 151.101.20.162:443
+       npm ERR!
+       npm ERR! If you need help, you may report this error at:
+       npm ERR!     <https://github.com/npm/npm/issues>
+       
+       npm ERR! Please include the following file with any support request:
+       npm ERR!     /tmp/app/npm-debug.log
+-----> Build failed
+       https://devcenter.heroku.com/articles/troubleshooting-node-deploys
+       
+       We're sorry this build is failing! You can troubleshoot common issues here:
+       http://docs.cloudfoundry.org/buildpacks/node/node-tips.html
+       
+       
+       Some possible problems:
+       
+       - Node version not specified in package.json
+       Love,
+       
+       Heroku
+Failed to compile droplet
+Exit status 223
+Staging failed: Exited with status 223
+Failed to stage application: staging failed
+0 instances running out of 0
+ERROR: The application failed to start after 120 seconds.
+Cloud Foundry push failed.
+Build step 'Push to Cloud Foundry' marked build as failure
+Finished: FAILURE

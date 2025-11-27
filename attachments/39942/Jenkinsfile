@@ -1,0 +1,50 @@
+pipeline {
+	agent none
+	options {
+        timeout(
+			time: 60, 
+			unit: 'MINUTES'
+		) 
+		timestamps()
+    }
+	parameters {
+		string(
+			defaultValue: '-r epicwin',
+			description: 'Parameters to be passed to the build.py programs',
+			name: 'build_params'
+			)
+	}
+	stages {
+		stage('Build on:') {
+			parallel {
+				stage('Windows') {
+					agent {
+						label "vs2015"
+					}
+					steps {
+						bat 'python tools/build/build.py ${params.build_params}'
+					}
+					post {
+						success {
+							archiveArtifacts artifacts: 'Build/Dist/**/*.zip', fingerprint: true
+						}
+					}
+				}	
+				stage('MacOS')
+				{
+					agent {
+						label "macos"
+					}
+					steps {
+						sh 'python3 tools/build/build.py ${params.build_params}'
+					}
+					post {
+						success {
+							archiveArtifacts artifacts: 'Build/Dist/**/*.zip', fingerprint: true
+						}
+					}
+				}
+			}
+		}
+    }
+}

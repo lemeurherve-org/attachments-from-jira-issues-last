@@ -1,0 +1,13 @@
+diff --git a/src/main/resources/com/michelin/cio/hudson/plugins/rolestrategy/RoleStrategyConfig/manage-roles.jelly b/src/main/resources/com/michelin/cio/hudson/plugins/rolestrategy/RoleStrategyConfig/manage-roles.jelly
+index 3332c41..e992cef 100644
+--- a/src/main/resources/com/michelin/cio/hudson/plugins/rolestrategy/RoleStrategyConfig/manage-roles.jelly
++++ b/src/main/resources/com/michelin/cio/hudson/plugins/rolestrategy/RoleStrategyConfig/manage-roles.jelly
+@@ -46,7 +46,7 @@
+               <td class="left-most">${title}</td>
+               <j:if test="${!attrs.global}">
+                 <td width="*" class="in-place-edit">
+-                  ${attrs.role.pattern}
++                  ${h.escape(attrs.role.pattern.toString())}
+                   <input type="hidden" name="[pattern]" value="${attrs.role.pattern}" />
+                 </td>
+               </j:if>
